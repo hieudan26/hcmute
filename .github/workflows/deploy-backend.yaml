@@ -29,16 +29,16 @@ jobs:
  
       - name: Login to DockerHub
         uses: docker/login-action@v2
-         with:
+        with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-           password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
  
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
           push: true
           tags: hieudan/hcmute:latest
-           context: backend
+          context: backend
  
       - name: ssh key passphrase
         uses: appleboy/ssh-action@master

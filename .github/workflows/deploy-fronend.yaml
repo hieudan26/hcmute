@@ -4,7 +4,7 @@ on:
   pull_request:
     types:
       - closed
-     branches:
+    branches:
       - 'feature/FE-'
  
 jobs:
@@ -17,7 +17,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout
-     uses: actions/checkout@v2
+      uses: actions/checkout@v2
  
     - name: setup nodejs
       uses: actions/setup-node@v3
