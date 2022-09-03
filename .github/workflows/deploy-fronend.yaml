@@ -6,7 +6,7 @@ on:
       - closed
     branches:
       - 'feature/FE-'
- 
+
 jobs:
   deploy:
     name: Upload to Amazon S3
