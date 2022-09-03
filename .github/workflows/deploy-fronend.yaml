@@ -9,7 +9,7 @@ on:
 
 jobs:
   if_merged:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'feature/FE-')
     name: Upload to Amazon S3
     runs-on: ubuntu-latest
   # These permissions are needed to interact with GitHub's OIDC Token endpoint.
