@@ -17,7 +17,7 @@ jobs:
          distribution: 'adopt'
  
      - name: Build with Maven
-       run: ./mvnw install
+       run: mvn install
        working-directory: backend
  
      -
