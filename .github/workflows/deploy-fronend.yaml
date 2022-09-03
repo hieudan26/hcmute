@@ -3,7 +3,7 @@ name: Deploy Frontend
 on:
   pull_request:
     types:
-      - open
+      - closed
     branches:
       - 'feature/FE-'
 
