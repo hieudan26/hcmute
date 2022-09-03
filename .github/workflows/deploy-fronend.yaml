@@ -1,8 +1,11 @@
 name: Deploy Frontend
  
 on:
- push:
-   branches: [ "master" ]
+  pull_request:
+    types:
+      - closed
+     branches:
+      - 'feature/FE-'
  
 jobs:
  deploy:

@@ -1,9 +1,11 @@
 name: Deploy Backend
  
 on:
- push:
-   branches:
-     - "master"
+  pull_request:
+    types:
+      - closed
+     branches:
+      - 'feature/BE-' 
  
 jobs:
  build:
