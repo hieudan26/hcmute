@@ -1,20 +1,28 @@
-package backend.security;
+package backend.security.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @ConfigurationProperties(
-        prefix = "backend.aws"
+        prefix = "com.kb.jwt.aws"
 )
 public class JwtConfiguration {
+    @Value("${backend.aws.userPoolId}")
     private String userPoolId;
     private String identityPoolId;
     private String jwkUrl;
-    private String region = "ap-southeast-1";
-    private String userNameField = "username";
 
-    private String userId = "sub";
+    @Value("${backend.aws.region}")
+    private String region;
+    private String userNameField = "cognito:username";
+    private String role = "custom:role";
+
+
+    private String isFirstLogin = "custom:is_first_login";
     private int connectionTimeout = 2000;
     private int readTimeout = 2000;
     private String httpHeader = "Authorization";
@@ -66,13 +74,6 @@ public class JwtConfiguration {
         this.userNameField = userNameField;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
     public int getConnectionTimeout() {
         return connectionTimeout;
     }
@@ -96,4 +97,21 @@ public class JwtConfiguration {
     public void setHttpHeader(String httpHeader) {
         this.httpHeader = httpHeader;
     }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getIsFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setIsFirstLogin(String isFirstLogin) {
+        this.isFirstLogin = isFirstLogin;
+    }
+
 }

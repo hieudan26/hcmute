@@ -1,0 +1,1 @@
+INSERT IGNORE INTO users (id,created_date,last_mod_date,role,is_disable) VALUES ('1',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,'123',false);

@@ -1,4 +1,4 @@
-package backend.security;
+package backend.security.configuration;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
