@@ -25,7 +25,7 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/")
-    public ResponseEntity<BaseResponse> testPost(@Validated @RequestBody UserFirstLoginRequest userFirstLoginRequest){
+    public ResponseEntity<BaseResponse> createInformation(@Validated @RequestBody UserFirstLoginRequest userFirstLoginRequest){
         return ResponseEntity.ok(userService.createUser(userFirstLoginRequest));
     }
 }

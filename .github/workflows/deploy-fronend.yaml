@@ -2,8 +2,7 @@ name: Deploy Frontend
  
 on:
   push:
-    branch: 
-      - 'release'
+    branches: ['release']
 jobs:
   deploy-fe:
     name: Upload to Amazon S3
