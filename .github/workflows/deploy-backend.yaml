@@ -2,7 +2,9 @@ name: Deploy Backend
  
 on:
   push:
-    branches: ['release',' master']
+    branches: 
+      - release
+      - master
 jobs:
   deploy-be:
     runs-on: ubuntu-latest
