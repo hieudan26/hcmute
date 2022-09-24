@@ -5,7 +5,6 @@ on:
     branch: 
       - release
       - master
-
 jobs:
   runs-on: ubuntu-latest
   steps:

@@ -4,8 +4,6 @@ on:
   push:
     branch: 
       - release
-
-
 jobs:
   name: Upload to Amazon S3
   runs-on: ubuntu-latest
