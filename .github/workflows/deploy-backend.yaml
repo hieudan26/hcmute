@@ -3,8 +3,8 @@ name: Deploy Backend
 on:
   push:
     branch: 
-      - release
-      - master
+      - 'release'
+      - 'master'
 jobs:
   deploy-be:
     runs-on: ubuntu-latest
