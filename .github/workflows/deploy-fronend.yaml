@@ -1,9 +1,9 @@
 name: Deploy Frontend
  
 on:
-  pull_request:
-    types:
-      - closed
+  push:
+    branch:
+      fe/release
 
 jobs:
   if_merged:
@@ -14,6 +14,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -27,7 +28,6 @@ jobs:
       run : |-
         npm install
         npm run build
-        ls
       working-directory: frontend
 
     - name: Configure AWS credentials from Production account

@@ -1,8 +1,11 @@
 package backend.security.filter;
 
 import backend.security.AwsCognitoIdTokenProcessor;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -24,17 +27,14 @@ public class AwsCognitoJwtAuthFilter extends GenericFilter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         Authentication authentication;
-
         try {
             authentication = this.cognitoIdTokenProcessor.authenticate((HttpServletRequest)request);
             if (authentication != null) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception var6) {
-            logger.error("Cognito ID Token processing error", var6);
+        } catch (Exception e) {
             SecurityContextHolder.clearContext();
         }
-
         filterChain.doFilter(request, response);
     }
 }
