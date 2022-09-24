@@ -1,7 +1,6 @@
 name: Deploy Backend
  
 on:
-  on:
   push:
     branch:
       ['be/release','master']
