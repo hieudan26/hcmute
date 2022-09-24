@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cognito-idp.ap-southeast-1.amazonaws.com/ap-southeast-1_c7AqCROmm
+  datasource:
+    url: jdbc:mysql://database-1.cxb9ab3tgire.ap-southeast-1.rds.amazonaws.com:3306/hcmute
+    username: lumiere
+    password: lumiere-123
+  jpa:
+  hibernate:
+    ddl-auto: update
+
+backend:
+    aws:
+      userPoolId: "ap-southeast-1_c7AqCROmm"
+      region: "ap-southeast-1"
+
+
