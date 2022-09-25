@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./app.scss";
+
+@font-face {
+  font-family: "MontserratAlternates Bold";
+  src: local("MontserratAlternates Bold"), url(../fonts/MontserratAlternates-Bold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates BoldItalic";
+  src: local("MontserratAlternates BoldItalic"), url(../fonts/MontserratAlternates-BoldItalic.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates Italic";
+  src: local("MontserratAlternates Italic"), url(../fonts/MontserratAlternates-Italic.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates Regular";
+  src: local("MontserratAlternates Regular"), url(../fonts/MontserratAlternates-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates ExtraBold";
+  src: local("MontserratAlternates ExtraBold"), url(../fonts/MontserratAlternates-ExtraBold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates ExtraBoldItalic";
+  src: local("MontserratAlternates ExtraBoldItalic"), url(../fonts/MontserratAlternates-ExtraBoldItalic.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates Light";
+  src: local("MontserratAlternates Light"), url(../fonts/MontserratAlternates-Light.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates SemiBold";
+  src: local("MontserratAlternates SemiBold"), url(../fonts/MontserratAlternates-SemiBold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "MontserratAlternates SemiBoldItalic";
+  src: local("MontserratAlternates SemiBoldItalic"), url(../fonts/MontserratAlternates-SemiBoldItalic.ttf) format("truetype");
+}
+
+body {
+  font-family: $textFont !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $grayBackgroud !important;
+}

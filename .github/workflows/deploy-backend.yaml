@@ -1,13 +1,12 @@
 name: Deploy Backend
  
 on:
-  pull_request:
-    types:
-      - closed
-
+  push:
+    branches: 
+      - release
+      - master
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'feat/BE-')
+  deploy-be:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,10 +15,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-      - name: Build with Maven
-        run: mvn install
-        working-directory: backend
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2

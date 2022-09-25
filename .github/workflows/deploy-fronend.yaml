@@ -1,19 +1,18 @@
 name: Deploy Frontend
  
 on:
-  pull_request:
-    types:
-      - closed
-
+  push:
+    branches: 
+      - 'release'
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'feat/FE-')
+  deploy-fe:
     name: Upload to Amazon S3
     runs-on: ubuntu-latest
   # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
       id-token: write
       contents: read
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -27,7 +26,6 @@ jobs:
       run : |-
         npm install
         npm run build
-        ls
       working-directory: frontend
 
     - name: Configure AWS credentials from Production account

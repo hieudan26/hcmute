@@ -1,0 +1,43 @@
+spring:
+  datasource:
+    url: jdbc:mysql://database-1.cxb9ab3tgire.ap-southeast-1.rds.amazonaws.com:3306/hcmute
+    username: lumiere
+    password: lumiere-123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maxLifeTime : 600000
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+    generate-ddl: true
+  hibernate:
+    ddl-auto: update
+  sql:
+    init:
+      mode: always
+  mvc:
+    throw-exception-if-no-handler-found=true:
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    type: redis
+server:
+  servlet:
+    context-path: /v1
+
+aws:
+  accessKeyId: AKIAWGH2PX7YNHVLL564
+  secretAccessKey: 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
+  region: ap-southeast-1
+
+backend:
+    aws:
+      userPoolId: ap-southeast-1_BLEOVSwZc
+      region: ap-southeast-1
+      S3:
+        bucket:
+          name: lumiere-s3
+
+
+
