@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -88,5 +89,23 @@ public class ControllerExceptionHandler extends GlobalControllerExceptionHandler
     public ResponseEntity accessDeniedException(AccessDeniedException e) throws AccessDeniedException {
         logger.info(e.toString());
         throw e;
+    }
+
+    @ExceptionHandler(NoRecordFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseEntity handleNoRecordFoundException(NoRecordFoundException ex)
+    {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage().replace("..","."));
+        return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoPermissionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ResponseEntity handleNoPermissionException(NoPermissionException ex)
+    {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage().replace("..","."));
+        return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
     }
 }

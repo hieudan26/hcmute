@@ -11,7 +11,7 @@ import javax.validation.constraints.Email;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserFirstLoginRequest {
+public class UpdateUserRequest {
     public String firstName;
     public String lastName;
     public String gender;
@@ -19,8 +19,6 @@ public class UserFirstLoginRequest {
     public String coverBackground;
     public String avatar;
     public String phoneNumber;
-    @Email
-    public String email;
     public String summary;
     public String country;
     public String city;
