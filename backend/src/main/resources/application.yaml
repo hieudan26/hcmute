@@ -4,6 +4,8 @@ spring:
     username: lumiere
     password: lumiere-123
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maxLifeTime : 600000
   jpa:
     show-sql: true
     defer-datasource-initialization: true
@@ -20,6 +22,9 @@ spring:
     port: 6379
   cache:
     type: redis
+server:
+  servlet:
+    context-path: /v1
 
 aws:
   accessKeyId: AKIAWGH2PX7YNHVLL564
@@ -33,5 +38,6 @@ backend:
       S3:
         bucket:
           name: lumiere-s3
+
 
 
