@@ -18,13 +18,13 @@ import springfox.documentation.annotations.Cacheable;
 
 @Slf4j
 @RestController
-@RequestMapping("")
+@RequestMapping("/authentication")
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('ROLE_GUEST')")
 public class AuthenticationController {
     private final UserService userService;
 
-    @PostMapping("/")
+    @PostMapping("/signup")
     public ResponseEntity<BaseResponse> createInformation(@Validated @RequestBody UserFirstLoginRequest userFirstLoginRequest){
         return ResponseEntity.ok(userService.createUser(userFirstLoginRequest));
     }
