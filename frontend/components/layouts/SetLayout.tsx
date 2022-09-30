@@ -4,6 +4,7 @@ import cookie from 'react-cookies';
 import { RoleConstants } from '../../constants/roles.constant';
 import { CookieConstants } from '../../constants/store.constant';
 import AnonymousLayout from './anonymous/AnonymousLayout.layout';
+import AuthLayout from './auth/AuthLayout.layout';
 import UserLayout from './user/UserLayout.layout';
 
 export default function SetLayout({ children }: any) {
@@ -13,6 +14,8 @@ export default function SetLayout({ children }: any) {
 
   if (router.pathname === '/_error') {
     return <>{children}</>;
+  } else if (router.pathname === '/login' || router.pathname === '/register' || router.pathname === '/forgot-password') {
+    return <AuthLayout>{children}</AuthLayout>;
   } else {
     if (isLoggedIn) {
       // if (role === RoleConstants.USER) {

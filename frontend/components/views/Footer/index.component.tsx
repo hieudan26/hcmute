@@ -1,19 +1,19 @@
 import {
+  Divider,
   Flex,
   Heading,
-  useColorModeValue,
-  VStack,
-  Text,
   HStack,
   IconButton,
-  SimpleGrid,
   Link as LinkChakra,
-  Divider,
+  SimpleGrid,
+  Text,
+  useColorModeValue,
+  VStack,
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { SiFacebook, SiTwitter, SiGithub, SiLinkedin } from 'react-icons/si';
+import { SiFacebook, SiGithub, SiLinkedin, SiTwitter } from 'react-icons/si';
+import { getCurrentYear } from '../../../utils';
 import Logo from '../Navbar/Logo/index.component';
 
 export interface IFooterProps {}
@@ -94,7 +94,7 @@ export default function Footer(props: IFooterProps) {
         </Flex>
         <Divider borderColor='gray.500' mx='auto' />
         <Text fontSize='base'>
-          {t('copyright')} &copy; {new Date().getFullYear()} Lumière, Inc.
+          {t('copyright')} &copy; {getCurrentYear} Lumière, Inc.
         </Text>
       </VStack>
     </footer>

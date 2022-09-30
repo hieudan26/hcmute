@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { RoleConstants } from '../../../constants/roles.constant';
 import Footer from '../../views/Footer/index.component';
 import Navbar from '../../views/Navbar/index.component';
+import ScrollToTop from '../../views/ScrollToTop/index.component';
 
 export default function AnonymousLayout({ children }: any) {
   const bgMain = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
@@ -19,6 +20,7 @@ export default function AnonymousLayout({ children }: any) {
           {children}
         </Container>
       </Box>
+      <ScrollToTop />
       <Footer />
     </>
   );

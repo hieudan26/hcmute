@@ -1,9 +1,9 @@
-export interface LoginRequest {
+export interface ILoginRequest {
   email: string;
   password: string;
 }
 
-export interface LoginResponse {
+export interface ILoginResponse {
   token_name: string;
   access_token: string;
   token_type: string;

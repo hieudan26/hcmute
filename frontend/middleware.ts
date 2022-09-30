@@ -5,6 +5,6 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   if (url.pathname === '/') {
     url.pathname = '/login';
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/experiences', request.url));
   }
 }
