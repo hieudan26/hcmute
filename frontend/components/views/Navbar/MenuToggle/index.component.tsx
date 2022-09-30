@@ -1,5 +1,4 @@
 import { Box, Icon } from '@chakra-ui/react';
-import * as React from 'react';
 import { MdClose, MdMenu } from 'react-icons/md';
 
 export interface IMenuToggleProps {

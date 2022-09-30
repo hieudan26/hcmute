@@ -27,8 +27,8 @@ export default function MenuItem(props: IMenuItemProps) {
             bg: { navsbg_hover },
           }}
           marginX='10px'
-          paddingX={['0px', '0px', '0px', '4px', '10px']}
-          paddingY={['0px', '0px', '0px', '3px', '5px']}
+          paddingX={['2px', '2px', '2px', '4px', '10px']}
+          paddingY={['3px', '3px', '3px', '3px', '5px']}
         >
           <Text
             paddingBottom={currentRoute === to ? '5px' : '0px'}

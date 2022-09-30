@@ -3,6 +3,7 @@ import { useToast } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { BehaviorSubject } from 'rxjs';
 import { ResponseMessage } from '../../../models/common/ResponseMessage.model';
+import { uppercaseFirstLetter } from '../../../utils';
 
 export interface IMessageProps {}
 
@@ -19,7 +20,7 @@ export default function Message(props: IMessageProps) {
     const subscribe = handleMessageSubject.subscribe((msg) => {
       if (msg) {
         toast({
-          title: msg.type,
+          title: msg.title ? msg.title : uppercaseFirstLetter(msg.type),
           description: msg.message,
           id: msg.code,
           duration: msg.type === 'error' ? 3000 : 1500,

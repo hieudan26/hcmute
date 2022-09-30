@@ -9,6 +9,21 @@ import SetLayout from '../components/layouts/SetLayout';
 import Loading from '../components/views/Loading/index.component';
 import Message from '../components/views/Message/index.component';
 import '../public/styles/globals.scss';
+import { Amplify } from '@aws-amplify/core';
+import awsConfig from '../configurations/aws-configs';
+import { Auth } from 'aws-amplify';
+
+const oauth = {
+  domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
+  scope: ['email', 'profile', 'openid'],
+  redirectSignIn: 'http://localhost:3000/register',
+  redirectSignOut: 'http://localhost:3000/',
+  responseType: 'code',
+};
+
+Amplify.configure({ ...awsConfig, ssr: true });
+Auth.configure({ oauth });
+Amplify.Logger.LOG_LEVEL = 'INFO';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

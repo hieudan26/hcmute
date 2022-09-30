@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-lumiere-dev-102902-authRole",
+      "UnauthRoleArn": "arn:aws:iam::425727082480:role/amplify-lumiere-dev-102902-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::425727082480:role/amplify-lumiere-dev-102902-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-lumiere-dev-102902-deployment",
+      "UnauthRoleName": "amplify-lumiere-dev-102902-unauthRole",
+      "StackName": "amplify-lumiere-dev-102902",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:425727082480:stack/amplify-lumiere-dev-102902/34ef33a0-3c82-11ed-978a-02a5e9a72042",
+      "AmplifyAppId": "d11un0qk90qfa7"
+    }
+  }
+}

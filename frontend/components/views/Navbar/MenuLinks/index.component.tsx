@@ -8,7 +8,6 @@ import {
   MenuDivider,
   MenuItem as MenuItm,
   MenuList,
-  Stack,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
@@ -16,14 +15,17 @@ import {
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { BsFillMoonFill } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
+import { GoSignOut } from 'react-icons/go';
 import { IoIosLogIn } from 'react-icons/io';
 import { MdLanguage, MdLightMode } from 'react-icons/md';
 import { RiProfileLine } from 'react-icons/ri';
+import { setThemeMode } from '../../../../app/themeSlice';
 import { RoleConstants } from '../../../../constants/roles.constant';
-import { LangConstants } from '../../../../constants/settings.constant';
-import { darkColor } from '../../../../utils/ColorMode/dark';
-import { lightColor } from '../../../../utils/ColorMode/light';
+import { LangConstants, ThemeConstants } from '../../../../constants/settings.constant';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { AuthService } from '../../../../services/auth/auth.service';
 import MenuItem from '../MenuItem/index.component';
 
 export interface IMenuLinksProps {
@@ -33,7 +35,9 @@ export interface IMenuLinksProps {
 
 export default function MenuLinks(props: IMenuLinksProps) {
   const { isOpen, role } = props;
+  const dispatch = useAppDispatch();
   const router = useRouter();
+  const currentTheme = useAppSelector((state) => state.theme);
   const { t } = useTranslation('header');
   const { colorMode, toggleColorMode } = useColorMode();
   const iconAccount = useColorModeValue('blackAlpha.600', 'white');
@@ -49,7 +53,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
     }
   );
 
-  const changeLanguage = () => {
+  const changeLanguage = (): void => {
     if (router.locale === LangConstants.VI) {
       router.push(router.route, router.asPath, {
         locale: LangConstants.EN,
@@ -61,6 +65,20 @@ export default function MenuLinks(props: IMenuLinksProps) {
     }
   };
 
+  const changeTheme = (): void => {
+    toggleColorMode();
+    if (currentTheme.currentTheme === ThemeConstants.LIGHT) {
+      dispatch(setThemeMode(ThemeConstants.DARK));
+    } else {
+      dispatch(setThemeMode(ThemeConstants.LIGHT));
+    }
+  };
+
+  const handleLogout = () => {
+    const result = AuthService.logout();
+    router.push('/experiences');
+  };
+
   return (
     <Box zIndex='999' display={{ base: isOpen ? 'block' : 'none', lg: 'block' }} flexBasis={{ base: '100%', lg: 'auto' }}>
       <Flex
@@ -69,9 +87,9 @@ export default function MenuLinks(props: IMenuLinksProps) {
         direction={['column', 'column', 'column', 'row', 'row']}
         pt={[4, 4, 4, 0, 0]}
       >
-        <MenuItem to='/'>{t('navbar.navlink01')}</MenuItem>
-        <MenuItem to='/'>{t('navbar.navlink02')}</MenuItem>
-        <MenuItem to='/'>{t('navbar.navlink03')}</MenuItem>
+        <MenuItem to='/experiences'>{t('navbar.navlink01')}</MenuItem>
+        <MenuItem to='/faq'>{t('navbar.navlink02')}</MenuItem>
+        <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
         <MenuItem to='/'>{t('navbar.navlink04')}</MenuItem>
         {statusMenu ? (
           <Menu closeOnBlur={true}>
@@ -80,11 +98,21 @@ export default function MenuLinks(props: IMenuLinksProps) {
             </MenuButton>
             <MenuList bg={bgMenu} color={colorMenu}>
               {role !== RoleConstants.ANONYMOUS ? (
-                <Link href='profile'>
-                  <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
-                    {t('menuUser.profile')}
+                <>
+                  <Link href='profile'>
+                    <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
+                      {t('menuUser.profile')}
+                    </MenuItm>
+                  </Link>
+                  <MenuItm
+                    onClick={handleLogout}
+                    fontFamily='titleFont'
+                    icon={<Icon fontSize='20px' as={GoSignOut} />}
+                    fontSize='14px'
+                  >
+                    Logout
                   </MenuItm>
-                </Link>
+                </>
               ) : (
                 <Link href='login'>
                   <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={IoIosLogIn} />} fontSize='14px'>
@@ -103,14 +131,14 @@ export default function MenuLinks(props: IMenuLinksProps) {
                 {router.locale === LangConstants.VI ? t('menuBase.languages.vi') : t('menuBase.languages.en')}
               </MenuItm>
               <MenuItm
-                onClick={() => {
-                  toggleColorMode();
-                }}
+                onClick={changeTheme}
                 fontFamily='titleFont'
-                icon={<Icon fontSize='20px' as={MdLightMode} />}
+                icon={
+                  <Icon fontSize='20px' as={currentTheme.currentTheme === ThemeConstants.LIGHT ? MdLightMode : BsFillMoonFill} />
+                }
                 fontSize='14px'
               >
-                {t('menuBase.theme.dark')}
+                {currentTheme.currentTheme === ThemeConstants.DARK ? t('menuBase.theme.dark') : t('menuBase.theme.light')}
               </MenuItm>
             </MenuList>
           </Menu>
