@@ -11,6 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import useValidationSchema from '../../../../hooks/validation/useValidationSchema';
@@ -28,6 +29,7 @@ export interface IForgotPasswordForm {
 export default function ForgotPasswordForm(props: IForgotPasswordFormProps) {
   const { onSubmit, submitting } = props;
   const { forgotPasswordSchema } = useValidationSchema();
+  const { t } = useTranslation<'forgot_password', undefined>('forgot_password');
   const {
     register,
     handleSubmit,
@@ -47,29 +49,29 @@ export default function ForgotPasswordForm(props: IForgotPasswordFormProps) {
   return (
     <VStack w='100%' spacing='3' alignItems='flex-start'>
       <Heading mb='5' size='xl'>
-        Forgot your password?
+        {t('title')}
       </Heading>
-      <Text>Don&apos;t worry, please enter your email and we will assist you.</Text>
+      <Text>{t('introduce')}</Text>
       <form className={styles['style-form']} onSubmit={handleSubmit(_onSubmitForm)}>
         <SimpleGrid justifyContent='center' columns={2} columnGap={3} rowGap={6} w='100%'>
           <GridItem colSpan={2}>
             <FormControl isRequired isInvalid={!!errors?.email?.message}>
               <FormLabel>
-                <Text as='b'>Email</Text>
+                <Text as='b'>{t('email')}</Text>
               </FormLabel>
-              <Input {...register('email')} type='email' placeholder='Ex: thangduc.duong14@gmail.com' />
+              <Input {...register('email')} type='email' placeholder={t('email_placeholder')} />
               <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
             </FormControl>
           </GridItem>
           <GridItem colSpan={2}>
             <Button isLoading={submitting} type='submit' minW='100%'>
-              GET CODE TO CHANGE PASSWORD
+              {t('btn_submit')}
             </Button>
           </GridItem>
           <GridItem textAlign='center' colSpan={2}>
             <Link href='/login'>
               <Text _hover={{ color: '#D0637C' }} display='inline' cursor='pointer'>
-                Join with us
+                {t('link_login')}
               </Text>
             </Link>
           </GridItem>
