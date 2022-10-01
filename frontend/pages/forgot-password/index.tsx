@@ -46,7 +46,7 @@ export default ForgotPassword;
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer'])),
+      ...(await serverSideTranslations(locale, ['common', 'forgot_password', 'forgot_password_set_new'])),
       // Will be passed to the page component as props
     },
   };

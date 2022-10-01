@@ -63,7 +63,7 @@ export default Login;
 export async function getStaticProps({ locale }: any) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'login', 'confirm_modal'])),
       // Will be passed to the page component as props
     },
   };

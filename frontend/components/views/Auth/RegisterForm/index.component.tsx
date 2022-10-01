@@ -13,6 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -34,9 +35,9 @@ export interface IRegisterFormSubmit {
 
 export default function RegisterForm(props: IRegisterFormProps) {
   const { _onSubmit, submitting } = props;
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { t } = useTranslation<'register', undefined>('register');
   const { registerSchema } = useValidationSchema();
   const {
     register,
@@ -61,27 +62,31 @@ export default function RegisterForm(props: IRegisterFormProps) {
   return (
     <VStack w='100%' spacing='3' alignItems='flex-start'>
       <Heading mb='5' size='xl'>
-        Register
+        {t('register')}
       </Heading>
-      <Text>Register to manage your account</Text>
+      <Text>{t('introduce')}</Text>
       <form className={styles['style-form']} onSubmit={handleSubmit(_onSubmitForm)}>
         <SimpleGrid justifyContent='center' columns={2} columnGap={3} rowGap={6} w='100%'>
           <GridItem colSpan={2}>
             <FormControl isRequired isInvalid={!!errors?.email?.message}>
               <FormLabel>
-                <Text as='b'>Email</Text>
+                <Text as='b'>{t('email')}</Text>
               </FormLabel>
-              <Input {...register('email')} type='email' placeholder='Ex: thangduc.duong14@gmail.com' />
+              <Input {...register('email')} type='email' placeholder={t('email_placeholder')} />
               <FormErrorMessage>{errors?.email?.message}</FormErrorMessage>
             </FormControl>
           </GridItem>
           <GridItem colSpan={2}>
             <FormControl isRequired isInvalid={!!errors?.password?.message}>
               <FormLabel>
-                <Text as='b'>Password</Text>
+                <Text as='b'>{t('password')}</Text>
               </FormLabel>
               <InputGroup>
-                <Input {...register('password')} type={showPassword ? 'text' : 'password'} placeholder='Enter password' />
+                <Input
+                  {...register('password')}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder={t('password_placeholder')}
+                />
                 <InputRightElement width='4.5rem'>
                   <Button
                     h='1.75rem'
@@ -90,7 +95,7 @@ export default function RegisterForm(props: IRegisterFormProps) {
                       setShowPassword(!showPassword);
                     }}
                   >
-                    {showPassword ? 'Hide' : 'Show'}
+                    {showPassword ? t('btn_hide') : t('btn_show')}
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -100,13 +105,13 @@ export default function RegisterForm(props: IRegisterFormProps) {
           <GridItem colSpan={2}>
             <FormControl isRequired isInvalid={!!errors?.confirm_password?.message}>
               <FormLabel>
-                <Text as='b'>Confirm Password</Text>
+                <Text as='b'>{t('confirm_password')}</Text>
               </FormLabel>
               <InputGroup>
                 <Input
                   {...register('confirm_password')}
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder='Enter password'
+                  placeholder={t('confirm_password_placeholder')}
                 />
                 <InputRightElement width='4.5rem'>
                   <Button
@@ -116,7 +121,7 @@ export default function RegisterForm(props: IRegisterFormProps) {
                       setShowConfirmPassword(!showConfirmPassword);
                     }}
                   >
-                    {showConfirmPassword ? 'Hide' : 'Show'}
+                    {showConfirmPassword ? t('btn_hide') : t('btn_show')}
                   </Button>
                 </InputRightElement>
               </InputGroup>
@@ -125,15 +130,15 @@ export default function RegisterForm(props: IRegisterFormProps) {
           </GridItem>
           <GridItem colSpan={2}>
             <Button isLoading={submitting} type='submit' minW='100%'>
-              REGISTER
+              {t('btn_submit')}
             </Button>
           </GridItem>
           <GridItem textAlign='center' colSpan={2}>
             <Text display='inline' textAlign='center'>
-              Already have an account?&nbsp;
+              {t('text_login')}&nbsp;
               <Link href='/login'>
                 <Text as='i' _hover={{ color: '#D0637C' }} display='inline' cursor='pointer'>
-                  Login now
+                  {t('link_login')}
                 </Text>
               </Link>
             </Text>
