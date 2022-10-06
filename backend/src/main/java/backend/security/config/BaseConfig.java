@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -64,9 +65,10 @@ public abstract class BaseConfig {
         log.debug("Cors {}", cors);
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        configuration.setAllowedOriginPatterns(List.of("*"));
         if (Objects.nonNull(cors)) {
             if (Objects.nonNull(cors.getAllowedOrigins())) {
-                configuration.setAllowedOrigins(cors.getAllowedOrigins());
+                //configuration.setAllowedOrigins(cors.getAllowedOrigins());
             }
 
             if (Objects.nonNull(cors.getAllowedMethods())) {
