@@ -1,8 +1,6 @@
 package backend.repositories.specification;
 
 import backend.data.dto.global.SearchCriteria;
-import backend.data.entity.Users;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,17 +18,17 @@ public class SpecificationsBuilder<T> {
         return this;
     }
 
-    public Specification<T> build() {
+    public org.springframework.data.jpa.domain.Specification<T> build() {
         if (params.size() == 0) {
             return null;
         }
-        List<Specification> specs = params.stream()
-                .map(UserSpecification::new)
+        List<org.springframework.data.jpa.domain.Specification> specs = params.stream()
+                .map(Specification::new)
                 .collect(Collectors.toList());
 
-        Specification result = specs.get(0);
+        org.springframework.data.jpa.domain.Specification result = specs.get(0);
         for (int i = 1; i < params.size(); i++) {
-            result =  Specification.where(result).or(specs.get(i));
+            result =  org.springframework.data.jpa.domain.Specification.where(result).or(specs.get(i));
         }
         return result;
     }
