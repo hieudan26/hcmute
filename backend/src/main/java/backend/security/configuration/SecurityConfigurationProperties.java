@@ -36,7 +36,8 @@ public class SecurityConfigurationProperties {
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
-                "/webjars/**");
+                "/webjars/**",
+                "/areas/**");
 
         @JsonProperty("permit-all-map")
         private Map<HttpMethod, Set<String>> permitAllMap = null;

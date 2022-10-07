@@ -20,32 +20,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AreaController {
     private final AreaService areaService;
-
-    @PreAuthorize("permitAll()")
     @GetMapping("/countries")
     public ResponseEntity<BaseResponse> getCountries(Pageable pageable){
         return ResponseEntity.ok(areaService.findAllCountries(pageable));
     }
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/countries/{id}")
     public ResponseEntity<BaseResponse> getCountry(@PathVariable("id") Integer id){
         return ResponseEntity.ok(areaService.findAllCountry(id));
     }
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/countries/{id}/provinces")
     public ResponseEntity<BaseResponse> getProvincesByCountry(@PathVariable("id") Integer id){
         return ResponseEntity.ok(areaService.findAllProvincesByCountryId(id));
     }
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/provinces")
     public ResponseEntity<BaseResponse> getProvinces(Pageable pageable){
         return ResponseEntity.ok(areaService.findAllProvinces(pageable));
     }
 
-    @PreAuthorize("permitAll()")
     @GetMapping("/provinces/{id}")
     public ResponseEntity<BaseResponse> getProvince(@PathVariable("id") Integer id){
         return ResponseEntity.ok(areaService.findAllProvince(id));
