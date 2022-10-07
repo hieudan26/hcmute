@@ -52,7 +52,7 @@ public class AwsCognitoIdTokenProcessor {
     }
 
     private List getRoleFrom(JWTClaimsSet claims) {
-        if(claims.getClaims().get(this.jwtConfiguration.getRole()) == null || claims.getClaims().get(this.jwtConfiguration.getIsFirstLogin()) == "true"){
+        if(claims.getClaims().get(this.jwtConfiguration.getRole()) == null || claims.getClaims().get(this.jwtConfiguration.getIsFirstLogin()).equals("true")){
             return List.of("GUEST");
         }
         return List.of(claims.getClaims().get(this.jwtConfiguration.getRole()));
