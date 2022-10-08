@@ -1,5 +1,6 @@
 package backend.security;
 
+import backend.security.configuration.CustomUserDetail;
 import backend.security.configuration.JwtAuthentication;
 import backend.security.configuration.JwtConfiguration;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -35,9 +36,11 @@ public class AwsCognitoIdTokenProcessor {
             validateIssuer(claims);
             verifyIfIdToken(claims);
             String username = getUserNameFrom(claims);
+            String email = getEmailFrom(claims);
+            boolean isVerify = getEmailVerifyFrom(claims);
             if (username != null) {
                 List<GrantedAuthority> grantedAuthorities = of( new SimpleGrantedAuthority("ROLE_" + getRoleFrom(claims).get(0)));
-                User user = new User(username, "", of());
+                CustomUserDetail user = new CustomUserDetail(username,"",isVerify,email,grantedAuthorities);
                 return new JwtAuthentication(user, claims, grantedAuthorities);
             }
         }
@@ -49,6 +52,21 @@ public class AwsCognitoIdTokenProcessor {
             throw new MalformedJwtException("JWT Token is not valid");
         }
         return claims.getClaims().get(this.jwtConfiguration.getUserNameField()).toString();
+    }
+
+    private String getEmailFrom(JWTClaimsSet claims)throws Exception {
+        if(claims.getClaims().get(this.jwtConfiguration.getEmail()) == null){
+            throw new MalformedJwtException("JWT Token is not valid");
+        }
+        return claims.getClaims().get(this.jwtConfiguration.getEmail()).toString();
+    }
+
+    private boolean getEmailVerifyFrom(JWTClaimsSet claims)throws Exception {
+        if(claims.getClaims().get(this.jwtConfiguration.getEmail_verified()) == null){
+            throw new MalformedJwtException("JWT Token is not valid");
+        }
+        String rs = claims.getClaims().get(this.jwtConfiguration.getEmail_verified()).toString();
+        return  rs.equals("true") ? true : false;
     }
 
     private List getRoleFrom(JWTClaimsSet claims) {
