@@ -2,15 +2,19 @@ package backend.services;
 
 import backend.common.Roles;
 import backend.data.dto.global.BaseResponse;
+import backend.data.dto.global.PagingRequest;
+import backend.data.dto.global.PagingResponse;
 import backend.data.dto.user.UpdateUserRequest;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.data.dto.user.UserIdParams;
 import backend.data.dto.user.UserQueryParams;
+import backend.data.entity.Provinces;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
 import backend.repositories.UserRepository;
 import backend.utils.CognitoUtil;
+import backend.utils.PagingUtils;
 import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +41,12 @@ public class UserService {
                 .build();
     }
 
-    public BaseResponse findAll(UserQueryParams query, Pageable pageable){
+    public BaseResponse findAll(UserQueryParams query, PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<Users>(
+                userRepository.findAll(SearchSpecificationUtils.searchBuilder(query), PagingUtils.getPageable(pagingRequest)));
+
         return BaseResponse.builder().message("Find users successful.")
-                .data(userRepository.findAll(SearchSpecificationUtils.searchBuilder(query),pageable))
+                .data(pagingResponse)
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package backend.data.dto.area;
+package backend.data.dto.global;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,9 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryResponse {
-    String id;
-    String name;
-    String enName;
+public class PagingRequest {
+    int pageSize = 20;
+    int pageNumber = 0;
+    String sortBy = "id";
+    String sortType = "ASC";
 }

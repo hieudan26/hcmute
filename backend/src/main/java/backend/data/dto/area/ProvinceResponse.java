@@ -12,5 +12,4 @@ import lombok.experimental.SuperBuilder;
 public class ProvinceResponse {
     String id;
     String name;
-
 }

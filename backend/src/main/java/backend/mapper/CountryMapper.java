@@ -6,5 +6,6 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface CountryMapper {
+    @Mapping(target = "enName", source = "enName")
     CountryResponse CountriesToCountryResponse(Countries countries);
 }

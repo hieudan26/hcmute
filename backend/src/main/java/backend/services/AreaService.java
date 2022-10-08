@@ -1,6 +1,10 @@
 package backend.services;
 
+import backend.data.dto.area.CountryResponse;
+import backend.data.dto.area.ProvinceResponse;
 import backend.data.dto.global.BaseResponse;
+import backend.data.dto.global.PagingRequest;
+import backend.data.dto.global.PagingResponse;
 import backend.data.entity.Countries;
 import backend.data.entity.Provinces;
 import backend.exception.NoRecordFoundException;
@@ -8,8 +12,9 @@ import backend.mapper.CountryMapper;
 import backend.mapper.ProvinceMapper;
 import backend.repositories.CountryRepository;
 import backend.repositories.ProvinceRepository;
+import backend.utils.PagingUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,25 +28,34 @@ public class AreaService{
     private ProvinceMapper provinceMapper;
 
 
-    public BaseResponse listAllCountries(Pageable pageable){
+    public BaseResponse listAllCountries(PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<CountryResponse>(
+                countryRepository
+                        .getCountryIdAndName(PagingUtils.getPageable(pagingRequest))
+                        .map(countryMapper::CountriesToCountryResponse));
+
         return BaseResponse.builder().message("Find countries successful.")
-                .data(countryRepository.getCountryIdAndName(pageable)
-                        .stream()
-                        .map(countryMapper::CountriesToCountryResponse))
-                .build();
+                    .data(pagingResponse)
+                    .build();
     }
 
-    public BaseResponse listAllProvincesByCountryId(Integer id){
+    public BaseResponse listAllProvincesByCountryId(Integer id, PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<ProvinceResponse>(
+                provinceRepository
+                        .getProvincesIdAndNameByCountryId(id,PagingUtils.getPageable(pagingRequest))
+                        .map(provinceMapper::ProvincesToProvinceResponse));
+
         return BaseResponse.builder().message("Find provinces successful.")
-                .data(getCountry(id).getProvinces()
-                        .stream()
-                        .map(provinceMapper::ProvincesToProvinceResponse))
+                .data(pagingResponse)
                 .build();
     }
 
-    public BaseResponse findAllCountries(Pageable pageable){
+    public BaseResponse findAllCountries(PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<Countries>(
+                countryRepository.findAll(PagingUtils.getPageable(pagingRequest)));
+
         return BaseResponse.builder().message("Find countries successful.")
-                .data(countryRepository.findAll(pageable))
+                .data(pagingResponse)
                 .build();
     }
 
@@ -51,9 +65,11 @@ public class AreaService{
                 .build();
     }
 
-    public BaseResponse findAllProvinces(Pageable pageable){
+    public BaseResponse findAllProvinces(PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<Provinces>(
+                provinceRepository.findAll(PagingUtils.getPageable(pagingRequest)));
         return BaseResponse.builder().message("Find provinces successful.")
-                .data(provinceRepository.findAll(pageable))
+                .data(pagingResponse)
                 .build();
     }
 
@@ -63,9 +79,12 @@ public class AreaService{
                 .build();
     }
 
-    public BaseResponse findAllProvincesByCountryId(Integer id){
+    public BaseResponse findAllProvincesByCountryId(Integer id, PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<Provinces>(
+                provinceRepository.findAllByCountryId(id,PagingUtils.getPageable(pagingRequest)));
+
         return BaseResponse.builder().message("Find provinces successful.")
-                .data(getCountry(id).getProvinces())
+                .data(pagingResponse)
                 .build();
     }
 
