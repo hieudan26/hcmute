@@ -15,6 +15,8 @@ import backend.repositories.ProvinceRepository;
 import backend.utils.PagingUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -29,6 +31,8 @@ public class AreaService{
 
 
     public BaseResponse listAllCountries(PagingRequest pagingRequest){
+        String id = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
         PagingResponse pagingResponse = new PagingResponse<CountryResponse>(
                 countryRepository
                         .getCountryIdAndName(PagingUtils.getPageable(pagingRequest))

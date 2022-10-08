@@ -13,11 +13,11 @@ import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
 import backend.repositories.UserRepository;
+import backend.security.configuration.CustomUserDetail;
 import backend.utils.CognitoUtil;
 import backend.utils.PagingUtils;
 import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -31,11 +31,12 @@ public class UserService {
     private UserMapper userMapper;
     private UserRepository userRepository;
     public BaseResponse createUser(UserFirstLoginRequest userFirstLoginRequest){
-        String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Users user = userMapper.userFirstLoginRequestToUsers(userFirstLoginRequest);
-        user.setId(id);
+        user.setId(userDetail.getUsername());
         user.setRole(Roles.USER.getRoleName());
-        cognitoUtil.confirmUserFistLogin(id);
+        user.setEmail(userDetail.getEmail());
+        cognitoUtil.confirmUserFistLogin(userDetail.getUsername());
         return BaseResponse.builder().message("Create user successful.")
                 .data(userRepository.save(user))
                 .build();

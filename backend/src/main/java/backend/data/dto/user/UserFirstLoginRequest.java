@@ -20,8 +20,6 @@ public class UserFirstLoginRequest {
     public String coverBackground;
     public String avatar;
     public String phoneNumber;
-    @Email
-    @NotBlank
     public String email;
     public String summary;
     public String country;
