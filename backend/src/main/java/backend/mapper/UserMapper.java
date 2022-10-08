@@ -1,7 +1,7 @@
 package backend.mapper;
 
-import backend.data.dto.global.User.UpdateUserRequest;
-import backend.data.dto.global.User.UserFirstLoginRequest;
+import backend.data.dto.user.UpdateUserRequest;
+import backend.data.dto.user.UserFirstLoginRequest;
 import backend.data.entity.Users;
 import org.mapstruct.*;
 
