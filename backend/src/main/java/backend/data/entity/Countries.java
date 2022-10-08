@@ -19,14 +19,17 @@ public class Countries extends Auditable<String> implements Serializable {
     Integer id;
     @Column(unique=true,nullable = false)
     String name;
+    @Column(unique=true,nullable = false)
+    String enName;
+
     @OneToMany(mappedBy = "country",
             orphanRemoval = true,
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     List<Provinces> provinces;
-    public Countries(Integer id, String name){
+    public Countries(Integer id, String name, String enName){
         this.id = id;
         this.name = name;
+        this.enName = enName;
     }
-
 }

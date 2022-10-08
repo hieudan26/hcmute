@@ -1,6 +1,7 @@
 package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
+import backend.data.dto.global.PagingRequest;
 import backend.data.dto.user.UpdateUserRequest;
 import backend.data.dto.user.UserIdParams;
 import backend.data.dto.user.UserQueryParams;
@@ -24,8 +25,8 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("")
-    public ResponseEntity<BaseResponse> getUsers(UserQueryParams query, Pageable pageable){
-        return ResponseEntity.ok(userService.findAll(query,pageable));
+    public ResponseEntity<BaseResponse> getUsers(UserQueryParams query, PagingRequest pagingRequest){
+        return ResponseEntity.ok(userService.findAll(query,pagingRequest));
     }
 
     @PreAuthorize("permitAll()")

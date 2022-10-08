@@ -1,10 +1,10 @@
 package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
+import backend.data.dto.global.PagingRequest;
 import backend.services.AreaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AreaController {
     private final AreaService areaService;
     @GetMapping("/countries")
-    public ResponseEntity<BaseResponse> getCountries(Pageable pageable){
-        return ResponseEntity.ok(areaService.findAllCountries(pageable));
+    public ResponseEntity<BaseResponse> getCountries(PagingRequest pagingRequest){
+        return ResponseEntity.ok(areaService.findAllCountries(pagingRequest));
     }
 
     @GetMapping("/countries/{id}")
@@ -29,13 +29,13 @@ public class AreaController {
     }
 
     @GetMapping("/countries/{id}/provinces")
-    public ResponseEntity<BaseResponse> getProvincesByCountry(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(areaService.findAllProvincesByCountryId(id));
+    public ResponseEntity<BaseResponse> getProvincesByCountry(@PathVariable("id") Integer id, PagingRequest pagingRequest){
+        return ResponseEntity.ok(areaService.findAllProvincesByCountryId(id,pagingRequest));
     }
 
     @GetMapping("/provinces")
-    public ResponseEntity<BaseResponse> getProvinces(Pageable pageable){
-        return ResponseEntity.ok(areaService.findAllProvinces(pageable));
+    public ResponseEntity<BaseResponse> getProvinces(PagingRequest pagingRequest){
+        return ResponseEntity.ok(areaService.findAllProvinces(pagingRequest));
     }
 
     @GetMapping("/provinces/{id}")
@@ -44,13 +44,13 @@ public class AreaController {
     }
 
     @GetMapping("/list/countries")
-    public ResponseEntity<BaseResponse> getListCountries(Pageable pageable){
-        return ResponseEntity.ok(areaService.listAllCountries(pageable));
+    public ResponseEntity<BaseResponse> getListCountries(PagingRequest pagingRequest){
+        return ResponseEntity.ok(areaService.listAllCountries(pagingRequest));
     }
 
     @GetMapping("/list/countries/{id}/provinces")
-    public ResponseEntity<BaseResponse> getListProvincesByCountry(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(areaService.listAllProvincesByCountryId(id));
+    public ResponseEntity<BaseResponse> getListProvincesByCountry(@PathVariable("id") Integer id,PagingRequest pagingRequest){
+        return ResponseEntity.ok(areaService.listAllProvincesByCountryId(id,pagingRequest));
     }
 
 }
