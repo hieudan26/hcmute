@@ -1,10 +1,9 @@
 package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
-import backend.data.dto.global.User.UpdateUserRequest;
-import backend.data.dto.global.User.UserFirstLoginRequest;
-import backend.data.dto.global.User.UserIdParams;
-import backend.data.dto.global.User.UserQueryParams;
+import backend.data.dto.user.UpdateUserRequest;
+import backend.data.dto.user.UserIdParams;
+import backend.data.dto.user.UserQueryParams;
 import backend.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

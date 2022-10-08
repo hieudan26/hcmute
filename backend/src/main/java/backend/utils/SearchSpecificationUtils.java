@@ -1,7 +1,6 @@
 package backend.utils;
 
-import backend.data.dto.global.User.UserQueryParams;
-import backend.data.entity.Users;
+import backend.data.dto.user.UserQueryParams;
 import backend.repositories.specification.SpecificationsBuilder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
