@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class PagingRequest {
     int pageSize = 20;
-    int pageNumber = 0;
+    int pageNumber = -1;
     String sortBy = "id";
     String sortType = "ASC";
 }

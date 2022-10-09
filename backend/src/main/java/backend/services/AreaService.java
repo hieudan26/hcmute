@@ -31,8 +31,6 @@ public class AreaService{
 
 
     public BaseResponse listAllCountries(PagingRequest pagingRequest){
-        String id = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-
         PagingResponse pagingResponse = new PagingResponse<CountryResponse>(
                 countryRepository
                         .getCountryIdAndName(PagingUtils.getPageable(pagingRequest))
