@@ -1,4 +1,4 @@
-package backend.data.dto.global.User;
+package backend.data.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 @SuperBuilder
 @Data
@@ -19,7 +20,6 @@ public class UserFirstLoginRequest {
     public String coverBackground;
     public String avatar;
     public String phoneNumber;
-    @Email
     public String email;
     public String summary;
     public String country;

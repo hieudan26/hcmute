@@ -5,6 +5,7 @@ export const CookieConstants = {
   THEME: 'THEME',
   EMAIL: 'EMAIL',
   ROLE: 'ROLE',
+  IS_FIRST_LOGIN: 'IS_FIRST_LOGIN',
 };
 
 export const LocalStorageConstants = {
@@ -13,5 +14,7 @@ export const LocalStorageConstants = {
   LAST_NAME: 'LAST_NAME',
   FULL_NAME: 'FULL_NAME',
   AVATAR: 'AVATAR',
+  COVER_BACKGROUND: 'COVER_BACKGROUND',
   REFRESH_TOKEN: 'REFRESH_TOKEN',
+  REDUX_STATE: 'REDUX_STATE',
 };

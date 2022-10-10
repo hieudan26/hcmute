@@ -1,35 +1,28 @@
 package backend.services;
 
 import backend.common.Roles;
-import backend.common.SpecificationConstant;
 import backend.data.dto.global.BaseResponse;
-import backend.data.dto.global.User.UpdateUserRequest;
-import backend.data.dto.global.User.UserFirstLoginRequest;
-import backend.data.dto.global.User.UserIdParams;
-import backend.data.dto.global.User.UserQueryParams;
+import backend.data.dto.global.PagingRequest;
+import backend.data.dto.global.PagingResponse;
+import backend.data.dto.user.UpdateUserRequest;
+import backend.data.dto.user.UserFirstLoginRequest;
+import backend.data.dto.user.UserIdParams;
+import backend.data.dto.user.UserQueryParams;
+import backend.data.entity.Provinces;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
 import backend.repositories.UserRepository;
-import backend.repositories.specification.SpecificationsBuilder;
+import backend.security.configuration.CustomUserDetail;
 import backend.utils.CognitoUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import backend.utils.PagingUtils;
+import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import javax.naming.NoPermissionException;
-import javax.persistence.NoResultException;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static java.lang.Thread.sleep;
 
 @Service
 @AllArgsConstructor
@@ -38,19 +31,23 @@ public class UserService {
     private UserMapper userMapper;
     private UserRepository userRepository;
     public BaseResponse createUser(UserFirstLoginRequest userFirstLoginRequest){
-        String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Users user = userMapper.userFirstLoginRequestToUsers(userFirstLoginRequest);
-        user.setId(id);
+        user.setId(userDetail.getUsername());
         user.setRole(Roles.USER.getRoleName());
-        cognitoUtil.confirmUserFistLogin(id);
+        user.setEmail(userDetail.getEmail());
+        cognitoUtil.confirmUserFistLogin(userDetail.getUsername());
         return BaseResponse.builder().message("Create user successful.")
                 .data(userRepository.save(user))
                 .build();
     }
 
-    public BaseResponse findAll(UserQueryParams query, Pageable pageable){
+    public BaseResponse findAll(UserQueryParams query, PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse<Users>(
+                userRepository.findAll(SearchSpecificationUtils.searchBuilder(query), PagingUtils.getPageable(pagingRequest)));
+
         return BaseResponse.builder().message("Find users successful.")
-                .data(userRepository.findAll(searchBuilder(query),pageable))
+                .data(pagingResponse)
                 .build();
     }
 
@@ -76,28 +73,6 @@ public class UserService {
         return BaseResponse.builder().message("Enable user successful")
                 .data(userRepository.save(users))
                 .build();
-    }
-
-    public Specification<Users> searchBuilder(String query){
-        SpecificationsBuilder builder = new SpecificationsBuilder();
-        Pattern pattern = Pattern.compile(SpecificationConstant.patternSearchCriteria);
-        Matcher matcher = pattern.matcher(query + ",");
-        while (matcher.find()) {
-            builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
-        }
-        return builder.build();
-    }
-
-    public Specification<Users> searchBuilder(UserQueryParams query){
-        SpecificationsBuilder builder = new SpecificationsBuilder();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.valueToTree(query);
-        for (var field: UserQueryParams.class.getDeclaredFields()) {
-            if(!jsonNode.get(field.getName()).isNull()){
-                builder.with(field.getName(), ":", jsonNode.get(field.getName()).asText());
-            }
-        }
-        return builder.build();
     }
 
     public BaseResponse updateUser(String id,UpdateUserRequest updateUserRequest) throws NoPermissionException {

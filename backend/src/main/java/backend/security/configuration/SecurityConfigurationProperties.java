@@ -36,7 +36,8 @@ public class SecurityConfigurationProperties {
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
-                "/webjars/**");
+                "/webjars/**",
+                "/areas/**");
 
         @JsonProperty("permit-all-map")
         private Map<HttpMethod, Set<String>> permitAllMap = null;
@@ -45,13 +46,13 @@ public class SecurityConfigurationProperties {
     @Data
     public static class Cors {
         @JsonProperty("allowed-origins")
-        private List<String> allowedOrigins;
+        private List<String> allowedOrigins = List.of("*");
 
         @JsonProperty("allowed-methods")
-        private List<String> allowedMethods;
+        private List<String> allowedMethods= List.of("*");;
 
         @JsonProperty("allowed-headers")
-        private List<String> allowedHeaders;
+        private List<String> allowedHeaders= List.of("*");;
     }
 
     @Data

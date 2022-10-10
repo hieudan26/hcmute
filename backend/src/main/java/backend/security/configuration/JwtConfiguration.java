@@ -20,7 +20,8 @@ public class JwtConfiguration {
     private String region;
     private String userNameField = "cognito:username";
     private String role = "custom:role";
-
+    private String email = "email";
+    private String email_verified = "email_verified";
 
     private String isFirstLogin = "custom:is_first_login";
     private int connectionTimeout = 2000;
@@ -114,4 +115,19 @@ public class JwtConfiguration {
         this.isFirstLogin = isFirstLogin;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail_verified() {
+        return email_verified;
+    }
+
+    public void setEmail_verified(String email_verified) {
+        this.email_verified = email_verified;
+    }
 }

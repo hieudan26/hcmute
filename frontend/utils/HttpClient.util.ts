@@ -1,26 +1,40 @@
+import { Auth } from 'aws-amplify';
 import axios, { AxiosInstance, AxiosResponse, ResponseType } from 'axios';
-import cookie from 'react-cookies';
-import { API_PATH, API_URL } from '../constants/api-path.constant';
-import { CookieConstants, LocalStorageConstants } from '../constants/store.constant';
 import HttpStatus from 'http-status-codes';
-import { toggleLoading } from '../components/views/Loading/index.component';
-import { LocalUtils } from './local.util';
-import { toggleMessage } from '../components/views/Message/index.component';
-import { ResponseMessage } from '../models/common/ResponseMessage.model';
 import qs from 'qs';
+import { Dispatch, SetStateAction } from 'react';
+import cookie from 'react-cookies';
+import { toggleLoading } from '../components/views/Loading/index.component';
+import { toggleMessage } from '../components/views/Message/index.component';
+import { API_URL } from '../constants/api-path.constant';
+import { CookieConstants } from '../constants/store.constant';
+import { ResponseMessage } from '../models/common/ResponseMessage.model';
+import { AuthService } from '../services/auth/auth.service';
+import { LocalUtils } from './local.utils';
+import store from '../app/store';
+import { logout } from '../app/slices/authSlice';
 
-let IS_REFRESHING_TOKEN = false;
+// let IS_REFRESHING_TOKEN = false;
 
 export const deleteAsync = (
   url: string,
   successMessage?: string,
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  handleErrorAutomatic: boolean = true
+  handleErrorAutomatic: boolean = true,
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
-  return axiosInstance(handleErrorAutomatic, successMessage, 'application/json', 'json', isShowLoading, isShowMessage).delete(
-    url
-  );
+  return axiosInstance(
+    handleErrorAutomatic,
+    successMessage,
+    'application/json',
+    'json',
+    isShowLoading,
+    isShowMessage,
+    alternativeErrorMessage,
+    setSubmitting
+  ).delete(url);
 };
 
 export const putAsync = (
@@ -29,12 +43,20 @@ export const putAsync = (
   successMessage?: string,
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  handleErrorAutomatic: boolean = true
+  handleErrorAutomatic: boolean = true,
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
-  return axiosInstance(handleErrorAutomatic, successMessage, 'application/json', 'json', isShowLoading, isShowMessage).put(
-    url,
-    json
-  );
+  return axiosInstance(
+    handleErrorAutomatic,
+    successMessage,
+    'application/json',
+    'json',
+    isShowLoading,
+    isShowMessage,
+    alternativeErrorMessage,
+    setSubmitting
+  ).put(url, json);
 };
 
 export const postAsync = (
@@ -44,7 +66,8 @@ export const postAsync = (
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
   handleErrorAutomatic: boolean = true,
-  alternativeErrorMessage?: string
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
   return axiosInstance(
     handleErrorAutomatic,
@@ -53,7 +76,8 @@ export const postAsync = (
     'json',
     isShowLoading,
     isShowMessage,
-    alternativeErrorMessage
+    alternativeErrorMessage,
+    setSubmitting
   ).post(url, json);
 };
 
@@ -72,10 +96,10 @@ export const getAsync = (
   });
 };
 
-const getHeaders = (contentType: string) => {
+const getHeaders = (contentType: string, accessToken: string) => {
   return {
     'Content-Type': contentType,
-    Authorization: `Bearer ${cookie.load(CookieConstants.ACCESS_TOKEN)}`,
+    Authorization: `Bearer ${accessToken}`,
   };
 };
 
@@ -86,8 +110,10 @@ const axiosInstance = (
   responseType: ResponseType = 'json',
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  alternativeErrorMessage?: string
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): AxiosInstance => {
+  if (setSubmitting) setSubmitting(true);
   if (isShowLoading) toggleLoading(true);
 
   const instance = axios.create({
@@ -101,38 +127,37 @@ const axiosInstance = (
 
   //#region interceptors REQUEST
   instance.interceptors.request.use(async (config: any) => {
-    if (config.url?.includes(API_PATH.LOGIN)) {
+    try {
+      const currentSession = await Auth.currentSession();
+      const idTokenExpire = currentSession.getIdToken().getExpiration();
+      const refreshToken = currentSession.getRefreshToken();
+      const currentTimeSeconds = Math.round(+new Date() / 1000);
+
+      if (idTokenExpire < currentTimeSeconds) {
+        const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+        currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
+          if (err) {
+            handleUnAuthorize();
+          } else {
+            LocalUtils.storeAuthenticationData();
+            config.headers = getHeaders(contentType, data.getIdToken().getJwtToken());
+            return config;
+          }
+        });
+      } else {
+        config.headers = getHeaders(contentType, currentSession.getIdToken().getJwtToken());
+        return config;
+      }
+    } catch (error: any) {
       return config;
     }
-
-    //can check ingore in here
-    await checkRefreshTokenFinished(config);
-
-    let accessToken = LocalUtils.getCookie(CookieConstants.ACCESS_TOKEN);
-
-    if (!accessToken) {
-      const refreshToken = LocalUtils.get(LocalStorageConstants.REFRESH_TOKEN);
-      if (refreshToken && !IS_REFRESHING_TOKEN) {
-        try {
-          IS_REFRESHING_TOKEN = true;
-          // const res = await AuthService.refreshTokenAsync(refreshToken);
-          // LocalUtils.storeAuthenticationData(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-
-        IS_REFRESHING_TOKEN = false;
-      }
-    }
-
-    config.headers = getHeaders(contentType);
-    return config;
   });
   //#endregion
 
   //#region interceptors RESPONSE
   instance.interceptors.response.use(
     (response) => {
+      if (setSubmitting) setSubmitting(false);
       if (isShowLoading) toggleLoading(false);
 
       const method = response.config.method;
@@ -143,9 +168,10 @@ const axiosInstance = (
           message: successMessage ? successMessage : 'Request successful',
           type: 'success',
         });
-      return response;
+      return response.data;
     },
-    (error) => {
+    async (error) => {
+      if (setSubmitting) setSubmitting(false);
       if (isShowLoading) toggleLoading(false);
       let _error: ResponseMessage = {
         type: 'error',
@@ -162,7 +188,7 @@ const axiosInstance = (
 
       if (error.error_description) {
         _error.message = error.error_description;
-      } else if (error.response?.data?.error_description) _error.message = error.response.data.error_description;
+      } else if (error.response?.data?.message) _error.message = error.response.data.message;
       else if (error.message && error.message === 'Network Error') {
         _error.message = 'No internet connection';
         _error.code = 'networkError';
@@ -206,28 +232,11 @@ const axiosInstance = (
   return instance;
 };
 
-function handleUnAuthorize() {
-  Object.keys(cookie.loadAll()).forEach((item) => {
-    cookie.remove(item);
-  });
+const handleUnAuthorize = async () => {
+  await AuthService.logout();
+  store.dispatch(logout());
 
-  localStorage.clear();
-  sessionStorage.clear();
-
-  // redirect to login page
-  window.location.href = '/login';
-  // if (window.location.href.indexOf('/login') === -1) {
-  //   window.location.href = `/login?url=${window.location.pathname + window.location.search}`;
-  // }
-}
-
-const checkRefreshTokenFinished = async (config: any): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const timer = setInterval(() => {
-      if (!IS_REFRESHING_TOKEN) {
-        clearInterval(timer);
-        resolve(true);
-      }
-    }, 100);
-  });
+  if (window.location.href.indexOf('/login') === -1) {
+    window.location.href = `/login?url=${window.location.pathname}`;
+  }
 };

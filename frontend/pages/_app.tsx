@@ -1,32 +1,81 @@
+import { Amplify } from '@aws-amplify/core';
 import { ChakraProvider, ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/react';
+// import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useState } from 'react';
 import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import store from '../app/store';
 import { theme } from '../components/chakra/theme.chakra';
 import SetLayout from '../components/layouts/SetLayout';
+import Goodbye from '../components/views/Goodbye/index.component';
 import Loading from '../components/views/Loading/index.component';
 import Message from '../components/views/Message/index.component';
+import awsConfig from '../configurations/aws-configs';
 import '../public/styles/globals.scss';
+import { configReactQuery } from '../utils';
 
-function MyApp({ Component, pageProps }: AppProps) {
+// const oauth = {
+//   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
+//   scope: ['email', 'profile', 'openid'],
+//   redirectSignIn: 'http://localhost:3000/register',
+//   redirectSignOut: 'http://localhost:3000/',
+//   responseType: 'code',
+// };
+
+// if (process.env.NODE_ENV === 'production') {
+//   disableReactDevTools();
+// }
+
+if (
+  typeof window !== 'undefined' &&
+  typeof window.navigator !== 'undefined' &&
+  typeof navigator !== 'undefined' &&
+  navigator.userAgent &&
+  process.env.NODE_ENV === 'production'
+) {
+  const disableDevtool = require('disable-devtool');
+  disableDevtool();
+}
+
+Amplify.configure({ ...awsConfig, ssr: true });
+// Auth.configure({ oauth });
+Amplify.Logger.LOG_LEVEL = 'INFO';
+
+function MyApp({ Component, pageProps }: AppProps | any) {
+  const [queryClient] = useState(() => new QueryClient(configReactQuery));
+  let persistor = persistStore(store);
+
   return (
     <Provider store={store}>
       <ChakraProvider theme={theme}>
-        <ThemeProvider theme={theme}>
-          <ColorModeProvider>
-            <CSSReset />
-            <Head>
-              <title>Lumière</title>
-            </Head>
-            <Loading />
-            <Message />
-            <SetLayout>
-              <Component {...pageProps} />
-            </SetLayout>
-          </ColorModeProvider>
-        </ThemeProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <ThemeProvider theme={theme}>
+            <ColorModeProvider>
+              <CSSReset />
+              <Head>
+                <title>Lumière</title>
+              </Head>
+              <QueryClientProvider client={queryClient} contextSharing={true}>
+                <Hydrate state={pageProps.dehydratedState}>
+                  <Loading />
+                  <Message />
+                  <Goodbye />
+                  <SetLayout>
+                    {/* <Goodbye /> */}
+                    <Component {...pageProps} />
+                  </SetLayout>
+                </Hydrate>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </QueryClientProvider>
+            </ColorModeProvider>
+          </ThemeProvider>
+        </PersistGate>
       </ChakraProvider>
     </Provider>
   );

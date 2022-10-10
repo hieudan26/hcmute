@@ -62,7 +62,7 @@ export default function Loading(props: ILoadingProps) {
       onClose={onClose}
     >
       <ModalOverlay />
-      <ModalContent boxShadow='none' borderRadius='3xl'>
+      <ModalContent boxShadow='none' borderRadius='3xl' pb='4'>
         <ModalBody>
           <Flex w='100%' direction='column' justify='center' align='center'>
             <Lottie

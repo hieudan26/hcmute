@@ -1,4 +1,5 @@
 export interface ResponseMessage {
+  title?: string;
   type: MessageType;
   code?: number | string;
   message: string;
