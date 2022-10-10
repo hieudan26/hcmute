@@ -4,10 +4,12 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ConfirmModal from '../../components/views/Auth/Modal/ConfirmModal/index.component';
 import RegisterForm from '../../components/views/Auth/RegisterForm/index.component';
+import { useAppDispatch } from '../../hooks/redux';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { IRegisterRequest } from '../../models/auth/register.model';
 import { AuthService } from '../../services/auth/auth.service';
-import { LocalUtils } from '../../utils/local.utils';
+import userService from '../../services/user/user.service';
+import { login as loginSlice, logout } from '../../app/slices/authSlice';
 
 export interface IRegisterProps {}
 
@@ -20,6 +22,7 @@ const Register: NextPage = (props: IRegisterProps) => {
     password: '',
   });
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const _onSubmit = async (data: IRegisterRequest) => {
     const response = await AuthService.register(data, setSubmitting);
@@ -32,6 +35,15 @@ const Register: NextPage = (props: IRegisterProps) => {
   const login = async (data: ILoginRequest) => {
     const user = await AuthService.login(data, setCheckConfirm);
     if (user.isSuccess) {
+      if (user.attributes['custom:is_first_login'] === 'false') {
+        const id = user.attributes.sub;
+        const response = await userService.getUserById(id);
+        dispatch(loginSlice(response?.data));
+      } else {
+        //This case does not occur but is still processed
+        //To make sure redux-persit for auth slice is null
+        dispatch(logout());
+      }
       router.push('/experiences');
     }
   };

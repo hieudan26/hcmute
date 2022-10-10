@@ -8,7 +8,7 @@ export interface IImageAuthProps {}
 export default function ImageAuth(props: IImageAuthProps) {
   return (
     <VStack
-      display={{ base: 'none', '2xl': 'block' }}
+      display={{ base: 'none', xl: 'block' }}
       color='textColor.primary_darkMode'
       position='relative'
       w='100%'

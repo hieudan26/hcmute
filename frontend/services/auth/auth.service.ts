@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { toggleMessage } from '../../components/views/Message/index.component';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { IForgotPasswordSetNew, IRegisterRequest } from '../../models/auth/register.model';
-import cookie from 'react-cookies';
-import { LocalUtils } from '../../utils/local.utils';
 import { LogOut } from '../../utils';
+import { LocalUtils } from '../../utils/local.utils';
 
 const logger = new Logger('AuthService');
 
@@ -37,10 +36,21 @@ export class AuthService {
   // };
 
   static logout = async () => {
+    toggleMessage({
+      title: 'Too soon too say goodbye 😿',
+      code: uuidv4(),
+      type: 'info',
+      message: 'You are logged out, see you next time',
+    });
     try {
-      const result = await Auth.signOut();
+      await Auth.signOut();
       LogOut();
-      return result;
+      // toggleMessage({
+      //   title: 'Too soon too say goodbye 😿',
+      //   // code: uuidv4(),
+      //   type: 'info',
+      //   message: 'You are logged out, see you next time',
+      // });
     } catch (error: any) {
       const { __type, message } = error;
       logger.error("Couldn't logout: ", error);
@@ -50,6 +60,11 @@ export class AuthService {
         type: 'error',
         message: message,
       });
+    } finally {
+      // toggleLogout(true);
+      // const timer = setTimeout(() => {
+      //   toggleLogout(false);
+      // }, 2000);
     }
   };
 
@@ -153,7 +168,7 @@ export class AuthService {
         AuthService.CHANNEL
       );
 
-      LocalUtils.storeAuthenticationData();
+      await LocalUtils.storeAuthenticationData();
       return { ...result, isSuccess: true };
     } catch (error: any) {
       const { __type, message } = error;
