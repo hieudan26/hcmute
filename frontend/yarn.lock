@@ -4020,6 +4020,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@fvilers/disable-react-devtools@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@fvilers/disable-react-devtools/-/disable-react-devtools-1.3.0.tgz#d4f9cb23e955351765788cba363f87d88febc843"
+  integrity sha512-LbASP6voPkKS5b6OlQhupEDtMeoAakamauqLEFHatkQUTmblNY5nPK7/eSqKBXxExT6uypVPczpTsJjJIrhpOQ==
+
 "@hookform/resolvers@^2.9.8":
   version "2.9.8"
   resolved "https://registry.npmjs.org/@hookform/resolvers/-/resolvers-2.9.8.tgz"
@@ -5243,6 +5248,11 @@ dir-glob@^3.0.1:
   integrity sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==
   dependencies:
     path-type "^4.0.0"
+
+disable-devtool@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/disable-devtool/-/disable-devtool-0.3.1.tgz#543b1a98ee06133fa3f023fa1e2ae4ea3aaea4e4"
+  integrity sha512-Y8SNB7CI78udHvfFSr46oLo6D4SSMX0sKZI879rNQLza7CR3KzgdHK8I/Q55YiI7vR6wCYNJZKTglod1nC21mg==
 
 dlv@^1.1.3:
   version "1.1.3"

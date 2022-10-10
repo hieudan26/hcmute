@@ -1,24 +1,24 @@
+import { Amplify } from '@aws-amplify/core';
 import { ChakraProvider, ColorModeProvider, CSSReset, ThemeProvider } from '@chakra-ui/react';
+// import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useState } from 'react';
 import { Provider } from 'react-redux';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 import store from '../app/store';
 import { theme } from '../components/chakra/theme.chakra';
 import SetLayout from '../components/layouts/SetLayout';
+import Goodbye from '../components/views/Goodbye/index.component';
 import Loading from '../components/views/Loading/index.component';
 import Message from '../components/views/Message/index.component';
-import '../public/styles/globals.scss';
-import { Amplify } from '@aws-amplify/core';
 import awsConfig from '../configurations/aws-configs';
-import { Auth } from 'aws-amplify';
-import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState } from 'react';
+import '../public/styles/globals.scss';
 import { configReactQuery } from '../utils';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import Goodbye from '../components/views/Goodbye/index.component';
-import { persistStore } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
 
 // const oauth = {
 //   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
@@ -27,6 +27,21 @@ import { PersistGate } from 'redux-persist/integration/react';
 //   redirectSignOut: 'http://localhost:3000/',
 //   responseType: 'code',
 // };
+
+// if (process.env.NODE_ENV === 'production') {
+//   disableReactDevTools();
+// }
+
+if (
+  typeof window !== 'undefined' &&
+  typeof window.navigator !== 'undefined' &&
+  typeof navigator !== 'undefined' &&
+  navigator.userAgent &&
+  process.env.NODE_ENV === 'production'
+) {
+  const disableDevtool = require('disable-devtool');
+  disableDevtool();
+}
 
 Amplify.configure({ ...awsConfig, ssr: true });
 // Auth.configure({ oauth });
