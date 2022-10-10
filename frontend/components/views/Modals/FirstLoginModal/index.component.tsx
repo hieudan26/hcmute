@@ -1,6 +1,7 @@
 import { ModalBody, ModalHeader, SimpleGrid } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { login } from '../../../../app/slices/authSlice';
@@ -25,6 +26,7 @@ const setMaxDate = () => {
 
 export default function FirstLoginModal(props: IFirstLoginModalProps) {
   const { isOpen } = props;
+  const { t } = useTranslation('modal_is_first_login');
   const [date, setDate] = useState<Date>(setMaxDate());
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [countryId, setCountryId] = useState<string>('67');
@@ -71,7 +73,8 @@ export default function FirstLoginModal(props: IFirstLoginModalProps) {
   return (
     <ModalContainer isOpen={isOpen} size='xl'>
       <ModalHeader display='flex' flexDirection='column' alignItems='center'>
-        Let&apos;s start by filling in some information
+        {/* Let&apos;s start by filling in some information */}
+        {t('title')}
       </ModalHeader>
       <ModalBody>
         <form onSubmit={handleSubmit(_onSubmitForm)}>
