@@ -1,10 +1,9 @@
-import { Box, Button, Flex, ModalBody, ModalHeader, Text } from '@chakra-ui/react';
+import { Button, Flex, ModalBody, ModalHeader, Text } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
+import { useState } from 'react';
 import { ILoginRequest } from '../../../../../models/auth/login.model';
 import { hidePartOfEmail } from '../../../../../utils';
-import ModalContainer from '../ModalContainer/index.component';
-import { LocalUtils } from '../../../../../utils/local.utils';
-import { useState } from 'react';
-import { useTranslation } from 'next-i18next';
+import ModalContainer from '../../../Modals/ModalContainer/index.component';
 
 export interface IConfirmModalProps {
   isOpen: boolean;
@@ -33,7 +32,7 @@ export default function ConfirmModal(props: IConfirmModalProps) {
   };
 
   return (
-    <ModalContainer isOpen={isOpen}>
+    <ModalContainer isOpen={isOpen} size='md'>
       <ModalHeader display='flex' flexDirection='column' alignItems='center'>
         {t('title')}
       </ModalHeader>

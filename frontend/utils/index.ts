@@ -1,5 +1,18 @@
 import cookie from 'react-cookies';
 
+export const defaultAvatar = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/avatar.png';
+export const defaultCoverBackground = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/coverbackground.png';
+
+export const configReactQuery = {
+  defaultOptions: {
+    queries: {
+      staleTime: 1 * 60 * 60 * 1000,
+      cacheTime: 5 * 60 * 60 * 1000,
+      refetchOnWindowFocus: false,
+    },
+  },
+};
+
 export const emailRegex: RegExp =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

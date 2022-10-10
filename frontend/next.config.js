@@ -5,6 +5,10 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   i18n,
+  env: {
+    defaultAvatar: process.env.NEXT_PUBLIC_DEFAULT_AVATAR,
+    defaultCoverBackground: process.env.NEXT_PUBLIC_DEFAULT_COVERBACKGROUND,
+  },
 };
 
 module.exports = nextConfig;

@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Flex, Modal, ModalBody, ModalContent, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react';
+import { Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalOverlay, Text, useDisclosure } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Lottie from 'react-lottie';
 import { BehaviorSubject } from 'rxjs';
-import * as animationLoading from '../../../public/jsons/the-world.json';
+import * as animationLoading from '../../../public/jsons/logout.json';
 
-export interface ILoadingProps {}
+export interface IGoodbyeProps {}
 
 const defaultOptions = {
   loop: true,
@@ -18,16 +17,16 @@ const defaultOptions = {
 
 const loadingSubject = new BehaviorSubject<boolean>(false);
 
-export const toggleLoading = (value: boolean) => {
+export const toggleLogout = (value: boolean) => {
   loadingSubject.next(value);
 };
 
-export default function Loading(props: ILoadingProps) {
+export default function Goodbye(props: IGoodbyeProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
   const { onClose } = useDisclosure();
 
-  const toggleLoading = (value: boolean) => {
+  const toggleLogout = (value: boolean) => {
     if (value) {
       setCount((previous) => previous + 1);
     } else {
@@ -45,7 +44,7 @@ export default function Loading(props: ILoadingProps) {
 
   useEffect(() => {
     const subscribe = loadingSubject.subscribe((value) => {
-      toggleLoading(value);
+      toggleLogout(value);
     });
     return () => {
       subscribe.unsubscribe();
@@ -63,6 +62,7 @@ export default function Loading(props: ILoadingProps) {
     >
       <ModalOverlay />
       <ModalContent boxShadow='none' borderRadius='3xl' pb='4'>
+        <ModalCloseButton />
         <ModalBody>
           <Flex w='100%' direction='column' justify='center' align='center'>
             <Lottie
@@ -73,10 +73,10 @@ export default function Loading(props: ILoadingProps) {
               width={300}
             />
             <Text as='samp' mb='5px'>
-              Loading...
+              Too soon too say goodbye 😿
             </Text>
             <Text as='i' textAlign='center'>
-              This may take a few seconds, please don&apos;t close this page.
+              Goodbye, see you next time. We will miss you very much, so let&apos;s get back soon
             </Text>
           </Flex>
         </ModalBody>

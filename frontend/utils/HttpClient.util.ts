@@ -1,28 +1,40 @@
-import axios, { AxiosInstance, AxiosResponse, ResponseType } from 'axios';
-import cookie from 'react-cookies';
-import { API_PATH, API_URL } from '../constants/api-path.constant';
-import { CookieConstants, LocalStorageConstants } from '../constants/store.constant';
-import HttpStatus from 'http-status-codes';
-import { toggleLoading } from '../components/views/Loading/index.component';
-import { LocalUtils } from './local.utils';
-import { toggleMessage } from '../components/views/Message/index.component';
-import { ResponseMessage } from '../models/common/ResponseMessage.model';
-import qs from 'qs';
 import { Auth } from 'aws-amplify';
+import axios, { AxiosInstance, AxiosResponse, ResponseType } from 'axios';
+import HttpStatus from 'http-status-codes';
+import qs from 'qs';
+import { Dispatch, SetStateAction } from 'react';
+import cookie from 'react-cookies';
+import { toggleLoading } from '../components/views/Loading/index.component';
+import { toggleMessage } from '../components/views/Message/index.component';
+import { API_URL } from '../constants/api-path.constant';
+import { CookieConstants } from '../constants/store.constant';
+import { ResponseMessage } from '../models/common/ResponseMessage.model';
 import { AuthService } from '../services/auth/auth.service';
+import { LocalUtils } from './local.utils';
+import store from '../app/store';
+import { logout } from '../app/slices/authSlice';
 
-let IS_REFRESHING_TOKEN = false;
+// let IS_REFRESHING_TOKEN = false;
 
 export const deleteAsync = (
   url: string,
   successMessage?: string,
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  handleErrorAutomatic: boolean = true
+  handleErrorAutomatic: boolean = true,
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
-  return axiosInstance(handleErrorAutomatic, successMessage, 'application/json', 'json', isShowLoading, isShowMessage).delete(
-    url
-  );
+  return axiosInstance(
+    handleErrorAutomatic,
+    successMessage,
+    'application/json',
+    'json',
+    isShowLoading,
+    isShowMessage,
+    alternativeErrorMessage,
+    setSubmitting
+  ).delete(url);
 };
 
 export const putAsync = (
@@ -31,12 +43,20 @@ export const putAsync = (
   successMessage?: string,
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  handleErrorAutomatic: boolean = true
+  handleErrorAutomatic: boolean = true,
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
-  return axiosInstance(handleErrorAutomatic, successMessage, 'application/json', 'json', isShowLoading, isShowMessage).put(
-    url,
-    json
-  );
+  return axiosInstance(
+    handleErrorAutomatic,
+    successMessage,
+    'application/json',
+    'json',
+    isShowLoading,
+    isShowMessage,
+    alternativeErrorMessage,
+    setSubmitting
+  ).put(url, json);
 };
 
 export const postAsync = (
@@ -46,7 +66,8 @@ export const postAsync = (
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
   handleErrorAutomatic: boolean = true,
-  alternativeErrorMessage?: string
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): Promise<AxiosResponse> => {
   return axiosInstance(
     handleErrorAutomatic,
@@ -55,7 +76,8 @@ export const postAsync = (
     'json',
     isShowLoading,
     isShowMessage,
-    alternativeErrorMessage
+    alternativeErrorMessage,
+    setSubmitting
   ).post(url, json);
 };
 
@@ -88,8 +110,10 @@ const axiosInstance = (
   responseType: ResponseType = 'json',
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
-  alternativeErrorMessage?: string
+  alternativeErrorMessage?: string,
+  setSubmitting?: Dispatch<SetStateAction<boolean>>
 ): AxiosInstance => {
+  if (setSubmitting) setSubmitting(true);
   if (isShowLoading) toggleLoading(true);
 
   const instance = axios.create({
@@ -113,8 +137,7 @@ const axiosInstance = (
         const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
         currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
           if (err) {
-            // Auth.signOut();
-            AuthService.logout();
+            handleUnAuthorize();
           } else {
             LocalUtils.storeAuthenticationData();
             config.headers = getHeaders(contentType, data.getIdToken().getJwtToken());
@@ -134,6 +157,7 @@ const axiosInstance = (
   //#region interceptors RESPONSE
   instance.interceptors.response.use(
     (response) => {
+      if (setSubmitting) setSubmitting(false);
       if (isShowLoading) toggleLoading(false);
 
       const method = response.config.method;
@@ -144,9 +168,10 @@ const axiosInstance = (
           message: successMessage ? successMessage : 'Request successful',
           type: 'success',
         });
-      return response;
+      return response.data;
     },
-    (error) => {
+    async (error) => {
+      if (setSubmitting) setSubmitting(false);
       if (isShowLoading) toggleLoading(false);
       let _error: ResponseMessage = {
         type: 'error',
@@ -161,45 +186,43 @@ const axiosInstance = (
         handleUnAuthorize();
       }
 
-      console.log('>>> error: ', error);
+      if (error.error_description) {
+        _error.message = error.error_description;
+      } else if (error.response?.data?.message) _error.message = error.response.data.message;
+      else if (error.message && error.message === 'Network Error') {
+        _error.message = 'No internet connection';
+        _error.code = 'networkError';
+      } else if (error.message && error.message === 'Request failed with status code 500' && alternativeErrorMessage) {
+        _error.message = alternativeErrorMessage;
+        _error.code = HttpStatus.INTERNAL_SERVER_ERROR;
+      } else if (error.message && error.message === 'Request failed with status code 500') {
+        _error.message = 'Request failed with status code 500';
+        _error.code = HttpStatus.INTERNAL_SERVER_ERROR;
+      } else if (error.response && error.response.data && error.response.data.Message) {
+        _error.code = error.response.data.status;
+        const message = error.response.data.Message; // Get error message from translation file or default
+        // when system return code Unauthorized
+        if (_error.code === 'Unauthorized') {
+          handleUnAuthorize();
+        }
+        _error.message = message;
+      } else if (error.response && error.response.data && error.response.data.errors) {
+        try {
+          const errors: { [key: string]: string[] } = error.response.data.errors;
+          const serverError = Object.values(errors).reduce((prev, curr) => [...prev, ...curr]);
+          _error.code = error.response.data.status;
+          _error.message = serverError.join('');
+        } catch {
+          _error.message = error.response.data.errors[0].message;
+        }
+      } else {
+        _error.message = error + ''; // cast to string type
+      }
 
-      // if (error.error_description) {
-      //   _error.message = error.error_description;
-      // } else if (error.response?.data?.error_description) _error.message = error.response.data.error_description;
-      // else if (error.message && error.message === 'Network Error') {
-      //   _error.message = 'No internet connection';
-      //   _error.code = 'networkError';
-      // } else if (error.message && error.message === 'Request failed with status code 500' && alternativeErrorMessage) {
-      //   _error.message = alternativeErrorMessage;
-      //   _error.code = HttpStatus.INTERNAL_SERVER_ERROR;
-      // } else if (error.message && error.message === 'Request failed with status code 500') {
-      //   _error.message = 'Request failed with status code 500';
-      //   _error.code = HttpStatus.INTERNAL_SERVER_ERROR;
-      // } else if (error.response && error.response.data && error.response.data.Message) {
-      //   _error.code = error.response.data.status;
-      //   const message = error.response.data.Message; // Get error message from translation file or default
-      //   // when system return code Unauthorized
-      //   if (_error.code === 'Unauthorized') {
-      //     handleUnAuthorize();
-      //   }
-      //   _error.message = message;
-      // } else if (error.response && error.response.data && error.response.data.errors) {
-      //   try {
-      //     const errors: { [key: string]: string[] } = error.response.data.errors;
-      //     const serverError = Object.values(errors).reduce((prev, curr) => [...prev, ...curr]);
-      //     _error.code = error.response.data.status;
-      //     _error.message = serverError.join('');
-      //   } catch {
-      //     _error.message = error.response.data.errors[0].message;
-      //   }
-      // } else {
-      //   _error.message = error + ''; // cast to string type
-      // }
-
-      // // show error
-      // if (handleErrorAutomatic && _error.message !== 'Error: Request failed with status code 401') {
-      //   toggleMessage(_error);
-      // }
+      // show error
+      if (handleErrorAutomatic && _error.message !== 'Error: Request failed with status code 401') {
+        toggleMessage(_error);
+      }
 
       return Promise.reject(error);
     }
@@ -209,20 +232,11 @@ const axiosInstance = (
   return instance;
 };
 
-function handleUnAuthorize() {
-  // if existed
-  Object.keys(cookie.loadAll()).forEach((item) => {
-    cookie.remove(item);
-  });
+const handleUnAuthorize = async () => {
+  await AuthService.logout();
+  store.dispatch(logout());
 
-  localStorage.clear();
-  sessionStorage.clear();
-
-  AuthService.logout();
-
-  // redirect to login page
-  // window.location.href = '/login';
   if (window.location.href.indexOf('/login') === -1) {
-    window.location.href = `/login?url=${window.location.pathname + window.location.search}`;
+    window.location.href = `/login?url=${window.location.pathname}`;
   }
-}
+};
