@@ -13,6 +13,7 @@ import { UseQueryResult } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { DatepickerConfigs, SingleDatepicker } from 'chakra-dayzed-datepicker';
 import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
+import { useTranslation } from 'next-i18next';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { FieldErrorsImpl, UseFormRegister } from 'react-hook-form';
 import { GENDER_OPTIONS } from '../../../../../constants/global.constant';
@@ -50,6 +51,7 @@ export interface IFormIndividualProps {
 
 export default function FormIndividual(props: IFormIndividualProps) {
   const { errors, register, date, setDate, setMaxDate, isSubmitting, queryCountries, queryProvinces, setCountryId } = props;
+  const { t } = useTranslation('modal_is_first_login');
   const noColorProps = useColorModeValue('black', 'white');
   // console.log(queryProvinces);
   // console.log(queryCountries);
@@ -82,7 +84,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired isInvalid={!!errors?.firstName?.message}>
           <FormLabel>
-            <Text as='b'>First name</Text>
+            <Text as='b'>{t('first_name')}</Text>
           </FormLabel>
           <Input {...register('firstName')} type='text' placeholder='Thắng' />
           <FormErrorMessage>{errors?.firstName?.message}</FormErrorMessage>
@@ -91,7 +93,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired isInvalid={!!errors?.lastName?.message}>
           <FormLabel>
-            <Text as='b'>Last name</Text>
+            <Text as='b'>{t('last_name')}</Text>
           </FormLabel>
           <Input {...register('lastName')} type='text' placeholder='Dương Đức' />
           <FormErrorMessage>{errors?.lastName?.message}</FormErrorMessage>
@@ -100,7 +102,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired>
           <FormLabel>
-            <Text as='b'>Gender</Text>
+            <Text as='b'>{t('gender')}</Text>
           </FormLabel>
           <Select {...register('gender')}>
             {GENDER_OPTIONS.map((item, index) => (
@@ -114,7 +116,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired>
           <FormLabel>
-            <Text as='b'>Date of birth</Text>
+            <Text as='b'>{t('dob')}</Text>
           </FormLabel>
           <SingleDatepicker
             propsConfigs={propsConfigs}
@@ -128,7 +130,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired isInvalid={!!errors?.phone?.message}>
           <FormLabel>
-            <Text as='b'>Phone number</Text>
+            <Text as='b'>{t('phone')}</Text>
           </FormLabel>
           <Input {...register('phone')} type='tel' placeholder='Dương Đức' />
           <FormErrorMessage>{errors?.phone?.message}</FormErrorMessage>
@@ -137,7 +139,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired>
           <FormLabel>
-            <Text as='b'>Country</Text>
+            <Text as='b'>{t('country')}</Text>
           </FormLabel>
           <Select {...register('country')} onChange={chooseCountry}>
             {queryCountries &&
@@ -153,7 +155,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired>
           <FormLabel>
-            <Text as='b'>City</Text>
+            <Text as='b'>{t('city')}</Text>
           </FormLabel>
           {/* disabled={queryProvinces && queryProvinces.data.content.length <= 0} */}
           <Select {...register('city')}>
@@ -170,7 +172,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={1}>
         <FormControl>
           <FormLabel>
-            <Text as='b'>District</Text>
+            <Text as='b'>{t('district')}</Text>
           </FormLabel>
           <Input {...register('district')} type='text' placeholder='Thủ Đức' />
         </FormControl>
@@ -178,14 +180,14 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={1}>
         <FormControl>
           <FormLabel>
-            <Text as='b'>Village</Text>
+            <Text as='b'>{t('village')}</Text>
           </FormLabel>
           <Input {...register('village')} type='text' placeholder='Thủ Đức' />
         </FormControl>
       </GridItem>
       <GridItem colSpan={4}>
         <Button isLoading={isSubmitting} type='submit' minW='100%'>
-          Submit
+          {t('btn_submit')}
         </Button>
       </GridItem>
     </>

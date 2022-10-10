@@ -8,6 +8,7 @@ import {
   MenuDivider,
   MenuItem as MenuItm,
   MenuList,
+  Tooltip,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
@@ -106,7 +107,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
       status: 'info',
       duration: 1000,
       isClosable: true,
-      variant: 'left-accent',
+      variant: 'solid',
       position: 'top-right',
     });
   };
@@ -164,15 +165,17 @@ export default function MenuLinks(props: IMenuLinksProps) {
                   </Link>
                 )}
                 <MenuDivider />
-                <MenuItm
-                  onClick={changeLanguage}
-                  fontFamily='titleFont'
-                  icon={<Icon fontSize='20px' as={MdLanguage} />}
-                  fontSize='14px'
-                >
-                  {t('menuBase.language')}{' '}
-                  {router.locale === LangConstants.EN ? t('menuBase.languages.vi') : t('menuBase.languages.en')}
-                </MenuItm>
+                <Tooltip label={`This feature still has problems. So be careful when using`}>
+                  <MenuItm
+                    onClick={changeLanguage}
+                    fontFamily='titleFont'
+                    icon={<Icon fontSize='20px' as={MdLanguage} />}
+                    fontSize='14px'
+                  >
+                    {t('menuBase.language')}{' '}
+                    {router.locale === LangConstants.EN ? t('menuBase.languages.vi') : t('menuBase.languages.en')}
+                  </MenuItm>
+                </Tooltip>
                 <MenuItm
                   onClick={changeTheme}
                   fontFamily='titleFont'

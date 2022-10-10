@@ -28,7 +28,7 @@ export default function Message(props: IMessageProps) {
             id: id,
             duration: msg.type === 'error' ? 4000 : 3000,
             status: msg.type,
-            variant: 'left-accent',
+            variant: 'solid',
             isClosable: true,
             position: 'top-right',
           });
