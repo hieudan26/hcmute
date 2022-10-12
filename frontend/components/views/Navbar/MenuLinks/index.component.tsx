@@ -8,7 +8,6 @@ import {
   MenuDivider,
   MenuItem as MenuItm,
   MenuList,
-  Tooltip,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
@@ -31,7 +30,6 @@ import { RoleConstants } from '../../../../constants/roles.constant';
 import { LangConstants, ThemeConstants } from '../../../../constants/settings.constant';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { AuthService } from '../../../../services/auth/auth.service';
-import { toggleMessage } from '../../Message/index.component';
 import MenuItem from '../MenuItem/index.component';
 
 export interface IMenuLinksProps {
@@ -83,6 +81,11 @@ export default function MenuLinks(props: IMenuLinksProps) {
         locale: LangConstants.VI,
       });
     }
+
+    // trigger reload after push locale to refresh toast(if any) before
+    router.events.on('routeChangeComplete', () => {
+      router.reload();
+    });
   };
 
   const changeTheme = (): void => {
@@ -165,17 +168,15 @@ export default function MenuLinks(props: IMenuLinksProps) {
                   </Link>
                 )}
                 <MenuDivider />
-                <Tooltip label={`This feature still has problems. So be careful when using`}>
-                  <MenuItm
-                    onClick={changeLanguage}
-                    fontFamily='titleFont'
-                    icon={<Icon fontSize='20px' as={MdLanguage} />}
-                    fontSize='14px'
-                  >
-                    {t('menuBase.language')}{' '}
-                    {router.locale === LangConstants.EN ? t('menuBase.languages.vi') : t('menuBase.languages.en')}
-                  </MenuItm>
-                </Tooltip>
+                <MenuItm
+                  onClick={changeLanguage}
+                  fontFamily='titleFont'
+                  icon={<Icon fontSize='20px' as={MdLanguage} />}
+                  fontSize='14px'
+                >
+                  {t('menuBase.language')}{' '}
+                  {router.locale === LangConstants.EN ? t('menuBase.languages.vi') : t('menuBase.languages.en')}
+                </MenuItm>
                 <MenuItm
                   onClick={changeTheme}
                   fontFamily='titleFont'
