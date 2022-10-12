@@ -1,11 +1,12 @@
 import { ArrowUpIcon } from '@chakra-ui/icons';
-import { IconButton } from '@chakra-ui/react';
+import { IconButton, useColorModeValue } from '@chakra-ui/react';
 import { gsap } from 'gsap';
 import React, { useEffect, useRef } from 'react';
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = React.useState(false);
   const scrollButton = useRef<any | undefined>();
+  const arrowUpIconColor = useColorModeValue('textColor.primary_lightMode', 'textColor.primary_darkMode');
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -48,7 +49,7 @@ const ScrollToTop = () => {
   return (
     <IconButton
       aria-label='scroll to top'
-      icon={<ArrowUpIcon />}
+      icon={<ArrowUpIcon color={arrowUpIconColor} />}
       size='lg'
       colorScheme='purple'
       variant='outline'
