@@ -29,7 +29,7 @@ export class AuthService {
     const result = await postAsync(url, { email: email }, undefined, false, false, false, undefined, setSubmitting);
     const isExisted = result.data.isExisted;
     return isExisted;
-  }
+  };
 
   static loginWithGoogle = async () => {
     try {
