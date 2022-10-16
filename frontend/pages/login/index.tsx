@@ -77,9 +77,13 @@ const Login: NextPage = (props: ILoginProps) => {
     console.log(response);
   };
 
+  const loginWithGG = async () => {
+    const response = await AuthService.loginWithGoogle();
+  };
+
   return (
     <>
-      <LoginForm _onSubmit={_onSubmit} submitting={submitting} />
+      <LoginForm loginWithGG={loginWithGG} _onSubmit={_onSubmit} submitting={submitting} />
       <ConfirmModal
         resendConfirmEmail={resendConfirmEmail}
         checkConfirm={checkConfirm}

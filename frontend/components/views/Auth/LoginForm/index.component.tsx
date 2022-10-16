@@ -21,14 +21,16 @@ import { useForm } from 'react-hook-form';
 import useValidationSchema from '../../../../hooks/validation/useValidationSchema';
 import { ILoginRequest } from '../../../../models/auth/login.model';
 import styles from '../auth.module.scss';
+import ButtonLoginWithGoogle from '../ButtonLoginWithGoogle/index.component';
 
 export interface ILoginFormProps {
   _onSubmit: (data: ILoginRequest) => {};
   submitting: boolean;
+  loginWithGG: () => Promise<void>;
 }
 
 export default function LoginForm(props: ILoginFormProps) {
-  const { _onSubmit, submitting } = props;
+  const { _onSubmit, submitting, loginWithGG } = props;
   const [show, setShow] = useState<boolean>(false);
   const { t } = useTranslation<'login', undefined>('login');
   const { loginSchema } = useValidationSchema();
@@ -105,7 +107,9 @@ export default function LoginForm(props: ILoginFormProps) {
               {t('btn_submit')}
             </Button>
           </GridItem>
-
+          <GridItem colSpan={2}>
+            <ButtonLoginWithGoogle loginWithGG={loginWithGG} />
+          </GridItem>
           <GridItem textAlign='center' colSpan={2}>
             <Text display='inline' textAlign='center'>
               {t('text_register')}&nbsp;
