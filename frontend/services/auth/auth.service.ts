@@ -9,6 +9,7 @@ import { IForgotPasswordSetNew, IRegisterRequest } from '../../models/auth/regis
 import { LogOut } from '../../utils';
 import { postAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
 const logger = new Logger('AuthService');
 
@@ -28,6 +29,23 @@ export class AuthService {
     const result = await postAsync(url, { email: email }, undefined, false, false, false, undefined, setSubmitting);
     const isExisted = result.data.isExisted;
     return isExisted;
+  }
+
+  static loginWithGoogle = async () => {
+    try {
+      const result = await Auth.federatedSignIn({ provider: CognitoHostedUIIdentityProvider.Google });
+      await LocalUtils.storeAuthenticationData();
+      return result;
+    } catch (error: any) {
+      const { __type, message } = error;
+      logger.error("Couldn't logout: ", error);
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+    }
   };
 
   static logout = async () => {

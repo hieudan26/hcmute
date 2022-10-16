@@ -1,10 +1,23 @@
 import { Box } from '@chakra-ui/react';
+import { Auth } from 'aws-amplify';
 import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export interface IExperiencesProps {}
 
 const Experiences: NextPage = (props: IExperiencesProps) => {
+  const router = useRouter();
+  const { code, state } = router.query;
+
+  useEffect(() => {
+    if (code && state) {
+      router.push('/experience');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, state]);
+
   return <Box>Experiences</Box>;
 };
 
