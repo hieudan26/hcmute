@@ -27,7 +27,7 @@ export default function useValidationSchema() {
     //#region forgot-password set new schema
     forgotPasswordSetNewSchema: yup.object().shape({
       email: yup.string().required('Email is required.').email('Valid characters in email addresses.').matches(emailRegex),
-      code: yup.string().required('Code is required.'),
+      code: yup.number().required('Code is required.'),
       password: yup
         .string()
         .required('Please create a password.')

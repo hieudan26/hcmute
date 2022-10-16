@@ -17,23 +17,9 @@ export class AuthService {
     LOGIN: 'login',
   };
 
-  // static refreshToken = async () => {
-  //   try {
-  //     const cognitoUser = await Auth.currentAuthenticatedUser();
-  //     const currentSession = await Auth.currentSession();
-  //     cognitoUser.refreshSession(currentSession.getRefreshToken(), (err: any, session: any) => {
-  //       console.log('session', err, session);
-  //       const { idToken, refreshToken, accessToken } = session;
-  //       // do whatever you want to do now :)
-  //     });
-  //   } catch (error) {
-  //     toggleMessage({
-  //       code: uuidv4(),
-  //       type: 'warning',
-  //       message: 'Your sign-in session is over, sign in again to continue.',
-  //     });
-  //   }
-  // };
+  static checkEmailExisted = async (email: string) => {
+    return false;
+  };
 
   static logout = async () => {
     toggleMessage({
