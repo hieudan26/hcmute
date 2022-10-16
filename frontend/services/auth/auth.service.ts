@@ -1,10 +1,13 @@
 import { Auth, Hub, Logger } from 'aws-amplify';
+import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toggleMessage } from '../../components/views/Message/index.component';
+import { API_PATH } from '../../constants/api-path.constant';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { IForgotPasswordSetNew, IRegisterRequest } from '../../models/auth/register.model';
 import { LogOut } from '../../utils';
+import { postAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
@@ -35,8 +38,14 @@ export class AuthService {
     }
   };
 
-  static checkEmailExisted = async (email: string) => {
-    return false;
+  static checkEmailExisted = async (
+    email: string,
+    setSubmitting: Dispatch<SetStateAction<boolean>>
+  ): Promise<AxiosResponse<any>> => {
+    var url = API_PATH.CHECK_EMAIL_EXISTED;
+    const result = await postAsync(url, { email: email }, undefined, false, false, false, undefined, setSubmitting);
+    const isExisted = result.data.isExisted;
+    return isExisted;
   };
 
   static logout = async () => {
