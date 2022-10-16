@@ -21,6 +21,23 @@ export class AuthService {
     LOGIN: 'login',
   };
 
+  static loginWithGoogle = async () => {
+    try {
+      const result = await Auth.federatedSignIn({ provider: CognitoHostedUIIdentityProvider.Google });
+      await LocalUtils.storeAuthenticationData();
+      return result;
+    } catch (error: any) {
+      const { __type, message } = error;
+      logger.error("Couldn't logout: ", error);
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+    }
+  };
+
   static checkEmailExisted = async (
     email: string,
     setSubmitting: Dispatch<SetStateAction<boolean>>
