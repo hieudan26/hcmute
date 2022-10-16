@@ -1,6 +1,7 @@
 package backend.services;
 
 import backend.common.Roles;
+import backend.data.dto.authenthication.CheckEmailExistRequest;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
@@ -22,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.naming.NoPermissionException;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -93,4 +95,17 @@ public class UserService {
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",id));
         return  users.get();
     }
+
+    public BaseResponse checkCognitoUserExist(CheckEmailExistRequest checkEmailExistRequest){
+        if(cognitoUtil.checkUserExist(checkEmailExistRequest.getEmail())) {
+            return BaseResponse.builder().message("Email existed")
+                    .data(Map.of("isExisted", true))
+                    .build();
+        }
+
+        return BaseResponse.builder().message("Email doesn't exist")
+                .data(Map.of("isExisted", false))
+                .build();
+    }
+
 }

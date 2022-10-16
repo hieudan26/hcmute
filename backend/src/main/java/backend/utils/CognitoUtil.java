@@ -66,4 +66,18 @@ public class CognitoUtil {
                 adminEnableUser(adminEnableUserRequest);
     }
 
+    public Boolean checkUserExist(String username){
+        AdminGetUserRequest adminGetUserRequest = AdminGetUserRequest.builder()
+                .username(username)
+                .userPoolId(jwtConfiguration.getUserPoolId())
+                .build();
+        try {
+            CognitoIdentityProviderClient.create().
+                    adminGetUser(adminGetUserRequest);
+        }catch (UserNotFoundException ex){
+            return false;
+        }
+        return true;
+    }
+
 }
