@@ -7,6 +7,7 @@ import { CodeDeliveryDetails } from 'amazon-cognito-identity-js';
 import ForgotPasswordSetNewForm from '../../components/views/Auth/ForgotPasswordSetNewForm/index.component';
 import { IForgotPasswordSetNew } from '../../models/auth/register.model';
 import { useRouter } from 'next/router';
+import { toggleMessage } from '../../components/views/Message/index.component';
 
 export interface IForgotPasswordProps {}
 
@@ -18,9 +19,17 @@ const ForgotPassword: NextPage = (props: IForgotPasswordProps) => {
   const [status, setStatus] = useState<boolean>(false);
 
   const forgotPassword = async (email: string) => {
-    const response = await AuthService.forgotPassword(email, setSubmitting);
-    setEmail(email);
-    setStatus(true);
+    const emailExisted = await AuthService.checkEmailExisted(email);
+    if (emailExisted) {
+      const response = await AuthService.forgotPassword(email, setSubmitting);
+      setEmail(email);
+      setStatus(true);
+    } else {
+      toggleMessage({
+        message: 'Email not existed in our system',
+        type: 'warning',
+      });
+    }
   };
 
   const setNewPassword = async (data: IForgotPasswordSetNew) => {
