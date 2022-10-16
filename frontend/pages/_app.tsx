@@ -3,6 +3,7 @@ import { ChakraProvider, ColorModeProvider, CSSReset, ThemeProvider } from '@cha
 // import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Auth } from 'aws-amplify';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -20,13 +21,13 @@ import awsConfig from '../configurations/aws-configs';
 import '../public/styles/globals.scss';
 import { configReactQuery } from '../utils';
 
-// const oauth = {
-//   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
-//   scope: ['email', 'profile', 'openid'],
-//   redirectSignIn: 'http://localhost:3000/register',
-//   redirectSignOut: 'http://localhost:3000/',
-//   responseType: 'code',
-// };
+const oauth = {
+  domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
+  scope: ['email', 'profile', 'openid'],
+  redirectSignIn: 'http://localhost:3000/experiences',
+  redirectSignOut: 'http://localhost:3000/experiences',
+  responseType: 'code',
+};
 
 // if (process.env.NODE_ENV === 'production') {
 //   disableReactDevTools();
@@ -44,7 +45,7 @@ if (
 }
 
 Amplify.configure({ ...awsConfig, ssr: true });
-// Auth.configure({ oauth });
+Auth.configure({ oauth });
 Amplify.Logger.LOG_LEVEL = 'INFO';
 
 function MyApp({ Component, pageProps }: AppProps | any) {
