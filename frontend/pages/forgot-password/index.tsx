@@ -7,8 +7,6 @@ import ForgotPasswordSetNewForm from '../../components/views/Auth/ForgotPassword
 import { toggleMessage } from '../../components/views/Message/index.component';
 import { IForgotPasswordSetNew } from '../../models/auth/register.model';
 import { AuthService } from '../../services/auth/auth.service';
-import { useRouter } from 'next/router';
-import { toggleMessage } from '../../components/views/Message/index.component';
 
 export interface IForgotPasswordProps {}
 
@@ -21,7 +19,6 @@ const ForgotPassword: NextPage = (props: IForgotPasswordProps) => {
 
   const forgotPassword = async (email: string) => {
     const emailExisted = await AuthService.checkEmailExisted(email, setSubmitting);
-    const emailExisted = await AuthService.checkEmailExisted(email);
     if (emailExisted) {
       const response = await AuthService.forgotPassword(email, setSubmitting);
       setEmail(email);
