@@ -53,4 +53,5 @@ public class UserController {
     public ResponseEntity<BaseResponse> enableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminUnlockUser(userIdParams));
     }
+
 }
