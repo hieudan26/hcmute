@@ -1,13 +1,12 @@
 import { NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ForgotPasswordForm from '../../components/views/Auth/ForgotPasswordForm/index.component';
-import { AuthService } from '../../services/auth/auth.service';
-import { CodeDeliveryDetails } from 'amazon-cognito-identity-js';
 import ForgotPasswordSetNewForm from '../../components/views/Auth/ForgotPasswordSetNewForm/index.component';
-import { IForgotPasswordSetNew } from '../../models/auth/register.model';
-import { useRouter } from 'next/router';
 import { toggleMessage } from '../../components/views/Message/index.component';
+import { IForgotPasswordSetNew } from '../../models/auth/register.model';
+import { AuthService } from '../../services/auth/auth.service';
 
 export interface IForgotPasswordProps {}
 
@@ -19,7 +18,7 @@ const ForgotPassword: NextPage = (props: IForgotPasswordProps) => {
   const [status, setStatus] = useState<boolean>(false);
 
   const forgotPassword = async (email: string) => {
-    const emailExisted = await AuthService.checkEmailExisted(email);
+    const emailExisted = await AuthService.checkEmailExisted(email, setSubmitting);
     if (emailExisted) {
       const response = await AuthService.forgotPassword(email, setSubmitting);
       setEmail(email);

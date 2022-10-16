@@ -120,13 +120,18 @@ const axiosInstance = (
     baseURL: API_URL,
     headers: {
       'Content-Type': contentType,
-      Authorization: `Bearer ${cookie.load(CookieConstants.ACCESS_TOKEN)}`,
     },
     responseType: responseType,
   });
 
   //#region interceptors REQUEST
   instance.interceptors.request.use(async (config: any) => {
+    const token = cookie.load(CookieConstants.ACCESS_TOKEN);
+    const auth = token ? `Bearer ${token}` : '';
+    if (token) {
+      config.headers['Authorization'] = auth;
+    }
+
     try {
       const currentSession = await Auth.currentSession();
       const idTokenExpire = currentSession.getIdToken().getExpiration();
