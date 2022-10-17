@@ -71,13 +71,17 @@ public class CognitoUtil {
                 .username(username)
                 .userPoolId(jwtConfiguration.getUserPoolId())
                 .build();
+        AdminGetUserResponse adminGetUserResponse = null;
         try {
-            CognitoIdentityProviderClient.create().
+            adminGetUserResponse = CognitoIdentityProviderClient.create().
                     adminGetUser(adminGetUserRequest);
         }catch (UserNotFoundException ex){
             return false;
         }
-        return true;
+        return adminGetUserResponse.userAttributes()
+                .stream()
+                .filter(item -> item.name().equals("email_verified") && item.value().trim().equals("true"))
+                .findFirst().isPresent();
     }
 
 }
