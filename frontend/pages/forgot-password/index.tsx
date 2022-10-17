@@ -25,7 +25,7 @@ const ForgotPassword: NextPage = (props: IForgotPasswordProps) => {
       setStatus(true);
     } else {
       toggleMessage({
-        message: 'Email not existed in our system',
+        message: "Email not existed or you haven't confirmed the email",
         type: 'warning',
       });
     }
