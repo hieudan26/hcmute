@@ -41,7 +41,7 @@ export const LocalUtils = {
           LocalUtils.setLocalStorage(LocalStorageConstants.REFRESH_TOKEN, refreshToken);
         }
 
-        LocalUtils.setLocalStorage(LocalStorageConstants.USER_ID, decodedHeader['cognito:username']);
+        LocalUtils.setLocalStorage(LocalStorageConstants.USER_ID, decodedHeader['sub']);
         cookie.save(CookieConstants.EMAIL, decodedHeader.email, { expires: expire, sameSite: 'strict' });
         cookie.save(CookieConstants.ROLE, decodedHeader['custom:role'], { expires: expire, sameSite: 'strict' });
         cookie.save(CookieConstants.IS_FIRST_LOGIN, decodedHeader['custom:is_first_login'], {

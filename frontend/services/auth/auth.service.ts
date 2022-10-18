@@ -1,11 +1,15 @@
 import { Auth, Hub, Logger } from 'aws-amplify';
+import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toggleMessage } from '../../components/views/Message/index.component';
+import { API_PATH } from '../../constants/api-path.constant';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { IForgotPasswordSetNew, IRegisterRequest } from '../../models/auth/register.model';
 import { LogOut } from '../../utils';
+import { postAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
 const logger = new Logger('AuthService');
 
@@ -17,23 +21,32 @@ export class AuthService {
     LOGIN: 'login',
   };
 
-  // static refreshToken = async () => {
-  //   try {
-  //     const cognitoUser = await Auth.currentAuthenticatedUser();
-  //     const currentSession = await Auth.currentSession();
-  //     cognitoUser.refreshSession(currentSession.getRefreshToken(), (err: any, session: any) => {
-  //       console.log('session', err, session);
-  //       const { idToken, refreshToken, accessToken } = session;
-  //       // do whatever you want to do now :)
-  //     });
-  //   } catch (error) {
-  //     toggleMessage({
-  //       code: uuidv4(),
-  //       type: 'warning',
-  //       message: 'Your sign-in session is over, sign in again to continue.',
-  //     });
-  //   }
-  // };
+  static loginWithGoogle = async () => {
+    try {
+      const result = await Auth.federatedSignIn({ provider: CognitoHostedUIIdentityProvider.Google });
+      await LocalUtils.storeAuthenticationData();
+      return result;
+    } catch (error: any) {
+      const { __type, message } = error;
+      logger.error("Couldn't logout: ", error);
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+    }
+  };
+
+  static checkEmailExisted = async (
+    email: string,
+    setSubmitting: Dispatch<SetStateAction<boolean>>
+  ): Promise<AxiosResponse<any>> => {
+    var url = API_PATH.CHECK_EMAIL_EXISTED;
+    const result = await postAsync(url, { email: email }, undefined, false, false, false, undefined, setSubmitting);
+    const isExisted = result.data.isExisted;
+    return isExisted;
+  };
 
   static logout = async () => {
     toggleMessage({
