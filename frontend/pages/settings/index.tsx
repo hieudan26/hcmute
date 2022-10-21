@@ -1,14 +1,13 @@
-import { Box } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-export interface IItineraryProps {}
+export interface ISettingsProps {}
 
-const Itinerary: NextPage = (props: IItineraryProps) => {
-  return <Box>Itinerary</Box>;
+const Settings: NextPage = (props: ISettingsProps) => {
+  return <>settings</>;
 };
 
-export default Itinerary;
+export default Settings;
 
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
