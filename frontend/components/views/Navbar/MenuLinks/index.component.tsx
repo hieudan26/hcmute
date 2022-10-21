@@ -153,7 +153,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
               <MenuButton ml='10px'>
                 <Icon color={iconAccount} fontSize={'30px'} as={FaUserCircle} marginBottom='5px' />
               </MenuButton>
-              <MenuList bg={bgMenu} color={colorMenu}>
+              <MenuList bg={bgMenu} color={colorMenu} zIndex={10000}>
                 {role !== RoleConstants.ANONYMOUS ? (
                   <>
                     {fullNameUser !== null && (
