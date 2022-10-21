@@ -12,7 +12,7 @@ export default function Sidebar(props: ISidebarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box pt='70px' pb='20px' minH='67.8vh' bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box pt='70px' minH='67.8vh' bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
       <Drawer
         autoFocus={false}

@@ -10,6 +10,8 @@ import { LogOut } from '../../utils';
 import { postAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
+import { async } from 'rxjs';
+import { IChangePassword } from '../../models/auth/changePassword.model';
 
 const logger = new Logger('AuthService');
 
@@ -19,6 +21,31 @@ export class AuthService {
   static AUTH_EVENTS = {
     REGISTER: 'register',
     LOGIN: 'login',
+  };
+
+  static changePassword = async (data: IChangePassword, setSubmitting: Dispatch<SetStateAction<boolean>>) => {
+    setSubmitting(true);
+    try {
+      const current_user = await Auth.currentAuthenticatedUser();
+      console.log(current_user);
+      const result = await Auth.changePassword(current_user, data.current_password, data.new_password);
+      toggleMessage({
+        code: uuidv4(),
+        type: 'success',
+        message: `Change password for email: ${current_user.attributes.email} successfully`,
+      });
+      return result;
+    } catch (error: any) {
+      const { __type, message } = error;
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   static loginWithGoogle = async () => {
