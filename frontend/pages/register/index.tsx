@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { NextPage, GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -70,7 +70,7 @@ const Register: NextPage = (props: IRegisterProps) => {
 
 export default Register;
 
-export async function getStaticProps({ locale }: any) {
+export const getStaticProps: GetStaticProps = async ({ locale }: any) =>{
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'register', 'confirm_modal'])),

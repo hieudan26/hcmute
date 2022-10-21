@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -51,11 +51,11 @@ const ForgotPassword: NextPage = (props: IForgotPasswordProps) => {
 
 export default ForgotPassword;
 
-export async function getStaticProps({ locale }: any) {
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'forgot_password', 'forgot_password_set_new'])),
       // Will be passed to the page component as props
     },
   };
-}
+};

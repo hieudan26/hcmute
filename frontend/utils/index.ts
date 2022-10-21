@@ -1,4 +1,18 @@
 import cookie from 'react-cookies';
+import { IconType } from 'react-icons';
+import { FiSettings } from 'react-icons/fi';
+import { IoLanguage } from 'react-icons/io5';
+
+interface LinkItemProps {
+  name: string;
+  query: string;
+  icon: IconType;
+}
+
+export const LinkItems: Array<LinkItemProps> = [
+  { name: 'Account', query: 'account', icon: FiSettings },
+  { name: 'Language', query: 'language', icon: IoLanguage },
+];
 
 export const defaultAvatar = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/avatar.png';
 export const defaultCoverBackground = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/coverbackground.png';
