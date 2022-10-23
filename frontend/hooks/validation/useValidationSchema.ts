@@ -3,6 +3,22 @@ import { emailRegex, passwordRegex } from '../../utils';
 
 export default function useValidationSchema() {
   return {
+    //#region modify account
+    modifyAccountSchema: yup.object().shape({
+      current_password: yup.string().required('Password is required.'),
+      new_password: yup
+        .string()
+        .required('Please create a password.')
+        .min(8, 'Password needs to be at least 8 characters long.')
+        .max(16, 'Password must be at most 16 charaters.')
+        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+      new_confirm_password: yup
+        .string()
+        .required('Please confirm your password.')
+        .oneOf([yup.ref('new_password')], 'Passwords do not match.'),
+    }),
+    //#endregion
+
     //#region fill information for first login schema
     firstLoginSchema: yup.object().shape({
       firstName: yup
@@ -33,10 +49,7 @@ export default function useValidationSchema() {
         .required('Please create a password.')
         .min(8, 'Password needs to be at least 8 characters long.')
         .max(16, 'Password must be at most 16 charaters.')
-        .matches(
-          passwordRegex,
-          '⚠ Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'
-        ),
+        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
       confirm_password: yup
         .string()
         .required('Please confirm your password.')
@@ -62,10 +75,7 @@ export default function useValidationSchema() {
         .required('Please create a password.')
         .min(8, 'Password needs to be at least 8 characters long.')
         .max(16, 'Password must be at most 16 charaters.')
-        .matches(
-          passwordRegex,
-          '⚠ Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'
-        ),
+        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
       confirm_password: yup
         .string()
         .required('Please confirm your password.')

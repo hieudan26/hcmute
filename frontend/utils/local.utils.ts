@@ -8,6 +8,14 @@ import { CookieConstants, LocalStorageConstants } from '../constants/store.const
 import { IUserFirstLoginRequest } from '../models/user/user.model';
 
 export const LocalUtils = {
+  resetAdditionalData() {
+    LocalUtils.removeLocalStorage(LocalStorageConstants.FIRST_NAME);
+    LocalUtils.removeLocalStorage(LocalStorageConstants.LAST_NAME);
+    LocalUtils.removeLocalStorage(LocalStorageConstants.FULL_NAME);
+    LocalUtils.removeLocalStorage(LocalStorageConstants.AVATAR);
+    LocalUtils.removeLocalStorage(LocalStorageConstants.COVER_BACKGROUND);
+  },
+
   storeAdditionalData(data: IUserFirstLoginRequest) {
     LocalUtils.setLocalStorage(LocalStorageConstants.FIRST_NAME, data.firstName ? data.firstName : 'first name');
     LocalUtils.setLocalStorage(LocalStorageConstants.LAST_NAME, data.lastName ? data.lastName : 'last name');

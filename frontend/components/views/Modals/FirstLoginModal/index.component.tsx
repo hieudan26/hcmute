@@ -9,7 +9,7 @@ import { useAppDispatch } from '../../../../hooks/redux';
 import useValidationSchema from '../../../../hooks/validation/useValidationSchema';
 import areaService from '../../../../services/area/area.service';
 import userService from '../../../../services/user/user.service';
-import { defaultAvatar, defaultCoverBackground } from '../../../../utils';
+import { defaultAvatar, defaultCoverBackground, getMaxDate } from '../../../../utils';
 import ModalContainer from '../ModalContainer/index.component';
 import FormIndividual from './FormIndividual/index.component';
 
@@ -17,17 +17,10 @@ export interface IFirstLoginModalProps {
   isOpen: boolean;
 }
 
-const setMaxDate = () => {
-  const curDate = new Date();
-  const after18 = curDate.getUTCFullYear() - 18;
-  curDate.setUTCFullYear(after18);
-  return curDate;
-};
-
 export default function FirstLoginModal(props: IFirstLoginModalProps) {
   const { isOpen } = props;
   const { t } = useTranslation('modal_is_first_login');
-  const [date, setDate] = useState<Date>(setMaxDate());
+  const [date, setDate] = useState<Date>(getMaxDate());
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [countryId, setCountryId] = useState<string>('67');
   const {
@@ -83,7 +76,7 @@ export default function FirstLoginModal(props: IFirstLoginModalProps) {
               isSubmitting={isSubmitting}
               date={date}
               setDate={setDate}
-              setMaxDate={setMaxDate}
+              setMaxDate={getMaxDate}
               errors={errors}
               register={register}
               queryCountries={queryCountries}

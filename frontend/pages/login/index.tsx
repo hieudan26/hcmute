@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -68,7 +68,11 @@ const Login: NextPage = (props: ILoginProps) => {
         dispatch(logout());
       }
 
-      router.push('/experiences');
+      if (redirectPath) {
+        router.push(redirectPath);
+      } else {
+        router.push('/experiences');
+      }
     }
   };
 
@@ -97,11 +101,11 @@ const Login: NextPage = (props: ILoginProps) => {
 
 export default Login;
 
-export async function getStaticProps({ locale }: any) {
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'login', 'confirm_modal'])),
       // Will be passed to the page component as props
     },
   };
-}
+};
