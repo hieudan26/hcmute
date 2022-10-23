@@ -12,7 +12,7 @@ class UserService {
     setSubmitting: Dispatch<SetStateAction<boolean>>
   ): Promise<AxiosResponse<any>> => {
     var url = `/users/${id}`;
-    const result = await postAsync(url, model, 'Update information successfully', false, true, false, undefined, setSubmitting);
+    const result = await putAsync(url, model, 'Update information successfully', false, true, false, undefined, setSubmitting);
     return result;
   };
 
