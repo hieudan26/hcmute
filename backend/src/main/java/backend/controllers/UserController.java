@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<BaseResponse> updateInformation(@PathVariable("id") String id,
                                                           @Validated @RequestBody UpdateUserRequest request) throws NoPermissionException {
         return ResponseEntity.ok(userService.updateUser(id,request));
