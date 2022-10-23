@@ -1,5 +1,6 @@
-import { Avatar, Box, Container, Flex, SkeletonCircle, Text, useColorModeValue, Wrap, WrapItem } from '@chakra-ui/react';
+import { Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
+import { ChakraNextImageGlobal } from '../../../ChakraNextImageGlobal/index.component';
 import TopNav from '../TopNav/index.component';
 
 export interface ITopNavSpecialProps {
@@ -17,11 +18,16 @@ export default function TopNavSpecial(props: ITopNavSpecialProps) {
   return (
     <Flex px='72' bg={bg} w={'full'} position='fixed' mt='70px' alignItems='center' justify='space-between'>
       <Flex alignItems='center' gap='2'>
-        <Wrap>
-          <WrapItem>
-            <Avatar size='sm' showBorder name={user?.fullName} src={avatar} />
-          </WrapItem>
-        </Wrap>
+        <ChakraNextImageGlobal
+          width='30px'
+          height='30px'
+          w='30px'
+          h='30px'
+          rounded='full'
+          overflow='hidden'
+          alt={user?.fullName}
+          src={avatar}
+        />
         <Text>{user ? user.fullName : 'Default Fullname'}</Text>
       </Flex>
       <Box>

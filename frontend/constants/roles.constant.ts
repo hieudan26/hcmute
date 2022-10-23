@@ -1,5 +1,5 @@
 export const RoleConstants = {
-  ANONYMOUS: 'anonymous',
-  USER: 'user',
-  ADMIN: 'admin',
+  ANONYMOUS: 'ANONYMOUS',
+  USER: 'USER',
+  ADMIN: 'ADMIN',
 };

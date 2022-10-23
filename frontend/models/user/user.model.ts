@@ -1,3 +1,18 @@
+export interface IUserUpdateInformation {
+  avatar: string;
+  city: string;
+  country: string;
+  coverBackground: string;
+  district?: string;
+  dob: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  phoneNumber: string;
+  summary?: string;
+  village?: string;
+}
+
 export interface IUserFirstLoginRequest {
   id: string;
   role: string;

@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, BoxProps, Button, Divider, Flex, Heading, Image, Slide, Spacer, Text } from '@chakra-ui/react';
+import { Box, BoxProps, Button, Divider, Flex, Heading, Slide, Spacer, Text, useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import { defaultAvatar, defaultCoverBackground } from '../../../../utils';
+import { ChakraNextImageGlobal } from '../../ChakraNextImageGlobal/index.component';
+import EditProfilePic from '../Modals/EditProfilePic/index.component';
 import TopNavNormal from './TopNavNormal/index.component';
 import TopNavSpecial from './TopNavSpecial/index.component';
 
@@ -19,6 +21,8 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
   const [avatar, setAvater] = useState<string>(defaultAvatar);
   const [coverBackground, setCoverBackground] = useState<string>(defaultCoverBackground);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { onClose } = useDisclosure();
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -30,7 +34,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
       if (user.avatar) setAvater(user.avatar);
       if (user.coverBackground) setCoverBackground(user.coverBackground);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const arrayRoute = currentRoute.split('/');
@@ -51,23 +55,51 @@ export default function Header(props: IHeaderProps & BoxProps) {
   return (
     <Box bg='whiteAlpha.300' h={'600px'} {...rest}>
       <Box w={'950px'} h={'570px'} m={'auto'}>
-        <Box overflow={'hidden'} h={'300px'} rounded={10} border={'2px solid #ececec'}>
-          <Image w={'950px'} src={coverBackground} alt='cover-background' />
-        </Box>
+        <ChakraNextImageGlobal
+          width='950px'
+          height='300px'
+          h='300px'
+          rounded='10'
+          overflow='hidden'
+          border='2px solid #ececec'
+          src={coverBackground}
+          alt='cover-background'
+        />
 
         <Box h={'190px'} mt={'-8'}>
           <Flex>
-            <Box w={'180px'} h={'180px'} rounded={'full'} overflow={'hidden'} border={'2px solid #ececec'}>
-              <Image src={avatar} alt='avatar' />
-            </Box>
+            <ChakraNextImageGlobal
+              width='180px'
+              height='180px'
+              w='180px'
+              h='180px'
+              rounded='full'
+              overflow='hidden'
+              border='2px solid #ececec'
+              src={avatar}
+              alt='avatar'
+            />
             <Box p={5} mt={7}>
-              <Heading>Thang Duong Duc</Heading>
+              <Heading>{user && user.fullName ? user.fullName : 'Full name'}</Heading>
               <Text color={'grey'}>10 Friends</Text>
             </Box>
             <Spacer />
             <Box>
-              <Button m={'80px 50px'}>Edit Picture</Button>
-              {/* <EditProfilePic m={'120px 50px'} title={'Edit Profile'} pic={pic} setPic={setPic}  mycpic={mycpic} setMycpic={setMycpic} /> */}
+              <Button
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+                m={'80px 50px'}
+              >
+                Edit Picture
+              </Button>
+              <EditProfilePic
+                user={user}
+                isOpen={isOpen}
+                onClose={() => {
+                  setIsOpen(false);
+                }}
+              />
             </Box>
           </Flex>
         </Box>

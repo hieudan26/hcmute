@@ -31,6 +31,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'all',
@@ -44,7 +45,19 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
 
   const _onSubmitForm = async (data: IChangePassword) => {
     const response = await AuthService.changePassword(data, setSubmitting);
-    console.log(response);
+    if (response === 'SUCCESS') {
+      reset(
+        {
+          current_password: '',
+          new_password: '',
+          new_confirm_password: '',
+        },
+        {
+          keepErrors: false,
+          keepDirty: false,
+        }
+      );
+    }
   };
 
   return (

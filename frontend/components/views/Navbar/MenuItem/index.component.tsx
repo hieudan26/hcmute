@@ -38,6 +38,9 @@ export default function MenuItem(props: IMenuItemProps) {
             color={navs}
             fontFamily='titleFont'
             display='block'
+            _hover={{
+              color: currentRoute !== to && '#D0637C',
+            }}
             {...rest}
           >
             {children}
