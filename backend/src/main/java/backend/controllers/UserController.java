@@ -35,8 +35,8 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/{id}")
     public ResponseEntity<BaseResponse> updateInformation(@PathVariable("id") String id,
                                                           @Validated @RequestBody UpdateUserRequest request) throws NoPermissionException {
         return ResponseEntity.ok(userService.updateUser(id,request));
@@ -44,7 +44,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/disable")
-    public ResponseEntity<BaseResponse> disablekUser(@Validated @RequestBody UserIdParams userIdParams){
+    public ResponseEntity<BaseResponse> disableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminBlockUser(userIdParams));
     }
 

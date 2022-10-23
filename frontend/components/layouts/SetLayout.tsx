@@ -40,7 +40,11 @@ export default function SetLayout({ children }: any) {
       // if (role === RoleConstants.USER) {
       //   return <UserLayout>{children}</UserLayout>;
       // }
-      return <UserLayout is_first_login={auth === null ? 'true' : 'false'}>{children}</UserLayout>;
+      return (
+        <UserLayout user={auth} is_first_login={auth === null ? 'true' : 'false'}>
+          {children}
+        </UserLayout>
+      );
     } else {
       return <AnonymousLayout>{children}</AnonymousLayout>;
     }

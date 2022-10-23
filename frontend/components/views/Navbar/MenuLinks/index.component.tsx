@@ -22,8 +22,8 @@ import { FaUserCircle } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import { HiOutlineLink } from 'react-icons/hi';
 import { IoIosLogIn } from 'react-icons/io';
-import { MdLanguage, MdLightMode } from 'react-icons/md';
-import { RiProfileLine } from 'react-icons/ri';
+import { MdLanguage, MdLightMode, MdOutlineNotificationsActive } from 'react-icons/md';
+import { RiProfileLine, RiSettings4Fill } from 'react-icons/ri';
 import { logout } from '../../../../app/slices/authSlice';
 import { setThemeMode } from '../../../../app/themeSlice';
 import { RoleConstants } from '../../../../constants/roles.constant';
@@ -41,6 +41,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
   const { isOpen, role } = props;
   const [redirectPath, setRedirectPath] = useState<string>('');
   const [fullNameUser, setFullNameUser] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const dispatch = useAppDispatch();
   const userInfor = useAppSelector((state) => state.auth.value);
   const router = useRouter();
@@ -60,6 +61,12 @@ export default function MenuLinks(props: IMenuLinksProps) {
       fallback: 'base',
     }
   );
+
+  useEffect(() => {
+    if (userInfor !== null && userInfor.id) {
+      setUserId(userInfor.id);
+    }
+  }, [userInfor]);
 
   useEffect(() => {
     if (userInfor !== null && userInfor.fullName) {
@@ -128,12 +135,25 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/faq'>{t('navbar.navlink02')}</MenuItem>
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
           <MenuItem to='/'>{t('navbar.navlink04')}</MenuItem>
+          {role !== RoleConstants.ANONYMOUS && (
+            <Menu closeOnBlur={true}>
+              <MenuButton ml='10px' mr='5px'>
+                <Icon color={iconAccount} fontSize={'20px'} as={MdOutlineNotificationsActive} marginBottom='5px' />
+              </MenuButton>
+
+              <MenuList>
+                <MenuItm fontFamily='titleFont' fontSize='14px'>
+                  Nothing here
+                </MenuItm>
+              </MenuList>
+            </Menu>
+          )}
           {statusMenu ? (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px'>
                 <Icon color={iconAccount} fontSize={'30px'} as={FaUserCircle} marginBottom='5px' />
               </MenuButton>
-              <MenuList bg={bgMenu} color={colorMenu}>
+              <MenuList bg={bgMenu} color={colorMenu} zIndex={10000}>
                 {role !== RoleConstants.ANONYMOUS ? (
                   <>
                     {fullNameUser !== null && (
@@ -146,15 +166,20 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         {t('menuUser.welcome')}: {fullNameUser}
                       </MenuItm>
                     )}
-                    <Link href='profile'>
+                    <Link href={userId ? `profile/${userId}/posts` : 'profile'}>
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
                         {t('menuUser.profile')}
+                      </MenuItm>
+                    </Link>
+                    <Link href='/settings?tab=account'>
+                      <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiSettings4Fill} />} fontSize='14px'>
+                        Privacy & Security settings
                       </MenuItm>
                     </Link>
                     <MenuItm
                       onClick={handleLogout}
                       fontFamily='titleFont'
-                      icon={<Icon fontSize='20px' as={GoSignOut} />}
+                      icon={<Icon paddingLeft='3px' fontSize='20px' as={GoSignOut} />}
                       fontSize='14px'
                     >
                       Logout

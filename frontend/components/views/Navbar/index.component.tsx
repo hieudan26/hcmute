@@ -36,6 +36,7 @@ export default function Navbar(props: INavbarProps) {
       boxShadow='rgb(44 101 144 / 10%) 0px 0px 8px 0px'
       position='fixed'
       zIndex='2'
+      minH='55px'
     >
       <Logo w='128px' />
       <Search flexBasis='400px' display={{ base: 'none', '2xl': 'block' }} />

@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { Auth } from 'aws-amplify';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -23,11 +23,11 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
 
 export default Experiences;
 
-export async function getStaticProps({ locale }: any) {
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
       // Will be passed to the page component as props
     },
   };
-}
+};

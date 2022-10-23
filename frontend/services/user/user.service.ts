@@ -1,11 +1,21 @@
 import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { API_PATH } from '../../constants/api-path.constant';
-import { IUserFirstLoginRequest } from '../../models/user/user.model';
-import { getAsync, postAsync } from '../../utils/HttpClient.util';
+import { IUserFirstLoginRequest, IUserUpdateInformation } from '../../models/user/user.model';
+import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 
 class UserService {
+  updateInformation = async (
+    id: string,
+    model: IUserUpdateInformation,
+    setSubmitting: Dispatch<SetStateAction<boolean>>
+  ): Promise<AxiosResponse<any>> => {
+    var url = `/users/${id}`;
+    const result = await putAsync(url, model, 'Update information successfully', false, true, false, undefined, setSubmitting);
+    return result;
+  };
+
   getUserById = async (id: string): Promise<AxiosResponse<any>> => {
     var url = `/users/${id}`;
     const result = await getAsync(url, undefined, false, false, false);

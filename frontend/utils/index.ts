@@ -1,4 +1,110 @@
 import cookie from 'react-cookies';
+import { IconType } from 'react-icons';
+import { FiSettings } from 'react-icons/fi';
+import { IoLanguage } from 'react-icons/io5';
+
+export const formatDate = (date: Date) => {
+  var d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [day, month, year].join('/');
+};
+
+export const getMaxDate = () => {
+  const curDate = new Date();
+  const after18 = curDate.getUTCFullYear() - 18;
+  curDate.setUTCFullYear(after18);
+  return curDate;
+};
+
+//#region animation drag image
+export const first = {
+  rest: {
+    rotate: '-15deg',
+    scale: 0.95,
+    x: '-50%',
+    filter: 'grayscale(80%)',
+    transition: {
+      duration: 0.5,
+      type: 'tween',
+      ease: 'easeIn',
+    },
+  },
+  hover: {
+    x: '-70%',
+    scale: 1.1,
+    rotate: '-20deg',
+    filter: 'grayscale(0%)',
+    transition: {
+      duration: 0.4,
+      type: 'tween',
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const second = {
+  rest: {
+    rotate: '15deg',
+    scale: 0.95,
+    x: '50%',
+    filter: 'grayscale(80%)',
+    transition: {
+      duration: 0.5,
+      type: 'tween',
+      ease: 'easeIn',
+    },
+  },
+  hover: {
+    x: '70%',
+    scale: 1.1,
+    rotate: '20deg',
+    filter: 'grayscale(0%)',
+    transition: {
+      duration: 0.4,
+      type: 'tween',
+      ease: 'easeOut',
+    },
+  },
+};
+
+export const third = {
+  rest: {
+    scale: 1.1,
+    filter: 'grayscale(80%)',
+    transition: {
+      duration: 0.5,
+      type: 'tween',
+      ease: 'easeIn',
+    },
+  },
+  hover: {
+    scale: 1.3,
+    filter: 'grayscale(0%)',
+    transition: {
+      duration: 0.4,
+      type: 'tween',
+      ease: 'easeOut',
+    },
+  },
+};
+//#endregion
+
+interface LinkItemProps {
+  name: string;
+  query: string;
+  icon: IconType;
+}
+
+export const LinkItems: Array<LinkItemProps> = [
+  { name: 'Account', query: 'account', icon: FiSettings },
+  { name: 'Language', query: 'language', icon: IoLanguage },
+];
 
 export const defaultAvatar = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/avatar.png';
 export const defaultCoverBackground = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/coverbackground.png';
