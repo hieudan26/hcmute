@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { GetServerSideProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export interface IProfilePostsProps {}
@@ -44,13 +44,15 @@ const ProfilePosts: NextPage = (props: IProfilePostsProps) => {
   );
 };
 
-export default ProfilePosts;
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
+  },
+});
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
-      // Will be passed to the page component as props
-    },
-  };
-};
+export const getStaticPaths: GetStaticPaths = () => ({
+  paths: ['profile/[userId]/posts'],
+  fallback: true,
+});
+
+export default ProfilePosts;
