@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
-import store from '../app/store';
+import store, { wrapper } from '../app/store';
 import { theme } from '../components/chakra/theme.chakra';
 import SetLayout from '../components/layouts/SetLayout';
 import Goodbye from '../components/views/Goodbye/index.component';
@@ -82,4 +82,4 @@ function MyApp({ Component, pageProps }: AppProps | any) {
   );
 }
 
-export default appWithTranslation(MyApp);
+export default wrapper.withRedux(appWithTranslation(MyApp));
