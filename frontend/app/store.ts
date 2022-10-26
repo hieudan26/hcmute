@@ -1,27 +1,14 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import themeReducer from './themeSlice';
+import { Action, combineReducers, configureStore, EnhancedStore, Store, ThunkAction } from '@reduxjs/toolkit';
+import { createWrapper, MakeStore } from 'next-redux-wrapper';
+import { createLogger } from 'redux-logger';
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import authReducer from './slices/authSlice';
-import { LocalUtils } from '../utils/local.utils';
-import { LocalStorageConstants } from '../constants/store.constant';
-import { persistReducer } from 'redux-persist';
-import thunk from 'redux-thunk';
-import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import storage from './sync_storage';
+import themeReducer from './themeSlice';
 
-const createNoopStorage = () => {
-  return {
-    getItem(_key: any) {
-      return Promise.resolve(null);
-    },
-    setItem(_key: any, value: any) {
-      return Promise.resolve(value);
-    },
-    removeItem(_key: any) {
-      return Promise.resolve();
-    },
-  };
-};
-
-const storage = typeof window !== 'undefined' ? createWebStorage('local') : createNoopStorage();
+const logger = createLogger({
+  //empty options
+});
 
 const env = process.env.NODE_ENV;
 
@@ -32,26 +19,32 @@ const persistConfig = {
   whitelist: ['auth'],
 };
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   theme: themeReducer,
   auth: authReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, reducer);
-
-const rootReducer = {
-  theme: themeReducer,
-  auth: authReducer,
-};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  // reducer: rootReducer,
   reducer: persistedReducer,
   devTools: env === 'development',
-  middleware: [thunk],
+  // middleware: [thunk],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(logger),
 });
 
 export default store;
 
+const setupStore = (context: any): EnhancedStore => store;
+const makeStore: MakeStore<any> = (context: any) => setupStore(context);
+export const persistor = persistStore(store);
+export const wrapper = createWrapper<Store>(makeStore);
+
 export type RootState = ReturnType<typeof store.getState>; // A global type to access reducers types
 export type AppDispatch = typeof store.dispatch; // Type to access dispatch
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>;

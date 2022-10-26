@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUserFirstLoginRequest } from '../../models/user/user.model';
 import { LocalUtils } from '../../utils/local.utils';
+import { HYDRATE } from 'next-redux-wrapper';
 
 interface IinitialState {
   value: IUserFirstLoginRequest | null;
