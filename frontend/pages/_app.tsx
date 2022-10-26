@@ -33,16 +33,16 @@ const oauth = {
 //   disableReactDevTools();
 // }
 
-if (
-  typeof window !== 'undefined' &&
-  typeof window.navigator !== 'undefined' &&
-  typeof navigator !== 'undefined' &&
-  navigator.userAgent &&
-  process.env.NODE_ENV === 'production'
-) {
-  const disableDevtool = require('disable-devtool');
-  disableDevtool();
-}
+// if (
+//   typeof window !== 'undefined' &&
+//   typeof window.navigator !== 'undefined' &&
+//   typeof navigator !== 'undefined' &&
+//   navigator.userAgent &&
+//   process.env.NODE_ENV === 'production'
+// ) {
+//   const disableDevtool = require('disable-devtool');
+//   disableDevtool();
+// }
 
 Amplify.configure({ ...awsConfig, ssr: true });
 Auth.configure({ oauth });
