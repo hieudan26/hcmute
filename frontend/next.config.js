@@ -29,14 +29,14 @@ const nextConfig = {
       },
     ],
   },
-  // async rewrites() {
-  //   return [
-  //       {
-  //           source: '/profile/:userId/posts',
-  //           destination: '/profile/:userId'
-  //       }
-  //   ];
-  // },
+  async rewrites() {
+    return [
+        {
+            source: '/profile/:userId/posts',
+            destination: '/profile/:userId'
+        }
+    ];
+  },
 };
 
 module.exports = nextConfig;
