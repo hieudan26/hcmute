@@ -1,11 +1,22 @@
-import { Box } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
+import LoadingComponent from '../../../../components/views/Loading/LoadingComponent.tsx/index.component';
+
+//#region lazy loading components
+const Friends = dynamic(() => import('../../../../components/views/Profile/Friends/index.component'), {
+  loading: () => <LoadingComponent />,
+});
+//#endregion
 
 export interface IProfileFriendsProps {}
 
 const ProfileFriends: NextPage = (props: IProfileFriendsProps) => {
-  return <Box>ProfileFriends</Box>;
+  return (
+    <>
+      <Friends />
+    </>
+  );
 };
 
 export default ProfileFriends;

@@ -2,13 +2,13 @@ import { Box } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-export interface IExperiencesProps {}
+export interface IDiscoveryProps {}
 
-const Experiences: NextPage = (props: IExperiencesProps) => {
-  return <Box>Experiences</Box>;
+const Discovery: NextPage = (props: IDiscoveryProps) => {
+  return <Box>Discovery</Box>;
 };
 
-export default Experiences;
+export default Discovery;
 
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {

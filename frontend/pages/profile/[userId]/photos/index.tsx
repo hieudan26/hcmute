@@ -1,11 +1,22 @@
-import { Box } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
+import LoadingComponent from '../../../../components/views/Loading/LoadingComponent.tsx/index.component';
+
+//#region lazy loading components
+const Photos = dynamic(() => import('../../../../components/views/Profile/Photos/index.component'), {
+  loading: () => <LoadingComponent />,
+});
+//#endregion
 
 export interface IProfilePhotosProps {}
 
 const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
-  return <Box>ProfilePhotos</Box>;
+  return (
+    <>
+      <Photos />
+    </>
+  );
 };
 
 export default ProfilePhotos;

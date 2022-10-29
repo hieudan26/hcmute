@@ -20,6 +20,7 @@ import Message from '../components/views/Message/index.component';
 import awsConfig from '../configurations/aws-configs';
 import '../public/styles/globals.scss';
 import { configReactQuery } from '../utils';
+import NextNProgress from 'nextjs-progressbar';
 
 const oauth = {
   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
@@ -69,6 +70,7 @@ function MyApp({ Component, pageProps }: AppProps | any) {
                   <Goodbye />
                   <SetLayout>
                     {/* <Goodbye /> */}
+                    <NextNProgress options={{ showSpinner: false }} color='#D0637C' />
                     <Component {...pageProps} />
                   </SetLayout>
                 </Hydrate>
