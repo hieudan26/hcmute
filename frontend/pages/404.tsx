@@ -1,20 +1,19 @@
-import { Button, Tooltip, useColorModeValue } from '@chakra-ui/react';
+import { Button, Tooltip, useColorModeValue, Text } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import ErrorImage from '../public/images/error.svg';
 import styles from '../public/styles/error.module.scss';
 
-interface ErrorPageProps {
-  statusCode: number;
-}
+interface ErrorPageProps {}
 
-const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }) => {
+const FourOhFourPage: NextPage<ErrorPageProps> = () => {
   const router = useRouter();
+  const { t } = useTranslation<'error', undefined>('error');
   const [isLoading, setIsLoading] = useState(false);
 
   const bgButton = useColorModeValue(
@@ -29,7 +28,7 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }) => {
 
   const goHome = () => {
     setIsLoading(true);
-    router.back();
+    router.replace('/experiences');
   };
 
   return (
@@ -38,12 +37,13 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }) => {
         <title>Oops! Something went wrong ~</title>
       </Head>
       <main className={styles.errorContainer}>
-        <Image className={styles.image} src={ErrorImage} width={640} height={220} alt='error image' />
-        <h1>{statusCode}</h1>
-        <p>Opps! This page is lost in space.</p>
-        <p>Opps! Trang này không tồn tại.</p>
+        <Image className={styles.image} src={ErrorImage} width={640} height={250} alt='error image' />
+        <Text my='5' as='b' fontSize='7xl'>
+          404
+        </Text>
+        <p>{t('text_error')}</p>
 
-        <Tooltip label='Quay lại'>
+        <Tooltip label='Quay về trang chủ'>
           <Button
             isLoading={isLoading}
             onClick={goHome}
@@ -51,14 +51,15 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }) => {
             bg={bgButton}
             color='textColor.primary_lightMode'
             fontSize='sm'
-            borderRadius='14px'
+            borderRadius='lg'
             px='30px'
+            minH='10'
             display={{
               sm: 'none',
               lg: 'flex',
             }}
           >
-            Go back
+            {t('btn_error')}
           </Button>
         </Tooltip>
       </main>
@@ -66,18 +67,13 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }) => {
   );
 };
 
-ErrorPage.getInitialProps = ({ res, err }) => {
-  const currentStatusCode = res?.statusCode || 500;
-  const throwedStatusCode = err?.statusCode;
+export default FourOhFourPage;
 
-  const statusCode = throwedStatusCode || currentStatusCode;
-
-  if (res) {
-    // Here is where the magic happens
-    res.statusCode = statusCode;
-  }
-
-  return { statusCode };
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common', 'error'])),
+      // Will be passed to the page component as props
+    },
+  };
 };
-
-export default ErrorPage;
