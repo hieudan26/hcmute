@@ -34,7 +34,9 @@ export default function UserLayout(props: IUserLayoutProps) {
   }, [isSettingRoute, children]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (!router.pathname.includes('/profile')) {
+      window.scrollTo(0, 0);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children]);
 

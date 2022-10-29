@@ -75,7 +75,12 @@ export default function MenuLinks(props: IMenuLinksProps) {
   }, [userInfor]);
 
   useEffect(() => {
-    setRedirectPath(router.pathname);
+    console.log(router.pathname);
+    if (router.pathname === '/experiences' || router.pathname === '/faq' || router.pathname === '/itinerary') {
+      setRedirectPath(router.pathname);
+    } else {
+      setRedirectPath('/experiences');
+    }
   }, [router.pathname]);
 
   const changeLanguage = (): void => {
@@ -134,7 +139,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/experiences'>{t('navbar.navlink01')}</MenuItem>
           <MenuItem to='/faq'>{t('navbar.navlink02')}</MenuItem>
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
-          <MenuItem to='/'>{t('navbar.navlink04')}</MenuItem>
+          <MenuItem to='/discovery'>{t('navbar.navlink04')}</MenuItem>
           {role !== RoleConstants.ANONYMOUS && (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px' mr='5px'>
@@ -166,12 +171,12 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         {t('menuUser.welcome')}: {fullNameUser}
                       </MenuItm>
                     )}
-                    <Link href={userId ? `profile/${userId}/posts` : 'profile'}>
+                    <Link href={userId ? `profile/${userId}/posts` : 'profile'} replace>
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
                         {t('menuUser.profile')}
                       </MenuItm>
                     </Link>
-                    <Link href='/settings?tab=account'>
+                    <Link href='/settings?tab=account' replace>
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiSettings4Fill} />} fontSize='14px'>
                         Privacy & Security settings
                       </MenuItm>
@@ -186,7 +191,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                     </MenuItm>
                   </>
                 ) : (
-                  <Link href={`login?url=${redirectPath}`}>
+                  <Link href={`login?url=${redirectPath}`} replace>
                     <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={IoIosLogIn} />} fontSize='14px'>
                       {t('menuAnonymous.auth')}
                     </MenuItm>
@@ -215,7 +220,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
               </MenuList>
             </Menu>
           ) : (
-            <MenuItem to='/signup'>
+            <MenuItem to={`login?url=${redirectPath}`}>
               <Button
                 size='md'
                 color={'textColor.white'}

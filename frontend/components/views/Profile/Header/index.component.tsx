@@ -42,7 +42,6 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, []);
 
   const handleScroll = () => {
-    console.log(window.scrollY);
     setClientWindowHeight(window.scrollY);
   };
 

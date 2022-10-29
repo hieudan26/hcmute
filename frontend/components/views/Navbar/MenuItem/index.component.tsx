@@ -20,7 +20,7 @@ export default function MenuItem(props: IMenuItemProps) {
 
   return (
     <>
-      <Link href={to} passHref>
+      <Link href={to} passHref replace>
         <LinkChakra
           _hover={{
             textDecoration: 'none',

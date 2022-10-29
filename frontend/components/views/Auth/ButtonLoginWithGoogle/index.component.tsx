@@ -11,7 +11,7 @@ export default function ButtonLoginWithGoogle(props: IButtonLoginWithGoogleProps
 
   return (
     <Tooltip label='Feature not yet available'>
-      <Button w={'full'} maxW={'md'} variant={'outline'} leftIcon={<FcGoogle />}>
+      <Button w={'full'} minW='100%' variant={'outline'} leftIcon={<FcGoogle />}>
         <Center>
           <Text color={colorText}>Sign in with Google</Text>
         </Center>

@@ -107,7 +107,7 @@ export default function LoginForm(props: ILoginFormProps) {
               {t('btn_submit')}
             </Button>
           </GridItem>
-          <GridItem colSpan={2}>
+          <GridItem hidden colSpan={2}>
             <ButtonLoginWithGoogle loginWithGG={loginWithGG} />
           </GridItem>
           <GridItem textAlign='center' colSpan={2}>

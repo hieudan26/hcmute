@@ -16,7 +16,7 @@ export default function TopNavSpecial(props: ITopNavSpecialProps) {
   const bg = useColorModeValue('white', 'header.primary_darkMode');
 
   return (
-    <Flex px='72' bg={bg} w={'full'} position='fixed' mt='70px' alignItems='center' justify='space-between'>
+    <Flex zIndex='toast' px='72' bg={bg} w={'full'} position='fixed' mt='70px' alignItems='center' justify='space-between'>
       <Flex alignItems='center' gap='2'>
         <ChakraNextImageGlobal
           width='30px'
