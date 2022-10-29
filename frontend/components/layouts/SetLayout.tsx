@@ -24,6 +24,8 @@ export default function SetLayout({ children }: any) {
   useEffect(() => {
     if (router.pathname === '/404') {
       setErrorRoute(true);
+    } else {
+      setErrorRoute(false);
     }
   }, [router.pathname]);
 
