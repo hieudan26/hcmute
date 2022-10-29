@@ -25,7 +25,7 @@ public class AreaController {
 
     @GetMapping("/countries/{id}")
     public ResponseEntity<BaseResponse> getCountry(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(areaService.findAllCountry(id));
+        return ResponseEntity.ok(areaService.findCountry(id));
     }
 
     @GetMapping("/countries/{id}/provinces")
@@ -40,7 +40,7 @@ public class AreaController {
 
     @GetMapping("/provinces/{id}")
     public ResponseEntity<BaseResponse> getProvince(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(areaService.findAllProvince(id));
+        return ResponseEntity.ok(areaService.findProvince(id));
     }
 
     @GetMapping("/list/countries")

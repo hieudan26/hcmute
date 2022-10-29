@@ -1,4 +1,4 @@
-package backend.data.dto.area;
+package backend.data.dto.area.listItem;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryResponse {
+public class AreaResponse {
     String id;
     String name;
     String enName;

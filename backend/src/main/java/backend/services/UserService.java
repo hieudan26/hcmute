@@ -9,7 +9,6 @@ import backend.data.dto.user.UpdateUserRequest;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.data.dto.user.UserIdParams;
 import backend.data.dto.user.UserQueryParams;
-import backend.data.entity.Provinces;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
