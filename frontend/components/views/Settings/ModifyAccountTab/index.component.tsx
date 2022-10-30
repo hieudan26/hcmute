@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import useValidationSchema from '../../../../hooks/validation/useValidationSchema';
 import { IChangePassword } from '../../../../models/auth/changePassword.model';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { useTranslation } from 'next-i18next';
 
 export interface IModifyAccountTabProps {}
 
@@ -26,6 +27,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
   const [showNew, setShowNew] = useState<boolean>(false);
   const [showNewConfirm, setShowNewConfirm] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const { t } = useTranslation<'settings', undefined>('settings');
 
   const { modifyAccountSchema } = useValidationSchema();
   const {
@@ -61,20 +63,20 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
   };
 
   return (
-    <ContainerTab title='General Account Settings'>
+    <ContainerTab title={t('title_tab_sidebar01')}>
       <Box px='60'>
         <form onSubmit={handleSubmit(_onSubmitForm)}>
           <SimpleGrid justifyContent='center' columns={2} columnGap={3} rowGap={6}>
             <GridItem colSpan={2}>
               <FormControl isRequired isInvalid={!!errors?.current_password?.message}>
                 <FormLabel>
-                  <Text as='b'>Current password</Text>
+                  <Text as='b'>{t('sb01_curPass')}</Text>
                 </FormLabel>
                 <InputGroup>
                   <Input
                     {...register('current_password')}
                     type={showOld ? 'text' : 'password'}
-                    placeholder='Your current password'
+                    placeholder={t('sb01_placeholderCur')}
                   />
                   <InputRightElement zIndex='base' width='4.5rem'>
                     <Button
@@ -84,7 +86,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
                         setShowOld(!showOld);
                       }}
                     >
-                      {showOld ? 'Hide' : 'Show'}
+                      {showOld ? t('sb01_btnHide') : t('sb01_btnShow')}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -94,10 +96,14 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
             <GridItem colSpan={2}>
               <FormControl isRequired isInvalid={!!errors?.new_password?.message}>
                 <FormLabel>
-                  <Text as='b'>New password</Text>
+                  <Text as='b'>{t('sb01_newPass')}</Text>
                 </FormLabel>
                 <InputGroup>
-                  <Input {...register('new_password')} type={showNew ? 'text' : 'password'} placeholder='Your new password' />
+                  <Input
+                    {...register('new_password')}
+                    type={showNew ? 'text' : 'password'}
+                    placeholder={t('sb01_placeholderNew')}
+                  />
                   <InputRightElement width='4.5rem' zIndex='base'>
                     <Button
                       h='1.75rem'
@@ -106,7 +112,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
                         setShowNew(!showNew);
                       }}
                     >
-                      {showNew ? 'Hide' : 'Show'}
+                      {showNew ? t('sb01_btnHide') : t('sb01_btnShow')}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -116,13 +122,13 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
             <GridItem colSpan={2}>
               <FormControl isRequired isInvalid={!!errors?.new_confirm_password?.message}>
                 <FormLabel>
-                  <Text as='b'>Re-type new password</Text>
+                  <Text as='b'>{t('sb01_retypeNewPass')}</Text>
                 </FormLabel>
                 <InputGroup>
                   <Input
                     {...register('new_confirm_password')}
                     type={showNewConfirm ? 'text' : 'password'}
-                    placeholder='Re-type your new password'
+                    placeholder={t('sb01_placeholderRetype')}
                   />
                   <InputRightElement width='4.5rem' zIndex='base'>
                     <Button
@@ -132,7 +138,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
                         setShowNewConfirm(!showNewConfirm);
                       }}
                     >
-                      {showNewConfirm ? 'Hide' : 'Show'}
+                      {showNewConfirm ? t('sb01_btnHide') : t('sb01_btnShow')}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -141,7 +147,7 @@ export default function ModifyAccountTab(props: IModifyAccountTabProps) {
             </GridItem>
             <GridItem colSpan={2}>
               <Button isLoading={submitting} type='submit' minW='100%'>
-                Save changes
+                {t('sb01_btnSave')}
               </Button>
             </GridItem>
           </SimpleGrid>
