@@ -1,4 +1,4 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ const Settings: NextPage = (props: ISettingsProps) => {
 
   useEffect(() => {
     const { tab } = router.query;
+    console.log('check: ', tab);
     if (tab) {
       setQueryTab(tab as string);
     }
@@ -28,7 +29,7 @@ const Settings: NextPage = (props: ISettingsProps) => {
 
 export default Settings;
 
-export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'settings', 'header', 'footer', 'modal_is_first_login'])),
