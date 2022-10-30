@@ -9,7 +9,7 @@ import { useAppDispatch } from '../../../../hooks/redux';
 import useValidationSchema from '../../../../hooks/validation/useValidationSchema';
 import areaService from '../../../../services/area/area.service';
 import userService from '../../../../services/user/user.service';
-import { defaultAvatar, defaultCoverBackground, getMaxDate } from '../../../../utils';
+import { defaultAvatar, defaultCoverBackground, formatDate, getMaxDate } from '../../../../utils';
 import ModalContainer from '../ModalContainer/index.component';
 import FormIndividual from './FormIndividual/index.component';
 
@@ -57,7 +57,7 @@ export default function FirstLoginModal(props: IFirstLoginModalProps) {
 
   const _onSubmitForm = async (data: any) => {
     const response = await userService.signUpAsync(
-      { ...data, avatar: defaultAvatar, coverBackground: defaultCoverBackground },
+      { ...data, avatar: defaultAvatar, coverBackground: defaultCoverBackground, dob: formatDate(date) },
       setIsSubmitting
     );
     dispatch(login(response?.data));
