@@ -11,28 +11,15 @@ export default function ModifyLanguageTab(props: IModifyLanguageTabProps) {
   const { t } = useTranslation<'settings', undefined>('settings');
 
   const changeLanguage = (): void => {
-    if (router.locale === LangConstants.VI) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: router.query,
-        },
-        router.asPath,
-        {
-          locale: LangConstants.EN,
-        }
-      );
+    const { pathname, asPath, query, locale } = router;
+    if (locale === LangConstants.VI) {
+      router.push({ pathname, query }, asPath, {
+        locale: LangConstants.EN,
+      });
     } else {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: router.query,
-        },
-        router.asPath,
-        {
-          locale: LangConstants.VI,
-        }
-      );
+      router.push({ pathname, query }, asPath, {
+        locale: LangConstants.VI,
+      });
     }
 
     // trigger reload after push locale to refresh toast(if any) before

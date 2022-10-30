@@ -84,12 +84,13 @@ export default function MenuLinks(props: IMenuLinksProps) {
   }, [router.pathname]);
 
   const changeLanguage = (): void => {
-    if (router.locale === LangConstants.VI) {
-      router.push(router.route, router.asPath, {
+    const { pathname, asPath, query, locale } = router;
+    if (locale === LangConstants.VI) {
+      router.push({ pathname, query }, asPath, {
         locale: LangConstants.EN,
       });
     } else {
-      router.push(router.route, router.asPath, {
+      router.push({ pathname, query }, asPath, {
         locale: LangConstants.VI,
       });
     }
