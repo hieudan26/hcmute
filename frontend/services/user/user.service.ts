@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { API_PATH } from '../../constants/api-path.constant';
+import { AxiosResponseStatus } from '../../constants/global.constant';
 import { IUserFirstLoginRequest, IUserUpdateInformation } from '../../models/user/user.model';
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
@@ -16,6 +17,18 @@ class UserService {
     return result;
   };
 
+  getUserInformationById = async (id: string): Promise<AxiosResponseStatus<any>> => {
+    var url = `/users/${id}`;
+    try {
+      const result = await getAsync(url, undefined, false, false, true);
+      result.isSuccess = true;
+      return result;
+    } catch (error: any) {
+      return error.response.data;
+    }
+  };
+
+  //for first login to store data
   getUserById = async (id: string): Promise<AxiosResponse<any>> => {
     var url = `/users/${id}`;
     const result = await getAsync(url, undefined, false, false, false);

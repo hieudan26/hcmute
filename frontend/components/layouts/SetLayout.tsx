@@ -39,7 +39,7 @@ export default function SetLayout({ children }: any) {
       //   return <UserLayout>{children}</UserLayout>;
       // }
       return (
-        <UserLayout user={auth} is_first_login={auth === null ? 'true' : 'false'}>
+        <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
           {children}
         </UserLayout>
       );

@@ -8,6 +8,8 @@ import { ChakraNextImageGlobal } from '../../ChakraNextImageGlobal/index.compone
 import EditProfilePic from '../Modals/EditProfilePic/index.component';
 import TopNavNormal from './TopNavNormal/index.component';
 import TopNavSpecial from './TopNavSpecial/index.component';
+import cookie from 'react-cookies';
+import { CookieConstants } from '../../../../constants/store.constant';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -22,7 +24,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [avatar, setAvater] = useState<string>(defaultAvatar);
   const [coverBackground, setCoverBackground] = useState<string>(defaultCoverBackground);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const { onClose } = useDisclosure();
+  const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -30,7 +32,9 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, []);
 
   useEffect(() => {
+    // console.log('a: ', user);
     if (user !== null) {
+      console.log(user.avatar);
       if (user.avatar) setAvater(user.avatar);
       if (user.coverBackground) setCoverBackground(user.coverBackground);
     }
@@ -52,7 +56,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   };
 
   return (
-    <Box bg='whiteAlpha.300' h={'600px'} {...rest}>
+    <Box bg='white' h={'610px'} {...rest}>
       <Box w={'950px'} h={'570px'} m={'auto'}>
         <ChakraNextImageGlobal
           width='950px'
@@ -79,11 +83,11 @@ export default function Header(props: IHeaderProps & BoxProps) {
               alt='avatar'
             />
             <Box p={5} mt={7}>
-              <Heading>{user && user.fullName ? user.fullName : 'Full name'}</Heading>
+              <Heading>{user && user.fullName ? user.fullName : `${user?.firstName} ${user?.lastName}`}</Heading>
               <Text color={'grey'}>10 Friends</Text>
             </Box>
             <Spacer />
-            <Box>
+            <Box hidden={!isLoggedIn}>
               <Button
                 onClick={() => {
                   setIsOpen(true);

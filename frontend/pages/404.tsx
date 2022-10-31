@@ -69,7 +69,7 @@ export default FourOhFourPage;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'error'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'error'])),
       // Will be passed to the page component as props
     },
   };

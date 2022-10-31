@@ -78,7 +78,6 @@ const Login: NextPage = (props: ILoginProps) => {
 
   const resendConfirmEmail = async (email: string) => {
     const response = await AuthService.resendConfirmationEmail(email);
-    console.log(response);
   };
 
   const loginWithGG = async () => {

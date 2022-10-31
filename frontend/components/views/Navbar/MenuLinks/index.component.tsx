@@ -172,7 +172,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         {t('menuUser.welcome')}: {fullNameUser}
                       </MenuItm>
                     )}
-                    <Link href={userId ? `profile/${userId}/posts` : 'profile'} replace>
+                    <Link href='/profile/[userId]' as={userId ? `/profile/${userId}/posts` : 'profile'} replace={true} passHref>
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
                         {t('menuUser.profile')}
                       </MenuItm>
@@ -192,7 +192,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                     </MenuItm>
                   </>
                 ) : (
-                  <Link href={`login?url=${redirectPath}`} replace>
+                  <Link href={`/login?url=${redirectPath}`} replace>
                     <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={IoIosLogIn} />} fontSize='14px'>
                       {t('menuAnonymous.auth')}
                     </MenuItm>
