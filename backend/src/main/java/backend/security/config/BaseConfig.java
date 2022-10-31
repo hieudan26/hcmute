@@ -56,7 +56,6 @@ public abstract class BaseConfig {
         CorsConfiguration configuration = buildCorsConfiguration();
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         http.cors(cors -> cors.configurationSource(source));
     }
 
