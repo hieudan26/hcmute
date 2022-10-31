@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RoleConstants } from '../../../constants/roles.constant';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
+import userService from '../../../services/user/user.service';
 import Footer from '../../views/Footer/index.component';
 import FirstLoginModal from '../../views/Modals/FirstLoginModal/index.component';
 import Navbar from '../../views/Navbar/index.component';
@@ -13,12 +14,14 @@ import Sidebar from '../../views/Settings/Sidebar/index.component';
 export interface IUserLayoutProps {
   children: any;
   is_first_login: string;
-  user: IUserFirstLoginRequest | null;
+  curUser: IUserFirstLoginRequest | null;
 }
 
 export default function UserLayout(props: IUserLayoutProps) {
-  const { children, is_first_login, user } = props;
+  const { children, is_first_login, curUser } = props;
   const [isSettingRoute, setIsSettingRoute] = useState<boolean>(false);
+  const [userIdState, setUserIdState] = useState<string | undefined>(undefined);
+  const [user, setUser] = useState<IUserFirstLoginRequest | null>(null);
   const isOpen = is_first_login === 'true' ? true : false;
   const router = useRouter();
   const bgMain = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
@@ -37,8 +40,31 @@ export default function UserLayout(props: IUserLayoutProps) {
     if (!router.pathname.includes('/profile')) {
       window.scrollTo(0, 0);
     }
+  }, [children, router.pathname]);
+
+  useEffect(() => {
+    if (router.pathname.includes('/profile')) {
+      const { userId } = router.query;
+      setUserIdState(userId as string);
+
+      if (userIdState) {
+        if (userIdState !== curUser?.id) {
+          const getUser = async () => {
+            const response = await userService.getUserInformationById(userIdState); //res.data
+            if (response.isSuccess === true) {
+              setUser(response.data);
+            } else {
+              router.push('/404');
+            }
+          };
+          getUser();
+        } else {
+          setUser(curUser);
+        }
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children]);
+  }, [router.pathname, userIdState]);
 
   const renderContainerLayout = () => {
     if (isSettingRoute) {
@@ -57,7 +83,7 @@ export default function UserLayout(props: IUserLayoutProps) {
     <>
       <Navbar role={RoleConstants.USER} />
       <Box bg={bgMain} color={colorMain}>
-        {router.pathname.includes('/profile') && <Header user={user} pt='90px' />}
+        {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
         {renderContainerLayout()}
       </Box>
       <ScrollToTop />

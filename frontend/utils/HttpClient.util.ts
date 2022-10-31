@@ -13,6 +13,7 @@ import { AuthService } from '../services/auth/auth.service';
 import { LocalUtils } from './local.utils';
 import store from '../app/store';
 import { logout } from '../app/slices/authSlice';
+import { AxiosResponseStatus } from '../constants/global.constant';
 
 // let IS_REFRESHING_TOKEN = false;
 
@@ -24,7 +25,7 @@ export const deleteAsync = (
   handleErrorAutomatic: boolean = true,
   alternativeErrorMessage?: string,
   setSubmitting?: Dispatch<SetStateAction<boolean>>
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponseStatus> => {
   return axiosInstance(
     handleErrorAutomatic,
     successMessage,
@@ -46,7 +47,7 @@ export const putAsync = (
   handleErrorAutomatic: boolean = true,
   alternativeErrorMessage?: string,
   setSubmitting?: Dispatch<SetStateAction<boolean>>
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponseStatus> => {
   return axiosInstance(
     handleErrorAutomatic,
     successMessage,
@@ -68,7 +69,7 @@ export const postAsync = (
   handleErrorAutomatic: boolean = true,
   alternativeErrorMessage?: string,
   setSubmitting?: Dispatch<SetStateAction<boolean>>
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponseStatus> => {
   return axiosInstance(
     handleErrorAutomatic,
     successMessage,
@@ -87,7 +88,7 @@ export const getAsync = (
   isShowLoading: boolean = true,
   isShowMessage: boolean = true,
   handleErrorAutomatic: boolean = true
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponseStatus> => {
   return axiosInstance(handleErrorAutomatic, undefined, 'application/json', 'json', isShowLoading, isShowMessage).get(url, {
     params: params,
     paramsSerializer: function (params) {
@@ -241,7 +242,7 @@ const handleUnAuthorize = async () => {
   await AuthService.logout();
   store.dispatch(logout());
 
-  if (window.location.href.indexOf('/login') === -1) {
+  if (typeof window !== 'undefined' && window.location.href.indexOf('/login') === -1) {
     window.location.href = `/login?url=${window.location.pathname}`;
   }
 };
