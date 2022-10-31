@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('ROLE_GUEST')")
     @PostMapping("/signup")
     public ResponseEntity<BaseResponse> createInformation(@Validated @RequestBody UserFirstLoginRequest userFirstLoginRequest){
         return ResponseEntity.ok(userService.createUser(userFirstLoginRequest));
