@@ -28,7 +28,7 @@ export default function About(props: IAboutProps) {
   };
 
   return (
-    <LayoutTab title='About'>
+    <LayoutTab title='About' lastModified={user?.lastModifiedDate}>
       <Tabs zIndex='auto' isManual colorScheme='pink' variant='unstyled'>
         <TabList>
           <Tab _hover={{ bg: '#F8B5C1', color: '#0000008a' }} _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}>
