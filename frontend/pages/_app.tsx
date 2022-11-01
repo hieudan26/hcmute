@@ -60,33 +60,33 @@ function MyApp({ Component, pageProps }: AppProps | any) {
   const dispatch = useAppDispatch();
   let persistor = persistStore(store);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const currentSession = await Auth.currentSession();
-        const idTokenExpire = currentSession.getIdToken().getExpiration();
-        const refreshToken = currentSession.getRefreshToken();
-        const currentTimeSeconds = Math.round(+new Date() / 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(async () => {
+  //     try {
+  //       const currentSession = await Auth.currentSession();
+  //       const idTokenExpire = currentSession.getIdToken().getExpiration();
+  //       const refreshToken = currentSession.getRefreshToken();
+  //       const currentTimeSeconds = Math.round(+new Date() / 1000);
 
-        if (idTokenExpire < currentTimeSeconds) {
-          const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
-          currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
-            if (err) {
-              handleUnAuthorize();
-            } else {
-              LocalUtils.storeAuthenticationData();
-            }
-          });
-        }
-      } catch (error: any) {
-        handleUnAuthorize();
-      }
-    }, 10000);
-    ref.current = interval;
-    return () => {
-      clearInterval(ref.current as NodeJS.Timeout);
-    };
-  }, []);
+  //       if (idTokenExpire < currentTimeSeconds) {
+  //         const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+  //         currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
+  //           if (err) {
+  //             handleUnAuthorize();
+  //           } else {
+  //             LocalUtils.storeAuthenticationData();
+  //           }
+  //         });
+  //       }
+  //     } catch (error: any) {
+  //       handleUnAuthorize();
+  //     }
+  //   }, 10000);
+  //   ref.current = interval;
+  //   return () => {
+  //     clearInterval(ref.current as NodeJS.Timeout);
+  //   };
+  // }, []);
 
   const handleUnAuthorize = async () => {
     await AuthService.logout();
