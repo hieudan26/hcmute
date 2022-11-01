@@ -33,4 +33,5 @@ export interface IUserFirstLoginRequest {
   isLoggedIn: boolean;
   isFirstLogin: boolean;
   disable: boolean;
+  lastModifiedDate?: number;
 }
