@@ -16,8 +16,18 @@ export default function TopNavSpecial(props: ITopNavSpecialProps) {
   const bg = useColorModeValue('white', 'header.primary_darkMode');
 
   return (
-    <Flex zIndex='toast' px='72' bg={bg} w={'full'} position='fixed' mt='70px' alignItems='center' justify='space-between'>
-      <Flex alignItems='center' gap='2'>
+    <Flex
+      px='60'
+      bg={bg}
+      w={'full'}
+      position='fixed'
+      mt='70px'
+      alignItems='center'
+      justify='space-between'
+      boxShadow='rgb(44 101 144 / 10%) 0px 0px 8px 0px'
+      zIndex='2'
+    >
+      <Flex alignItems='center' gap='2' bg={bg}>
         <ChakraNextImageGlobal
           width='30px'
           height='30px'
@@ -30,7 +40,7 @@ export default function TopNavSpecial(props: ITopNavSpecialProps) {
         />
         <Text>{user ? user.fullName : 'Default Fullname'}</Text>
       </Flex>
-      <Box>
+      <Box zIndex='2' bg={bg}>
         <TopNav userId={userId} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
       </Box>
     </Flex>

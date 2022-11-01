@@ -19,7 +19,7 @@ import Logo from '../Navbar/Logo/index.component';
 export interface IFooterProps {}
 
 export default function Footer(props: IFooterProps) {
-  const bg = useColorModeValue('gray.100', 'header.primary_darkMode');
+  const bg = useColorModeValue('white', 'header.primary_darkMode');
   const { t } = useTranslation('footer');
 
   return (

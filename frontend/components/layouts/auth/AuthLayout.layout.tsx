@@ -4,7 +4,7 @@ import ImageAuth from '../../views/Auth/ImageAuth/index.component';
 import ScrollToTop from '../../views/ScrollToTop/index.component';
 
 export default function AuthLayout({ children }: any) {
-  const bg = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
+  const bg = useColorModeValue('white', 'backgroundPage.primary_darkMode');
 
   useEffect(() => {
     window.scrollTo(0, 0);

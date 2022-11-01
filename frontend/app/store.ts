@@ -5,6 +5,7 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, R
 import authReducer from './slices/authSlice';
 import storage from './sync_storage';
 import themeReducer from './themeSlice';
+import userNotAuthReducer from './slices/userNotAuthSlice';
 
 const logger = createLogger({
   //empty options
@@ -22,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   theme: themeReducer,
   auth: authReducer,
+  userNotAuthReducer: userNotAuthReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

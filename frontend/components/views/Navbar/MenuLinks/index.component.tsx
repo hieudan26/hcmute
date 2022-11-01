@@ -25,6 +25,7 @@ import { IoIosLogIn } from 'react-icons/io';
 import { MdLanguage, MdLightMode, MdOutlineNotificationsActive } from 'react-icons/md';
 import { RiProfileLine, RiSettings4Fill } from 'react-icons/ri';
 import { logout } from '../../../../app/slices/authSlice';
+import { clearUserNotAuth } from '../../../../app/slices/userNotAuthSlice';
 import { setThemeMode } from '../../../../app/themeSlice';
 import { RoleConstants } from '../../../../constants/roles.constant';
 import { LangConstants, ThemeConstants } from '../../../../constants/settings.constant';
@@ -75,7 +76,6 @@ export default function MenuLinks(props: IMenuLinksProps) {
   }, [userInfor]);
 
   useEffect(() => {
-    console.log(router.pathname);
     if (router.pathname === '/experiences' || router.pathname === '/faq' || router.pathname === '/itinerary') {
       setRedirectPath(router.pathname);
     } else {
@@ -112,12 +112,21 @@ export default function MenuLinks(props: IMenuLinksProps) {
 
   const handleLogout = async () => {
     await AuthService.logout();
+    dispatch(clearUserNotAuth());
     dispatch(logout());
     router.push('/experiences');
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(fullNameUser ? fullNameUser : 'Hello world');
+    var currentHost = 'http://localhost:3000';
+    if (process.env.NODE_ENV === 'development') {
+      currentHost = `${currentHost}/profile/${userId}/posts`;
+    } else {
+      currentHost = 'https://lumiere.hcmute.me';
+      currentHost = `${currentHost}/profile/${userId}/posts`;
+    }
+
+    navigator.clipboard.writeText(currentHost);
     toast({
       description: 'Copy to clipboard successfully!',
       status: 'info',

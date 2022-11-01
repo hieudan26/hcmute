@@ -3,6 +3,13 @@ import { IconType } from 'react-icons';
 import { FiSettings } from 'react-icons/fi';
 import { IoLanguage } from 'react-icons/io5';
 
+export const formatDateddMMYYYYtoDate = (date: string) => {
+  var dateParts = date.split('/');
+  // month is 0-based, that's why we need dataParts[1] - 1
+  var dateObject = new Date(+dateParts[2], Number(dateParts[1]) - 1, +dateParts[0]);
+  return dateObject;
+};
+
 export const formatDate = (date: Date) => {
   var d = new Date(date),
     month = '' + (d.getMonth() + 1),

@@ -47,7 +47,7 @@ export default function FirstLoginModal(props: IFirstLoginModalProps) {
       firstName: '',
       lastName: '',
       gender: 'male',
-      phone: '',
+      phoneNumber: '',
       country: 'Afghanistan',
       city: '',
       district: '',
