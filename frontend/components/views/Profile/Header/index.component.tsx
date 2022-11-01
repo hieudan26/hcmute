@@ -56,12 +56,13 @@ export default function Header(props: IHeaderProps & BoxProps) {
   };
 
   return (
-    <Box bg='white' h={'610px'} {...rest}>
-      <Box w={'950px'} h={'570px'} m={'auto'}>
+    <Box bg='white' h={'670px'} {...rest}>
+      <Box w='6xl' h={'670px'} m={'auto'}>
         <ChakraNextImageGlobal
-          width='950px'
-          height='300px'
-          h='300px'
+          // w='5xl' === 1020
+          width='1160px'
+          height='360px'
+          h='360px'
           rounded='10'
           overflow='hidden'
           border='2px solid #ececec'
@@ -69,7 +70,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
           alt='cover-background'
         />
 
-        <Box h={'190px'} mt={'-8'}>
+        <Box h={'190px'} mt={'-8'} ml='8'>
           <Flex>
             <ChakraNextImageGlobal
               width='180px'
@@ -82,7 +83,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               src={avatar}
               alt='avatar'
             />
-            <Box p={5} mt={7}>
+            <Box p={5} mt={10}>
               <Heading>{user && user.fullName ? user.fullName : `${user?.firstName} ${user?.lastName}`}</Heading>
               <Text color={'grey'}>10 Friends</Text>
             </Box>

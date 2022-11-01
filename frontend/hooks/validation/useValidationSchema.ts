@@ -32,7 +32,7 @@ export default function useValidationSchema() {
         .min(3, 'Last name needs to be at least 3 characters long.')
         .max(16, 'Last name must be at most 16 charaters.'),
       gender: yup.string(),
-      phone: yup.string().required('Phone number is required.'),
+      phoneNumber: yup.string().required('Phone number is required.'),
       country: yup.string().required('Country is required.'),
       city: yup.string().required('City is required.'),
       district: yup.string(),

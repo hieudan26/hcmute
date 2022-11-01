@@ -14,6 +14,7 @@ import { LocalUtils } from './local.utils';
 import store from '../app/store';
 import { logout } from '../app/slices/authSlice';
 import { AxiosResponseStatus } from '../constants/global.constant';
+import { clearUserNotAuth } from '../app/slices/userNotAuthSlice';
 
 // let IS_REFRESHING_TOKEN = false;
 
@@ -241,6 +242,7 @@ const axiosInstance = (
 const handleUnAuthorize = async () => {
   await AuthService.logout();
   store.dispatch(logout());
+  store.dispatch(clearUserNotAuth());
 
   if (typeof window !== 'undefined' && window.location.href.indexOf('/login') === -1) {
     window.location.href = `/login?url=${window.location.pathname}`;

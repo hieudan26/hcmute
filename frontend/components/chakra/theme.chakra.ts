@@ -21,7 +21,8 @@ export const theme = extendTheme({
       primary_darkMode: '#000000cc',
     },
     backgroundPage: {
-      primary_lightMode: '#F9F9F9',
+      // primary_lightMode: '#F9F9F9',
+      primary_lightMode: '#f0f2f5',
       primary_darkMode: '#121212',
     },
     backgroundBox: {

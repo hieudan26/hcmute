@@ -24,7 +24,7 @@ export interface IFormIndividualProps {
     firstName: string;
     lastName: string;
     gender: string;
-    phone: string;
+    phoneNumber: string;
     country: string;
     city: string;
     district: string;
@@ -34,7 +34,7 @@ export interface IFormIndividualProps {
     firstName: string;
     lastName: string;
     gender: string;
-    phone: string;
+    phoneNumber: string;
     country: string;
     city: string;
     district: string;
@@ -128,12 +128,12 @@ export default function FormIndividual(props: IFormIndividualProps) {
         </FormControl>
       </GridItem>
       <GridItem colSpan={2}>
-        <FormControl isRequired isInvalid={!!errors?.phone?.message}>
+        <FormControl isRequired isInvalid={!!errors?.phoneNumber?.message}>
           <FormLabel>
-            <Text as='b'>{t('phone')}</Text>
+            <Text as='b'>{t('phoneNumber')}</Text>
           </FormLabel>
-          <Input {...register('phone')} type='tel' placeholder='Dương Đức' />
-          <FormErrorMessage>{errors?.phone?.message}</FormErrorMessage>
+          <Input {...register('phoneNumber')} type='tel' placeholder='Dương Đức' />
+          <FormErrorMessage>{errors?.phoneNumber?.message}</FormErrorMessage>
         </FormControl>
       </GridItem>
       <GridItem colSpan={2}>

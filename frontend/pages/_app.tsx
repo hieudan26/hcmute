@@ -7,7 +7,7 @@ import { Auth } from 'aws-amplify';
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -21,6 +21,11 @@ import awsConfig from '../configurations/aws-configs';
 import '../public/styles/globals.scss';
 import { configReactQuery } from '../utils';
 import NextNProgress from 'nextjs-progressbar';
+import { LocalUtils } from '../utils/local.utils';
+import { AuthService } from '../services/auth/auth.service';
+import { useAppDispatch } from '../hooks/redux';
+import { logout } from '../app/slices/authSlice';
+import { clearUserNotAuth } from '../app/slices/userNotAuthSlice';
 
 const oauth = {
   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',
@@ -51,7 +56,47 @@ Amplify.Logger.LOG_LEVEL = 'INFO';
 
 function MyApp({ Component, pageProps }: AppProps | any) {
   const [queryClient] = useState(() => new QueryClient(configReactQuery));
+  const ref: { current: NodeJS.Timeout | null } = useRef(null);
+  const dispatch = useAppDispatch();
   let persistor = persistStore(store);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const currentSession = await Auth.currentSession();
+        const idTokenExpire = currentSession.getIdToken().getExpiration();
+        const refreshToken = currentSession.getRefreshToken();
+        const currentTimeSeconds = Math.round(+new Date() / 1000);
+
+        if (idTokenExpire < currentTimeSeconds) {
+          const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+          currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
+            if (err) {
+              handleUnAuthorize();
+            } else {
+              LocalUtils.storeAuthenticationData();
+            }
+          });
+        }
+      } catch (error: any) {
+        handleUnAuthorize();
+      }
+    }, 10000);
+    ref.current = interval;
+    return () => {
+      clearInterval(ref.current as NodeJS.Timeout);
+    };
+  }, []);
+
+  const handleUnAuthorize = async () => {
+    await AuthService.logout();
+    dispatch(logout());
+    dispatch(clearUserNotAuth());
+
+    if (typeof window !== 'undefined' && window.location.href.indexOf('/login') === -1) {
+      window.location.href = `/login?url=${window.location.pathname}`;
+    }
+  };
 
   return (
     <Provider store={store}>

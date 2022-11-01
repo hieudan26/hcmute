@@ -1,7 +1,9 @@
 import { Box, Container, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { setUserNotAuth } from '../../../app/slices/userNotAuthSlice';
 import { RoleConstants } from '../../../constants/roles.constant';
+import { useAppDispatch } from '../../../hooks/redux';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
 import userService from '../../../services/user/user.service';
 import Footer from '../../views/Footer/index.component';
@@ -26,6 +28,16 @@ export default function UserLayout(props: IUserLayoutProps) {
   const router = useRouter();
   const bgMain = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
   const colorMain = useColorModeValue('textColor.primary_lightMode', 'textColor.primary_darkMode');
+  const [isProfilePage, setIsProfilePage] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (router.pathname.includes('/profile')) {
+      setIsProfilePage(true);
+    } else {
+      setIsProfilePage(false);
+    }
+  }, [children, router.pathname]);
 
   useEffect(() => {
     if (router.pathname.includes('/settings')) {
@@ -37,21 +49,22 @@ export default function UserLayout(props: IUserLayoutProps) {
   }, [isSettingRoute, children]);
 
   useEffect(() => {
-    if (!router.pathname.includes('/profile')) {
+    if (!isProfilePage) {
       window.scrollTo(0, 0);
     }
-  }, [children, router.pathname]);
+  }, [children, isProfilePage]);
 
   useEffect(() => {
     if (router.pathname.includes('/profile')) {
       const { userId } = router.query;
       setUserIdState(userId as string);
 
-      if (userIdState) {
+      if (userIdState && userIdState !== user?.id) {
         if (userIdState !== curUser?.id) {
           const getUser = async () => {
             const response = await userService.getUserInformationById(userIdState); //res.data
             if (response.isSuccess === true) {
+              dispatch(setUserNotAuth(response.data));
               setUser(response.data);
             } else {
               router.push('/404');
@@ -71,7 +84,7 @@ export default function UserLayout(props: IUserLayoutProps) {
       return <Sidebar>{children}</Sidebar>;
     } else {
       return (
-        <Container minH='67.8vh' maxW='7xl' centerContent pt='90px' pb='20px'>
+        <Container minH='67.8vh' maxW='7xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
           <FirstLoginModal isOpen={isOpen} />
           {children}
         </Container>
