@@ -25,24 +25,25 @@ export default function DetailsTab(props: IDetailsTabProps) {
   }, [user]);
 
   useEffect(() => {
-    if (summary !== user?.summary && !editSummary) {
+    if (summary?.trim() !== user?.summary?.trim() && !editSummary) {
       setEditSummary(true);
     }
 
-    if (summary === user?.summary && editSummary) {
+    if (summary?.trim() === user?.summary?.trim() && editSummary) {
       setEditSummary(false);
     }
   }, [editSummary, summary, user]);
 
   const onCancel = (type: string) => {
     if (type === 'summary') {
-      setSummary(user?.summary);
+      setSummary(user?.summary?.trim());
       setEditSummary(false);
     }
   };
 
   const changeSummary = (e: FormEvent<HTMLTextAreaElement>) => {
-    setSummary(e.currentTarget.value);
+    const tempSummary = e.currentTarget.value;
+    setSummary(tempSummary.trim());
   };
 
   const onSave = async (type: string) => {
