@@ -36,14 +36,14 @@ export default function DetailsTab(props: IDetailsTabProps) {
 
   const onCancel = (type: string) => {
     if (type === 'summary') {
-      setSummary(user?.summary?.trim());
+      setSummary(user?.summary);
       setEditSummary(false);
     }
   };
 
   const changeSummary = (e: FormEvent<HTMLTextAreaElement>) => {
     const tempSummary = e.currentTarget.value;
-    setSummary(tempSummary.trim());
+    setSummary(tempSummary);
   };
 
   const onSave = async (type: string) => {
@@ -63,7 +63,7 @@ export default function DetailsTab(props: IDetailsTabProps) {
     };
 
     if (type === 'summary' && summary !== user?.summary) {
-      params['summary'] = summary;
+      params['summary'] = summary?.trim();
       saveChanges(params);
       setEditSummary(false);
     }
