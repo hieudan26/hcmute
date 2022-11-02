@@ -146,7 +146,7 @@ const axiosInstance = (
           if (err) {
             handleUnAuthorize();
           } else {
-            LocalUtils.storeAuthenticationData();
+            LocalUtils.storeAuthenticationData(true);
             config.headers = getHeaders(contentType, data.getIdToken().getJwtToken());
             return config;
           }
