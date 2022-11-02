@@ -9,7 +9,8 @@ import EditProfilePic from '../Modals/EditProfilePic/index.component';
 import TopNavNormal from './TopNavNormal/index.component';
 import TopNavSpecial from './TopNavSpecial/index.component';
 import cookie from 'react-cookies';
-import { CookieConstants } from '../../../../constants/store.constant';
+import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
+import { LocalUtils } from '../../../../utils/local.utils';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -24,6 +25,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [avatar, setAvater] = useState<string>(defaultAvatar);
   const [coverBackground, setCoverBackground] = useState<string>(defaultCoverBackground);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isEditButton, setIsEditButton] = useState<boolean>(false); //def: send friend
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
 
   useEffect(() => {
@@ -32,9 +34,27 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, []);
 
   useEffect(() => {
-    // console.log('a: ', user);
     if (user !== null) {
-      console.log(user.avatar);
+      var curUserId = undefined; //if loggedin
+
+      if (isLoggedIn) {
+        curUserId = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
+      }
+
+      if (curUserId) {
+        if (curUserId && curUserId === user.id) {
+          setIsEditButton(true);
+        } else {
+          setIsEditButton(false);
+        }
+      } else {
+        setIsEditButton(false);
+      }
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user !== null) {
       if (user.avatar) setAvater(user.avatar);
       if (user.coverBackground) setCoverBackground(user.coverBackground);
     }
@@ -89,21 +109,27 @@ export default function Header(props: IHeaderProps & BoxProps) {
             </Box>
             <Spacer />
             <Box hidden={!isLoggedIn}>
-              <Button
-                onClick={() => {
-                  setIsOpen(true);
-                }}
-                m={'80px 50px'}
-              >
-                Edit Picture
-              </Button>
-              <EditProfilePic
-                user={user}
-                isOpen={isOpen}
-                onClose={() => {
-                  setIsOpen(false);
-                }}
-              />
+              {isEditButton ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      setIsOpen(true);
+                    }}
+                    m={'80px 50px'}
+                  >
+                    Edit Picture
+                  </Button>
+                  <EditProfilePic
+                    user={user}
+                    isOpen={isOpen}
+                    onClose={() => {
+                      setIsOpen(false);
+                    }}
+                  />
+                </>
+              ) : (
+                <Button m={'80px 50px'}>Send friend request</Button>
+              )}
             </Box>
           </Flex>
         </Box>
