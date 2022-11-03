@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Auth } from 'aws-amplify';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import cookie from 'react-cookies';
 import { login, logout } from '../../app/slices/authSlice';
 import { clearUserNotAuth } from '../../app/slices/userNotAuthSlice';
@@ -25,6 +25,33 @@ export default function SetLayout({ children }: any) {
   const is_first_login = cookie.load(CookieConstants.IS_FIRST_LOGIN) ? cookie.load(CookieConstants.IS_FIRST_LOGIN) : 'false';
   const auth = useAppSelector((state) => state.auth.value);
 
+  const getRefreshToken = useCallback(() => {
+    const handle = async () => {
+      try {
+        const currentSession = await Auth.currentSession();
+        const idTokenExpire = currentSession.getIdToken().getExpiration();
+        const refreshToken = currentSession.getRefreshToken();
+        const currentTimeSeconds = Math.round(+new Date() / 1000);
+        //idTokenExpire < currentTimeSeconds
+        //auto refresh so dont need condition to refresh
+        if (true) {
+          const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
+          currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
+            if (err) {
+              handleUnAuthorize();
+            } else {
+              LocalUtils.storeAuthenticationData(true);
+            }
+          });
+        }
+      } catch (error: any) {
+        handleUnAuthorize();
+      }
+    };
+
+    handle();
+  }, []);
+
   useEffect(() => {
     if (router.pathname === '/404') {
       setErrorRoute(true);
@@ -34,36 +61,15 @@ export default function SetLayout({ children }: any) {
   }, [router.pathname]);
 
   useEffect(() => {
-    //auto refresh new token after 10 minutes
+    //auto refresh new token after 5 minutes
     if (isLoggedIn) {
-      const interval = setInterval(async () => {
-        try {
-          const currentSession = await Auth.currentSession();
-          const idTokenExpire = currentSession.getIdToken().getExpiration();
-          const refreshToken = currentSession.getRefreshToken();
-          const currentTimeSeconds = Math.round(+new Date() / 1000);
-          //idTokenExpire < currentTimeSeconds
-          //auto refresh so dont need condition to refresh
-          if (true) {
-            const currentAuthenticatedUser = await Auth.currentAuthenticatedUser();
-            currentAuthenticatedUser.refreshSession(refreshToken, (err: any, data: any) => {
-              if (err) {
-                handleUnAuthorize();
-              } else {
-                LocalUtils.storeAuthenticationData(true);
-              }
-            });
-          }
-        } catch (error: any) {
-          handleUnAuthorize();
-        }
-      }, 600000);
+      const interval = setInterval(() => getRefreshToken(), 300000);
       ref.current = interval;
       return () => {
         clearInterval(ref.current as NodeJS.Timeout);
       };
     }
-  }, []);
+  }, [getRefreshToken]);
 
   const handleUnAuthorize = async () => {
     await AuthService.logout();
