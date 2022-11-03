@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { CookieConstants } from './constants/store.constant';
 import { authRouteContain, privateRouteContain, publicRouteContain } from './utils';
-import jsonwebtoken from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
+// import jsonwebtoken from 'jsonwebtoken';
+// import jwkToPem from 'jwk-to-pem';
 
 interface jsonWK {
   alg: string;
@@ -32,7 +32,7 @@ const jsonWebKeys = [
     use: 'sig',
   },
 ];
-
+/*
 function validateToken(token: string) {
   const header = decodeTokenHeader(token);
   const jsonWebKey = getJsonWebKeyWithKID(header.kid);
@@ -67,6 +67,12 @@ function getJsonWebKeyWithKID(kid: string) {
   return null;
 }
 
+function verifyJsonWebTokenSignature(token: string, jsonWebKey: any, clbk: any) {
+  const pem = jwkToPem(jsonWebKey);
+  jsonwebtoken.verify(token, pem, { algorithms: ['RS256'] }, (err, decodedToken) => clbk(err, decodedToken));
+}
+*/
+
 const checkPublicRoute = (pathname: string) => {
   var isExisted = false;
   publicRouteContain.forEach((item) => {
@@ -100,14 +106,8 @@ const checkPrivateRoute = (pathname: string) => {
   return isExisted;
 };
 
-function verifyJsonWebTokenSignature(token: string, jsonWebKey: any, clbk: any) {
-  const pem = jwkToPem(jsonWebKey);
-  jsonwebtoken.verify(token, pem, { algorithms: ['RS256'] }, (err, decodedToken) => clbk(err, decodedToken));
-}
-
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
-  console.log(url.pathname);
   if (url.pathname === '/') {
     url.pathname = '/login';
     return NextResponse.redirect(new URL('/experiences', request.url));
@@ -133,6 +133,4 @@ export function middleware(request: NextRequest) {
       }
     }
   }
-
-  return NextResponse.next();
 }
