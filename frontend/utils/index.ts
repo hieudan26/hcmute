@@ -3,6 +3,19 @@ import { IconType } from 'react-icons';
 import { FiSettings } from 'react-icons/fi';
 import { IoLanguage } from 'react-icons/io5';
 
+export const publicRouteContain = [
+  '/profile',
+  '/experiences',
+  '/faq',
+  '/itinerary',
+  '/discovery',
+  '/login',
+  '/register',
+  '/forgot-password',
+];
+export const privateRouteContain = ['/settings'];
+export const authRouteContain = ['/login', '/register', '/forgot-password'];
+
 export const formatDateddMMYYYYtoDate = (date: string) => {
   var dateParts = date.split('/');
   // month is 0-based, that's why we need dataParts[1] - 1
