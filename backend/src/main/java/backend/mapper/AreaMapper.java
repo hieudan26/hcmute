@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface AreaMapper {
+public abstract class AreaMapper {
     @Mapping(target = "enName", source = "enName")
-    AreaResponse CountriesToCountryResponse(Areas countries);
-    AreaResponse ProvincesToProvinceResponse(Areas provinces);
+    public abstract AreaResponse CountriesToCountryResponse(Areas countries);
+    public abstract AreaResponse ProvincesToProvinceResponse(Areas provinces);
 }

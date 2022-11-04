@@ -1,14 +1,17 @@
 package backend.data.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -32,4 +35,18 @@ public class Users extends Auditable<String> implements Serializable {
     String village;
     String role;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    Set<Posts> posts = new HashSet<>();
+
+    public void addPost(Posts post) {
+        post.setOwner(this);
+    }
+
+    public void removePost(Posts post) {
+        post.setOwner(null);
+        this.posts.remove(post);
+    }
 }

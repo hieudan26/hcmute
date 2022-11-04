@@ -1,7 +1,10 @@
 package backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,6 +30,9 @@ public class Areas extends Auditable<String> implements Serializable{
     private Integer parentId;
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="parent_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
     private Set<Areas> childAreas;
 
     public void addChild(Areas area) {

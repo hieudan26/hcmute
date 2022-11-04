@@ -21,8 +21,6 @@ public class AreaService{
 
     private AreaMapper areaMapper;
 
-
-
     public BaseResponse listAllCountries(PagingRequest pagingRequest){
         PagingResponse pagingResponse = new PagingResponse(
                 areaRepository.queryAreaListByType(PagingUtils.getPageable(pagingRequest), AreaConstant.COUNTRY.getTypeName())

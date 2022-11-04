@@ -2,10 +2,13 @@ package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
+import backend.data.dto.post.UpdatePostRequest;
 import backend.data.dto.user.UpdateUserRequest;
 import backend.data.dto.user.UserIdParams;
 import backend.data.dto.user.UserQueryParams;
+import backend.services.PostService;
 import backend.services.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import javax.naming.NoPermissionException;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final PostService postService;
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("")
@@ -52,6 +56,19 @@ public class UserController {
     @PostMapping("/enable")
     public ResponseEntity<BaseResponse> enableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminUnlockUser(userIdParams));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{id}/posts")
+    public ResponseEntity<BaseResponse> getUserPosts(PagingRequest pagingRequest,@Parameter String userId){
+        return ResponseEntity.ok(postService.listAllPostsByUserId(pagingRequest, userId));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{userId}/posts/{postId}")
+    public ResponseEntity<BaseResponse> getUserPost(@Parameter String userId
+                                                    ,@Parameter String postId){
+        return ResponseEntity.ok(postService.getPost(postId));
     }
 
 }

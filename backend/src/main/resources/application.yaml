@@ -10,6 +10,8 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
     generate-ddl: true
+    properties:
+      hibernate.format_sql: true
   hibernate:
     ddl-auto: update
   sql:
