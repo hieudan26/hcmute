@@ -63,7 +63,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   useEffect(() => {
     const arrayRoute = currentRoute.split('/');
     setMainCurrentRoute(arrayRoute[arrayRoute.length - 1]);
-  }, []);
+  }, [router.pathname]);
 
   const handleScroll = () => {
     setClientWindowHeight(window.scrollY);
@@ -136,7 +136,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
         <Divider />
 
         <TopNavNormal userId={user ? user.id : 'a'} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
-        <Slide direction='top' in={true}>
+        {/* <Slide direction='top' in={true}>
           {clientWindowHeight >= 534.4 && (
             <TopNavSpecial
               avatar={avatar}
@@ -146,7 +146,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               pushRoute={pushRoute}
             />
           )}
-        </Slide>
+        </Slide> */}
       </Box>
     </Box>
   );

@@ -84,7 +84,7 @@ export default function UserLayout(props: IUserLayoutProps) {
       return <Sidebar>{children}</Sidebar>;
     } else {
       return (
-        <Container minH='67.8vh' maxW='7xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
+        <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
           <FirstLoginModal isOpen={isOpen} />
           {children}
         </Container>

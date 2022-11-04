@@ -120,10 +120,10 @@ export default function MenuLinks(props: IMenuLinksProps) {
   const copyToClipboard = () => {
     var currentHost = 'http://localhost:3000';
     if (process.env.NODE_ENV === 'development') {
-      currentHost = `${currentHost}/profile/${userId}/posts`;
+      currentHost = `${currentHost}/profile/${userId}/about`;
     } else {
       currentHost = 'https://lumiere.hcmute.me';
-      currentHost = `${currentHost}/profile/${userId}/posts`;
+      currentHost = `${currentHost}/profile/${userId}/about`;
     }
 
     navigator.clipboard.writeText(currentHost);
@@ -181,7 +181,12 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         {t('menuUser.welcome')}: {fullNameUser}
                       </MenuItm>
                     )}
-                    <Link href='/profile/[userId]' as={userId ? `/profile/${userId}/posts` : 'profile'} replace={true} passHref>
+                    <Link
+                      href='/profile/[userId]'
+                      as={userId ? `/profile/${userId}/about` : 'experiences'}
+                      replace={true}
+                      passHref
+                    >
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
                         {t('menuUser.profile')}
                       </MenuItm>
