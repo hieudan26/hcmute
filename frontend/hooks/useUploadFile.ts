@@ -4,6 +4,7 @@ import { toggleMessage } from '../components/views/Message/index.component';
 
 export default function useUploadFile() {
   const urlRef = useRef('');
+  const urlsRef = useRef<string[]>([]);
   const { uploadToS3 } = useS3Upload();
   const { S3_URL } = process.env;
 
@@ -36,8 +37,44 @@ export default function useUploadFile() {
     }
   };
 
+  const uploadMultipleFiles = async (files: File[], foldername: string | undefined, userId: string) => {
+    try {
+      const tempArray = [];
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        const res = await uploadToS3(file, {
+          endpoint: {
+            request: {
+              body: {
+                userId: userId,
+                foldername: foldername,
+                isPost: foldername === undefined ? true : false,
+              },
+              headers: {},
+            },
+          },
+        });
+        tempArray.push(`https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/${res.key}`);
+      }
+      toggleMessage({
+        title: 'Upload images S3',
+        type: 'success',
+        message: 'Upload images successfully',
+      });
+      urlsRef.current = tempArray;
+    } catch (err: any) {
+      toggleMessage({
+        title: 'Upload images S3',
+        type: 'error',
+        message: 'Upload images failure',
+      });
+    }
+  };
+
   return {
     urlRef,
+    urlsRef,
+    uploadMultipleFiles,
     upload,
   };
 }

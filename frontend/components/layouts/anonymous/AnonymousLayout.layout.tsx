@@ -59,7 +59,7 @@ export default function AnonymousLayout({ children }: any) {
       <Navbar role={RoleConstants.ANONYMOUS} />
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={user} pt='90px' />}
-        <Container minH='67.8vh' maxW='7xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
+        <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
           {children}
         </Container>
       </Box>
