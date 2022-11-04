@@ -6,8 +6,8 @@ import backend.data.entity.Users;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
-public interface  UserMapper {
-    Users userFirstLoginRequestToUsers(UserFirstLoginRequest userFirstLoginRequest);
+public abstract class UserMapper {
+    public abstract Users userFirstLoginRequestToUsers(UserFirstLoginRequest userFirstLoginRequest);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-    void update(@MappingTarget Users entity, UpdateUserRequest updateEntity);
+    public abstract void update(@MappingTarget Users entity, UpdateUserRequest updateEntity);
 }
