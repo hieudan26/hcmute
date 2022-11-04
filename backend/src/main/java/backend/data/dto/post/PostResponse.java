@@ -22,4 +22,5 @@ public class PostResponse {
     Integer commentNumber;
     Integer reactNumber;
     List<String> images;
+    Boolean isReacted;
 }
