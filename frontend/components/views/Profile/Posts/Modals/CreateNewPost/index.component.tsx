@@ -1,30 +1,13 @@
-import {
-  Button,
-  Divider,
-  HStack,
-  ModalBody,
-  ModalCloseButton,
-  ModalFooter,
-  ModalHeader,
-  Textarea,
-  VStack,
-  Text,
-  IconButton,
-  Flex,
-  Input,
-  Image,
-} from '@chakra-ui/react';
-import { ChangeEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
-import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
-import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import { BiImageAdd } from 'react-icons/bi';
+import { Button, Divider, Flex, IconButton, Image, Input, ModalBody, ModalCloseButton, ModalHeader } from '@chakra-ui/react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiFillTags } from 'react-icons/ai';
+import { BiImageAdd } from 'react-icons/bi';
 import { IoLocation } from 'react-icons/io5';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { ChakraNextImageGlobal } from '../../../../ChakraNextImageGlobal/index.component';
-import { useS3Upload } from 'next-s3-upload';
 import useUploadFile from '../../../../../../hooks/useUploadFile';
+import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
+import ModalContainer from '../../../../Modals/ModalContainer/index.component';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';

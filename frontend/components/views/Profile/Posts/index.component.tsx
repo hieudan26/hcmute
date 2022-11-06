@@ -22,6 +22,7 @@ import { LocalUtils } from '../../../../utils/local.utils';
 import AboutPost from './AboutPost/index.component';
 import CreatePost from './CreatePost/index.component';
 import CreateNewPost from './Modals/CreateNewPost/index.component';
+import PostRender from './PostRender/index.component';
 
 export interface IPostsProps {}
 
@@ -67,8 +68,10 @@ export default function Posts(props: IPostsProps) {
 
   return (
     <>
-      <Flex gap='4' minW='6xl' minH='300px' overflow='hidden'>
-        <AboutPost />
+      <Flex gap='5' minW='6xl' minH='300px'>
+        <Box width='40%'>
+          <AboutPost />
+        </Box>
         <Box width='60%'>
           {isCurrentUser && (
             <>
@@ -139,12 +142,11 @@ export default function Posts(props: IPostsProps) {
             </>
           )}
 
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-          <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
+          <PostRender />
+          <PostRender />
+          <PostRender />
+          <PostRender />
+          <PostRender />
         </Box>
       </Flex>
     </>

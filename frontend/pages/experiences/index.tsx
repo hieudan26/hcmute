@@ -1,9 +1,11 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Spacer, Center } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
 import CreatePost from '../../components/views/Profile/Posts/CreatePost/index.component';
 import CreateNewPost from '../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
+import PostRender from '../../components/views/Profile/Posts/PostRender/index.component';
+import Weather from '../../components/views/Profile/Posts/Weather/index.component';
 import { CookieConstants, LocalStorageConstants } from '../../constants/store.constant';
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
@@ -30,26 +32,36 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
   };
 
   return (
-    <Flex gap='4' w='100%'>
+    <Flex gap='6' w='100%'>
       <CreateNewPost onSubmit={_submitPost} type='experience' isOpen={isCreatePost} onClose={() => setIsCreatePost(false)} />
-      <Box h='100px' width='40%' bg='white' px='4' rounded='lg' shadow='md' py='5'></Box>
-      <Flex justify='center' width='60%' gap='3' direction='column'>
+      <Box mr='6' width='40%'>
+        <Weather />
+      </Box>
+      <Flex position='relative' justify='center' width='60%' direction='column'>
         {isLoggedIn && (
-          <Box bg='white' width='100%' px='4' rounded='lg' shadow='md' py='5'>
-            <CreatePost
-              avatar={avatar}
-              onCreate={() => {
-                setIsCreatePost(true);
-              }}
-            />
-          </Box>
+          <>
+            <Box bg='white' width='100%' px='4' rounded='lg' shadow='md' py='5'>
+              <CreatePost
+                avatar={avatar}
+                onCreate={() => {
+                  setIsCreatePost(true);
+                }}
+              />
+            </Box>
+
+            <Spacer h='7' my='1'>
+              <Center color='gray.300'>---</Center>
+            </Spacer>
+          </>
         )}
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
-        <Box bg='white' rounded='lg' mb='5' px='4' shadow='md' h='36'></Box>
+        <PostRender />
+        <PostRender />
+        <PostRender />
+        <PostRender />
+        <PostRender />
+        <PostRender />
+        <PostRender />
+        <PostRender />
       </Flex>
     </Flex>
   );
