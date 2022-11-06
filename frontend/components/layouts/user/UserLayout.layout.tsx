@@ -93,7 +93,7 @@ export default function UserLayout(props: IUserLayoutProps) {
   };
 
   return (
-    <>
+    <Box>
       <Navbar role={RoleConstants.USER} />
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
@@ -101,6 +101,6 @@ export default function UserLayout(props: IUserLayoutProps) {
       </Box>
       <ScrollToTop />
       <Footer />
-    </>
+    </Box>
   );
 }
