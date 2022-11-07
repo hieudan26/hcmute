@@ -70,5 +70,10 @@ public class UserController {
                                                     ,@Parameter String postId){
         return ResponseEntity.ok(postService.getPost(postId));
     }
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{userId}/images")
+    public ResponseEntity<BaseResponse> getUserImages(PagingRequest pagingRequest, @Parameter String userId){
+        return ResponseEntity.ok(userService.getImages(userId,pagingRequest));
+    }
 
 }

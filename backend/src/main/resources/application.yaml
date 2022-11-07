@@ -12,6 +12,11 @@ spring:
     generate-ddl: true
     properties:
       hibernate.format_sql: true
+
+  properties:
+    hibernate:
+      legacy_limit_handler:true
+
   hibernate:
     ddl-auto: update
   sql:

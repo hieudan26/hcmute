@@ -3,6 +3,7 @@ package backend.controllers;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.post.CreatePostRequest;
+import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.post.UpdatePostRequest;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.services.AreaService;
@@ -38,8 +39,8 @@ public class PostController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("")
-    public ResponseEntity<BaseResponse> listAllPosts(PagingRequest pagingRequest){
-        return ResponseEntity.ok(postService.listAllPosts(pagingRequest));
+    public ResponseEntity<BaseResponse> listAllPosts(PostQueryParams params,PagingRequest pagingRequest){
+        return ResponseEntity.ok(postService.listAllPosts(pagingRequest,params));
     }
 
 

@@ -34,6 +34,8 @@ public class Posts extends Auditable<String> implements Serializable {
     @Column(nullable = false)
     String content;
 
+    Boolean isDeleted = false;
+
     private LocalDateTime time = LocalDateTime.now();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
