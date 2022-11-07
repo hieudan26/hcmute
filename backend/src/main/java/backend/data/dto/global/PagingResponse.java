@@ -26,8 +26,10 @@ public class PagingResponse<T> {
         boolean hasNext;
 
         public CustomPageable(Page page) {
-            this.pageNumber = page.getPageable().getPageNumber();
-            this.PageSize = page.getPageable().getPageSize();
+            if(page.getPageable().isPaged()){
+                this.pageNumber = page.getPageable().getPageNumber();
+                this.PageSize = page.getPageable().getPageSize();
+            }
             this.totalItems = page.getTotalElements();
             this.totalPages = page.getTotalPages();
             this.hasPrevious = page.hasPrevious();

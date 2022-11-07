@@ -4,6 +4,7 @@ import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.post.CreatePostRequest;
+import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.post.UpdatePostRequest;
 import backend.data.entity.Posts;
 import backend.data.entity.Users;
@@ -12,6 +13,7 @@ import backend.mapper.PostMapper;
 import backend.repositories.CommentRepository;
 import backend.repositories.PostRepository;
 import backend.utils.PagingUtils;
+import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,9 +40,9 @@ public class PostService {
                 .build();
     }
 
-    public BaseResponse listAllPosts(PagingRequest pagingRequest){
+    public BaseResponse listAllPosts(PagingRequest pagingRequest, PostQueryParams params){
         PagingResponse pagingResponse = new PagingResponse(
-                postRepository.queryAllPostsActive(PagingUtils.getPageable(pagingRequest))
+                postRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
                         .map(postMapper::PostsToPostsResponse));
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)

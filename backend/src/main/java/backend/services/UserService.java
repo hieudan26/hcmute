@@ -72,7 +72,12 @@ public class UserService {
                 .data(userRepository.save(users))
                 .build();
     }
-
+    public BaseResponse getImages(String id, PagingRequest pagingRequest){
+        return BaseResponse.builder().message("Create post successful.")
+                .data(new PagingResponse(userRepository.getUserImages(id,PagingUtils.getPageable(pagingRequest))
+                        .map(item -> item.getLink())))
+                .build();
+    }
     public BaseResponse adminUnlockUser(UserIdParams userIdParams){
         Users users = getUser(userIdParams.getId());
         users.setDisable(false);

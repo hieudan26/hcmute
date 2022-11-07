@@ -14,6 +14,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -93,8 +94,13 @@ public abstract class PostMapper {
     protected void setNumberForResponse(final Posts post, @MappingTarget PostResponse response) {
         response.setCommentNumber(commentRepository.countAllByPostId(post.getId()));
         response.setReactNumber(postRepository.countAllByReaction(post.getId()));
-        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        response.setIsReacted(postRepository.isReactPost(post.getId(),userId).isPresent());
+        Boolean react = false;
+        if(!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
+        {
+            String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            react = postRepository.isReactPost(post.getId(),userId).isPresent();
+        }
+        response.setIsReacted(react);
     }
 
     @Named("fromLocalDateTimeToString")
