@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PostRepository extends PagingAndSortingRepository<Posts, Integer>, JpaSpecificationExecutor<Posts> {
     Page<Posts> findAll(Specification specification, Pageable pageable);
 
-    @Query(value = "from Posts post where post.isDisable = false and post.owner.id = ?1 order by post.time desc")
+    @Query(value = "from Posts post where post.isDisable = false and post.owner.id = ?1 and post.isDeleted = false order by post.time desc")
     Page<Posts> queryPostsByUserId(Pageable pageable, String id);
 
     @Query(value = "select count(post) from Posts post join post.reaction reaction where post.id =?1")
