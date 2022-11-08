@@ -45,13 +45,6 @@ public class CommentService {
         parent.setChilds(childList);
         return parent;
     }
-    public CommentResponse mappingChildParent(Comments parents) {
-        List<CommentResponse> childList = new ArrayList<>();
-        var parent = commentMapper.fromCommentsToCommentResponse(parents);
-        parent.setChilds(childList);
-        return parent;
-    }
-
 
     public BaseResponse createComment(CreateCommentRequest createCommentRequest){
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -79,7 +72,7 @@ public class CommentService {
     public BaseResponse getCommentsByPost(PagingRequest pagingRequest, String postId){
         PagingResponse pagingResponse = new PagingResponse(
                 commentRepository.queryCommentsByPostId(PagingUtils.getPageable(pagingRequest),Integer.valueOf(postId))
-                        .map(comment->mappingChildParent(comment)));
+                        .map(comment->mappingChild(comment)));
         return BaseResponse.builder().message("Get comments successful.")
                 .data(pagingResponse)
                 .build();
