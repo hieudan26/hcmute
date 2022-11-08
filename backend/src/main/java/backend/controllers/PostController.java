@@ -37,6 +37,12 @@ public class PostController {
         return ResponseEntity.ok(postService.updatePost(id,updatePostRequest));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse> deletePost(@PathVariable("id") String id) throws NoPermissionException {
+        return ResponseEntity.ok(postService.deletePost(id));
+    }
+
     @PreAuthorize("permitAll()")
     @GetMapping("")
     public ResponseEntity<BaseResponse> listAllPosts(PostQueryParams params,PagingRequest pagingRequest){

@@ -37,4 +37,10 @@ public class CommentController {
     public ResponseEntity<BaseResponse> updateComment(@PathVariable("id") String id,@Validated @RequestBody UpdateCommentRequest updateCommentRequest) throws NoPermissionException {
         return ResponseEntity.ok(commentService.updateComment(id,updateCommentRequest));
     }
+
+    @PreAuthorize("permitAll()")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse> deleteComment(@PathVariable("id") String id) throws NoPermissionException {
+        return ResponseEntity.ok(commentService.deleteComment(id));
+    }
 }
