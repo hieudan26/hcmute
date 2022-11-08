@@ -25,7 +25,7 @@ public class SearchSpecificationUtils {
                 }
             }
         }
-        return builder.build();
+        return builder.buildOr();
     }
 
     public static Specification searchBuilder(PostQueryParams query){
@@ -44,6 +44,6 @@ public class SearchSpecificationUtils {
                 }
             }
         }
-        return builder.build();
+        return builder.buildAnd();
     }
 }
