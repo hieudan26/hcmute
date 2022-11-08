@@ -23,4 +23,5 @@ public class PostResponse {
     Integer reactNumber;
     List<String> images;
     Boolean isReacted;
+    Boolean isDeleted;
 }

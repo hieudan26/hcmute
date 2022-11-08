@@ -45,6 +45,13 @@ public class CommentService {
         parent.setChilds(childList);
         return parent;
     }
+    public CommentResponse mappingChildParent(Comments parents) {
+        List<CommentResponse> childList = new ArrayList<>();
+        var parent = commentMapper.fromCommentsToCommentResponse(parents);
+        parent.setChilds(childList);
+        return parent;
+    }
+
 
     public BaseResponse createComment(CreateCommentRequest createCommentRequest){
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
@@ -55,10 +62,24 @@ public class CommentService {
                 .build();
     }
 
+    public BaseResponse deleteComment(String id) throws NoPermissionException {
+        Comments comments = getCommentsByID(Integer.valueOf(id));
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        if(!userId.equals(comments.getOwner().getId()))
+            throw new NoPermissionException("You can't update other person's information.");
+
+        comments.setIsDeleted(true);
+
+        return BaseResponse.builder().message("delete comment successful.")
+                .data(commentMapper.fromCommentsToCommentResponse(commentRepository.save(comments)))
+                .build();
+    }
+
     public BaseResponse getCommentsByPost(PagingRequest pagingRequest, String postId){
         PagingResponse pagingResponse = new PagingResponse(
                 commentRepository.queryCommentsByPostId(PagingUtils.getPageable(pagingRequest),Integer.valueOf(postId))
-                        .map(comment->mappingChild(comment)));
+                        .map(comment->mappingChildParent(comment)));
         return BaseResponse.builder().message("Get comments successful.")
                 .data(pagingResponse)
                 .build();

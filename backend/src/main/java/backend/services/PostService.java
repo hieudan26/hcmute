@@ -97,6 +97,19 @@ public class PostService {
                 .build();
     }
 
+    public BaseResponse deletePost(String id) throws NoPermissionException {
+        Posts post = getPostById(Integer.valueOf(id));
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        if(!userId.equals(post.getOwner().getId()))
+            throw new NoPermissionException("You can't update other person's information.");
+
+        post.setIsDeleted(true);
+        return BaseResponse.builder().message("Update post successful.")
+                .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
+                .build();
+    }
+
     public BaseResponse getCommentsByPost(String id, PagingRequest pagingRequest){
         return commentService.getCommentsByPost(pagingRequest,id);
     }

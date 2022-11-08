@@ -29,7 +29,7 @@ public class Comments {
     @JsonIgnore
     Posts post;
 
-    @Column(name="parent_id", insertable=false, updatable=false)
+    @Column(name="parent_id")
     private Integer parentId;
 
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
@@ -44,4 +44,6 @@ public class Comments {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Users owner;
+
+    Boolean isDeleted = false;
 }
