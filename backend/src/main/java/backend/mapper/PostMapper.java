@@ -92,7 +92,7 @@ public abstract class PostMapper {
     @Named("setNumberForResponse")
     @AfterMapping
     protected void setNumberForResponse(final Posts post, @MappingTarget PostResponse response) {
-        response.setCommentNumber(commentRepository.countAllByPostIdAndIsDeletedEquals(post.getId(),true));
+        response.setCommentNumber(commentRepository.countAllByPostIdAndIsDeletedEquals(post.getId(),false));
         response.setReactNumber(postRepository.countAllByReaction(post.getId()));
         Boolean react = false;
         if(!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
