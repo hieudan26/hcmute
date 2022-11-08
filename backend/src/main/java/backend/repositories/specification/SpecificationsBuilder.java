@@ -18,7 +18,7 @@ public class SpecificationsBuilder<T> {
         return this;
     }
 
-    public org.springframework.data.jpa.domain.Specification<T> build() {
+    public org.springframework.data.jpa.domain.Specification<T> buildOr() {
         if (params.size() == 0) {
             return null;
         }
@@ -29,6 +29,21 @@ public class SpecificationsBuilder<T> {
         org.springframework.data.jpa.domain.Specification result = specs.get(0);
         for (int i = 1; i < params.size(); i++) {
             result =  org.springframework.data.jpa.domain.Specification.where(result).or(specs.get(i));
+        }
+        return result;
+    }
+
+    public org.springframework.data.jpa.domain.Specification<T> buildAnd() {
+        if (params.size() == 0) {
+            return null;
+        }
+        List<org.springframework.data.jpa.domain.Specification> specs = params.stream()
+                .map(Specification::new)
+                .collect(Collectors.toList());
+
+        org.springframework.data.jpa.domain.Specification result = specs.get(0);
+        for (int i = 1; i < params.size(); i++) {
+            result =  org.springframework.data.jpa.domain.Specification.where(result).and(specs.get(i));
         }
         return result;
     }
