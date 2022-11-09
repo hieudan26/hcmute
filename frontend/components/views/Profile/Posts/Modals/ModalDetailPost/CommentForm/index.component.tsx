@@ -1,16 +1,27 @@
-import { Box, Button, Flex, Image, Input } from '@chakra-ui/react';
-import { ChangeEvent, useState, KeyboardEvent, MutableRefObject } from 'react';
+import { Box, Button, Center, Flex, Image, Input } from '@chakra-ui/react';
+import { ChangeEvent, KeyboardEvent, MutableRefObject, useEffect, useState } from 'react';
+import { LocalStorageConstants } from '../../../../../../../constants/store.constant';
 import { defaultAvatar } from '../../../../../../../utils';
+import { LocalUtils } from '../../../../../../../utils/local.utils';
 import { toggleMessage } from '../../../../../Message/index.component';
 
 export interface ICommentFormProps {
   _onSumbit: (value: string) => void;
   _ref: MutableRefObject<HTMLInputElement | null>;
+  isSubmitting: boolean;
 }
 
 export default function CommentForm(props: ICommentFormProps) {
-  const { _onSumbit, _ref } = props;
+  const { _onSumbit, _ref, isSubmitting } = props;
   const [value, setValue] = useState<string>('');
+  const [avatar, setAvatar] = useState<string>(defaultAvatar);
+
+  useEffect(() => {
+    const avatarLocalStorage = LocalUtils.getLocalStorage(LocalStorageConstants.AVATAR);
+    if (avatarLocalStorage) {
+      setAvatar(avatarLocalStorage);
+    }
+  }, []);
 
   const changeComment = (event: ChangeEvent<HTMLInputElement> | undefined) => {
     if (event) {
@@ -37,7 +48,7 @@ export default function CommentForm(props: ICommentFormProps) {
   return (
     <Box width='full'>
       <Flex gap='2' width='100%'>
-        <Image src={defaultAvatar} alt='Profile picture' w='10' h='10' rounded='full' />
+        <Image src={avatar} alt='Profile picture' w='10' h='10' rounded='full' />
         <Input
           bg='gray.100'
           minW='80%'
@@ -49,7 +60,7 @@ export default function CommentForm(props: ICommentFormProps) {
           onChange={changeComment}
           onKeyDown={handleKeyDown}
         />
-        <Button mr='2' onClick={handleSubmit}>
+        <Button isLoading={isSubmitting} mr='2' onClick={handleSubmit}>
           Send
         </Button>
       </Flex>

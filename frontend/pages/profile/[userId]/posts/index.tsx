@@ -11,11 +11,9 @@ const Posts = dynamic(() => import('../../../../components/views/Profile/Posts/i
 });
 //#endregion
 
-export interface IProfilePostsProps {
-  user: any;
-}
+export interface IProfilePostsProps {}
 
-const ProfilePosts: NextPage<IProfilePostsProps> = ({ user }) => {
+const ProfilePosts: NextPage<IProfilePostsProps> = (props: IProfilePostsProps) => {
   // console.log('user nè: ', user);
 
   return (
@@ -28,20 +26,20 @@ const ProfilePosts: NextPage<IProfilePostsProps> = ({ user }) => {
 export default ProfilePosts;
 
 export const getServerSideProps: GetServerSideProps = async ({ locale, params }: any) => {
-  const { userId } = params;
-  const response = await userService.getUserInformationById(userId.toString());
-  var user = undefined;
-  if (response.isSuccess) {
-    user = response.data;
-  } else {
-    // in the current page, with the 404 http status code.
-    // this will display your /pages/404.js error page,
-    return { notFound: true };
-  }
+  // const { userId } = params;
+  // const response = await userService.getUserInformationById(userId.toString());
+  // var user = undefined;
+  // if (response.isSuccess) {
+  //   user = response.data;
+  // } else {
+  //   // in the current page, with the 404 http status code.
+  //   // this will display your /pages/404.js error page,
+  //   return { notFound: true };
+  // }
 
   return {
     props: {
-      user,
+      // user,
       ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
       // Will be passed to the page component as props
     },

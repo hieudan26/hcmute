@@ -6,3 +6,10 @@ export interface ResponseMessage {
 }
 
 export type MessageType = 'success' | 'error' | 'warning' | 'info' | 'loading';
+
+export interface IPaginationRequest {
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortType?: 'DESC' | 'ASC';
+}

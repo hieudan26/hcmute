@@ -9,4 +9,6 @@ export const API_PATH = {
   REFRESH_TOKEN: '',
   AREAS_LIST_COUNTRIES: '/areas/list/countries',
   AREAS_COUNTRIES: 'areas/countries',
+  POST: '/posts',
+  COMMENT: '/comments',
 };

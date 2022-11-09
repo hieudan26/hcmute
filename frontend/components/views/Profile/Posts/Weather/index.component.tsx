@@ -21,7 +21,6 @@ export default function Weather(props: IWeatherProps) {
       .then((res) => res.json())
       .then((result) => {
         setWeather(result);
-        console.log(result);
       });
   }, []);
 

@@ -43,7 +43,7 @@ export const LocalUtils = {
 
         //store some response data to cookie
         const expire = new Date(decodedHeader.exp * 1000);
-        const moreExpire = moment(expire).add(1, 'd').toDate();
+        const moreExpire = moment(expire).add(30, 'd').toDate();
         cookie.save(CookieConstants.ACCESS_TOKEN, idToken, { expires: moreExpire, sameSite: 'strict' });
 
         const refreshToken = data.getSignInUserSession()?.getRefreshToken().getToken();

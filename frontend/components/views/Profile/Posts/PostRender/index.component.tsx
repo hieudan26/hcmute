@@ -4,33 +4,102 @@ import { AiFillHeart } from 'react-icons/ai';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { BiCommentDetail } from 'react-icons/bi';
 import { Carousel } from 'react-responsive-carousel';
-import { defaultAvatar } from '../../../../../utils';
+import { defaultAvatar, timeSincePost } from '../../../../../utils';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
+import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
+import { useCUDPost } from '../../../../../hooks/queries/posts';
+import { toggleMessage } from '../../../Message/index.component';
+import UpdatePost from '../Modals/UpdatePost/index.component';
+import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 
-export interface IPostRenderProps {}
+export interface IPostRenderProps {
+  post: IPostResponseModel;
+  currentUserId: string;
+}
 
 export default function PostRender(props: IPostRenderProps) {
-  const staticData = [defaultAvatar, defaultAvatar, defaultAvatar, defaultAvatar];
+  const { post, currentUserId } = props;
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
+  const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
+
+  const reactPost = () => {
+    if (currentUserId === '') {
+      toggleMessage({
+        title: 'Authentication/Authorization',
+        message: 'You must login first',
+        type: 'warning',
+      });
+    } else {
+      mutationReactPost.mutate(post.id);
+    }
+  };
+
+  const _submitEditPost = async (params: IPostRequestModel) => {
+    const paramsPostId: IPostRequestModelPostId = { ...params, postId: post.id };
+    mutationUpdatePost.mutate(paramsPostId);
+    setIsOpenEdit(false);
+  };
+
+  const copyLink = () => {
+    var linkComment = 'http://localhost:3000';
+    if (process.env.NODE_ENV === 'development') {
+      linkComment = `${linkComment}/detail-post/${post.id}`;
+    } else {
+      linkComment = 'https://lumiere.hcmute.me';
+      linkComment = `${linkComment}/detail-post/${post.id}`;
+    }
+
+    navigator.clipboard.writeText(linkComment);
+    toggleMessage({
+      message: 'Copy link post successfully',
+      type: 'info',
+    });
+  };
 
   return (
     <Box bg='white' rounded='lg' mb='5' px='4' shadow='md'>
       <ModalDetailPost
+        currentUserId={currentUserId}
+        post={post}
         isOpen={isOpenDetail}
         onClose={() => {
           setIsOpenDetail(false);
         }}
       />
+      <UpdatePost
+        currentUserId={currentUserId}
+        post={post}
+        type={post.type === 'experience' ? 'experience' : 'faq'}
+        isOpen={isOpenEdit}
+        onClose={() => {
+          setIsOpenEdit(false);
+        }}
+        onSubmit={_submitEditPost}
+      />
+      <ConfirmDeletePost
+        title='Confirm Delete Post'
+        content='Do you want to delete post'
+        isOpen={isOpenDelete}
+        onClose={() => {
+          setIsOpenDelete(false);
+        }}
+        onSubmit={() => {
+          mutationDeletePost.mutate(post.id);
+          setIsOpenDelete(false);
+        }}
+      />
       <Flex justify='space-between' align='center' px='4' py='2'>
         <Flex gap='2' align='center'>
           <Box position='relative'>
-            <Image src={defaultAvatar} alt='Profile picture' w='10' h='10' rounded='full' />
+            <Image src={post.avatar} alt='Profile picture' w='10' h='10' rounded='full' />
             <span className='bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2'></span>
           </Box>
           <Box>
-            <Box fontWeight='semibold'>John Doe</Box>
+            <Box fontWeight='semibold'>{post.fullName}</Box>
             <Text fontSize='sm' color='gray.500'>
-              38m
+              {timeSincePost(post.time)}
             </Text>
           </Box>
         </Flex>
@@ -46,36 +115,47 @@ export default function PostRender(props: IPostRenderProps) {
               icon={<Icon as={HiOutlineDotsHorizontal} />}
             />
             <MenuList minW='32'>
-              <MenuItem>Delete</MenuItem>
-              <MenuItem>Copy link</MenuItem>
+              <MenuItem onClick={() => setIsOpenEdit(true)} hidden={currentUserId !== post.userId}>
+                Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIsOpenDelete(true);
+                }}
+                hidden={currentUserId !== post.userId}
+              >
+                Delete
+              </MenuItem>
+              <MenuItem onClick={copyLink}>Copy link</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
       </Flex>
 
       <Text textAlign='justify' px='4' py='2'>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates, autem earum cum ullam odio, molestias maxime aperiam
-        in id aspernatur vel ratione odit molestiae minus ipsa obcaecati quia! Doloribus, illum.
+        {post.content}
       </Text>
 
-      <Box px='4' py='2' h='xs'>
-        <Carousel infiniteLoop showArrows centerMode={staticData.length > 1} showThumbs={false}>
-          {staticData.map((item, index) => (
-            <Image w='3xs' h='xs' key={index} src={item} alt={item} />
-          ))}
-        </Carousel>
-      </Box>
+      {post.images.length > 0 && (
+        <Box px='4' py='2' h='xs'>
+          <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
+            {post.images.map((item, index) => (
+              <Image w='3xs' h='xs' key={index} src={item} alt={item} />
+            ))}
+          </Carousel>
+        </Box>
+      )}
 
       <Box px='4' py='2' pt='6'>
         <Flex align='center' justify='space-between'>
           <Flex direction='row-reverse' align='center'>
             <Text fontSize='xs' ml='2' color='gray.500'>
-              999
+              {post.reactNumber}
             </Text>
             <Icon color='#D0637C' fontSize='xl' as={AiFillHeart} />
           </Flex>
           <Box fontSize='xs' color='gray.500'>
-            <Text>90 comments</Text>
+            <Text>{post.commentNumber} comments</Text>
           </Box>
         </Flex>
       </Box>
@@ -92,9 +172,10 @@ export default function PostRender(props: IPostRenderProps) {
               py='2'
               cursor='pointer'
               rounded='lg'
-              color='gray.500'
+              color={post.isReacted ? '#D0637C' : 'gray.500'}
+              onClick={reactPost}
             >
-              <Icon color='#D0637C' as={AiFillHeart} />
+              <Icon as={AiFillHeart} />
               &nbsp;
               <Text fontSize='md'>Love</Text>
             </Flex>

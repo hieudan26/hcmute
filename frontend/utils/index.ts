@@ -16,6 +16,64 @@ export const publicRouteContain = [
 export const privateRouteContain = ['/settings'];
 export const authRouteContain = ['/login', '/register', '/forgot-password'];
 
+export const timeSincePost = (createdAt: string) => {
+  var datePost = createdAt[0] + createdAt[1];
+  var monthPost = createdAt[3] + createdAt[4];
+  var yearPost = createdAt[6] + createdAt[7] + createdAt[8] + createdAt[9];
+  var hoursPost = createdAt[11] + createdAt[12];
+  var minutesPost = createdAt[14] + createdAt[15];
+  var secondsPost = createdAt[17] + createdAt[18];
+  const datePostDate = new Date(
+    Number(yearPost),
+    Number(monthPost) - 1,
+    Number(datePost),
+    Number(hoursPost),
+    Number(minutesPost),
+    Number(secondsPost)
+  );
+
+  var second = 1000;
+  var minute = 60000;
+  var hour = 3600000;
+  var day = 86400000;
+  var week = 604800000;
+  var month = 2628001152;
+  var year = 31536013824;
+  var timeSincePost = 0;
+  var timeSincePoststr = '';
+
+  const curDate = new Date();
+  var timeDiffms = Math.abs(curDate.valueOf() - datePostDate.valueOf());
+
+  if ((timeSincePost = Math.floor(timeDiffms / year)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'y';
+  } else if ((timeSincePost = Math.floor(timeDiffms / month)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'm';
+  } else if ((timeSincePost = Math.floor(timeDiffms / week)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'w';
+  } else if ((timeSincePost = Math.floor(timeDiffms / day)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'd';
+  } else if ((timeSincePost = Math.floor(timeDiffms / hour)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'h';
+  } else if ((timeSincePost = Math.floor(timeDiffms / minute)) > 0) {
+    timeSincePoststr = timeSincePost.toString() + 'm';
+  } else if ((timeSincePost = Math.floor(timeDiffms / second)) > 3) {
+    timeSincePoststr = timeSincePost.toString() + 's';
+  } else {
+    timeSincePoststr = 'just now';
+  }
+
+  return timeSincePoststr;
+};
+
+export const formatTimePost = (date: Date) => {
+  const padL = (nr: any, len = 2, chr = `0`) => `${nr}`.padStart(2, chr);
+
+  return `${padL(date.getDate())}/${padL(date.getMonth() + 1)}/${date.getFullYear()} ${padL(date.getHours())}:${padL(
+    date.getMinutes()
+  )}:${padL(date.getSeconds())}`;
+};
+
 export const formatDateddMMYYYYtoDate = (date: string) => {
   var dateParts = date.split('/');
   // month is 0-based, that's why we need dataParts[1] - 1
