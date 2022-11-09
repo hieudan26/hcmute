@@ -26,6 +26,7 @@ import { useCommentsPost } from '../../../hooks/queries/comment';
 import { ICommentsPostResponse } from '../../../models/comment/comment.model';
 import { IPostResponseModel } from '../../../models/post/post.model';
 import postService from '../../../services/post/post.service';
+import { timeSincePost } from '../../../utils';
 
 export interface IDetailPostProps {
   post: IPostResponseModel;
@@ -86,7 +87,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
           <Box>
             <Box fontWeight='semibold'>{dataPost.fullName}</Box>
             <Text fontSize='sm' color='gray.500'>
-              {dataPost.time}
+              {timeSincePost(dataPost.time)}
             </Text>
           </Box>
         </Flex>

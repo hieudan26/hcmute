@@ -81,7 +81,7 @@ export default function CommentRender(props: ICommentRenderProps) {
       <Flex gap='4'>
         <Flex gap='2'>
           <Image
-            src={defaultAvatar}
+            src={comment.avatar}
             alt='Profile picture'
             w={comment.parentId === null ? '10' : '8'}
             h={comment.parentId === null ? '10' : '8'}
