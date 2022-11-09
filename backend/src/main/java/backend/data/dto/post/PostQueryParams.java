@@ -12,5 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class PostQueryParams {
     String type;
     String userId;
-    Boolean isDeleted;
+    Boolean isDeleted = false;
 }

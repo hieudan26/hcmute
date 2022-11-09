@@ -25,4 +25,6 @@ public class CreatePostRequest {
     @NotEmpty(message = "The content is required")
     String content;
     List<String> images;
+    @JsonIgnore
+    Boolean isDeleted =false;
 }
