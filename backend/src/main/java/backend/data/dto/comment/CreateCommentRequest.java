@@ -33,4 +33,6 @@ public class CreateCommentRequest {
 
     @JsonIgnore
     private String userId;
+    @JsonIgnore
+    Boolean isDeleted = false;
 }

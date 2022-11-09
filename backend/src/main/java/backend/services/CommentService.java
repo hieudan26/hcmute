@@ -28,6 +28,19 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
 
+    public void deleteChilds(List<Comments> parents) {
+        parents.stream()
+            .forEach(item->deleteChild(item));
+    }
+
+    public void deleteChild(Comments parents) {
+        for(var comment : parents.getChildComments()){
+            if(comment.getChildComments() != null)
+                deleteChild(comment);
+        }
+        parents.setIsDeleted(true);
+    }
+
     public List<CommentResponse> mappingChilds(List<Comments> parents) {
         return parents.stream()
                 .map(comment -> mappingChild(comment))
@@ -63,7 +76,7 @@ public class CommentService {
             throw new NoPermissionException("You can't update other person's information.");
 
         comments.setIsDeleted(true);
-
+        deleteChilds(comments.getChildComments().stream().toList());
         return BaseResponse.builder().message("delete comment successful.")
                 .data(commentMapper.fromCommentsToCommentResponse(commentRepository.save(comments)))
                 .build();
