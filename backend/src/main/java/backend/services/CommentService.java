@@ -50,7 +50,7 @@ public class CommentService {
     public CommentResponse mappingChild(Comments parents) {
         List<CommentResponse> childList = new ArrayList<>();
         for(var comment : parents.getChildComments()){
-            if(comment.getChildComments() != null)
+            if(comment.getChildComments() != null && comment.getIsDeleted() == false)
                 childList.add(mappingChild(comment));
         }
 
