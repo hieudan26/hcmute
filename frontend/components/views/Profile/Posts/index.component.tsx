@@ -12,11 +12,17 @@ import {
   Tabs,
   Text,
   Highlight,
+  Spinner,
 } from '@chakra-ui/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import cookie from 'react-cookies';
+import InfiniteScroll from 'react-infinite-scroller';
 import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
+import { useCUDPost, usePosts, usePostsByTypeAndUserId } from '../../../../hooks/queries/posts';
+import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
+import postService from '../../../../services/post/post.service';
 import { defaultAvatar } from '../../../../utils';
 import { LocalUtils } from '../../../../utils/local.utils';
 import AboutPost from './AboutPost/index.component';
@@ -32,19 +38,35 @@ export default function Posts(props: IPostsProps) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
   const [fullname, setFullname] = useState<string>('username');
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [userIdQuery, setUserIdQuery] = useState<string>('');
   const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
   const router = useRouter();
+  const posts = usePostsByTypeAndUserId({
+    type: typePost,
+    userId: userIdQuery,
+    sortBy: 'time',
+    sortType: 'DESC',
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const { mutationCreatePost } = useCUDPost();
 
   useEffect(() => {
     if (isLoggedIn) {
       const { userId: userIdq } = router.query;
       if (userIdq) {
         const tempCp = userIdq as string;
+        setUserIdQuery(tempCp);
         const curUserId = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
         if (tempCp === curUserId) {
           setIsCurrentUser(true);
         } else {
           setIsCurrentUser(false);
+        }
+
+        if (curUserId) {
+          setCurrentUserId(curUserId);
         }
       } else {
         setIsCurrentUser(false);
@@ -53,7 +75,7 @@ export default function Posts(props: IPostsProps) {
   }, [isLoggedIn, router.query]);
 
   useEffect(() => {
-    const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_FIRST_LOGIN) ? true : false;
+    const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_LOGGED_IN) ? true : false;
     const avatar = LocalUtils.getLocalStorage(LocalStorageConstants.AVATAR);
     const fullname = LocalUtils.getLocalStorage(LocalStorageConstants.FULL_NAME);
 
@@ -62,8 +84,9 @@ export default function Posts(props: IPostsProps) {
     if (fullname) setFullname(fullname);
   }, []);
 
-  const _submitPost = async (params: any) => {
-    console.log(params);
+  const _submitPost = async (params: IPostRequestModel) => {
+    const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
+    mutationCreatePost.mutate(paramsLoading);
   };
 
   return (
@@ -130,6 +153,7 @@ export default function Posts(props: IPostsProps) {
               </Tabs>
 
               <CreateNewPost
+                currentUserId={currentUserId}
                 onSubmit={_submitPost}
                 type={typePost}
                 isOpen={isCreatePost}
@@ -142,11 +166,21 @@ export default function Posts(props: IPostsProps) {
             </>
           )}
 
-          <PostRender />
-          <PostRender />
-          <PostRender />
-          <PostRender />
-          <PostRender />
+          <InfiniteScroll
+            loadMore={() => posts.fetchNextPage()}
+            hasMore={posts.hasNextPage}
+            loader={
+              <Center>
+                <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
+              </Center>
+            }
+          >
+            {posts.data?.pages.map((page) =>
+              page.data.content.map((item: IPostResponseModel, index: number) => (
+                <PostRender key={index} post={item} currentUserId={currentUserId} />
+              ))
+            )}
+          </InfiniteScroll>
         </Box>
       </Flex>
     </>

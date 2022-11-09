@@ -1,19 +1,24 @@
 import { Box, Divider } from '@chakra-ui/react';
+import { ICommentsPostResponse } from '../../../../../models/comment/comment.model';
 import CommentRender from '../CommentRender/index.component';
 
 export interface ITreeCommentRenderProps {
-  a: any;
+  commentsPost: ICommentsPostResponse;
+  currentUserId: string;
 }
 
 export default function TreeCommentRender(props: ITreeCommentRenderProps) {
-  const { a } = props;
+  const { commentsPost, currentUserId } = props;
 
   return (
     <>
-      <Divider orientation='horizontal' />
-      <Box py='2' px='2'>
-        <CommentRender />
-        {a.childrens && a.childrens.map((person: any, index: number) => <TreeCommentRender key={index} a={person} />)}
+      <Box py={commentsPost.parentId === null ? '3' : '1'} px={commentsPost.parentId === null ? '1' : '5'}>
+        <CommentRender comment={commentsPost} currentUserId={currentUserId} />
+
+        {commentsPost.childs &&
+          commentsPost.childs.map((item: ICommentsPostResponse, index: number) => (
+            <TreeCommentRender key={`${index}-${item.id}`} commentsPost={item} currentUserId={currentUserId} />
+          ))}
       </Box>
     </>
   );

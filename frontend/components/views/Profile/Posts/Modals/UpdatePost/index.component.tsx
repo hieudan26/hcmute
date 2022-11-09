@@ -1,40 +1,52 @@
-import { Button, Divider, Flex, IconButton, Image, Input, ModalBody, ModalCloseButton, ModalHeader } from '@chakra-ui/react';
+import {
+  Divider,
+  Flex,
+  IconButton,
+  Input,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  Button,
+  Image,
+  Center,
+} from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
+import ModalContainer from '../../../../Modals/ModalContainer/index.component';
 import { AiFillTags } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
 import { IoLocation } from 'react-icons/io5';
 import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { IPostRequestModel, IPostResponseModel } from '../../../../../../models/post/post.model';
 import useUploadFile from '../../../../../../hooks/useUploadFile';
-import { IPostRequestModel } from '../../../../../../models/post/post.model';
 import { formatTimePost } from '../../../../../../utils';
-import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
-import ModalContainer from '../../../../Modals/ModalContainer/index.component';
 
-export interface ICreateNewPostProps {
+export interface IUpdatePostProps {
   type: 'experience' | 'faq';
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (params: any) => Promise<void>;
+  post: IPostResponseModel;
   currentUserId: string;
 }
 
-export default function CreateNewPost(props: ICreateNewPostProps) {
-  const { type, isOpen, onClose, onSubmit, currentUserId } = props;
+export default function UpdatePost(props: IUpdatePostProps) {
+  const { type, isOpen, onClose, onSubmit, post, currentUserId } = props;
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
-  const [valuePost, setValuePost] = useState<string>('');
+  const [valuePost, setValuePost] = useState<string>(post.content);
   const [isDisabledBtnPost, setIsDisabledBtnPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (valuePost.length > 0) {
+    if (valuePost.length > 0 && valuePost !== post.content.trim()) {
       setIsDisabledBtnPost(false);
     } else {
       setIsDisabledBtnPost(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuePost]);
 
   const handleClick = () => {
@@ -56,15 +68,12 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const submit = async () => {
     setIsSubmitting(true);
     await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
-    console.log(urlsRef);
     const params: IPostRequestModel = {
       content: valuePost,
-      images: urlsRef.current,
-      time: formatTimePost(new Date()),
+      images: [...urlsRef.current, ...post.images],
       type: type,
     };
     onSubmit(params);
-    setValuePost('');
     handleClose(true);
     setIsSubmitting(false);
     handleClose(false);
@@ -88,7 +97,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        Creat new {type}
+        Update {post.fullName}&apos;s {type}
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -96,7 +105,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           handleClose(false);
         }}
       />
-      <ModalBody maxH='80vh'>
+      <ModalBody>
         <AutoResizeTextarea
           maxH='80'
           border='1px'
@@ -108,6 +117,16 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           onChange={changeValueTextarea}
         />
 
+        {post.images.length > 0 && (
+          <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
+            {post.images.map((item, index) => (
+              <Image width='100%' height='44' key={index} src={item} alt={item} />
+            ))}
+          </Carousel>
+        )}
+        <Center mt='5' hidden={selectedFiles.length <= 0}>
+          New images -- Update to reset all images
+        </Center>
         {selectedFiles.length > 0 && (
           <Carousel infiniteLoop showArrows centerMode={selectedFiles.length > 1} showThumbs={false}>
             {selectedFiles.map((item, index) => (
@@ -159,7 +178,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
             Clear Images
           </Button>
           <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
-            Post
+            Save changes
           </Button>
         </Flex>
       </ModalBody>
