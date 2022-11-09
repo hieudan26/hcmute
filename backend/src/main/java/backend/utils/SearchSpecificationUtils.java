@@ -19,7 +19,7 @@ public class SearchSpecificationUtils {
         for (var field: query.getClass().getDeclaredFields()) {
             if(!jsonNode.get(field.getName()).isNull()){
                 if(jsonNode.get(field.getName()).isBoolean()){
-                    builder.with(field.getName(), "=", jsonNode.get(field.getName()).asText());
+                    builder.with(field.getName(), "=", Boolean.valueOf(jsonNode.get(field.getName()).asText()));
                 }else{
                     builder.with(field.getName(), ":", jsonNode.get(field.getName()).asText());
                 }
@@ -38,7 +38,7 @@ public class SearchSpecificationUtils {
                     builder.with("owner", "nested", jsonNode.get(field.getName()).asText());
                 }
                 else if(jsonNode.get(field.getName()).isBoolean()){
-                builder.with(field.getName(), "=", jsonNode.get(field.getName()).asText());
+                builder.with(field.getName(), "=", Boolean.valueOf(jsonNode.get(field.getName()).asText()));
                 }else{
                     builder.with(field.getName(), ":", jsonNode.get(field.getName()).asText());
                 }

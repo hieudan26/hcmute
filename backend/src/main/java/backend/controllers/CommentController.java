@@ -32,13 +32,13 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsByParent(id));
     }
 
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse> updateComment(@PathVariable("id") String id,@Validated @RequestBody UpdateCommentRequest updateCommentRequest) throws NoPermissionException {
         return ResponseEntity.ok(commentService.updateComment(id,updateCommentRequest));
     }
 
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse> deleteComment(@PathVariable("id") String id) throws NoPermissionException {
         return ResponseEntity.ok(commentService.deleteComment(id));
