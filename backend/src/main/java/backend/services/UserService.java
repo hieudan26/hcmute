@@ -1,14 +1,13 @@
 package backend.services;
 
+import backend.common.FriendStatuses;
 import backend.common.Roles;
 import backend.data.dto.authenthication.CheckEmailExistRequest;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
-import backend.data.dto.user.UpdateUserRequest;
-import backend.data.dto.user.UserFirstLoginRequest;
-import backend.data.dto.user.UserIdParams;
-import backend.data.dto.user.UserQueryParams;
+import backend.data.dto.user.*;
+import backend.data.entity.Friends;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
@@ -24,17 +23,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.NoPermissionException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Transactional(rollbackFor = Exception.class)
 public class UserService {
     private CognitoUtil cognitoUtil;
     private UserMapper userMapper;
-    private UserRepository userRepository;
 
-    @Transactional(rollbackFor = Exception.class)
+    private UserRepository userRepository;
+    private final String owner_key = "owner";
+    private final String friend_key = "friend";
+
     public BaseResponse createUser(UserFirstLoginRequest userFirstLoginRequest){
         CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Users user = userMapper.userFirstLoginRequestToUsers(userFirstLoginRequest);
@@ -99,6 +105,130 @@ public class UserService {
                 .data(userRepository.save(users))
                 .build();
     }
+
+    public BaseResponse getFriends(String userId, String status, PagingRequest pagingRequest){
+        getUser(userId);
+        PagingResponse pagingResponse;
+        if(status == null){
+            pagingResponse= new PagingResponse(
+                    userRepository.getFriends(userId,PagingUtils.getPageable(pagingRequest))
+                            .map(userMapper::FriendsToFriendResponse));
+        }else{
+            pagingResponse= new PagingResponse(
+                    userRepository.getFriendsByStatus(userId, status, PagingUtils.getPageable(pagingRequest))
+                            .map(userMapper::FriendsToFriendResponse));
+        }
+        return BaseResponse.builder().message(String.format("Get friends of user %s successful.",userId))
+                .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse updateStatusFriend(UpdateStatusFriendsRequest friendsRequest){
+        String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Users users = getUser(id);
+        Users friend = getUser(friendsRequest.getFriendId());
+
+        if(friendsRequest.getStatus().equals("add")){
+            addFriend(users,friend,friendsRequest);
+        }
+
+        if(friendsRequest.getStatus().equals("remove")){
+            deleteFriend(users,friend,friendsRequest);
+        }
+
+        return BaseResponse.builder().message(String.format("Get friend of user %s successful.",id))
+                .data(userMapper.FriendsToFriendResponse(
+                        getUser(id)
+                                .getFriends().stream()
+                                .filter(friends -> friends.getFriend().equals(friend))
+                                .findFirst().get()))
+                .build();
+
+    }
+    public void addFriend(Users users, Users friend, UpdateStatusFriendsRequest friendsRequest){
+        Optional<Friends> optionalFriends =
+                users.getFriends().stream().filter(friends -> friends.getFriend().equals(friend)).findFirst();
+
+        Map map = new HashMap();
+            if(optionalFriends.isEmpty()){
+                map.put(owner_key,FriendStatuses.INVITED.getStatus());
+                map.put(owner_key,FriendStatuses.PENDING.getStatus());
+
+            } else if (optionalFriends.get().getStatus().equals(FriendStatuses.NO_FRIEND.getStatus())){
+                users.getFriends()
+                        .stream().filter(friends -> friends.getFriend().equals(friend))
+                        .findFirst().get().setStatus(FriendStatuses.INVITED.getStatus());
+                friend.getFriends()
+                        .stream().filter(friends -> friends.getFriend().equals(users))
+                        .findFirst().get().setStatus(FriendStatuses.PENDING.getStatus());
+
+            } else if(optionalFriends.get().getStatus().equals(FriendStatuses.PENDING.getStatus())){
+                users.getFriends()
+                        .stream().filter(friends -> friends.getFriend().equals(friend))
+                        .findFirst().get().setStatus(FriendStatuses.FRIEND.getStatus());
+                friend.getFriends()
+                        .stream().filter(friends -> friends.getFriend().equals(users))
+                        .findFirst().get().setStatus(FriendStatuses.FRIEND.getStatus());
+            }
+        saveFriends(users,friend, map,friendsRequest);
+    }
+
+    public void deleteFriend(Users users, Users friend,UpdateStatusFriendsRequest friendsRequest){
+        Optional<Friends> optionalFriends =
+                users.getFriends().stream().filter(friends -> friends.getFriend().equals(friend)).findFirst();
+
+        Map map = new HashMap();
+        if(optionalFriends.isEmpty()){
+            map.put(owner_key,FriendStatuses.NO_FRIEND.getStatus());
+            map.put(owner_key,FriendStatuses.NO_FRIEND.getStatus());
+
+        } else if (!optionalFriends.get().getStatus().equals(FriendStatuses.BLOCKING.getStatus())){
+            users.getFriends()
+                    .stream().filter(friends -> friends.getFriend().equals(friend))
+                    .findFirst().get().setStatus(FriendStatuses.NO_FRIEND.getStatus());
+            friend.getFriends()
+                    .stream().filter(friends -> friends.getFriend().equals(users))
+                    .findFirst().get().setStatus(FriendStatuses.NO_FRIEND.getStatus());
+
+        }
+        saveFriends(users,friend, map, friendsRequest);
+    }
+
+    public void saveFriends(Users users, Users friend, Map mapStatus, UpdateStatusFriendsRequest friendsRequest){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        if(friendsRequest.getTime() == null)
+            friendsRequest.setTime(LocalDateTime.now().format(dateTimeFormatter));
+
+        LocalDateTime.parse(friendsRequest.getTime(),dateTimeFormatter);
+
+        if (!mapStatus.isEmpty()){
+            Friends newFriendOwner = Friends.builder()
+                    .owner(users)
+                    .friend(friend)
+                    .status(FriendStatuses.INVITED.getStatus())
+                    .time(LocalDateTime.parse(friendsRequest.getTime(),dateTimeFormatter)).build();
+            users.getFriends().add(newFriendOwner);
+
+            Friends newFriendFriend = Friends.builder()
+                    .owner(friend)
+                    .friend(users)
+                    .status(FriendStatuses.PENDING.getStatus())
+                    .time(LocalDateTime.parse(friendsRequest.getTime(),dateTimeFormatter)).build();
+            friend.getFriends().add(newFriendFriend);
+        }
+
+        users.getFriends()
+                .stream().filter(friends -> friends.getFriend().equals(friend))
+                .findFirst().get().setTime(LocalDateTime.parse(friendsRequest.getTime(),dateTimeFormatter));
+
+        friend.getFriends()
+                .stream().filter(friends -> friends.getFriend().equals(users))
+                .findFirst().get().setTime(LocalDateTime.parse(friendsRequest.getTime(),dateTimeFormatter));
+
+        userRepository.save(users);
+        userRepository.save(friend);
+    }
+
     public Users getUser(String id){
         Optional<Users> users = userRepository.findById(id);
         if(users.isEmpty())

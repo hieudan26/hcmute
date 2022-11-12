@@ -3,9 +3,7 @@ package backend.controllers;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.post.UpdatePostRequest;
-import backend.data.dto.user.UpdateUserRequest;
-import backend.data.dto.user.UserIdParams;
-import backend.data.dto.user.UserQueryParams;
+import backend.data.dto.user.*;
 import backend.services.PostService;
 import backend.services.UserService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -59,21 +57,39 @@ public class UserController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/{id}/posts")
-    public ResponseEntity<BaseResponse> getUserPosts(PagingRequest pagingRequest,@Parameter String userId){
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<BaseResponse> getUserPosts(PagingRequest pagingRequest,@PathVariable String userId){
         return ResponseEntity.ok(postService.listAllPostsByUserId(pagingRequest, userId));
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping("/{userId}/posts/{postId}")
-    public ResponseEntity<BaseResponse> getUserPost(@Parameter String userId
-                                                    ,@Parameter String postId){
+    public ResponseEntity<BaseResponse> getUserPost(@PathVariable String userId
+                                                    ,@PathVariable String postId){
         return ResponseEntity.ok(postService.getPost(postId));
     }
     @PreAuthorize("permitAll()")
     @GetMapping("/{userId}/images")
-    public ResponseEntity<BaseResponse> getUserImages(PagingRequest pagingRequest, @Parameter String userId){
+    public ResponseEntity<BaseResponse> getUserImages(PagingRequest pagingRequest, @PathVariable String userId){
         return ResponseEntity.ok(userService.getImages(userId,pagingRequest));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{userId}/friends")
+    public ResponseEntity<BaseResponse> getUserFriends(PagingRequest pagingRequest,
+                                                       @PathVariable String userId,
+                                                       @Parameter String status
+                                                       ){
+        return ResponseEntity.ok(userService.getFriends(userId, status,pagingRequest));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/{userId}/friends")
+    public ResponseEntity<BaseResponse> updateStatusFriends(
+            @PathVariable String userId,
+            @Validated @RequestBody UpdateStatusFriendsRequest updateStatusFriendsRequest
+    ){
+        return ResponseEntity.ok(userService.updateStatusFriend(updateStatusFriendsRequest));
     }
 
 }

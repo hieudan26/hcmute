@@ -35,6 +35,11 @@ public class Users extends Auditable<String> implements Serializable {
     String village;
     String role;
 
+    @OneToMany( mappedBy="owner", cascade=CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Friends> friends = new HashSet<>();
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
@@ -48,5 +53,9 @@ public class Users extends Auditable<String> implements Serializable {
     public void removePost(Posts post) {
         post.setOwner(null);
         this.posts.remove(post);
+    }
+
+    public void addFriend(Friends friends) {
+        friends.setOwner(this);
     }
 }
