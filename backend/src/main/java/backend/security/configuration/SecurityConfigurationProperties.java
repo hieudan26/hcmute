@@ -38,7 +38,9 @@ public class SecurityConfigurationProperties {
                 "/v2/api-docs",
                 "/webjars/**",
                 "/areas/**",
-                "/authentication/**");
+                "/authentication/**",
+                "/ws/**",
+                "/ws");
 
         @JsonProperty("permit-all-map")
         private Map<HttpMethod, Set<String>> permitAllMap = null;
