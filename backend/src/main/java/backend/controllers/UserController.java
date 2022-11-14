@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("permitAll()")
     @GetMapping("")
     public ResponseEntity<BaseResponse> getUsers(UserQueryParams query, PagingRequest pagingRequest){
         return ResponseEntity.ok(userService.findAll(query,pagingRequest));
@@ -90,6 +90,14 @@ public class UserController {
             @Validated @RequestBody UpdateStatusFriendsRequest updateStatusFriendsRequest
     ){
         return ResponseEntity.ok(userService.updateStatusFriend(updateStatusFriendsRequest));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/{userId}/friends/{friendId}")
+    public ResponseEntity<BaseResponse> getUserFriendStatus(@PathVariable String userId,
+                                                       @PathVariable String friendId
+    ){
+        return ResponseEntity.ok(userService.getFriendStatus(userId, friendId));
     }
 
 }
