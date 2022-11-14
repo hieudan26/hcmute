@@ -123,6 +123,22 @@ public class UserService {
                 .build();
     }
 
+    public BaseResponse getFriendStatus(String userId, String friendId){
+        String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Users users = getUser(id);
+        var friend = users.getFriends().stream()
+                .filter(friends -> friends.getFriend().getId().equals(friendId))
+                .findFirst();
+        String status = FriendStatuses.NO_FRIEND.getStatus();
+        if(friend.isPresent()){
+            status = friend.get().getStatus() == null ? FriendStatuses.NO_FRIEND.getStatus() : friend.get().getStatus();
+        }
+
+        return BaseResponse.builder().message(String.format("Get status of friend %s successful.",friendId))
+                .data(Map.of("status",status))
+                .build();
+    }
+
     public BaseResponse updateStatusFriend(UpdateStatusFriendsRequest friendsRequest){
         String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Users users = getUser(id);
