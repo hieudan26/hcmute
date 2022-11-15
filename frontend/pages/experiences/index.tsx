@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Spacer, Spinner } from '@chakra-ui/react';
+import { Box, Center, Flex, Skeleton, Spacer, Spinner, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
@@ -14,6 +14,8 @@ import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
 
 export interface IExperiencesProps {}
+
+export const ArrayTenTemp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
 const Experiences: NextPage = (props: IExperiencesProps) => {
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
@@ -51,7 +53,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
   };
 
   return (
-    <Flex gap='6' w='100%'>
+    <Flex gap='6' w='100%' position='relative'>
       <CreateNewPost
         currentUserId={currentUserId}
         onSubmit={_submitPost}
@@ -88,11 +90,21 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
             </Center>
           }
         >
-          {posts.data?.pages.map((page) =>
-            page.data.content.map((item: IPostResponseModel, index: number) => (
-              <PostRender key={index} post={item} currentUserId={currentUserId} />
-            ))
-          )}
+          {posts.data
+            ? posts.data.pages.map((page) =>
+                page.data.content.map((item: IPostResponseModel, index: number) => (
+                  <PostRender key={index} post={item} currentUserId={currentUserId} />
+                ))
+              )
+            : ArrayTenTemp.map((item, index) => (
+                <>
+                  <Box key={`boxexp-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                    <SkeletonCircle key={`skcexp-${index}`} size='10' />
+                    <SkeletonText key={`sktexp-${index}`} my='4' noOfLines={4} spacing='4' />
+                    <Skeleton key={`skexp-${index}`} h='xs'></Skeleton>
+                  </Box>
+                </>
+              ))}
         </InfiniteScroll>
       </Flex>
     </Flex>

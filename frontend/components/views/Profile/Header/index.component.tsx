@@ -3,7 +3,7 @@ import { Box, BoxProps, Button, Divider, Flex, Heading, Slide, Spacer, Text, use
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
-import { defaultAvatar, defaultCoverBackground } from '../../../../utils';
+import { defaultAvatar, defaultCoverBackground, formatTimePost } from '../../../../utils';
 import { ChakraNextImageGlobal } from '../../ChakraNextImageGlobal/index.component';
 import EditProfilePic from '../Modals/EditProfilePic/index.component';
 import TopNavNormal from './TopNavNormal/index.component';
@@ -11,6 +11,9 @@ import TopNavSpecial from './TopNavSpecial/index.component';
 import cookie from 'react-cookies';
 import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
 import { LocalUtils } from '../../../../utils/local.utils';
+import userService from '../../../../services/user/user.service';
+import { FriendStatus } from '../../../../constants/global.constant';
+import { useCUDFriends } from '../../../../hooks/queries/friend';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -26,7 +29,54 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [coverBackground, setCoverBackground] = useState<string>(defaultCoverBackground);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isEditButton, setIsEditButton] = useState<boolean>(false); //def: send friend
+  const [statusFriend, setStatusFriend] = useState<string>('none');
+  const [isHiddenAccept, setIsHiddenAccept] = useState<boolean>(false);
+  const [isHiddenCancel, setIsHiddenCancel] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<string>('86ce8572-3c92-4cca-89e3-060c35e613be');
+  const [textStatusCancel, setTextStatusCancel] = useState<string>('');
+  const [textStatusAccept, setTextStatusAccept] = useState<string>('');
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
+  const { mutationUpdateStatusFriends } = useCUDFriends();
+
+  useEffect(() => {
+    if (statusFriend === FriendStatus.FRIEND) {
+      setTextStatusCancel('Hủy kết bạn');
+    } else if (statusFriend === FriendStatus.PENDING) {
+      setTextStatusCancel('Từ chối lời mời kết bạn');
+    } else if (statusFriend === FriendStatus.INVITED) {
+      setTextStatusCancel('Rút lại lời mời kết bạn');
+    }
+
+    if (statusFriend === FriendStatus.NO_FRIEND) {
+      setTextStatusAccept('Kết bạn');
+    } else if (statusFriend === FriendStatus.PENDING) {
+      setTextStatusAccept('Chấp nhận lời mời kết bạn');
+    }
+  }, [statusFriend]);
+
+  useEffect(() => {
+    if (isLoggedIn && !isEditButton) {
+      var curUserId: string | undefined | null = undefined; //if loggedin
+
+      if (isLoggedIn) {
+        curUserId = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
+      }
+
+      if (curUserId && user) {
+        const temp = curUserId;
+        const test = async () => {
+          const response = await userService.getUserFriendStatus(temp, user.id);
+          setStatusFriend(response.data.status);
+          if (response.data.status === FriendStatus.FRIEND || response.data.status === FriendStatus.INVITED) {
+            setIsHiddenAccept(true);
+          } else if (response.data.status === FriendStatus.NO_FRIEND) {
+            setIsHiddenCancel(true);
+          }
+        };
+        test();
+      }
+    }
+  }, [user]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -42,6 +92,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
       }
 
       if (curUserId) {
+        setCurrentUserId(curUserId);
         if (curUserId && curUserId === user.id) {
           setIsEditButton(true);
         } else {
@@ -72,6 +123,54 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const pushRoute = (link: string) => {
     if (user !== null) {
       setMainCurrentRoute(link);
+    }
+  };
+
+  const handleTextStatusCancel = () => {
+    if (statusFriend === FriendStatus.FRIEND) {
+      return 'Hủy kết bạn';
+    } else if (statusFriend === FriendStatus.PENDING) {
+      return 'Từ chối lời mời kết bạn';
+    } else if (statusFriend === FriendStatus.INVITED) {
+      return 'Rút lại lời mời kết bạn';
+    }
+  };
+
+  const handleTextStatusAccept = () => {
+    if (statusFriend === FriendStatus.NO_FRIEND) {
+      return 'Kết bạn';
+    } else if (statusFriend === FriendStatus.PENDING) {
+      return 'Chấp nhận lời mời kết bạn';
+    }
+  };
+
+  const handleChangeStatus = (type: string) => {
+    if (user) {
+      if (type === 'cancel') {
+        setIsHiddenCancel(true);
+        setIsHiddenAccept(false);
+        setStatusFriend(FriendStatus.NO_FRIEND);
+        mutationUpdateStatusFriends.mutate({
+          friendId: user.id,
+          status: 'remove',
+          time: formatTimePost(new Date()),
+          userId: currentUserId,
+        });
+      } else {
+        setIsHiddenAccept(true);
+        setIsHiddenCancel(false);
+        if (statusFriend === FriendStatus.PENDING) {
+          setStatusFriend(FriendStatus.FRIEND);
+        } else if (statusFriend === FriendStatus.NO_FRIEND) {
+          setStatusFriend(FriendStatus.INVITED);
+        }
+        mutationUpdateStatusFriends.mutate({
+          friendId: user.id,
+          status: 'add',
+          time: formatTimePost(new Date()),
+          userId: currentUserId,
+        });
+      }
     }
   };
 
@@ -109,7 +208,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
             </Box>
             <Spacer />
             <Box hidden={!isLoggedIn}>
-              {isEditButton ? (
+              {isEditButton && (
                 <>
                   <Button
                     onClick={() => {
@@ -127,8 +226,29 @@ export default function Header(props: IHeaderProps & BoxProps) {
                     }}
                   />
                 </>
-              ) : (
-                <Button m={'80px 50px'}>Send friend request</Button>
+              )}
+              {!isEditButton && (
+                <Box mt={'80px'}>
+                  <Button
+                    onClick={() => {
+                      handleChangeStatus('cancel');
+                    }}
+                    hidden={isHiddenCancel}
+                    background='gray.600'
+                    _hover={{ bg: 'black' }}
+                  >
+                    {textStatusCancel}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      handleChangeStatus('accept');
+                    }}
+                    hidden={isHiddenAccept}
+                    ml={!isHiddenAccept ? '20px' : '0px'}
+                  >
+                    {textStatusAccept}
+                  </Button>
+                </Box>
               )}
             </Box>
           </Flex>

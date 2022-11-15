@@ -1,12 +1,43 @@
 import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
+import { async } from 'rxjs';
 import { API_PATH } from '../../constants/api-path.constant';
 import { AxiosResponseStatus } from '../../constants/global.constant';
-import { IUserFirstLoginRequest, IUserUpdateInformation } from '../../models/user/user.model';
+import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
+import { IFriendRequest, IUserFirstLoginRequest, IUserUpdateInformation } from '../../models/user/user.model';
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 
 class UserService {
+  getUserFriendStatus = async (userId: string, friendId: string): Promise<AxiosResponse<any>> => {
+    var url = `users/${userId}/friends/${friendId}`;
+    const result = await getAsync(url, undefined, false, false, true);
+    return result;
+  };
+
+  updateStatusFriends = async (userId: string, params: IFriendRequest): Promise<AxiosResponse<any>> => {
+    var url = `/users/${userId}/friends`;
+    const result = await putAsync(url, params, undefined, false, false, true, undefined, undefined);
+    return result;
+  };
+
+  getUserImages = async (userId: string, params: IPaginationRequest | undefined): Promise<AxiosResponse<any>> => {
+    var url = `/users/${userId}/images`;
+    const result = await getAsync(url, params, false, false, true);
+    return result;
+  };
+
+  getUserFriends = async (
+    userId: string,
+    status: string | undefined,
+    params: IPaginationRequest | undefined
+  ): Promise<AxiosResponse<any>> => {
+    var url = `/users/${userId}/friends`;
+    const renewParams = { ...params, status: status };
+    const result = await getAsync(url, renewParams, false, false, true);
+    return result;
+  };
+
   updateInformation = async (
     id: string,
     model: IUserUpdateInformation,

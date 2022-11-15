@@ -4,6 +4,7 @@ import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { ICommentsPostResponse } from '../../../../../models/comment/comment.model';
 import { useEffect, useState } from 'react';
 import { useCUDComment } from '../../../../../hooks/queries/comment';
+import Link from 'next/link';
 
 export interface ICommentRenderProps {
   comment: ICommentsPostResponse;
@@ -80,13 +81,16 @@ export default function CommentRender(props: ICommentRenderProps) {
     <>
       <Flex gap='4'>
         <Flex gap='2'>
-          <Image
-            src={comment.avatar}
-            alt='Profile picture'
-            w={comment.parentId === null ? '10' : '8'}
-            h={comment.parentId === null ? '10' : '8'}
-            rounded='full'
-          />
+          <Link href={`/profile/${comment.userId}/about`}>
+            <Image
+              cursor='pointer'
+              src={comment.avatar}
+              alt='Profile picture'
+              w={comment.parentId === null ? '10' : '8'}
+              h={comment.parentId === null ? '10' : '8'}
+              rounded='full'
+            />
+          </Link>
           <Box w={isEdit ? 'md' : 'full'}>
             <Box bg='gray.100' p='3' rounded='xl' fontSize='sm'>
               <Text display='block' fontWeight='semibold'>
