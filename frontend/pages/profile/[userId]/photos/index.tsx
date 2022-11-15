@@ -109,11 +109,31 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
                     </Center>
                   }
                 >
-                  <div className='gallery'>
+                  <Box
+                    style={{
+                      WebkitColumnCount: 3,
+                      MozColumnCount: 3,
+                      columnCount: 3,
+                      WebkitColumnWidth: '33%',
+                      MozColumnWidth: '33%',
+                      columnWidth: '33%',
+                      padding: '0 12px',
+                    }}
+                    className='gallery'
+                  >
                     {images.data
                       ? images.data.pages.map((page) =>
                           page.data.content.map((item: string, index: number) => (
-                            <div
+                            <Box
+                              style={{
+                                WebkitTransition: 'all 350ms ease',
+                                transition: 'all 350ms ease',
+                                cursor: 'pointer',
+                                marginBottom: '12px',
+                              }}
+                              _hover={{
+                                filter: 'opacity(.8)',
+                              }}
                               className='pics'
                               key={index}
                               onClick={() => {
@@ -121,17 +141,29 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
                               }}
                             >
                               <Image src={item} alt={index.toString()} width='full' rounded='md' />
-                            </div>
+                            </Box>
                           ))
                         )
                       : ArrayTenTemp.map((item, index) => (
                           <>
-                            <div className='pics' key={index}>
+                            <Box
+                              style={{
+                                WebkitTransition: 'all 350ms ease',
+                                transition: 'all 350ms ease',
+                                cursor: 'pointer',
+                                marginBottom: '12px',
+                              }}
+                              _hover={{
+                                filter: 'opacity(.8)',
+                              }}
+                              className='pics'
+                              key={index}
+                            >
                               <Skeleton key={`skexp-${index}`} h='xs'></Skeleton>
-                            </div>
+                            </Box>
                           </>
                         ))}
-                  </div>
+                  </Box>
                 </InfiniteScroll>
               )}
             </Box>
