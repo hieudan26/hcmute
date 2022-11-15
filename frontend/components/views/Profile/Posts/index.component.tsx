@@ -13,6 +13,9 @@ import {
   Text,
   Highlight,
   Spinner,
+  SkeletonCircle,
+  SkeletonText,
+  Skeleton,
 } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
@@ -22,6 +25,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
 import { useCUDPost, usePosts, usePostsByTypeAndUserId } from '../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
+import { ArrayTenTemp } from '../../../../pages/experiences';
 import postService from '../../../../services/post/post.service';
 import { defaultAvatar } from '../../../../utils';
 import { LocalUtils } from '../../../../utils/local.utils';
@@ -175,11 +179,21 @@ export default function Posts(props: IPostsProps) {
               </Center>
             }
           >
-            {posts.data?.pages.map((page) =>
-              page.data.content.map((item: IPostResponseModel, index: number) => (
-                <PostRender key={index} post={item} currentUserId={currentUserId} />
-              ))
-            )}
+            {posts.data
+              ? posts.data.pages.map((page) =>
+                  page.data.content.map((item: IPostResponseModel, index: number) => (
+                    <PostRender key={index} post={item} currentUserId={currentUserId} />
+                  ))
+                )
+              : ArrayTenTemp.map((item, index) => (
+                  <>
+                    <Box key={`boxfaq-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                      <SkeletonCircle key={`skcfaq-${index}`} size='10' />
+                      <SkeletonText key={`sktfaq-${index}`} my='4' noOfLines={4} spacing='4' />
+                      <Skeleton key={`skfaq-${index}`} h='xs'></Skeleton>
+                    </Box>
+                  </>
+                ))}
           </InfiniteScroll>
         </Box>
       </Flex>

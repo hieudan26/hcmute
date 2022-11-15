@@ -22,6 +22,7 @@ import Message from '../components/views/Message/index.component';
 import awsConfig from '../configurations/aws-configs';
 import '../public/styles/globals.scss';
 import { configReactQuery } from '../utils';
+import '../components/views/Profile/Photos/photos.scss';
 
 const oauth = {
   domain: 'lumiere.auth.ap-southeast-1.amazoncognito.com',

@@ -11,6 +11,7 @@ import { useCUDPost } from '../../../../../hooks/queries/posts';
 import { toggleMessage } from '../../../Message/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
+import Link from 'next/link';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -92,10 +93,12 @@ export default function PostRender(props: IPostRenderProps) {
       />
       <Flex justify='space-between' align='center' px='4' py='2'>
         <Flex gap='2' align='center'>
-          <Box position='relative'>
-            <Image src={post.avatar} alt='Profile picture' w='10' h='10' rounded='full' />
-            <span className='bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2'></span>
-          </Box>
+          <Link href={`/profile/${post.userId}/about`}>
+            <Box position='relative' cursor='pointer'>
+              <Image src={post.avatar} alt='Profile picture' w='10' h='10' rounded='full' />
+              <span className='bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2'></span>
+            </Box>
+          </Link>
           <Box>
             <Box fontWeight='semibold'>{post.fullName}</Box>
             <Text fontSize='sm' color='gray.500'>

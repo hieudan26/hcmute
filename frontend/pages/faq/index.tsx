@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Spacer, Spinner } from '@chakra-ui/react';
+import { Box, Center, Flex, Spacer, Spinner, SkeletonCircle, SkeletonText, Skeleton } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { useCUDPost, usePostsByType } from '../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
+import { ArrayTenTemp } from '../experiences';
 
 export interface IFAQProps {}
 
@@ -88,11 +89,21 @@ const FAQ: NextPage = (props: IFAQProps) => {
             </Center>
           }
         >
-          {posts.data?.pages.map((page) =>
-            page.data.content.map((item: IPostResponseModel, index: number) => (
-              <PostRender key={index} post={item} currentUserId={currentUserId} />
-            ))
-          )}
+          {posts.data
+            ? posts.data.pages.map((page) =>
+                page.data.content.map((item: IPostResponseModel, index: number) => (
+                  <PostRender key={index} post={item} currentUserId={currentUserId} />
+                ))
+              )
+            : ArrayTenTemp.map((item, index) => (
+                <>
+                  <Box key={`boxfaq-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                    <SkeletonCircle key={`skcfaq-${index}`} size='10' />
+                    <SkeletonText key={`sktfaq-${index}`} my='4' noOfLines={4} spacing='4' />
+                    <Skeleton key={`skfaq-${index}`} h='xs'></Skeleton>
+                  </Box>
+                </>
+              ))}
         </InfiniteScroll>
       </Flex>
     </Flex>

@@ -30,11 +30,11 @@ export default function Weather(props: IWeatherProps) {
 
   return (
     <Box position='fixed' width='100%'>
-      <Box height='fit-content' width='30%' bg='white' px='8' rounded='lg' shadow='md' py='6' mb='5'>
+      {/* <Box height='fit-content' width='30%' bg='white' px='8' rounded='lg' shadow='md' py='6' mb='5'>
         Lumiere: Travel social networking site
         <Text my='4'>Sponsor: Duong Duc Thang </Text>
         <Text mt='4'>Sponsor: Nguyen Hieu Dan</Text>
-      </Box>
+      </Box> */}
       <Box height='fit-content' width='30%' bg='white' px='4' rounded='lg' shadow='md' py='6'>
         <Flex px='4' align='center'>
           <Badge py='1' borderRadius='md' colorScheme='pink'>

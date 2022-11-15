@@ -1,3 +1,5 @@
+import { IPaginationRequest } from '../common/ResponseMessage.model';
+
 export interface IUserUpdateInformation {
   avatar: string;
   city: string;
@@ -34,4 +36,24 @@ export interface IUserFirstLoginRequest {
   isFirstLogin: boolean;
   disable: boolean;
   lastModifiedDate?: number;
+}
+
+export interface IQueryGetFriendByUserAndStatus extends IPaginationRequest {
+  userId: string;
+  status?: string | undefined;
+}
+
+export interface IFriendResponse {
+  avatar: string;
+  fullName: string;
+  status: string;
+  time: string;
+  userId: string;
+}
+
+export interface IFriendRequest {
+  friendId: string;
+  status: string;
+  time: string;
+  userId?: string;
 }

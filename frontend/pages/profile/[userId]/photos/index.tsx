@@ -1,20 +1,143 @@
+/* eslint-disable react/no-children-prop */
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import dynamic from 'next/dynamic';
-import LoadingComponent from '../../../../components/views/Loading/LoadingComponent.tsx/index.component';
-
-//#region lazy loading components
-const Photos = dynamic(() => import('../../../../components/views/Profile/Photos/index.component'), {
-  loading: () => <LoadingComponent />,
-});
-//#endregion
+import {
+  Box,
+  Container,
+  Spinner,
+  InputGroup,
+  Input,
+  InputRightElement,
+  IconButton,
+  Image,
+  Skeleton,
+  Center,
+  Text,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  Flex,
+  Heading,
+  Divider,
+} from '@chakra-ui/react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { SearchIcon } from '@chakra-ui/icons';
+import { useEffect, useState } from 'react';
+import { useImages } from '../../../../hooks/queries/image';
+import ModalContainer from '../../../../components/views/Modals/ModalContainer/index.component';
+import LayoutTab from '../../../../components/views/Profile/LayoutTab/index.component';
+import { ArrayTenTemp } from '../../../experiences';
 
 export interface IProfilePhotosProps {}
 
 const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
+  const [modal, setModal] = useState<boolean>(false);
+  const [tempSrc, setTempSrc] = useState<string>('');
+  const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    setClientWindowHeight(window.scrollY);
+  };
+
+  const images = useImages(
+    {
+      userId: '86ce8572-3c92-4cca-89e3-060c35e613be',
+      pageNumber: 0,
+      pageSize: 10,
+      sortBy: 'time',
+      sortType: 'DESC',
+    },
+    true
+  );
+
+  const getImg = (url: string) => {
+    setTempSrc(url);
+    setModal(true);
+  };
+
   return (
     <>
-      <Photos />
+      <ModalContainer isOpen={modal} size='xl'>
+        <ModalHeader display='flex' flexDirection='column' alignItems='center'>
+          Detail image
+        </ModalHeader>
+        <ModalCloseButton
+          onClick={() => {
+            setModal(false);
+          }}
+        />
+        <ModalBody>
+          <Image src={tempSrc} alt={'no'} w='full' rounded='md' maxH='md' />
+        </ModalBody>
+      </ModalContainer>
+      <Box boxShadow='md' rounded='md' minW='6xl' bg='white' minH='300px' py='10' px='8'>
+        <Flex gap='4' align='center' pb='4'>
+          <Heading as='h4' size='md'>
+            Photos
+          </Heading>
+        </Flex>
+        <Center mx='28' pb='4' zIndex='1'>
+          <Divider hidden={clientWindowHeight >= 650} variant='dashed' orientation='horizontal' zIndex='1' />
+        </Center>
+        <Box pl='14' maxW='full'>
+          <Box pr='12'>
+            <Container>
+              <InputGroup pb='1rem'>
+                <Input placeholder='Find your images' variant='filled' />
+                <InputRightElement
+                  children={<IconButton aria-label='Search' icon={<SearchIcon />} bg='pink.400' color='white' />}
+                />
+              </InputGroup>
+            </Container>
+            <Box>
+              {images.data?.pages[0].data.content.length === 0 ? (
+                <Center py='2'>
+                  <Text>Không có hình ảnh nào.</Text>
+                </Center>
+              ) : (
+                <InfiniteScroll
+                  loadMore={() => images.fetchNextPage()}
+                  hasMore={images.hasNextPage}
+                  loader={
+                    <Center my='5'>
+                      <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
+                    </Center>
+                  }
+                >
+                  <div className='gallery'>
+                    {images.data
+                      ? images.data.pages.map((page) =>
+                          page.data.content.map((item: string, index: number) => (
+                            <div
+                              className='pics'
+                              key={index}
+                              onClick={() => {
+                                getImg(item);
+                              }}
+                            >
+                              <Image src={item} alt={index.toString()} width='full' rounded='md' />
+                            </div>
+                          ))
+                        )
+                      : ArrayTenTemp.map((item, index) => (
+                          <>
+                            <div className='pics' key={index}>
+                              <Skeleton key={`skexp-${index}`} h='xs'></Skeleton>
+                            </div>
+                          </>
+                        ))}
+                  </div>
+                </InfiniteScroll>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 };
