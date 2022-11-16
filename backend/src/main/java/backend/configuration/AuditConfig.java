@@ -28,7 +28,8 @@ public class AuditConfig {
     public static class SecurityAuditor implements AuditorAware<String> {
         @Override
         public Optional<String> getCurrentAuditor() {
-            if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
+            if(SecurityContextHolder.getContext().getAuthentication() == null ||
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser"))
                 return Optional.of("1");
 
             String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();

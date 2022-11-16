@@ -1,6 +1,5 @@
 package backend.repositories;
 
-import backend.data.entity.Areas;
 import backend.data.entity.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

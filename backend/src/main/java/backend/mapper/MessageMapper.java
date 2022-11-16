@@ -1,12 +1,7 @@
 package backend.mapper;
 
 import backend.data.dto.chat.MessagePayLoad;
-import backend.data.dto.post.CreatePostRequest;
-import backend.data.dto.post.PostResponse;
-import backend.data.dto.post.UpdatePostRequest;
 import backend.data.entity.Messages;
-import backend.data.entity.PostImages;
-import backend.data.entity.Posts;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.repositories.UserRepository;
@@ -27,12 +22,12 @@ public abstract class MessageMapper {
     @Mapping(source = "receiver", target = "receiver", qualifiedByName = "fromStringToUsers")
     @Mapping(source = "sender", target = "sender", qualifiedByName = "fromStringToUsers")
     @Mapping(source = "time", target = "time", qualifiedByName = "fromStringToLocalDateTime")
-    public abstract Messages fromMessageRequestToMessages(MessagePayLoad messagePayLoad);
+    public abstract Messages fromMessagePayloadToMessages(MessagePayLoad messagePayLoad);
 
     @Mapping(source = "receiver.id", target = "receiver")
     @Mapping(source = "sender.id", target = "sender")
     @Mapping(source = "time", target = "time", qualifiedByName = "fromLocalDateTimeToString")
-    public abstract MessagePayLoad fromMessagesToMessageRequest(Messages messages);
+    public abstract MessagePayLoad fromMessagesToMessagePayload(Messages messages);
 
     @Named("fromStringToUsers")
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
