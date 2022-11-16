@@ -33,12 +33,14 @@ public class SecurityConfigurationProperties {
         @JsonProperty("permit-all-path-patterns")
         private Set<String> permitAllPathPatterns = Set.of(
                 "/**",
+                "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
                 "/webjars/**",
                 "/areas/**",
-                "/authentication/**");
+                "/authentication/**",
+                "/ws/**");
 
         @JsonProperty("permit-all-map")
         private Map<HttpMethod, Set<String>> permitAllMap = null;
