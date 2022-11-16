@@ -3,7 +3,10 @@ package backend.configuration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompReactorNettyCodec;
+import org.springframework.messaging.tcp.reactor.ReactorNettyTcpClient;
 import org.springframework.web.socket.config.annotation.*;
+import reactor.netty.tcp.SslProvider;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -17,18 +20,20 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
 
+        ReactorNettyTcpClient<byte[]> tcpClient = new ReactorNettyTcpClient<>(configurer -> configurer
+                .host("b-bc338530-9c97-4b54-89c4-62eff6edbc26-1.mq.ap-southeast-1.amazonaws.com")
+                .port(61614)
+                .secure(SslProvider.defaultClientProvider()), new StompReactorNettyCodec());
 
-        //   Use this for enabling a Full featured broker like RabbitMQ
-
-        /*
         registry.enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost")
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
-        */
+                .setAutoStartup(true)
+                .setSystemLogin("lumiere")
+                .setSystemPasscode("lumiere-123-lumiere")
+                .setClientLogin("lumiere")
+                .setClientPasscode("lumiere-123-lumiere")
+                .setTcpClient(tcpClient);
+
+        registry.setApplicationDestinationPrefixes("/app");
     }
 }

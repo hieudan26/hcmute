@@ -40,7 +40,7 @@ public class WebSocketEventListener {
 //            chatMessage.setSender(username);
 //
 //            messagingTemplate.convertAndSendToUser(username,"/topic/message/123", chatMessage);
-            logger.info("test");
+            logger.info("Disconnected a socket connection");
 //        }
     }
 }

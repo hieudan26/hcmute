@@ -29,7 +29,7 @@ public class ChatService {
 //            throw new NoPermissionException("You are not friend");
 //        }
         messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
-        simpMessagingTemplate.convertAndSend("/topic/messages/" + messagePayLoad.getReceiver(),messagePayLoad);
+        simpMessagingTemplate.convertAndSend("/topic/" + messagePayLoad.getReceiver(),messagePayLoad);
     }
 
     public BaseResponse getMessages(PagingRequest pagingRequest, String friendId) throws NoPermissionException {
