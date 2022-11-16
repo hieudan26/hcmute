@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Table(name = "friends")
-public class Friends {
+public class Friends extends Auditable<String> implements Serializable{
     @EmbeddedId
     private Key key = new Key();
     @ManyToOne
