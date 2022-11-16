@@ -6,6 +6,7 @@ import { MdPermPhoneMsg } from 'react-icons/md';
 import { useState, useEffect } from 'react';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 import GroupButtonControl from '../GroupButtonControl/index.component';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IContactInfoTabProps {
   isCurrentUser: boolean;
@@ -22,6 +23,7 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
   const [valueFirstname, setValueFirstname] = useState<string | undefined>(user?.firstName);
   const [valueLastname, setValueLastname] = useState<string | undefined>(user?.lastName);
   const [valuePhone, setValuePhone] = useState<string | undefined>(user?.phoneNumber);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (user !== null) {
@@ -79,6 +81,9 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
       saveChanges(params);
       setEditPhone(false);
     }
+    queryClient.invalidateQueries(['posts_by_type']);
+    queryClient.invalidateQueries(['posts_by_type_userId']);
+    queryClient.invalidateQueries(['comments_post']);
   };
 
   return (

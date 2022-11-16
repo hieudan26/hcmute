@@ -24,6 +24,7 @@ import cookie from 'react-cookies';
 import InfiniteScroll from 'react-infinite-scroller';
 import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
 import { useCUDPost, usePosts, usePostsByTypeAndUserId } from '../../../../hooks/queries/posts';
+import { useAppSelector } from '../../../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
 import { ArrayTenTemp } from '../../../../pages/experiences';
 import postService from '../../../../services/post/post.service';
@@ -45,6 +46,7 @@ export default function Posts(props: IPostsProps) {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [userIdQuery, setUserIdQuery] = useState<string>('');
   const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
+  const auth = useAppSelector((state) => state.auth.value);
   const router = useRouter();
   const posts = usePostsByTypeAndUserId({
     type: typePost,
@@ -87,6 +89,12 @@ export default function Posts(props: IPostsProps) {
     if (avatar) setAvatar(avatar);
     if (fullname) setFullname(fullname);
   }, []);
+
+  useEffect(() => {
+    if (isCurrentUser && auth?.avatar) {
+      setAvatar(auth.avatar);
+    }
+  }, [isCurrentUser, auth]);
 
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
