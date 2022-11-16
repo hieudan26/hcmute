@@ -13,6 +13,7 @@ import userService from '../../services/user/user.service';
 import { LocalUtils } from '../../utils/local.utils';
 import AnonymousLayout from './anonymous/AnonymousLayout.layout';
 import AuthLayout from './auth/AuthLayout.layout';
+import ChatLayout from './chat/ChatLayout.layout';
 import UserLayout from './user/UserLayout.layout';
 
 export default function SetLayout({ children }: any) {
@@ -85,6 +86,8 @@ export default function SetLayout({ children }: any) {
     return <>{children}</>;
   } else if (router.pathname === '/login' || router.pathname === '/register' || router.pathname === '/forgot-password') {
     return <AuthLayout>{children}</AuthLayout>;
+  } else if (router.pathname.includes('/chats')) {
+    return <ChatLayout>{children}</ChatLayout>;
   } else {
     if (isLoggedIn) {
       // if (role === RoleConstants.USER) {

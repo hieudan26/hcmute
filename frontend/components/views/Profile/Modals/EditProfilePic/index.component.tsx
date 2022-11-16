@@ -30,6 +30,7 @@ import { GENDER_OPTIONS } from '../../../../../constants/global.constant';
 import { useAppDispatch } from '../../../../../hooks/redux';
 import { update } from '../../../../../app/slices/authSlice';
 import BackgroundTab from './BackgroundTab/index.component';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IEditProfilePicProps {
   user: IUserFirstLoginRequest | null;
@@ -49,6 +50,7 @@ export default function EditProfilePic(props: IEditProfilePicProps) {
   const [selectedFileBackground, setSelectedFilBackground] = useState<File | undefined>(undefined);
   const [previewAvatar, setPreviewAvatar] = useState<string | undefined>(undefined);
   const [previewBackground, setPreviewBackground] = useState<string | undefined>(undefined);
+  const queryClient = useQueryClient();
 
   const changeTabs = (index: number) => {
     setIndexTab(index);
@@ -107,6 +109,10 @@ export default function EditProfilePic(props: IEditProfilePicProps) {
 
       const response = await userService.updateInformation(user.id, params as IUserUpdateInformation, setIsSubmitting);
       dispatch(update(response.data));
+      queryClient.invalidateQueries(['posts_by_type']);
+      queryClient.invalidateQueries(['posts_by_type_userId']);
+      queryClient.invalidateQueries(['comments_post']);
+
       onClose();
     }
   };

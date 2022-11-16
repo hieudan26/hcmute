@@ -17,7 +17,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { BsFillMoonFill } from 'react-icons/bs';
+import { BsFillMoonFill, BsChatLeftTextFill } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import { HiOutlineLink } from 'react-icons/hi';
@@ -189,6 +189,11 @@ export default function MenuLinks(props: IMenuLinksProps) {
                     >
                       <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
                         {t('menuUser.profile')}
+                      </MenuItm>
+                    </Link>
+                    <Link href='/chats' replace>
+                      <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={BsChatLeftTextFill} />} fontSize='14px'>
+                        Go to chat
                       </MenuItm>
                     </Link>
                     <Link href='/settings?tab=account' replace>
