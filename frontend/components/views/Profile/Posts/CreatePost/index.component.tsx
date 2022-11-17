@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 import { AiFillFileImage, AiFillSmile, AiFillYoutube } from 'react-icons/ai';
 import { ChakraNextImageGlobal } from '../../../ChakraNextImageGlobal/index.component';
@@ -10,6 +11,8 @@ export interface ICreatePostProps {
 
 export default function CreatePost(props: ICreatePostProps) {
   const { onCreate, avatar, fullname } = props;
+  const bgInput = useColorModeValue('gray.100', 'blackAlpha.300');
+
   return (
     <>
       <Flex align='center' gap='2' borderBottom='1px' borderBottomColor='gray.200' pb='3' mb='2'>
@@ -29,7 +32,7 @@ export default function CreatePost(props: ICreatePostProps) {
           onClick={onCreate}
           _focus={{ outline: 'none', bg: 'gray.300' }}
           _hover={{ bg: 'gray.200' }}
-          bg='gray.100'
+          bg={bgInput}
           color='gray.500'
           rounded='full'
           h='10'

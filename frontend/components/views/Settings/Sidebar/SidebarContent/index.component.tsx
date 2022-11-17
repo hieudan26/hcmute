@@ -11,7 +11,7 @@ export default function SidebarContent(props: ISidebarContentProps) {
 
   return (
     <Box
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={useColorModeValue('white', 'blackAlpha.200')}
       borderRight='1px'
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
       w={{ base: 'full', md: 60 }}

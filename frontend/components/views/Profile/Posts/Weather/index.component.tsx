@@ -1,4 +1,5 @@
 import { StarIcon } from '@chakra-ui/icons';
+import { useColorModeValue } from '@chakra-ui/react';
 import { Badge, Box, Flex, Image, Skeleton, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
@@ -13,6 +14,8 @@ const api = {
 export default function Weather(props: IWeatherProps) {
   const [curDate, setCurDate] = useState<Date>(new Date());
   const [weather, setWeather] = useState<any>(undefined);
+  const [isError, setIsError] = useState<boolean>(false);
+  const bgBox = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     setCurDate(new Date());
@@ -21,21 +24,28 @@ export default function Weather(props: IWeatherProps) {
       .then((res) => res.json())
       .then((result) => {
         setWeather(result);
+      })
+      .catch(() => {
+        setIsError(true);
       });
   }, []);
 
-  if (!weather) {
-    return <Skeleton height='md' width='100%' rounded='lg' shadow='md' />;
+  if (!weather || isError) {
+    return (
+      <Box position='fixed' width='full'>
+        <Skeleton height='md' width='30%' px='4' rounded='lg' shadow='md' />
+      </Box>
+    );
   }
 
   return (
-    <Box position='fixed' width='100%'>
+    <Box position='fixed' width='full'>
       {/* <Box height='fit-content' width='30%' bg='white' px='8' rounded='lg' shadow='md' py='6' mb='5'>
         Lumiere: Travel social networking site
         <Text my='4'>Sponsor: Duong Duc Thang </Text>
         <Text mt='4'>Sponsor: Nguyen Hieu Dan</Text>
       </Box> */}
-      <Box height='fit-content' width='30%' bg='white' px='4' rounded='lg' shadow='md' py='6'>
+      <Box height='fit-content' width='30%' bg={bgBox} px='4' rounded='lg' shadow='md' py='6'>
         <Flex px='4' align='center'>
           <Badge py='1' borderRadius='md' colorScheme='pink'>
             Thành phố Hồ Chí Minh

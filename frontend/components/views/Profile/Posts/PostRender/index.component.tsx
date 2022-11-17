@@ -12,6 +12,7 @@ import { toggleMessage } from '../../../Message/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import Link from 'next/link';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -24,6 +25,7 @@ export default function PostRender(props: IPostRenderProps) {
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
+  const bgColor = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   const reactPost = () => {
     if (currentUserId === '') {
@@ -60,7 +62,7 @@ export default function PostRender(props: IPostRenderProps) {
   };
 
   return (
-    <Box bg='white' rounded='lg' mb='5' px='4' shadow='md'>
+    <Box bg={bgColor} rounded='lg' mb='5' px='4' shadow='md'>
       <ModalDetailPost
         currentUserId={currentUserId}
         post={post}

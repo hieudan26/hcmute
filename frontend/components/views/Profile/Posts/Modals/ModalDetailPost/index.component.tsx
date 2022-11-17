@@ -58,6 +58,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
   const commentsPost = useCommentsPost({ postId: post.id, pageNumber: 0, pageSize: 5, sortBy: 'time', sortType: 'DESC' }, isOpen);
   const { mutationCreateComment } = useCUDComment();
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
+  const bgForm = useColorModeValue('gray.50', 'header.primary_darkMode');
 
   const scrollToBottom = () => {
     commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -275,7 +276,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                 </Center>
               </Box>
             </Box>
-            <ModalFooter bg='gray.50' rounded='md' justifyContent={currentUserId === '' ? 'center' : 'flex-start'}>
+            <ModalFooter bg={bgForm} rounded='md' justifyContent={currentUserId === '' ? 'center' : 'flex-start'}>
               {currentUserId === '' ? (
                 <Text>You must login to comment this post</Text>
               ) : (

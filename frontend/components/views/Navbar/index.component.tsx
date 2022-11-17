@@ -11,7 +11,8 @@ export interface INavbarProps {
 }
 
 export default function Navbar(props: INavbarProps) {
-  const bg = useColorModeValue('white', 'header.primary_darkMode');
+  // const bg = useColorModeValue('white', 'header.primary_darkMode');
+  const bg = useColorModeValue('white', 'black');
   const { role } = props;
 
   const paddingLayout = useBreakpointValue(

@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import { Box, Center, Flex, Skeleton, Spacer, Spinner, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -30,6 +31,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
     pageSize: 10,
   });
   const { mutationCreatePost } = useCUDPost();
+  const bgCreatePost = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_FIRST_LOGIN) ? true : false;
@@ -67,7 +69,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
       <Flex position='relative' justify='center' width='60%' direction='column'>
         {isLoggedIn && (
           <>
-            <Box bg='white' width='100%' px='4' rounded='lg' shadow='md' py='5'>
+            <Box bg={bgCreatePost} width='100%' px='4' rounded='lg' shadow='md' py='5'>
               <CreatePost
                 avatar={avatar}
                 onCreate={() => {

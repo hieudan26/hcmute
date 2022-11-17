@@ -27,6 +27,7 @@ import { useImages } from '../../../../hooks/queries/image';
 import ModalContainer from '../../../../components/views/Modals/ModalContainer/index.component';
 import LayoutTab from '../../../../components/views/Profile/LayoutTab/index.component';
 import { ArrayTenTemp } from '../../../experiences';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface IProfilePhotosProps {}
 
@@ -34,6 +35,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
   const [modal, setModal] = useState<boolean>(false);
   const [tempSrc, setTempSrc] = useState<string>('');
   const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
+  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -75,7 +77,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
           <Image src={tempSrc} alt={'no'} w='full' rounded='md' maxH='md' />
         </ModalBody>
       </ModalContainer>
-      <Box boxShadow='md' rounded='md' minW='6xl' bg='white' minH='300px' py='10' px='8'>
+      <Box boxShadow='md' rounded='md' minW='6xl' bg={bgLayout} minH='300px' py='10' px='8'>
         <Flex gap='4' align='center' pb='4'>
           <Heading as='h4' size='md'>
             Photos

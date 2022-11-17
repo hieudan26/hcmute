@@ -14,6 +14,7 @@ import { LocalUtils } from '../../../../utils/local.utils';
 import userService from '../../../../services/user/user.service';
 import { FriendStatus } from '../../../../constants/global.constant';
 import { useCUDFriends } from '../../../../hooks/queries/friend';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -37,6 +38,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [textStatusAccept, setTextStatusAccept] = useState<string>('');
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const { mutationUpdateStatusFriends } = useCUDFriends();
+  const bgHeader = useColorModeValue('white', 'header.primary_darkMode');
 
   useEffect(() => {
     if (statusFriend === FriendStatus.FRIEND) {
@@ -126,24 +128,6 @@ export default function Header(props: IHeaderProps & BoxProps) {
     }
   };
 
-  const handleTextStatusCancel = () => {
-    if (statusFriend === FriendStatus.FRIEND) {
-      return 'Hủy kết bạn';
-    } else if (statusFriend === FriendStatus.PENDING) {
-      return 'Từ chối lời mời kết bạn';
-    } else if (statusFriend === FriendStatus.INVITED) {
-      return 'Rút lại lời mời kết bạn';
-    }
-  };
-
-  const handleTextStatusAccept = () => {
-    if (statusFriend === FriendStatus.NO_FRIEND) {
-      return 'Kết bạn';
-    } else if (statusFriend === FriendStatus.PENDING) {
-      return 'Chấp nhận lời mời kết bạn';
-    }
-  };
-
   const handleChangeStatus = (type: string) => {
     if (user) {
       if (type === 'cancel') {
@@ -175,7 +159,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   };
 
   return (
-    <Box bg='white' h={'670px'} {...rest}>
+    <Box bg={bgHeader} h={'670px'} {...rest}>
       <Box w='6xl' h={'670px'} m={'auto'}>
         <ChakraNextImageGlobal
           // w='5xl' === 1020
