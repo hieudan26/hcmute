@@ -102,6 +102,8 @@ export default function SetLayout({ children }: any) {
       } else {
         if (router.pathname.includes('/admin')) {
           return <AdminLayout>{children}</AdminLayout>;
+        } else {
+          return <AnonymousLayout>{children}</AnonymousLayout>;
         }
       }
     } else {
