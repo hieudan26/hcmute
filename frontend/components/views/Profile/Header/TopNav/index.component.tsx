@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
@@ -9,6 +10,7 @@ export interface ITopNavProps {
 
 export default function TopNav(props: ITopNavProps) {
   const { userId, mainCurrentRoute, pushRoute } = props;
+  const colorText = useColorModeValue('black', 'whtie');
 
   return (
     <>
@@ -17,7 +19,7 @@ export default function TopNav(props: ITopNavProps) {
           borderBottom={mainCurrentRoute === 'posts' ? '2px' : '0px'}
           borderBottomColor={mainCurrentRoute === 'posts' ? 'textColor.logo' : 'transparent'}
           bg='none'
-          color='black'
+          color={colorText}
           borderRadius='none'
           onClick={() => pushRoute('posts')}
         >
@@ -29,7 +31,7 @@ export default function TopNav(props: ITopNavProps) {
           borderBottom={mainCurrentRoute === 'about' ? '2px' : '0px'}
           borderBottomColor={mainCurrentRoute === 'about' ? 'textColor.logo' : 'transparent'}
           bg='none'
-          color='black'
+          color={colorText}
           borderRadius='none'
           onClick={() => pushRoute('about')}
         >
@@ -41,7 +43,7 @@ export default function TopNav(props: ITopNavProps) {
           borderBottom={mainCurrentRoute === 'friends' ? '2px' : '0px'}
           borderBottomColor={mainCurrentRoute === 'friends' ? 'textColor.logo' : 'transparent'}
           bg='none'
-          color='black'
+          color={colorText}
           borderRadius='none'
           onClick={() => pushRoute('friends')}
         >
@@ -53,7 +55,7 @@ export default function TopNav(props: ITopNavProps) {
           borderBottom={mainCurrentRoute === 'photos' ? '2px' : '0px'}
           borderBottomColor={mainCurrentRoute === 'photos' ? 'textColor.logo' : 'transparent'}
           bg='none'
-          color='black'
+          color={colorText}
           borderRadius='none'
           onClick={() => pushRoute('photos')}
         >

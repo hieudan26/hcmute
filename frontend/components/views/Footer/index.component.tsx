@@ -19,7 +19,8 @@ import Logo from '../Navbar/Logo/index.component';
 export interface IFooterProps {}
 
 export default function Footer(props: IFooterProps) {
-  const bg = useColorModeValue('white', 'header.primary_darkMode');
+  // const bg = useColorModeValue('white', 'header.primary_darkMode');
+  const bg = useColorModeValue('white', 'black');
   const { t } = useTranslation('footer');
 
   return (

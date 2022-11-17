@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { AuthService } from '../../services/auth/auth.service';
 import userService from '../../services/user/user.service';
 import { LocalUtils } from '../../utils/local.utils';
+import AdminLayout from './admin/AdminLayout.layout';
 import AnonymousLayout from './anonymous/AnonymousLayout.layout';
 import AuthLayout from './auth/AuthLayout.layout';
 import ChatLayout from './chat/ChatLayout.layout';
@@ -88,16 +89,23 @@ export default function SetLayout({ children }: any) {
     return <AuthLayout>{children}</AuthLayout>;
   } else if (router.pathname.includes('/chats')) {
     return <ChatLayout>{children}</ChatLayout>;
+    // } else if (router.pathname.includes('/admin')) {
+    //   return <AdminLayout>{children}</AdminLayout>;
   } else {
     if (isLoggedIn) {
-      // if (role === RoleConstants.USER) {
-      //   return <UserLayout>{children}</UserLayout>;
-      // }
-      return (
-        <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
-          {children}
-        </UserLayout>
-      );
+      if (role === RoleConstants.USER) {
+        return (
+          <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
+            {children}
+          </UserLayout>
+        );
+      } else {
+        if (router.pathname.includes('/admin')) {
+          return <AdminLayout>{children}</AdminLayout>;
+        } else {
+          return <AnonymousLayout>{children}</AnonymousLayout>;
+        }
+      }
     } else {
       return <AnonymousLayout>{children}</AnonymousLayout>;
     }

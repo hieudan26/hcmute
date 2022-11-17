@@ -19,12 +19,14 @@ import userService from '../../../../../services/user/user.service';
 import { AiFillHome, AiFillFileText } from 'react-icons/ai';
 import { IoLocationSharp } from 'react-icons/io5';
 import Link from 'next/link';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface IAboutPostProps {}
 
 export default function AboutPost(props: IAboutPostProps) {
   const router = useRouter();
   const [user, setUser] = useState<IUserFirstLoginRequest | undefined>(undefined);
+  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     const { userId: qUserId } = router.query;
@@ -46,11 +48,11 @@ export default function AboutPost(props: IAboutPostProps) {
   }, [router.query]);
 
   return (
-    <Box maxH='xl' rounded='lg' width='100%' bg='white' minH='xl' py='10' px='8' shadow='md'>
+    <Box maxH='xl' rounded='lg' width='100%' bg={bgLayout} minH='xl' py='10' px='8' shadow='md'>
       <Flex gap='4' align='center' pb='4'>
         <Heading as='h4' size='md'>
           About{' '}
-          <Text as='i' fontWeight='medium' px='2' py='1' rounded='lg' bg='red.100'>
+          <Text color='black' as='i' fontWeight='medium' px='2' py='1' rounded='lg' bg='red.100'>
             {user?.firstName + ' ' + user?.lastName}
           </Text>
         </Heading>

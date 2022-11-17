@@ -3,6 +3,7 @@ import { ReactText } from 'react';
 import { IconType } from 'react-icons';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface INavItemProps extends FlexProps {
   icon: IconType;
@@ -14,6 +15,7 @@ export default function NavItem(props: INavItemProps) {
   const { icon, children, query, ...rest } = props;
   const router = useRouter();
   const { tab: currentTab } = router.query;
+  const textColor = useColorModeValue('black', 'white');
 
   return (
     <NextLink
@@ -32,7 +34,7 @@ export default function NavItem(props: INavItemProps) {
           role='group'
           cursor='pointer'
           bg={currentTab === query ? '#D0637C' : ''}
-          color={currentTab === query ? 'white' : 'black'}
+          color={currentTab === query ? 'white' : textColor}
           _hover={{
             bg: '#D0637C',
             color: 'white',

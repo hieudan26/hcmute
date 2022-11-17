@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import {
   Box,
   Center,
@@ -57,6 +58,7 @@ export default function Posts(props: IPostsProps) {
     pageSize: 10,
   });
   const { mutationCreatePost } = useCUDPost();
+  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -118,7 +120,7 @@ export default function Posts(props: IPostsProps) {
                 isManual
                 colorScheme='pink'
                 variant='unstyled'
-                bg='white'
+                bg={bgLayout}
                 rounded='lg'
                 shadow='md'
               >

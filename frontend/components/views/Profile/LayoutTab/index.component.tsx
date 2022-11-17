@@ -1,3 +1,4 @@
+import { useColorModeValue } from '@chakra-ui/react';
 import { Box, Center, Divider, Heading, Text, Flex } from '@chakra-ui/react';
 import * as React from 'react';
 import { ReactNode, useEffect, useState } from 'react';
@@ -13,6 +14,7 @@ export default function LayoutTab(props: ILayoutTabProps) {
   const { children, title, lastModified } = props;
   const datetimeLastModified = lastModified ? new Date(lastModified) : undefined;
   const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
+  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -24,7 +26,7 @@ export default function LayoutTab(props: ILayoutTabProps) {
   };
 
   return (
-    <Box boxShadow='md' rounded='md' minW='6xl' bg='white' minH='300px' py='10' px='8'>
+    <Box boxShadow='md' rounded='md' minW='6xl' bg={bgLayout} minH='300px' py='10' px='8'>
       <Flex gap='4' align='center' pb='4'>
         <Heading as='h4' size='md'>
           {title}

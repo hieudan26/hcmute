@@ -5,6 +5,7 @@ import { ICommentsPostResponse } from '../../../../../models/comment/comment.mod
 import { useEffect, useState } from 'react';
 import { useCUDComment } from '../../../../../hooks/queries/comment';
 import Link from 'next/link';
+import { useColorModeValue } from '@chakra-ui/react';
 
 export interface ICommentRenderProps {
   comment: ICommentsPostResponse;
@@ -20,6 +21,7 @@ export default function CommentRender(props: ICommentRenderProps) {
   const [isEditDisable, setIsEditDisable] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
   const { mutationCreateComment, mutationDeleteComment, mutationUpdateComment } = useCUDComment();
+  const bgComment = useColorModeValue('gray.100', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     if (value === '') {
@@ -92,7 +94,7 @@ export default function CommentRender(props: ICommentRenderProps) {
             />
           </Link>
           <Box w={isEdit ? 'md' : 'full'}>
-            <Box bg='gray.100' p='3' rounded='xl' fontSize='sm'>
+            <Box p='3' rounded='xl' fontSize='sm' bg={bgComment}>
               <Text display='block' fontWeight='semibold'>
                 {comment.fullName}
               </Text>
