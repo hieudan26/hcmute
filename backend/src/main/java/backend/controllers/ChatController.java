@@ -33,7 +33,7 @@ public class ChatController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/rooms")
     public ResponseEntity<BaseResponse> getRooms(PagingRequest pagingRequest) throws NoPermissionException {
-        return ResponseEntity.ok(chatService.getAllChatRoom(pagingRequest));
+        return ResponseEntity.ok(chatService.getAllChatRooms(pagingRequest));
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -50,7 +50,19 @@ public class ChatController {
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/rooms/{roomId}")
+    public ResponseEntity<BaseResponse> getRoom(@PathVariable Integer roomId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.getChatRoomById(roomId));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/rooms/{roomId}/messages")
     public ResponseEntity<BaseResponse> getMessages(PagingRequest pagingRequest, @PathVariable Integer roomId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.getMessages(pagingRequest,roomId));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/rooms/friends/{friendId}")
+    public ResponseEntity<BaseResponse> isInRoom(@PathVariable String friendId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.getStatusRoom(friendId));
     }
 }

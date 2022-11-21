@@ -25,6 +25,7 @@ import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ public class ChatService {
                 .build();
     }
 
-    public BaseResponse getAllChatRoom (PagingRequest pagingRequest) throws NoPermissionException {
+    public BaseResponse getAllChatRooms (PagingRequest pagingRequest) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Users users = userService.getUser(userId);
 
@@ -69,6 +70,15 @@ public class ChatService {
                 .data(new PagingResponse(chatRoomRepository
                         .findAllChatRoom(PagingUtils.getPageable(pagingRequest),users.getId())
                         .map(mapper::fromChatRoomsToChatRoomResponse)))
+                .build();
+    }
+
+    public BaseResponse getChatRoomById (Integer roomId) throws NoPermissionException {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        ChatRooms chatRooms = getUserChatRoom(roomId,userId);
+
+        return BaseResponse.builder().message("Get rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRooms))
                 .build();
     }
 
@@ -86,6 +96,28 @@ public class ChatService {
     public Optional<ChatRooms> getChatRoomByFriend(String userId, String friendId) throws NoPermissionException {
         Optional<ChatRooms> chatRoom = chatRoomRepository.findChatRoomsByFriend(userId,friendId);
         return chatRoom;
+    }
+    public Boolean isInChatRoom(String friendId) throws NoPermissionException {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var noFriend =  userService.getFriendStatusResult(friendId)
+                .equals(FriendStatuses.FRIEND.getStatus());
+
+        if(!noFriend){
+            return false;
+        }
+
+        var room = getChatRoomByFriend(userId,friendId);
+        if(room.isEmpty()){
+            return false;
+        }
+
+        return true;
+    }
+
+    public BaseResponse getStatusRoom(String friendId) throws NoPermissionException {
+        return BaseResponse.builder().message("get status room successful.")
+                .data(Map.of("isInChatRoom",isInChatRoom(friendId)))
+                .build();
     }
 
     public BaseResponse createChatRoom(CreateChatRoomRequest request) throws NoPermissionException {
