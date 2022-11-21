@@ -11,7 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends PagingAndSortingRepository<ChatRooms,Integer>, JpaSpecificationExecutor<Areas> {
-    @Query("from ChatRooms rooms join rooms.members members where :userId = members.id order by rooms.time desc")
+    @Query("select rooms from ChatRooms rooms join rooms.members members where :userId = members.id order by rooms.time desc")
     Page<ChatRooms> findAllChatRoom(Pageable pageable, String userId);
 
     @Query("from ChatRooms rooms join rooms.members members where :userId in members and exists " +
