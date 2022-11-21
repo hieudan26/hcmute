@@ -23,10 +23,10 @@ import static java.util.List.of;
 @Slf4j
 public class AwsCognitoIdTokenProcessor {
     @Autowired
-    private JwtConfiguration jwtConfiguration;
+    public JwtConfiguration jwtConfiguration;
 
     @Autowired
-    private ConfigurableJWTProcessor configurableJWTProcessor;
+    public ConfigurableJWTProcessor configurableJWTProcessor;
 
     public Authentication authenticate(HttpServletRequest request) throws Exception {
         String idToken = request.getHeader(this.jwtConfiguration.getHttpHeader());
@@ -46,21 +46,21 @@ public class AwsCognitoIdTokenProcessor {
         return null;
     }
 
-    private String getUserNameFrom(JWTClaimsSet claims)throws Exception {
+    public String getUserNameFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getUserNameField()) == null){
             throw new MalformedJwtException("JWT Token is not valid");
         }
         return claims.getClaims().get(this.jwtConfiguration.getUserNameField()).toString();
     }
 
-    private String getEmailFrom(JWTClaimsSet claims)throws Exception {
+    public String getEmailFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getEmail()) == null){
             throw new MalformedJwtException("JWT Token is not valid");
         }
         return claims.getClaims().get(this.jwtConfiguration.getEmail()).toString();
     }
 
-    private boolean getEmailVerifyFrom(JWTClaimsSet claims)throws Exception {
+    public boolean getEmailVerifyFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getEmail_verified()) == null){
             throw new MalformedJwtException("JWT Token is not valid");
         }
@@ -68,30 +68,30 @@ public class AwsCognitoIdTokenProcessor {
         return  rs.equals("true") ? true : false;
     }
 
-    private List getRoleFrom(JWTClaimsSet claims) {
+    public List getRoleFrom(JWTClaimsSet claims) {
         if(claims.getClaims().get(this.jwtConfiguration.getRole()) == null || claims.getClaims().get(this.jwtConfiguration.getIsFirstLogin()).equals("true")){
             return List.of("GUEST");
         }
         return List.of(claims.getClaims().get(this.jwtConfiguration.getRole()));
     }
 
-    private void verifyIfIdToken(JWTClaimsSet claims) throws Exception {
+    public void verifyIfIdToken(JWTClaimsSet claims) throws Exception {
         if (!claims.getIssuer().equals(this.jwtConfiguration.getCognitoIdentityPoolUrl())) {
             throw new UnsupportedJwtException("JWT Token is not an ID Token");
         }
     }
 
-    private void validateIssuer(JWTClaimsSet claims) throws Exception {
+    public void validateIssuer(JWTClaimsSet claims) throws Exception {
         if (!claims.getIssuer().equals(this.jwtConfiguration.getCognitoIdentityPoolUrl())) {
             throw new UnsupportedJwtException(String.format("Issuer %s does not match cognito idp %s", claims.getIssuer(), this.jwtConfiguration.getCognitoIdentityPoolUrl()));
         }
     }
 
-    private String getBearerToken(String token) {
+    public String getBearerToken(String token) {
         return token.startsWith("Bearer ") ? token.substring("Bearer ".length()) : token;
     }
 
-    private JWTClaimsSet getClaims(String idToken){
+    public JWTClaimsSet getClaims(String idToken){
         try{
            return this.configurableJWTProcessor.process(this.getBearerToken(idToken),null);
         }catch (Exception ex){

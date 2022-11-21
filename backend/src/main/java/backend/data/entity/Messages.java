@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,9 +24,9 @@ public class Messages extends Auditable<String> implements Serializable{
     private Users sender;
 
     @ManyToOne
-    private Users receiver;
+    private ChatRooms room;
 
-    private String time;
+    private LocalDateTime time;
     private String content;
 
 }

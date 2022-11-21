@@ -53,7 +53,7 @@ public class Posts extends Auditable<String> implements Serializable {
     @JoinTable(
             name = "react_post",
             joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "userid_id"))
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
