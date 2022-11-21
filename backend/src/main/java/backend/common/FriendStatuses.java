@@ -1,5 +1,7 @@
 package backend.common;
 
+import backend.data.entity.Users;
+
 public enum FriendStatuses {
     FRIEND("friend"),
     NO_FRIEND("no_friend"),

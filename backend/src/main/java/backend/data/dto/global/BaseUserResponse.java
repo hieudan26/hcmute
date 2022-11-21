@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseUserResponse {
-    String userId;
     String avatar;
     String fullName;
 }

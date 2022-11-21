@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "comments")
-public class Comments {
+public class Comments extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;

@@ -1,11 +1,9 @@
 package backend.mapper;
 
-import backend.data.dto.post.PostResponse;
 import backend.data.dto.user.FriendResponse;
 import backend.data.dto.user.UpdateUserRequest;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.data.entity.Friends;
-import backend.data.entity.Posts;
 import backend.data.entity.Users;
 import org.mapstruct.*;
 

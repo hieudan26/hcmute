@@ -32,7 +32,7 @@ public class SecurityConfigurationProperties {
 
         @JsonProperty("permit-all-path-patterns")
         private Set<String> permitAllPathPatterns = Set.of(
-                "/**",
+                "**",
                 "/swagger-ui/**",
                 "/swagger-resources/**",
                 "/swagger-ui.html",
