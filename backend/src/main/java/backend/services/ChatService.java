@@ -7,6 +7,7 @@ import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.entity.ChatRooms;
+import backend.data.entity.Messages;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.MessageMapper;
@@ -45,9 +46,9 @@ public class ChatService {
         }
         String userId = headerAccessor.getUser().getName();
         ChatRooms chatRooms = getUserChatRoom(messagePayLoad.getRoom(),userId);
-        messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
+        Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
         for (var user : chatRooms.getMembers()){
-            simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),messagePayLoad);
+            simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),mapper.fromMessagesToMessagePayload(messages));
         }
 
     }
