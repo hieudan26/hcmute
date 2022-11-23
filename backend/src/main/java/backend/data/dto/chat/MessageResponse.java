@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class MessageResponse extends BaseUserResponse {
     private String sender;
+    private String avatar;
+    private String fullName;
     private Integer room;
     private String time;
     private String content;
