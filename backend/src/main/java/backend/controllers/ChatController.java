@@ -63,6 +63,6 @@ public class ChatController {
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/rooms/friends/{friendId}")
     public ResponseEntity<BaseResponse> isInRoom(@PathVariable String friendId) throws NoPermissionException {
-        return ResponseEntity.ok(chatService.getStatusRoom(friendId));
+        return ResponseEntity.ok(chatService.isInChatRoom(friendId));
     }
 }

@@ -98,28 +98,38 @@ public class ChatService {
         Optional<ChatRooms> chatRoom = chatRoomRepository.findChatRoomsByFriend(userId,friendId);
         return chatRoom;
     }
-    public Boolean isInChatRoom(String friendId) throws NoPermissionException {
+    public BaseResponse isInChatRoom(String friendId) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var noFriend =  userService.getFriendStatusResult(friendId)
                 .equals(FriendStatuses.FRIEND.getStatus());
 
         if(!noFriend){
-            return false;
+            return BaseResponse.builder().message("get status room successful.")
+                    .data(Map.of("isInChatRoom",false,
+                            "roomId",-1))
+                    .build();
         }
 
         var room = getChatRoomByFriend(userId,friendId);
+
         if(room.isEmpty()){
-            return false;
+            return BaseResponse.builder().message("get status room successful.")
+                    .data(Map.of("isInChatRoom",false,
+                            "roomId",-1))
+                    .build();
         }
 
-        return true;
-    }
-
-    public BaseResponse getStatusRoom(String friendId) throws NoPermissionException {
         return BaseResponse.builder().message("get status room successful.")
-                .data(Map.of("isInChatRoom",isInChatRoom(friendId)))
+                .data(Map.of("isInChatRoom",true,
+                        "roomId",room.get().getId()))
                 .build();
     }
+//
+//    public BaseResponse getStatusRoom(String friendId) throws NoPermissionException {
+//        return BaseResponse.builder().message("get status room successful.")
+//                .data(Map.of("isInChatRoom",isInChatRoom(friendId)))
+//                .build();
+//    }
 
     public BaseResponse createChatRoom(CreateChatRoomRequest request) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
