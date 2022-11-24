@@ -7,6 +7,7 @@ import storage from './sync_storage';
 import themeReducer from './themeSlice';
 import userNotAuthReducer from './slices/userNotAuthSlice';
 import singleChatsReducer from './slices/singleChatsSlice';
+import socketReducer from './slices/socketSlice';
 
 const logger = createLogger({
   //empty options
@@ -19,6 +20,7 @@ const persistConfig = {
   version: 1,
   storage,
   whitelist: ['auth'],
+  blacklist: ['socket'],
 };
 
 const rootReducer = combineReducers({
@@ -26,6 +28,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   userNotAuthReducer: userNotAuthReducer,
   singleChats: singleChatsReducer,
+  socket: socketReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

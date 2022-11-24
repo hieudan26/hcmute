@@ -15,7 +15,11 @@ export const useSocketAction = () => {
     console.log('SocketIO: send');
     console.log(stompClient);
     if (stompClient) {
-      stompClient.send(destination, headers, body);
+      stompClient.publish({
+        destination: destination,
+        headers: headers,
+        body: body,
+      });
     }
   };
 

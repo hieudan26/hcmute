@@ -1,25 +1,17 @@
-import { Button, Flex } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { resetMessage, setMessages } from '../../app/slices/singleChatsSlice';
 import ChatBox from '../../components/views/Chat/ChatBox/index.component';
 import ChatMessages from '../../components/views/Chat/ChatMessages/index.component';
 import SingleChatHeader from '../../components/views/Chat/SingleChatHeader/index.component';
-import * as StompJS from '@stomp/stompjs';
-import { IMessage, Stomp } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { Auth } from 'aws-amplify';
-import { useRouter } from 'next/router';
-import { toggleMessage } from '../../components/views/Message/index.component';
-import { useSocketSubscribe } from '../../hooks/socket/useSocketSubcribe';
-import { useSocketAction } from '../../hooks/socket/useSocketAction';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import chatService from '../../services/chat/chat.service';
-import { resetMessage, sendMessage, setMessages } from '../../app/slices/singleChatsSlice';
-import useChatScroll from '../../hooks/useChatScroll';
-import { IPageableResponse, IPaginationRequest } from '../../models/common/ResponseMessage.model';
 import { useRoom } from '../../hooks/queries/chat';
-import { useBeforeunload } from 'react-beforeunload';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import useChatScroll from '../../hooks/useChatScroll';
+import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
+import chatService from '../../services/chat/chat.service';
 
 export interface IChatsProps {}
 
@@ -28,21 +20,11 @@ const Chats: NextPage<IChatsProps> = (props) => {
   const [enableGetRoom, setEnableGetRoom] = useState<boolean>(false);
   const [curUserId, setCurUserId] = useState<string | undefined>(undefined);
   const router = useRouter();
-  const auth = useAppSelector((state) => state.auth.value);
   const dispatch = useAppDispatch();
   const dataChat = useAppSelector((state) => state.singleChats.value);
   const lastMessage = useChatScroll(dataChat.content);
   const [pageable, setPageable] = useState<IPaginationRequest>({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' });
   const detailInforRoom = useRoom(roomId as string, enableGetRoom);
-
-  useBeforeunload((event) => {
-    event.preventDefault();
-    toggleMessage({
-      type: 'warning',
-      message: 'Refresh in this page can make error',
-      title: 'Do not refresh this page',
-    });
-  });
 
   useEffect(() => {
     if (roomId) {
@@ -74,13 +56,6 @@ const Chats: NextPage<IChatsProps> = (props) => {
       setCurUserId(curUser as string);
     }
   }, [router.query]);
-
-  const onMessageReceived = (message: IMessage) => {
-    const { body } = message;
-    dispatch(sendMessage(JSON.parse(body)));
-  };
-
-  useSocketSubscribe(`/topic/${auth?.id}`, onMessageReceived);
 
   const loadMoreMessage = () => {
     if (dataChat.pageable.hasNext) {
