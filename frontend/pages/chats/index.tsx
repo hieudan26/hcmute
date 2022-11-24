@@ -8,6 +8,7 @@ export interface IChatsIndexProps {}
 const ChatsIndex: NextPage = (props: IChatsIndexProps) => {
   return (
     <Flex
+      display={{ base: 'none', md: 'flex' }}
       align='center'
       justify={{ base: 'center', md: 'space-evenly', xl: 'space-evenly' }}
       direction={{ base: 'column-reverse', md: 'row' }}
@@ -40,7 +41,7 @@ const ChatsIndex: NextPage = (props: IChatsIndexProps) => {
           No credit card required.
         </Text>
       </Stack>
-      <Box w={{ base: '80%', sm: '60%', md: '50%' }} mb={{ base: 12, md: 0 }}>
+      <Box w={{ base: '80%', sm: '40%', md: '50%' }} mb={{ base: 12, md: 0 }}>
         <Image
           src='https://xv-ncloud.pstatic.net/images/product/img-01@2x_1610692152771.png'
           rounded='md'

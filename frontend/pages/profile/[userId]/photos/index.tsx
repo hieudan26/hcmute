@@ -106,7 +106,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
                   loadMore={() => images.fetchNextPage()}
                   hasMore={images.hasNextPage}
                   loader={
-                    <Center my='5'>
+                    <Center key={0} my='5'>
                       <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
                     </Center>
                   }

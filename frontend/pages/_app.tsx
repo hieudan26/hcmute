@@ -15,6 +15,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import store, { wrapper } from '../app/store';
 import { theme } from '../components/chakra/theme.chakra';
 import HistoryProvider from '../components/contexts/History';
+import SocketProvider from '../components/contexts/Socket';
 import SetLayout from '../components/layouts/SetLayout';
 import Goodbye from '../components/views/Goodbye/index.component';
 import Loading from '../components/views/Loading/index.component';
@@ -67,16 +68,18 @@ function MyApp({ Component, pageProps }: AppProps | any) {
               </Head>
               <QueryClientProvider client={queryClient} contextSharing={true}>
                 <Hydrate state={pageProps.dehydratedState}>
-                  <HistoryProvider>
-                    <Loading />
-                    <Message />
-                    <Goodbye />
-                    <SetLayout>
-                      {/* <Goodbye /> */}
-                      <NextNProgress options={{ showSpinner: false }} color='#D0637C' />
-                      <Component {...pageProps} />
-                    </SetLayout>
-                  </HistoryProvider>
+                  <SocketProvider>
+                    <HistoryProvider>
+                      <Loading />
+                      <Message />
+                      <Goodbye />
+                      <SetLayout>
+                        {/* <Goodbye /> */}
+                        <NextNProgress options={{ showSpinner: false }} color='#D0637C' />
+                        <Component {...pageProps} />
+                      </SetLayout>
+                    </HistoryProvider>
+                  </SocketProvider>
                 </Hydrate>
                 <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>

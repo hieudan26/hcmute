@@ -13,3 +13,12 @@ export interface IPaginationRequest {
   sortBy?: string;
   sortType?: 'DESC' | 'ASC';
 }
+
+export interface IPageableResponse {
+  pageNumber: number;
+  totalItems: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+  pageSize: number;
+}

@@ -6,7 +6,7 @@ import ContainerChat from '../../views/Chat/ContainerChat/index.component';
 import Sidebar from '../../views/Chat/Sidebar/index.component';
 import cookie from 'react-cookies';
 import { CookieConstants } from '../../../constants/store.constant';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface IChatLayoutProps {
   children: React.ReactNode;
@@ -14,21 +14,42 @@ export interface IChatLayoutProps {
 
 export default function ChatLayout(props: IChatLayoutProps) {
   const { children } = props;
+  const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const auth = useAppSelector((state) => state.auth.value);
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const router = useRouter();
   const [isMobile] = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
+    const { id } = router.query; //chatId
+    if (id) {
+      setIsInRoom(true);
+    } else {
+      setIsInRoom(false);
+    }
+  }, [router.query, children]);
+
+  useEffect(() => {
     if (!isLoggedIn) {
-      // const { id } = router.query; //chatId
       router.push('/404');
     }
   }, [isLoggedIn]);
 
+  const renderSidebar = () => {
+    if (isMobile) {
+      if (isInRoom) {
+        return <></>;
+      } else {
+        return <Sidebar user={auth} fullWidth />;
+      }
+    } else {
+      return <Sidebar user={auth} />;
+    }
+  };
+
   return (
     <ContainerChat>
-      {!isMobile && <Sidebar user={auth} />}
+      {renderSidebar()}
       {children}
     </ContainerChat>
   );

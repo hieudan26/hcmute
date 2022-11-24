@@ -1,7 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, BoxProps, Button, Divider, Flex, Heading, Slide, Spacer, Text, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  BoxProps,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Slide,
+  Spacer,
+  Text,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  useDisclosure,
+  AlertDialogOverlay,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import { defaultAvatar, defaultCoverBackground, formatTimePost } from '../../../../utils';
 import { ChakraNextImageGlobal } from '../../ChakraNextImageGlobal/index.component';
@@ -15,6 +32,8 @@ import userService from '../../../../services/user/user.service';
 import { FriendStatus } from '../../../../constants/global.constant';
 import { useCUDFriends } from '../../../../hooks/queries/friend';
 import { useColorModeValue } from '@chakra-ui/react';
+import chatService from '../../../../services/chat/chat.service';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -36,9 +55,12 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [currentUserId, setCurrentUserId] = useState<string>('86ce8572-3c92-4cca-89e3-060c35e613be');
   const [textStatusCancel, setTextStatusCancel] = useState<string>('');
   const [textStatusAccept, setTextStatusAccept] = useState<string>('');
+  const [alertConfirm, setAlertConfirm] = useState<boolean>(false);
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const { mutationUpdateStatusFriends } = useCUDFriends();
   const bgHeader = useColorModeValue('white', 'header.primary_darkMode');
+  const cancelRef = useRef<any>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (statusFriend === FriendStatus.FRIEND) {
@@ -158,6 +180,32 @@ export default function Header(props: IHeaderProps & BoxProps) {
     }
   };
 
+  const goToChat = async () => {
+    if (user) {
+      const response = await chatService.isInRoom(user.id);
+      const isInRoom = response.data.isInChatRoom;
+      if (isInRoom) {
+        const idRoom = response.data.roomId;
+        router.push({ pathname: `/chats/${idRoom}`, query: { curUser: user.id } }, `/chats/${idRoom}`);
+      } else {
+        setAlertConfirm(true);
+      }
+    }
+  };
+
+  const createNewRoom = async () => {
+    if (user) {
+      const response = await chatService.createRooms({
+        friends: [user.id],
+        time: formatTimePost(new Date()),
+      });
+      setAlertConfirm(false);
+      queryClient.invalidateQueries(['chats']);
+      const idRoom = response.data.id;
+      router.push({ pathname: `/chats/${idRoom}`, query: { curUser: user.id } }, `/chats/${idRoom}`);
+    }
+  };
+
   return (
     <Box bg={bgHeader} h={'670px'} {...rest}>
       <Box w='6xl' h={'670px'} m={'auto'}>
@@ -191,6 +239,41 @@ export default function Header(props: IHeaderProps & BoxProps) {
               <Text color={'grey'}>10 Friends</Text>
             </Box>
             <Spacer />
+            {FriendStatus.FRIEND && !isEditButton && (
+              <>
+                <Button onClick={goToChat} my={'80px'} mx='5'>
+                  Message now
+                </Button>
+                <AlertDialog
+                  isCentered
+                  isOpen={alertConfirm}
+                  leastDestructiveRef={cancelRef}
+                  onClose={() => setAlertConfirm(false)}
+                >
+                  <AlertDialogOverlay>
+                    <AlertDialogContent>
+                      <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                        Create new room chat
+                      </AlertDialogHeader>
+
+                      <AlertDialogBody>
+                        You have never texted with this person before, do you want to create a new chat room?
+                      </AlertDialogBody>
+
+                      <AlertDialogFooter>
+                        <Button ref={cancelRef} onClick={() => setAlertConfirm(false)}>
+                          Cancel
+                        </Button>
+                        <Button colorScheme='red' onClick={createNewRoom} ml={3}>
+                          Start chat
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialogOverlay>
+                </AlertDialog>
+              </>
+            )}
+
             <Box hidden={!isLoggedIn}>
               {isEditButton && (
                 <>
@@ -211,6 +294,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
                   />
                 </>
               )}
+
               {!isEditButton && (
                 <Box mt={'80px'}>
                   <Button
