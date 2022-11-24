@@ -13,7 +13,7 @@ export const publicRouteContain = [
   '/register',
   '/forgot-password',
 ];
-export const privateRouteContain = ['/settings'];
+export const privateRouteContain = ['/settings', '/chats'];
 export const authRouteContain = ['/login', '/register', '/forgot-password'];
 
 export const timeSincePost = (createdAt: string) => {
