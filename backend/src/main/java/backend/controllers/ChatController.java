@@ -38,7 +38,7 @@ public class ChatController {
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/rooms")
-    public ResponseEntity<BaseResponse> createRooms(CreateChatRoomRequest request) throws NoPermissionException {
+    public ResponseEntity<BaseResponse> createRooms(@RequestBody CreateChatRoomRequest request) throws NoPermissionException {
         return ResponseEntity.status(HttpStatus.CREATED).body(chatService.createChatRoom(request));
     }
 
