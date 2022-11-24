@@ -11,4 +11,5 @@ export const API_PATH = {
   AREAS_COUNTRIES: 'areas/countries',
   POST: '/posts',
   COMMENT: '/comments',
+  CHAT: '/rooms',
 };

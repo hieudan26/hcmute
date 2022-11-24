@@ -51,4 +51,6 @@ export const theme = extendTheme({
     Button,
     CheckBox,
   },
+  initialColorMode: 'light',
+  useSystemColorMode: false,
 });

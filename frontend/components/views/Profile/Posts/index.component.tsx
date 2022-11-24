@@ -184,7 +184,7 @@ export default function Posts(props: IPostsProps) {
             loadMore={() => posts.fetchNextPage()}
             hasMore={posts.hasNextPage}
             loader={
-              <Center>
+              <Center key={0}>
                 <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
               </Center>
             }
