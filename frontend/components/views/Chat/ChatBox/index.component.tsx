@@ -64,8 +64,8 @@ export default function ChatBox(props: IChatBoxProps) {
   };
 
   const sendMessageEnter = async (e: React.KeyboardEvent<HTMLInputElement> | undefined) => {
-    e?.preventDefault();
     if (chat !== '' && e?.key === 'Enter') {
+      e?.preventDefault();
       onSendMessage();
     }
   };
