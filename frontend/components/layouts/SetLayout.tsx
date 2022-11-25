@@ -89,24 +89,25 @@ export default function SetLayout({ children }: any) {
     return <AuthLayout>{children}</AuthLayout>;
   } else if (router.pathname.includes('/chats')) {
     return <ChatLayout>{children}</ChatLayout>;
-    // } else if (router.pathname.includes('/admin')) {
-    //   return <AdminLayout>{children}</AdminLayout>;
+  } else if (router.pathname.includes('/admin')) {
+    return <AdminLayout>{children}</AdminLayout>;
   } else {
     if (isLoggedIn) {
-      if (role === RoleConstants.USER) {
-        return (
-          <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
-            {children}
-          </UserLayout>
-        );
-      } else {
-        if (router.pathname.includes('/admin')) {
-          return <AdminLayout>{children}</AdminLayout>;
-        } else {
-          return <AnonymousLayout>{children}</AnonymousLayout>;
-        }
-      }
-    } else {
+      // if (role === RoleConstants.USER) {
+      return (
+        <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
+          {children}
+        </UserLayout>
+      );
+      // } else {
+      //   if (router.pathname.includes('/admin')) {
+      //     return <AdminLayout>{children}</AdminLayout>;
+      //   } else {
+      //     return <AnonymousLayout>{children}</AnonymousLayout>;
+      //   }
+    }
+    // }
+    else {
       return <AnonymousLayout>{children}</AnonymousLayout>;
     }
   }
