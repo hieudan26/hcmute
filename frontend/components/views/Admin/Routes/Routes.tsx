@@ -1,8 +1,13 @@
 import { Icon } from '@chakra-ui/react';
-import { MdBarChart, MdPerson, MdHome, MdLock, MdOutlineShoppingCart } from 'react-icons/md';
+import { MdBarChart, MdAdminPanelSettings, MdHome, MdLock, MdOutlineShoppingCart } from 'react-icons/md';
+import { FaUsers, FaUserCheck } from 'react-icons/fa';
+import { BsFileEarmarkPostFill } from 'react-icons/bs';
 import { IRoute } from '../../../../types/navigation';
 import AdminDashboard from '../../../../pages/admin/dashboard';
 import AdminProfile from '../../../../pages/admin/profile';
+import AdminUsersManagementPage from '../../../../pages/admin/users-management';
+import AdminPostsManagementPage from '../../../../pages/admin/posts-management';
+import AdminAccountsManagementPage from '../../../../pages/admin/accounts-management';
 
 const routes: IRoute[] = [
   {
@@ -14,69 +19,28 @@ const routes: IRoute[] = [
     section: 'Statistics',
   },
   {
-    name: 'NFT Marketplace',
+    name: 'All Users In System',
     layout: '/admin',
-    path: '/profile',
-    icon: <Icon as={MdOutlineShoppingCart} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    secondary: true,
-    section: 'Statistics',
-  },
-  {
-    name: 'Data Tables',
-    layout: '/admin',
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: '/profile',
-    component: AdminProfile,
-    section: 'Statistics',
-  },
-  {
-    name: 'Profile',
-    layout: '/admin',
-    path: '/profile',
-    icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    section: 'Statistics',
-  },
-  {
-    name: 'Sign In',
-    layout: '/admin',
-    path: '/profile',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    section: 'Statistics',
-  },
-  {
-    name: 'User Management',
-    layout: '/admin',
-    path: '/user-management',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
+    path: '/users-management',
+    icon: <Icon as={FaUsers} width='20px' height='20px' color='inherit' />,
+    component: AdminUsersManagementPage,
     section: 'Users Management',
   },
   {
-    name: 'User Management Detail',
+    name: 'All posts in system',
     layout: '/admin',
-    path: '/user-management/detail',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    section: 'Users Management',
+    path: '/posts-management',
+    icon: <Icon as={BsFileEarmarkPostFill} width='20px' height='20px' color='inherit' />,
+    component: AdminPostsManagementPage,
+    section: 'Posts Management',
   },
   {
-    name: 'User Management Detail',
+    name: 'Create new account',
     layout: '/admin',
-    path: '/user-management/detail',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    section: 'Users Management',
-  },
-  {
-    name: 'User Management Detail',
-    layout: '/admin',
-    path: '/user-management/detail',
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: AdminProfile,
-    section: 'Users Management',
+    path: '/accounts-management',
+    icon: <Icon as={MdAdminPanelSettings} width='20px' height='20px' color='inherit' />,
+    component: AdminAccountsManagementPage,
+    section: 'Accounts Management',
   },
 ];
 

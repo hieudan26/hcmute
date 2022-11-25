@@ -2,13 +2,13 @@ import { Box } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-export interface IAdminProfileProps {}
+export interface IAdminPostsManagementPageProps {}
 
-const AdminProfile: NextPage = (props: IAdminProfileProps) => {
-  return <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>AdminProfile</Box>;
+const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProps) => {
+  return <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>AdminPostsManagementPage</Box>;
 };
 
-export default AdminProfile;
+export default AdminPostsManagementPage;
 
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {

@@ -13,7 +13,6 @@ export const useSocketAction = () => {
 
   const eventSend = (destination: string, headers?: { [key: string]: any } | undefined, body?: string | undefined) => {
     console.log('SocketIO: send');
-    console.log(stompClient);
     if (stompClient) {
       stompClient.publish({
         destination: destination,
