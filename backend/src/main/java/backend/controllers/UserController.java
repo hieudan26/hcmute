@@ -45,15 +45,21 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/disable")
+    @PutMapping("/disable")
     public ResponseEntity<BaseResponse> disableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminBlockUser(userIdParams));
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/enable")
+    @PutMapping("/enable")
     public ResponseEntity<BaseResponse> enableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminUnlockUser(userIdParams));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/admin")
+    public ResponseEntity<BaseResponse> createAdmin(@Validated @RequestBody UserFirstLoginRequest request){
+        return ResponseEntity.ok(userService.createAdmin(request));
     }
 
     @PreAuthorize("permitAll()")

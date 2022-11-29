@@ -1,5 +1,7 @@
 package backend.controllers;
 
+import backend.data.dto.area.listItem.CreateCountryRequest;
+import backend.data.dto.area.listItem.CreateProvinceRequest;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.services.AreaService;
@@ -8,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -47,6 +46,30 @@ public class AreaController {
     @GetMapping("/provinces/{id}")
     public ResponseEntity<BaseResponse> getProvince(@PathVariable("id") Integer id){
         return ResponseEntity.ok(areaService.findProvince(id));
+    }
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/provinces")
+    public ResponseEntity<BaseResponse> CreateProvince(@RequestBody CreateProvinceRequest request){
+        return ResponseEntity.ok(areaService.createProvince(request));
+    }
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/countries")
+    public ResponseEntity<BaseResponse> dreateCountry(@RequestBody CreateCountryRequest request){
+        return ResponseEntity.ok(areaService.createCountry(request));
+    }
+
+    @PreAuthorize("permitAll()")
+    @DeleteMapping("/countries/{id}")
+    public ResponseEntity<BaseResponse> deleteCountry(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(areaService.deleteCountry(id));
+    }
+
+    @PreAuthorize("permitAll()")
+    @DeleteMapping("/provinces/{id}")
+    public ResponseEntity<BaseResponse> deleteProvince(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(areaService.deleteProvince(id));
     }
 
     @PreAuthorize("permitAll()")
