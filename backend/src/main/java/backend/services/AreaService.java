@@ -1,6 +1,8 @@
 package backend.services;
 
 import backend.common.AreaConstant;
+import backend.data.dto.area.listItem.CreateCountryRequest;
+import backend.data.dto.area.listItem.CreateProvinceRequest;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
@@ -12,10 +14,13 @@ import backend.utils.PagingUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class AreaService{
     private AreaRepository areaRepository;
 
@@ -54,6 +59,36 @@ public class AreaService{
     public BaseResponse findCountry(Integer id){
         return BaseResponse.builder().message("Find countries successful.")
                 .data(getCountry(id))
+                .build();
+    }
+
+    public BaseResponse createCountry(CreateCountryRequest request){
+        Areas areas = areaMapper.CreateCountryToCountry((request));
+        return BaseResponse.builder().message("Find countries successful.")
+                .data(areaMapper.CountriesToCountryResponse(areaRepository.save(areas)))
+                .build();
+    }
+
+    public BaseResponse createProvince(CreateProvinceRequest request){
+        Areas areas = areaMapper.CreateProvinceToProvince((request));
+        return BaseResponse.builder().message("Find countries successful.")
+                .data(areaMapper.ProvincesToProvinceResponse(areaRepository.save(areas)))
+                .build();
+    }
+
+    public BaseResponse deleteCountry(Integer id){
+        Areas areas = getCountry(id);
+        areaRepository.delete(areas);
+        return BaseResponse.builder().message(String.format("Delete country %s successful",id))
+                .data(Map.of("id",id))
+                .build();
+    }
+
+    public BaseResponse deleteProvince(Integer id){
+        Areas areas = getProvince(id);
+        areaRepository.delete(areas);
+        return BaseResponse.builder().message(String.format("Delete province %s successful",id))
+                .data(Map.of("id",id))
                 .build();
     }
 

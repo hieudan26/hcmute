@@ -54,6 +54,19 @@ public class UserService {
                 .build();
     }
 
+    public BaseResponse createAdmin(UserFirstLoginRequest userFirstLoginRequest){
+        CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Users user = userMapper.userFirstLoginRequestToUsers(userFirstLoginRequest);
+        user.setId(userDetail.getUsername());
+        user.setRole(Roles.ADMIN.getRoleName());
+        user.setEmail(userDetail.getEmail());
+
+        Users result = userRepository.save(user);
+        return BaseResponse.builder().message("Create user successful.")
+                .data(result)
+                .build();
+    }
+
     public BaseResponse findAll(UserQueryParams query, PagingRequest pagingRequest){
         PagingResponse pagingResponse = new PagingResponse<Users>(
                 userRepository.findAll(SearchSpecificationUtils.searchBuilder(query), PagingUtils.getPageable(pagingRequest)));
