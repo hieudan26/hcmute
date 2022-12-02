@@ -116,7 +116,7 @@ export default function Posts(props: IPostsProps) {
                 py='5'
                 px='8'
                 isFitted
-                zIndex='auto'
+                zIndex='5'
                 isManual
                 colorScheme='pink'
                 variant='unstyled'
@@ -126,6 +126,7 @@ export default function Posts(props: IPostsProps) {
               >
                 <TabList>
                   <Tab
+                    zIndex='5'
                     onClick={() => {
                       setTypePost('experience');
                     }}
@@ -135,6 +136,7 @@ export default function Posts(props: IPostsProps) {
                     Experiences
                   </Tab>
                   <Tab
+                    zIndex='5'
                     onClick={() => {
                       setTypePost('faq');
                     }}
@@ -145,7 +147,7 @@ export default function Posts(props: IPostsProps) {
                   </Tab>
                 </TabList>
                 <TabPanels>
-                  <TabPanel zIndex='auto' px='4'>
+                  <TabPanel px='4'>
                     <CreatePost
                       avatar={avatar}
                       fullname={fullname}
@@ -154,7 +156,7 @@ export default function Posts(props: IPostsProps) {
                       }}
                     />
                   </TabPanel>
-                  <TabPanel zIndex='auto' px='4'>
+                  <TabPanel px='4'>
                     <CreatePost
                       avatar={avatar}
                       fullname={fullname}
