@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 export interface IAdminPostsManagementPageProps {}
 
 const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProps) => {
-  return <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>AdminPostsManagementPage</Box>;
+  return <Box>AdminPostsManagementPage</Box>;
 };
 
 export default AdminPostsManagementPage;

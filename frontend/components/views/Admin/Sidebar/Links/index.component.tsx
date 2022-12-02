@@ -30,13 +30,19 @@ export function SidebarLinks(props: SidebarLinksProps) {
                 <Box>
                   <HStack spacing={activeRoute(route.path.toLowerCase()) ? '22px' : '26px'} py='5px' ps='10px'>
                     <Flex w='100%' alignItems='center' justifyContent='center'>
-                      <Box color={activeRoute(route.path.toLowerCase()) ? activeIcon : textColor} me='18px'>
+                      <Box
+                        color={activeRoute(route.path.toLowerCase()) ? activeIcon : textColor}
+                        me='18px'
+                        _hover={{ color: brandColor }}
+                      >
                         {route.icon}
                       </Box>
                       <Text
+                        pt='4px'
                         me='auto'
                         color={activeRoute(route.path.toLowerCase()) ? activeColor : textColor}
                         fontWeight={activeRoute(route.path.toLowerCase()) ? 'bold' : 'normal'}
+                        _hover={{ color: brandColor }}
                       >
                         {route.name}
                       </Text>

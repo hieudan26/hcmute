@@ -19,11 +19,18 @@ import {
   useColorMode,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { IoHome, IoLogOut, IoMoon, IoSearchSharp, IoSunny, IoNotifications } from 'react-icons/io5';
+import { logout } from '../../../../app/slices/authSlice';
+import { isConnected } from '../../../../app/slices/socketSlice';
+import { clearUserNotAuth } from '../../../../app/slices/userNotAuthSlice';
 import { FriendStatus } from '../../../../constants/global.constant';
 import { useChats } from '../../../../hooks/queries/chat';
 import { useFriends } from '../../../../hooks/queries/friend';
+import { useAppDispatch } from '../../../../hooks/redux';
 import { IFriendResponse, IUserFirstLoginRequest } from '../../../../models/user/user.model';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { SocketContext } from '../../../contexts/Socket';
 import SingleChat from '../SingleChat/index.component';
 import SingleFriend from '../SingleFriend/index.component';
 
@@ -36,6 +43,8 @@ export default function Sidebar(props: ISidebarProps) {
   const { fullWidth, user } = props;
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { stompClient } = useContext(SocketContext);
   const friends = useFriends(
     {
       status: FriendStatus.FRIEND,
@@ -48,6 +57,17 @@ export default function Sidebar(props: ISidebarProps) {
     true
   );
   const singleChats = useChats({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' }, true);
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    dispatch(clearUserNotAuth());
+    dispatch(logout());
+    if (stompClient) {
+      stompClient.deactivate();
+      dispatch(isConnected(false));
+    }
+    router.push('/experiences');
+  };
 
   return (
     <Flex
@@ -80,7 +100,7 @@ export default function Sidebar(props: ISidebarProps) {
               }}
               isRound
             />
-            <IconButton aria-label='Sign Out' icon={<Icon as={IoLogOut} />} isRound />
+            <IconButton aria-label='Sign Out' icon={<Icon as={IoLogOut} />} isRound onClick={handleLogout} />
             <IconButton
               aria-label='Toggle Dark Mode'
               icon={colorMode === 'light' ? <Icon as={IoMoon} /> : <Icon as={IoSunny} />}

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { login, logout } from '../../app/slices/authSlice';
 import LoginForm from '../../components/views/Auth/LoginForm/index.component';
 import ConfirmModal from '../../components/views/Auth/Modal/ConfirmModal/index.component';
+import { RoleConstants } from '../../constants/roles.constant';
 import { useAppDispatch } from '../../hooks/redux';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { AuthService } from '../../services/auth/auth.service';
@@ -32,6 +33,7 @@ const Login: NextPage = (props: ILoginProps) => {
 
   const _onSubmit = async (data: ILoginRequest) => {
     const user = await AuthService.login(data, setSubmitting);
+    var response = undefined;
 
     if (!user.isSuccess && user.code === 'UserNotConfirmedException') {
       setUserData({ ...userData, email: data.email, password: data.password });
@@ -39,7 +41,7 @@ const Login: NextPage = (props: ILoginProps) => {
     } else if (user.isSuccess) {
       if (user.attributes['custom:is_first_login'] === 'false') {
         const id = user.attributes.sub;
-        const response = await userService.getUserById(id);
+        response = await userService.getUserById(id);
         dispatch(login(response?.data));
       } else {
         //This case does not occur but is still processed
@@ -47,10 +49,16 @@ const Login: NextPage = (props: ILoginProps) => {
         dispatch(logout());
       }
 
-      if (redirectPath) {
-        router.push(redirectPath);
+      if (response?.data.role === RoleConstants.USER) {
+        if (redirectPath) {
+          router.push(redirectPath);
+        } else {
+          router.push('/experiences');
+        }
+      } else if (response?.data.role === RoleConstants.ADMIN) {
+        router.push('/admin/dashboard');
       } else {
-        router.push('/experiences');
+        router.push('/register');
       }
     }
   };

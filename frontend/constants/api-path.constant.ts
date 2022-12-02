@@ -12,4 +12,5 @@ export const API_PATH = {
   POST: '/posts',
   COMMENT: '/comments',
   CHAT: '/rooms',
+  USERS: '/users',
 };

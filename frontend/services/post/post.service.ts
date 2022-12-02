@@ -14,7 +14,7 @@ class PostService {
       result.isSuccess = true;
       return result;
     } catch (error: any) {
-      return error.response.data;
+      return error;
     }
   };
 

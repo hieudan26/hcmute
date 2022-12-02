@@ -30,8 +30,8 @@ export default function Navbar(props: {
   let navbarPosition = 'fixed' as const;
   let navbarFilter = 'none';
   let navbarBackdrop = 'blur(20px)';
-  let navbarShadow = 'none';
-  let navbarBg = useColorModeValue('rgba(244, 247, 254, 0.2)', 'black'); //rgba(11,20,55,0.5)
+  let navbarShadow = 'lg';
+  let navbarBg = useColorModeValue('white', 'black'); //rgba(11,20,55,0.5) //rgba(244, 247, 254, 0.2)
   let navbarBorder = 'transparent';
   let secondaryMargin = '0px';
   let paddingX = '15px';
@@ -46,6 +46,7 @@ export default function Navbar(props: {
 
   return (
     <Box
+      zIndex='5'
       position={navbarPosition}
       boxShadow={navbarShadow}
       bg={navbarBg}
@@ -69,7 +70,7 @@ export default function Navbar(props: {
       mx='auto'
       mt={secondaryMargin}
       pb='8px'
-      right={{ base: '12px', md: '30px', lg: '30px', xl: '30px' }}
+      right={{ base: '8px', md: '10px', lg: '10px', xl: '16px', '2xl': '16px' }}
       px={{
         sm: paddingX,
         md: '10px',
@@ -78,13 +79,13 @@ export default function Navbar(props: {
         xl: '12px',
       }}
       pt='8px'
-      top={{ base: '12px', md: '16px', xl: '18px' }}
+      top={{ base: '8px', md: '10px', xl: '12px' }}
       w={{
-        base: 'calc(100vw - 6%)',
-        md: 'calc(100vw - 8%)',
-        lg: 'calc(100vw - 6%)',
-        xl: 'calc(100vw - 350px)',
-        '2xl': 'calc(100vw - 365px)',
+        base: 'calc(100vw - 2%)',
+        md: 'calc(100vw - 2%)',
+        lg: 'calc(100vw - 2%)',
+        xl: 'calc(100vw - 340px)',
+        '2xl': 'calc(100vw - 345px)',
       }}
     >
       <Flex

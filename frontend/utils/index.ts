@@ -219,7 +219,7 @@ export const hidePartOfEmail = function (email: string): string {
 
 export const LogOut = () => {
   Object.keys(cookie.loadAll()).forEach((item) => {
-    cookie.remove(item);
+    cookie.remove(item, { path: '/' });
   });
 
   localStorage.clear();

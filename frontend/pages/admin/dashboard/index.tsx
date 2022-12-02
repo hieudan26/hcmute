@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 export interface IAdminDashboardProps {}
 
 const AdminDashboard: NextPage = (props: IAdminDashboardProps) => {
-  return <Box pt={{ base: '130px', md: '80px', xl: '80px' }}>Admin dashboard</Box>;
+  return <Box>Admin dashboard</Box>;
 };
 
 export default AdminDashboard;

@@ -5,7 +5,7 @@ import { HSeparator } from '../../Separator/index.component';
 export function SidebarBrand() {
   return (
     <Flex alignItems='center' flexDirection='column'>
-      <Box mt='8' mb='3'>
+      <Box mt='5' mb='5' pr='2'>
         <Logo to='/admin/dashboard' />
       </Box>
       <HSeparator mt='2' mb='20px' />

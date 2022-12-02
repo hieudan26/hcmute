@@ -16,6 +16,8 @@ import {
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
@@ -33,19 +35,39 @@ export interface IDetailPostProps {
 }
 
 const DetailPost: NextPage<IDetailPostProps> = (props) => {
-  const { post: dataPost } = props;
+  // const { post: dataPost } = props;
+  const router = useRouter();
+  const [dataPost, setDataPost] = useState<IPostResponseModel | undefined>(undefined);
+
+  useEffect(() => {
+    const { postId } = router.query;
+    if (postId) {
+      const fetchPost = async () => {
+        const response = await postService.getPostById(postId as string);
+        if (response.isSuccess) {
+          setDataPost(response.data);
+        } else {
+          router.push('/404');
+        }
+      };
+
+      fetchPost();
+      console.log(dataPost);
+    }
+  }, [router.query]);
+
   const commentsPost = useCommentsPost(
-    { postId: dataPost.id, pageNumber: 0, pageSize: 10, sortBy: 'time', sortType: 'DESC' },
-    true
+    { postId: dataPost ? dataPost.id : '1', pageNumber: 0, pageSize: 10, sortBy: 'time', sortType: 'DESC' },
+    dataPost !== undefined
   );
 
   const copyLink = () => {
     var linkComment = 'http://localhost:3000';
     if (process.env.NODE_ENV === 'development') {
-      linkComment = `${linkComment}/detail-post/${dataPost.id}`;
+      linkComment = `${linkComment}/detail-post/${dataPost?.id}`;
     } else {
       linkComment = 'https://lumiere.hcmute.me';
-      linkComment = `${linkComment}/detail-post/${dataPost.id}`;
+      linkComment = `${linkComment}/detail-post/${dataPost?.id}`;
     }
 
     navigator.clipboard.writeText(linkComment);
@@ -81,13 +103,13 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
       <Flex justify='space-between' align='center' px='4' py='2'>
         <Flex gap='2' align='center'>
           <Box position='relative'>
-            <Image src={dataPost.avatar} alt='Profile picture' w='10' h='10' rounded='full' />
+            <Image src={dataPost?.avatar} alt='Profile picture' w='10' h='10' rounded='full' />
             <span className='bg-green-500 w-3 h-3 rounded-full absolute right-0 top-3/4 border-white border-2'></span>
           </Box>
           <Box>
-            <Box fontWeight='semibold'>{dataPost.fullName}</Box>
+            <Box fontWeight='semibold'>{dataPost?.fullName}</Box>
             <Text fontSize='sm' color='gray.500'>
-              {timeSincePost(dataPost.time)}
+              {dataPost && timeSincePost(dataPost?.time)}
             </Text>
           </Box>
         </Flex>
@@ -121,13 +143,13 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
       </Flex>
 
       <Text textAlign='justify' px='4' py='2'>
-        {dataPost.content}
+        {dataPost?.content}
       </Text>
 
-      {dataPost.images.length > 0 && (
+      {dataPost && dataPost.images.length > 0 && (
         <Box px='4' py='2' h='md'>
-          <Carousel infiniteLoop showArrows centerMode={dataPost.images.length > 1} showThumbs={false}>
-            {dataPost.images.map((item, index) => (
+          <Carousel infiniteLoop showArrows centerMode={dataPost?.images.length > 1} showThumbs={false}>
+            {dataPost?.images.map((item, index) => (
               <Image w='3xs' h='md' key={index} src={item} alt={item} />
             ))}
           </Carousel>
@@ -138,12 +160,12 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
         <Flex align='center' justify='space-between'>
           <Flex direction='row-reverse' align='center'>
             <Text fontSize='md' ml='2' color='gray.500'>
-              {dataPost.reactNumber}
+              {dataPost?.reactNumber}
             </Text>
             <Icon color='#D0637C' fontSize='xl' as={AiFillHeart} />
           </Flex>
           <Box fontSize='md' color='gray.500'>
-            <Text>{dataPost.commentNumber} comments</Text>
+            <Text>{dataPost?.commentNumber} comments</Text>
           </Box>
         </Flex>
       </Box>
@@ -223,25 +245,25 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
 export default DetailPost;
 
 export const getServerSideProps: GetServerSideProps = async ({ locale, params }: any) => {
-  const { postId } = params;
-  const response = await postService.getPostById(postId);
+  // const { postId } = params;
+  // const response = await postService.getPostById(postId);
+  // console.log(response);
+  // var post = undefined;
+  // if (response.isSuccess) {
+  //   post = response.data;
+  // } else {
+  //   // in the current page, with the 404 http status code.
+  //   // this will display your /pages/404.js error page,
+  //   return { notFound: true };
+  // }
 
-  var post = undefined;
-  if (response.isSuccess) {
-    post = response.data;
-  } else {
-    // in the current page, with the 404 http status code.
-    // this will display your /pages/404.js error page,
-    return { notFound: true };
-  }
-
-  if (post && post.isDeleted) {
-    return { notFound: true };
-  }
+  // if (post && post.isDeleted) {
+  //   return { notFound: true };
+  // }
 
   return {
     props: {
-      post,
+      // post,
       ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
       // Will be passed to the page component as props
     },

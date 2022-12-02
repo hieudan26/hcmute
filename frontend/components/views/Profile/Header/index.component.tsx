@@ -34,6 +34,8 @@ import { useCUDFriends } from '../../../../hooks/queries/friend';
 import { useColorModeValue } from '@chakra-ui/react';
 import chatService from '../../../../services/chat/chat.service';
 import { useQueryClient } from '@tanstack/react-query';
+import { RoleConstants } from '../../../../constants/roles.constant';
+import { useAppSelector } from '../../../../hooks/redux';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -61,8 +63,10 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const bgHeader = useColorModeValue('white', 'header.primary_darkMode');
   const cancelRef = useRef<any>(null);
   const queryClient = useQueryClient();
+  const auth = useAppSelector((state) => state.auth.value);
 
   useEffect(() => {
+    console.log(statusFriend);
     if (statusFriend === FriendStatus.FRIEND) {
       setTextStatusCancel('Hủy kết bạn');
     } else if (statusFriend === FriendStatus.PENDING) {
@@ -79,7 +83,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, [statusFriend]);
 
   useEffect(() => {
-    if (isLoggedIn && !isEditButton) {
+    if (isLoggedIn && !isEditButton && auth?.role === RoleConstants.USER) {
       var curUserId: string | undefined | null = undefined; //if loggedin
 
       if (isLoggedIn) {
@@ -208,7 +212,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
 
   return (
     <Box bg={bgHeader} h={'670px'} {...rest}>
-      <Box w='6xl' h={'670px'} m={'auto'}>
+      <Box w='6xl' h={'670px'} m={'auto'} zIndex='5' position='relative'>
         <ChakraNextImageGlobal
           // w='5xl' === 1020
           width='1160px'
@@ -239,7 +243,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               <Text color={'grey'}>10 Friends</Text>
             </Box>
             <Spacer />
-            {FriendStatus.FRIEND && !isEditButton && (
+            {isLoggedIn && auth?.role !== RoleConstants.ADMIN && !isEditButton && (
               <>
                 <Button onClick={goToChat} my={'80px'} mx='5'>
                   Message now
@@ -274,7 +278,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               </>
             )}
 
-            <Box hidden={!isLoggedIn}>
+            <Box hidden={!isLoggedIn || auth?.role === RoleConstants.ADMIN}>
               {isEditButton && (
                 <>
                   <Button
@@ -324,7 +328,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
         <Divider />
 
         <TopNavNormal userId={user ? user.id : 'a'} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
-        {/* <Slide direction='top' in={true}>
+        <Slide direction='top' in={true}>
           {clientWindowHeight >= 534.4 && (
             <TopNavSpecial
               avatar={avatar}
@@ -334,7 +338,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               pushRoute={pushRoute}
             />
           )}
-        </Slide> */}
+        </Slide>
       </Box>
     </Box>
   );

@@ -16,21 +16,23 @@ import {
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BsFillMoonFill, BsChatLeftTextFill } from 'react-icons/bs';
 import { FaUserCircle } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import { HiOutlineLink } from 'react-icons/hi';
 import { IoIosLogIn } from 'react-icons/io';
-import { MdLanguage, MdLightMode, MdOutlineNotificationsActive } from 'react-icons/md';
+import { MdLanguage, MdLightMode, MdOutlineNotificationsActive, MdAdminPanelSettings } from 'react-icons/md';
 import { RiProfileLine, RiSettings4Fill } from 'react-icons/ri';
 import { logout } from '../../../../app/slices/authSlice';
+import { isConnected } from '../../../../app/slices/socketSlice';
 import { clearUserNotAuth } from '../../../../app/slices/userNotAuthSlice';
 import { setThemeMode } from '../../../../app/themeSlice';
 import { RoleConstants } from '../../../../constants/roles.constant';
 import { LangConstants, ThemeConstants } from '../../../../constants/settings.constant';
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { SocketContext } from '../../../contexts/Socket';
 import MenuItem from '../MenuItem/index.component';
 
 export interface IMenuLinksProps {
@@ -48,10 +50,11 @@ export default function MenuLinks(props: IMenuLinksProps) {
   const router = useRouter();
   const toast = useToast();
   const currentTheme = useAppSelector((state) => state.theme);
+  const { stompClient } = useContext(SocketContext);
   const { t } = useTranslation('header');
   const { colorMode, toggleColorMode } = useColorMode();
   const iconAccount = useColorModeValue('blackAlpha.600', 'white');
-  const bgMenu = useColorModeValue('white', 'header.primary_darkMode');
+  const bgMenu = useColorModeValue('white', 'black');
   const colorMenu = useColorModeValue('textColor.black', 'textColor.white');
   const statusMenu = useBreakpointValue(
     {
@@ -114,27 +117,42 @@ export default function MenuLinks(props: IMenuLinksProps) {
     await AuthService.logout();
     dispatch(clearUserNotAuth());
     dispatch(logout());
+    if (stompClient) {
+      stompClient.deactivate();
+      dispatch(isConnected(false));
+    }
     router.push('/experiences');
   };
 
   const copyToClipboard = () => {
-    var currentHost = 'http://localhost:3000';
-    if (process.env.NODE_ENV === 'development') {
-      currentHost = `${currentHost}/profile/${userId}/about`;
-    } else {
-      currentHost = 'https://lumiere.hcmute.me';
-      currentHost = `${currentHost}/profile/${userId}/about`;
-    }
+    if (userInfor?.role === RoleConstants.USER) {
+      var currentHost = 'http://localhost:3000';
+      if (process.env.NODE_ENV === 'development') {
+        currentHost = `${currentHost}/profile/${userId}/about`;
+      } else {
+        currentHost = 'https://lumiere.hcmute.me';
+        currentHost = `${currentHost}/profile/${userId}/about`;
+      }
 
-    navigator.clipboard.writeText(currentHost);
-    toast({
-      description: 'Copy to clipboard successfully!',
-      status: 'info',
-      duration: 1000,
-      isClosable: true,
-      variant: 'solid',
-      position: 'top-right',
-    });
+      navigator.clipboard.writeText(currentHost);
+      toast({
+        description: 'Copy to clipboard successfully!',
+        status: 'info',
+        duration: 1000,
+        isClosable: true,
+        variant: 'solid',
+        position: 'top-right',
+      });
+    } else {
+      toast({
+        description: 'Admin can not use this feature',
+        status: 'warning',
+        duration: 1000,
+        isClosable: true,
+        variant: 'solid',
+        position: 'top-right',
+      });
+    }
   };
 
   return (
@@ -182,22 +200,52 @@ export default function MenuLinks(props: IMenuLinksProps) {
                       </MenuItm>
                     )}
                     <Link
+                      href='/admin/dashboard'
+                      // as={userId ? `/profile/${userId}/about` : 'experiences'}
+                      replace={true}
+                      passHref
+                    >
+                      <MenuItm
+                        hidden={userInfor?.role !== RoleConstants.ADMIN}
+                        fontFamily='titleFont'
+                        icon={<Icon fontSize='20px' as={MdAdminPanelSettings} />}
+                        fontSize='14px'
+                      >
+                        Admin dashboard
+                      </MenuItm>
+                    </Link>
+                    <Link
                       href='/profile/[userId]'
                       as={userId ? `/profile/${userId}/about` : 'experiences'}
                       replace={true}
                       passHref
                     >
-                      <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiProfileLine} />} fontSize='14px'>
+                      <MenuItm
+                        hidden={userInfor?.role === RoleConstants.ADMIN}
+                        fontFamily='titleFont'
+                        icon={<Icon fontSize='20px' as={RiProfileLine} />}
+                        fontSize='14px'
+                      >
                         {t('menuUser.profile')}
                       </MenuItm>
                     </Link>
                     <Link href='/chats' replace>
-                      <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={BsChatLeftTextFill} />} fontSize='14px'>
+                      <MenuItm
+                        hidden={userInfor?.role === RoleConstants.ADMIN}
+                        fontFamily='titleFont'
+                        icon={<Icon fontSize='20px' as={BsChatLeftTextFill} />}
+                        fontSize='14px'
+                      >
                         Go to chat
                       </MenuItm>
                     </Link>
                     <Link href='/settings?tab=account' replace>
-                      <MenuItm fontFamily='titleFont' icon={<Icon fontSize='20px' as={RiSettings4Fill} />} fontSize='14px'>
+                      <MenuItm
+                        hidden={userInfor?.role === RoleConstants.ADMIN}
+                        fontFamily='titleFont'
+                        icon={<Icon fontSize='20px' as={RiSettings4Fill} />}
+                        fontSize='14px'
+                      >
                         Privacy & Security settings
                       </MenuItm>
                     </Link>

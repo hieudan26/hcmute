@@ -15,7 +15,7 @@ export default function Message(props: IMessageProps) {
 
   return (
     <Box
-      bg={auth?.id === userId ? 'blue.500' : bgColor[colorMode]}
+      bg={auth?.id === userId ? '#D0637C' : bgColor[colorMode]}
       w='fit-content'
       py={1}
       px={3}
