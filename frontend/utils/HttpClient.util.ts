@@ -15,6 +15,7 @@ import store from '../app/store';
 import { logout } from '../app/slices/authSlice';
 import { AxiosResponseStatus } from '../constants/global.constant';
 import { clearUserNotAuth } from '../app/slices/userNotAuthSlice';
+import https from 'https';
 
 // let IS_REFRESHING_TOKEN = false;
 
@@ -105,6 +106,11 @@ const getHeaders = (contentType: string, accessToken: string) => {
   };
 };
 
+const agent = new https.Agent({
+  rejectUnauthorized: false,
+  requestCert: false,
+});
+
 const axiosInstance = (
   handleErrorAutomatic: boolean,
   successMessage?: string,
@@ -123,6 +129,7 @@ const axiosInstance = (
     headers: {
       'Content-Type': contentType,
     },
+    httpAgent: agent,
     responseType: responseType,
   });
 

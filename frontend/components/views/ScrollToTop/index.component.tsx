@@ -3,7 +3,12 @@ import { IconButton, useColorModeValue } from '@chakra-ui/react';
 import { gsap } from 'gsap';
 import React, { useEffect, useRef } from 'react';
 
-const ScrollToTop = () => {
+interface IScrollToTopProps {
+  spaceRight?: boolean;
+}
+
+const ScrollToTop = (props: IScrollToTopProps) => {
+  const { spaceRight } = props;
   const [isVisible, setIsVisible] = React.useState(false);
   const scrollButton = useRef<any | undefined>();
   const arrowUpIconColor = useColorModeValue('textColor.primary_lightMode', 'textColor.primary_darkMode');
@@ -58,7 +63,7 @@ const ScrollToTop = () => {
       onClick={handleClick}
       position='fixed'
       bottom='4rem'
-      right='4rem'
+      right={spaceRight ? '1rem' : '4rem'}
       zIndex='-1'
       opacity='0'
     />

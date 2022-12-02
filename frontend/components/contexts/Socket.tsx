@@ -26,7 +26,8 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (isLoggedIn && stompClient === null) {
+    // console.log(isLoggedIn, stompClient?.connected);
+    if (isLoggedIn && (stompClient === null || (stompClient && !stompClient.connected))) {
       let idToken = null;
       const getIdToken = async () => {
         try {
@@ -41,9 +42,9 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
       if (accessToken && accessToken !== idToken) {
         connect();
       }
-
-      return () => disconnect();
     }
+
+    return () => disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn, accessToken, stompClient]);
 

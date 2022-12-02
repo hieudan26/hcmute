@@ -3,3 +3,8 @@ export const RoleConstants = {
   USER: 'USER',
   ADMIN: 'ADMIN',
 };
+
+export const ROLE_OPTIONS = [
+  { value: 'USER', label: 'User' },
+  { value: 'ADMIN', label: 'Admin' },
+];

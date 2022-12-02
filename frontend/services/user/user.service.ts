@@ -9,6 +9,15 @@ import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 
 class UserService {
+  createAdmin = async (
+    model: IUserFirstLoginRequest,
+    setSubmitting: Dispatch<SetStateAction<boolean>>
+  ): Promise<AxiosResponse<any>> => {
+    var url = `${API_PATH.USERS}/admin`;
+    const result = await postAsync(url, model, 'Create new admin successfully', false, true, true, undefined, setSubmitting);
+    return result;
+  };
+
   getUserFriendStatus = async (userId: string, friendId: string): Promise<AxiosResponse<any>> => {
     var url = `users/${userId}/friends/${friendId}`;
     const result = await getAsync(url, undefined, false, false, true);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { CookieConstants } from './constants/store.constant';
 import { authRouteContain, privateRouteContain, publicRouteContain } from './utils';
+import { RoleConstants } from './constants/roles.constant';
 // import jsonwebtoken from 'jsonwebtoken';
 // import jwkToPem from 'jwk-to-pem';
 
@@ -107,10 +108,16 @@ const checkPrivateRoute = (pathname: string) => {
 };
 
 export function middleware(request: NextRequest) {
+  const role = request.cookies.get(CookieConstants.ROLE);
   const url = request.nextUrl.clone();
   if (url.pathname === '/') {
-    url.pathname = '/login';
-    return NextResponse.redirect(new URL('/experiences', request.url));
+    if (!role) {
+      return NextResponse.redirect(new URL('/experiences', request.url));
+    } else if (role === RoleConstants.ADMIN) {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+    } else {
+      return NextResponse.redirect(new URL('/experiences', request.url));
+    }
   }
 
   const token = request.cookies.get(CookieConstants.ACCESS_TOKEN);

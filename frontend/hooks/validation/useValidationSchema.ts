@@ -3,6 +3,39 @@ import { emailRegex, passwordRegex } from '../../utils';
 
 export default function useValidationSchema() {
   return {
+    //#region account-manager
+    accountManagementSchema: yup.object().shape({
+      email: yup
+        .string()
+        .email('Valid characters in email addresses.')
+        .required('Please enter an email address.')
+        .matches(emailRegex),
+      password: yup
+        .string()
+        .required('Please create a password.')
+        .min(8, 'Password needs to be at least 8 characters long.')
+        .max(16, 'Password must be at most 16 charaters.')
+        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+      confirm_password: yup
+        .string()
+        .required('Please confirm your password.')
+        .oneOf([yup.ref('password')], 'Passwords do not match.'),
+      role: yup.string().required('Role is require'),
+      firstName: yup
+        .string()
+        .required('First name is required.')
+        .min(3, 'First name needs to be at least 3 characters long.')
+        .max(8, 'First name must be at most 8 charaters.'),
+      lastName: yup
+        .string()
+        .required('Last name is required.')
+        .min(3, 'Last name needs to be at least 3 characters long.')
+        .max(16, 'Last name must be at most 16 charaters.'),
+      gender: yup.string(),
+      phoneNumber: yup.string().required('Phone number is required.'),
+    }),
+    //#endregion
+
     //#region modify account
     modifyAccountSchema: yup.object().shape({
       current_password: yup.string().required('Password is required.'),

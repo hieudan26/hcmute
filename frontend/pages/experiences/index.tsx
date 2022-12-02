@@ -1,5 +1,4 @@
-import { useColorModeValue } from '@chakra-ui/react';
-import { Box, Center, Flex, Skeleton, Spacer, Spinner, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+import { Box, Center, Flex, Skeleton, SkeletonCircle, SkeletonText, Spacer, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
@@ -8,8 +7,10 @@ import CreatePost from '../../components/views/Profile/Posts/CreatePost/index.co
 import CreateNewPost from '../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
 import PostRender from '../../components/views/Profile/Posts/PostRender/index.component';
 import Weather from '../../components/views/Profile/Posts/Weather/index.component';
+import { RoleConstants } from '../../constants/roles.constant';
 import { CookieConstants, LocalStorageConstants } from '../../constants/store.constant';
 import { useCUDPost, usePostsByType } from '../../hooks/queries/posts';
+import { useAppSelector } from '../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
@@ -23,6 +24,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
   const [currentUserId, setCurrentUserId] = useState<string>('');
+  const auth = useAppSelector((state) => state.auth.value);
   const posts = usePostsByType({
     type: 'experience',
     sortBy: 'time',
@@ -39,10 +41,11 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
     const userIdLocalStorage = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
 
     if (userIdLocalStorage) {
-      setCurrentUserId(userIdLocalStorage);
+      if (auth?.role === RoleConstants.USER) {
+        setCurrentUserId(userIdLocalStorage);
+        setIsLoggedIn(isLoggedInCookie);
+      }
     }
-
-    setIsLoggedIn(isLoggedInCookie);
 
     if (isLoggedInCookie && avatarLocalStorage) {
       setAvatar(avatarLocalStorage);
@@ -55,7 +58,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
   };
 
   return (
-    <Flex gap='6' w='100%' position='relative'>
+    <Flex gap={{ base: '0', md: '0', lg: '0', xl: '0', '2xl': '6' }} w='100%' position='relative'>
       <CreateNewPost
         currentUserId={currentUserId}
         onSubmit={_submitPost}
@@ -63,10 +66,14 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
         isOpen={isCreatePost}
         onClose={() => setIsCreatePost(false)}
       />
-      <Box mr='6' width='40%'>
+      <Box
+        display={{ base: 'none', lg: 'block' }}
+        mr={{ base: '0', md: '0', lg: '65px', xl: '0', '2xl': '6' }}
+        width={{ md: '0%', lg: '30%', xl: '40%', '2xl': '40%' }}
+      >
         <Weather />
       </Box>
-      <Flex position='relative' justify='center' width='60%' direction='column'>
+      <Flex position='relative' justify='center' width={{ base: '100%', lg: '70%', xl: '65%', '2xl': '60%' }} direction='column'>
         {isLoggedIn && (
           <>
             <Box bg={bgCreatePost} width='100%' px='4' rounded='lg' shadow='md' py='5'>

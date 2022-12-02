@@ -44,7 +44,7 @@ export const LocalUtils = {
         //store some response data to cookie
         const expire = new Date(decodedHeader.exp * 1000);
         const moreExpire = moment(expire).add(30, 'd').toDate();
-        cookie.save(CookieConstants.ACCESS_TOKEN, idToken, { expires: moreExpire, sameSite: 'strict' });
+        cookie.save(CookieConstants.ACCESS_TOKEN, idToken, { path: '/', expires: moreExpire, sameSite: 'strict' });
 
         const refreshToken = data.getSignInUserSession()?.getRefreshToken().getToken();
         if (refreshToken) {
@@ -52,9 +52,10 @@ export const LocalUtils = {
         }
 
         LocalUtils.setLocalStorage(LocalStorageConstants.USER_ID, decodedHeader['sub']);
-        cookie.save(CookieConstants.EMAIL, decodedHeader.email, { expires: moreExpire, sameSite: 'strict' });
-        cookie.save(CookieConstants.ROLE, decodedHeader['custom:role'], { expires: moreExpire, sameSite: 'strict' });
+        cookie.save(CookieConstants.EMAIL, decodedHeader.email, { path: '/', expires: moreExpire, sameSite: 'strict' });
+        cookie.save(CookieConstants.ROLE, decodedHeader['custom:role'], { path: '/', expires: moreExpire, sameSite: 'strict' });
         cookie.save(CookieConstants.IS_FIRST_LOGIN, decodedHeader['custom:is_first_login'], {
+          path: '/',
           expires: moreExpire,
           sameSite: 'strict',
         });
@@ -63,7 +64,7 @@ export const LocalUtils = {
 
         // keep login 1 day
         // const loginExpire = moment(expire).add(1, 'd').toDate();
-        cookie.save(CookieConstants.IS_LOGGED_IN, 'true', { expires: moreExpire, sameSite: 'strict' });
+        cookie.save(CookieConstants.IS_LOGGED_IN, 'true', { path: '/', expires: moreExpire, sameSite: 'strict' });
       }
     }
   },

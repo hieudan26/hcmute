@@ -40,7 +40,7 @@ function SidebarContent(props: SidebarContentProps) {
         section.map((item, index) => (
           <Stack key={index} direction='column' mt='8px' mb='4'>
             <Box ps='20px' pe={{ lg: '16px', '2xl': '16px' }}>
-              <Text fontWeight='bold' color='gray.400' fontSize='md'>
+              <Text fontWeight='bold' color='gray.400' fontSize='xs' as='i'>
                 {item.section}
               </Text>
               <Stack spacing='4' mt='4' align='stretch'>

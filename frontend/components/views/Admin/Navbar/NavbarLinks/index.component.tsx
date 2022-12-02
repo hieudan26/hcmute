@@ -11,25 +11,48 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
-import { MdNotificationsNone } from 'react-icons/md';
+import { MdOutlineScreenShare } from 'react-icons/md';
+import { logout } from '../../../../../app/slices/authSlice';
+import { isConnected } from '../../../../../app/slices/socketSlice';
+import { clearUserNotAuth } from '../../../../../app/slices/userNotAuthSlice';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { AuthService } from '../../../../../services/auth/auth.service';
+import { SocketContext } from '../../../../contexts/Socket';
 import routes from '../../Routes/Routes';
 import { SidebarResponsive } from '../../Sidebar/index.component';
 import { ItemContent } from '../ItemContent/index.component';
 
 export default function NavbarLinks(props: { secondary: boolean | undefined }) {
   const { secondary } = props;
+  const { stompClient } = useContext(SocketContext);
   const { colorMode, toggleColorMode } = useColorMode();
   const navbarIcon = useColorModeValue('gray.400', 'white');
-  const menuBg = useColorModeValue('white', 'backgroundPage.primary_darkMode');
+  const menuBg = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
   const textColor = useColorModeValue('#1B2559', 'white');
-  const textColorBrand = useColorModeValue('#02044A', '#7551FF');
   const borderColor = useColorModeValue('#E6ECFA', 'rgba(135, 140, 189, 0.3)');
-  const shadow = useColorModeValue(
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.18)',
-    '14px 17px 40px 4px rgba(112, 144, 176, 0.06)'
-  );
-  const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
+  const shadow = 'none';
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth.value);
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    dispatch(clearUserNotAuth());
+    dispatch(logout());
+    if (stompClient) {
+      stompClient.deactivate();
+      dispatch(isConnected(false));
+    }
+    router.push('/login');
+  };
+
+  const goToSocial = () => {
+    router.push('/experiences');
+  };
+
   return (
     <Flex
       w={{ sm: '100%', md: 'auto' }}
@@ -42,7 +65,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       boxShadow={shadow}
     >
       <SidebarResponsive routes={routes} />
-      <Menu>
+      {/* <Menu>
         <MenuButton p='0px'>
           <Icon as={MdNotificationsNone} color={navbarIcon} w='18px' h='18px' me='10px' />
         </MenuButton>
@@ -50,7 +73,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
           boxShadow={shadow}
           p='20px'
           borderRadius='20px'
-          bg={menuBg}
+          bg={colorMode === 'light' ? 'gray.50' : 'black'}
           border='none'
           mt='22px'
           me={{ base: '30px', md: 'unset' }}
@@ -74,8 +97,11 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
             </MenuItem>
           </Flex>
         </MenuList>
-      </Menu>
+      </Menu> */}
 
+      <Button variant='no-hover' bg='transparent' p='0px' minW='unset' minH='unset' h='18px' w='max-content' onClick={goToSocial}>
+        <Icon me='10px' h='18px' w='18px' color={navbarIcon} as={MdOutlineScreenShare} />
+      </Button>
       <Button
         variant='no-hover'
         bg='transparent'
@@ -90,9 +116,17 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       </Button>
       <Menu>
         <MenuButton p='0px'>
-          <Avatar _hover={{ cursor: 'pointer' }} color='white' name='Adela Parkson' bg='#11047A' size='sm' w='40px' h='40px' />
+          <Avatar _hover={{ cursor: 'pointer' }} color='white' name={auth?.fullName} bg='#11047A' size='sm' w='40px' h='40px' />
         </MenuButton>
-        <MenuList boxShadow={shadow} p='0px' mt='10px' borderRadius='20px' bg={menuBg} border='none'>
+        <MenuList
+          zIndex='popover'
+          boxShadow={shadow}
+          p='0px'
+          mt='10px'
+          borderRadius='20px'
+          bg={colorMode === 'light' ? 'white' : 'black'}
+          border='none'
+        >
           <Flex w='100%' mb='0px'>
             <Text
               ps='20px'
@@ -105,17 +139,21 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
               fontWeight='700'
               color={textColor}
             >
-              👋&nbsp; Hey, Adela
+              👋&nbsp; Hey, {auth?.fullName}
             </Text>
           </Flex>
           <Flex flexDirection='column' p='10px'>
             <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
               <Text fontSize='sm'>Profile Settings</Text>
             </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius='8px' px='14px'>
-              <Text fontSize='sm'>Newsletter Settings</Text>
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} color='red.400' borderRadius='8px' px='14px'>
+            <MenuItem
+              _hover={{ bg: 'none' }}
+              _focus={{ bg: 'none' }}
+              color='red.400'
+              borderRadius='8px'
+              px='14px'
+              onClick={handleLogout}
+            >
               <Text fontSize='sm'>Log out</Text>
             </MenuItem>
           </Flex>
