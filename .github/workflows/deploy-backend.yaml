@@ -46,3 +46,8 @@ jobs:
             sudo docker stop backend_server
             sudo docker rm backend_server
             sudo docker run --detach --name backend_server -p 8080:8080 hieudan/hcmute
+            docker run --log-driver=loki \
+              --log-opt loki-url="https://admin-grafana:eyJrIjoiaHhZdHdJVmVWQTZlSkxHM05wdUV3RUNWcklaWThCZlEiLCJuIjoiYWRtaW4tZ3JhZmFuYSIsImlkIjoxfQ==@lumiere.grafana.net/loki/api/v1/push" \
+              --log-opt loki-retries=5 \
+              --log-opt loki-batch-size=400 \
+              grafana/grafana
