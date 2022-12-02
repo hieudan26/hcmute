@@ -45,4 +45,8 @@ jobs:
             sudo docker pull hieudan/hcmute
             sudo docker stop backend_server
             sudo docker rm backend_server
-            sudo docker run --detach --name backend_server -p 8080:8080 hieudan/hcmute
+            sudo docker run --log-driver=loki \
+              --log-opt loki-url="https://${{ secrets.LOKI_USER }}:${{ secrets.LOKI_API_KEY }}@logs-prod-011.grafana.net/loki/api/v1/push" \
+              --log-opt loki-retries=5 \
+              --log-opt loki-batch-size=400 \
+              --detach --name backend_server -p 8080:8080 hieudan/hcmute
