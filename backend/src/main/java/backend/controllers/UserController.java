@@ -37,20 +37,20 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<BaseResponse> updateInformation(@PathVariable("id") String id,
                                                           @Validated @RequestBody UpdateUserRequest request) throws NoPermissionException {
         return ResponseEntity.ok(userService.updateUser(id,request));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/disable")
     public ResponseEntity<BaseResponse> disableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminBlockUser(userIdParams));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/enable")
     public ResponseEntity<BaseResponse> enableUser(@Validated @RequestBody UserIdParams userIdParams){
         return ResponseEntity.ok(userService.adminUnlockUser(userIdParams));
@@ -89,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getFriends(userId, status,pagingRequest));
     }
 
-    @PreAuthorize("hasAuthorities('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{userId}/friends")
     public ResponseEntity<BaseResponse> updateStatusFriends(
             @PathVariable String userId,
@@ -98,7 +98,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateStatusFriend(updateStatusFriendsRequest));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @GetMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<BaseResponse> getUserFriendStatus(@PathVariable String userId,
                                                        @PathVariable String friendId
