@@ -89,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getFriends(userId, status,pagingRequest));
     }
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthorities('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{userId}/friends")
     public ResponseEntity<BaseResponse> updateStatusFriends(
             @PathVariable String userId,
