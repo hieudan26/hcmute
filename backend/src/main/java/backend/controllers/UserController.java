@@ -58,7 +58,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/admin")
-    public ResponseEntity<BaseResponse> createAdmin(@Validated @RequestBody UserFirstLoginRequest request){
+    public ResponseEntity<BaseResponse> createAdmin(@Validated @RequestBody CreateAdminRequest request){
         return ResponseEntity.ok(userService.createAdmin(request));
     }
 
