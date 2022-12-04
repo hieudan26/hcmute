@@ -9,6 +9,35 @@ import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 
 class UserService {
+  enableUser = async (userId: string): Promise<AxiosResponse<any>> => {
+    var url = `/users/enable`;
+    const params = {
+      id: userId,
+    };
+    const result = await putAsync(url, params, 'Enable user successfully', false, true, true, undefined, undefined);
+    return result;
+  };
+
+  disableUser = async (userId: string): Promise<AxiosResponse<any>> => {
+    var url = `/users/disable`;
+    const params = {
+      id: userId,
+    };
+    const result = await putAsync(url, params, 'Disable user successfully', false, true, true, undefined, undefined);
+    return result;
+  };
+
+  getUsers = async (
+    params: IPaginationRequest | undefined,
+    searchFirstName: string | undefined,
+    searchLastName: string | undefined
+  ): Promise<AxiosResponse<any>> => {
+    var url = `/users`;
+    const paramsMain = { ...params, firstName: searchFirstName, lastName: searchLastName };
+    const result = await getAsync(url, paramsMain, false, false, true);
+    return result;
+  };
+
   createAdmin = async (
     model: IUserFirstLoginRequest,
     setSubmitting: Dispatch<SetStateAction<boolean>>

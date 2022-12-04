@@ -3,6 +3,23 @@ import { emailRegex, passwordRegex } from '../../utils';
 
 export default function useValidationSchema() {
   return {
+    //#region infor-admin
+    inforAdminSchema: yup.object().shape({
+      firstName: yup
+        .string()
+        .required('First name is required.')
+        .min(3, 'First name needs to be at least 3 characters long.')
+        .max(8, 'First name must be at most 8 charaters.'),
+      lastName: yup
+        .string()
+        .required('Last name is required.')
+        .min(3, 'Last name needs to be at least 3 characters long.')
+        .max(16, 'Last name must be at most 16 charaters.'),
+      gender: yup.string(),
+      phoneNumber: yup.string().required('Phone number is required.'),
+    }),
+    //#endregion
+
     //#region account-manager
     accountManagementSchema: yup.object().shape({
       email: yup

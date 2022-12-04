@@ -36,6 +36,7 @@ export interface IUserFirstLoginRequest {
   isFirstLogin: boolean;
   disable: boolean;
   lastModifiedDate?: number;
+  creationDate?: number;
 }
 
 export interface IQueryGetFriendByUserAndStatus extends IPaginationRequest {

@@ -28,6 +28,7 @@ import ModalContainer from '../../../../components/views/Modals/ModalContainer/i
 import LayoutTab from '../../../../components/views/Profile/LayoutTab/index.component';
 import { ArrayTenTemp } from '../../../experiences';
 import { useColorModeValue } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 export interface IProfilePhotosProps {}
 
@@ -35,7 +36,16 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
   const [modal, setModal] = useState<boolean>(false);
   const [tempSrc, setTempSrc] = useState<string>('');
   const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
   const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
+  const router = useRouter();
+
+  useEffect(() => {
+    const { userId } = router.query;
+    if (userId) {
+      setUserId(userId as string);
+    }
+  }, [router.query]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -48,13 +58,13 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
 
   const images = useImages(
     {
-      userId: '86ce8572-3c92-4cca-89e3-060c35e613be',
+      userId: userId ? userId : '86ce8572-3c92-4cca-89e3-060c35e613be',
       pageNumber: 0,
       pageSize: 10,
       sortBy: 'time',
       sortType: 'DESC',
     },
-    true
+    userId !== undefined
   );
 
   const getImg = (url: string) => {

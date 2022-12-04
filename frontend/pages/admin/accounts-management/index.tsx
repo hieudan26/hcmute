@@ -125,11 +125,12 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
       const response = await AuthService.register(dataRegisterAdmin, setSubmitting);
       const model: any = {
         ...dataSubmit,
+        id: response?.userSub,
         avatar: defaultAvatar,
         dob: formatDate(date),
       };
-      const a = await userService.createAdmin(model, setSubmitting);
-      console.log(a);
+      console.log(response);
+      const resCreateAdmin = await userService.createAdmin(model, setSubmitting);
     } else {
       const response = await AuthService.register(dataRegisterUser, setSubmitting);
       if (response && response.user) {
