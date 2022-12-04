@@ -19,3 +19,27 @@ export interface IProvinceModel {
   modifiedBy: string | null | undefined;
   name: string;
 }
+
+export interface ICountryResponse {
+  creationDate: string | null;
+  lastModifiedDate: string | null;
+  createdBy: string | null;
+  modifiedBy: string | null;
+  id: number;
+  name: string;
+  enName: string;
+  type: string;
+  parentId: number | null;
+  disable: boolean;
+}
+
+export interface IProvinceResponse extends ICountryResponse {}
+
+export interface ICountryRequest {
+  enName: string;
+  name: string;
+}
+
+export interface IProvinceRequest extends ICountryRequest {
+  parentId: number;
+}

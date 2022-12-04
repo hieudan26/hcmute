@@ -7,6 +7,17 @@ import { IPostPaginationByType, IPostPaginationByTypeAndUserId, IPostRequestMode
 import { deleteAsync, getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class PostService {
+  getAllPostsDeleted = async (
+    params: IPaginationRequest | undefined,
+    isDeleted: boolean | undefined,
+    type: string | undefined
+  ): Promise<AxiosResponseStatus<any>> => {
+    var url = API_PATH.POST;
+    const mainParams = { ...params, isDeleted, type };
+    const result = await getAsync(url, mainParams, false, false, true);
+    return result;
+  };
+
   getPostById = async (postId: string): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.POST}/${postId}`;
     try {

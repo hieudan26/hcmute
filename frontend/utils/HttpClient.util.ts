@@ -197,7 +197,7 @@ const axiosInstance = (
         error.response &&
         (error.response.status === HttpStatus.UNAUTHORIZED || error.response.status === HttpStatus.FORBIDDEN)
       ) {
-        handleUnAuthorize();
+        // handleUnAuthorize();
       }
 
       if (error.error_description) {

@@ -7,7 +7,7 @@ export interface IRoute {
   icon: ReactComponentElement | string;
   secondary?: boolean;
   path: string;
-  section: 'Statistics' | 'Users Management' | 'Accounts Management' | 'Posts Management';
+  section: 'Statistics' | 'Users Management' | 'Accounts Management' | 'Posts Management' | 'Areas Management';
 }
 
 export interface ISection {

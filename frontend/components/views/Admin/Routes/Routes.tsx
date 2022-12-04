@@ -1,5 +1,5 @@
 import { Icon } from '@chakra-ui/react';
-import { MdBarChart, MdAdminPanelSettings, MdHome, MdLock, MdOutlineShoppingCart } from 'react-icons/md';
+import { MdBarChart, MdAdminPanelSettings, MdHome, MdLock, MdLocationPin } from 'react-icons/md';
 import { FaUsers, FaUserCheck } from 'react-icons/fa';
 import { BsFileEarmarkPostFill } from 'react-icons/bs';
 import { IRoute } from '../../../../types/navigation';
@@ -8,10 +8,11 @@ import AdminProfile from '../../../../pages/admin/profile';
 import AdminUsersManagementPage from '../../../../pages/admin/users-management';
 import AdminPostsManagementPage from '../../../../pages/admin/posts-management';
 import AdminAccountsManagementPage from '../../../../pages/admin/accounts-management';
+import AdminAreasManagementPage from '../../../../pages/admin/areas-management';
 
 const routes: IRoute[] = [
   {
-    name: 'Main Dashboard',
+    name: 'Main dashboard',
     layout: '/admin',
     path: '/dashboard',
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
@@ -19,7 +20,15 @@ const routes: IRoute[] = [
     section: 'Statistics',
   },
   {
-    name: 'All Users In System',
+    name: 'Country & Province',
+    layout: '/admin',
+    path: '/areas-management',
+    icon: <Icon as={MdLocationPin} width='20px' height='20px' color='inherit' />,
+    component: AdminAreasManagementPage,
+    section: 'Areas Management',
+  },
+  {
+    name: 'All users in system',
     layout: '/admin',
     path: '/users-management',
     icon: <Icon as={FaUsers} width='20px' height='20px' color='inherit' />,
