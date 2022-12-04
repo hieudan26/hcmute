@@ -26,7 +26,7 @@ public class Areas extends Auditable<String> implements Serializable{
     String enName;
     @Column(nullable = false)
     String type;
-    @Column(name="parent_id", insertable=false, updatable=false)
+    @Column(name="parent_id")
     private Integer parentId;
     @OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @JoinColumn(name="parent_id")

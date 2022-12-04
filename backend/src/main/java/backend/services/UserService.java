@@ -54,15 +54,11 @@ public class UserService {
                 .build();
     }
 
-    public BaseResponse createAdmin(UserFirstLoginRequest userFirstLoginRequest){
-        CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        Users user = userMapper.userFirstLoginRequestToUsers(userFirstLoginRequest);
-        user.setId(userDetail.getUsername());
+    public BaseResponse createAdmin(CreateAdminRequest createAdminRequest){
+        Users user = userMapper.createAdminMapping(createAdminRequest);
         user.setRole(Roles.ADMIN.getRoleName());
-        user.setEmail(userDetail.getEmail());
-
         Users result = userRepository.save(user);
-        return BaseResponse.builder().message("Create user successful.")
+        return BaseResponse.builder().message("Create admin successful.")
                 .data(result)
                 .build();
     }
