@@ -100,7 +100,7 @@ public class ControllerExceptionHandler extends GlobalControllerExceptionHandler
         return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NoPermissionException.class)
+    @ExceptionHandler({NoPermissionException.class, InvalidRequestException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public ResponseEntity handleNoPermissionException(NoPermissionException ex)

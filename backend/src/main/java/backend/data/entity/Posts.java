@@ -43,6 +43,7 @@ public class Posts extends Auditable<String> implements Serializable {
     @ToString.Exclude
     Set<PostImages> images = new HashSet<>();
 
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
@@ -58,6 +59,16 @@ public class Posts extends Auditable<String> implements Serializable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     Set<Users> reaction = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "hashtag_post",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    Set<HashTags> hashTags = new HashSet<>();
 
     public void addImages(PostImages images) {
         images.setPost(this);

@@ -6,6 +6,7 @@ import backend.data.dto.area.listItem.CreateProvinceRequest;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
+import backend.data.dto.place.CreatePlaceRequest;
 import backend.data.entity.Areas;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.AreaMapper;
@@ -25,12 +26,12 @@ public class AreaService{
     private AreaRepository areaRepository;
 
     private AreaMapper areaMapper;
+    private PlaceService placeService;
 
     public BaseResponse listAllCountries(PagingRequest pagingRequest){
         PagingResponse pagingResponse = new PagingResponse(
                 areaRepository.queryAreaListByType(PagingUtils.getPageable(pagingRequest), AreaConstant.COUNTRY.getTypeName())
                         .map(areaMapper::CountriesToCountryResponse));
-
         return BaseResponse.builder().message("Find countries successful.")
                     .data(pagingResponse)
                     .build();
