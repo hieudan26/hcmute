@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Table(name = "chat_rooms")
-public class ChatRooms {
+public class ChatRooms extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     Integer id;
@@ -24,7 +25,6 @@ public class ChatRooms {
             name = "chat_room_members",
             joinColumns = @JoinColumn(name = "chat_room_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
