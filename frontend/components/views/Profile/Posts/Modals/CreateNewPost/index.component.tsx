@@ -1,4 +1,4 @@
-import { Button, Divider, Flex, IconButton, Image, Input, ModalBody, ModalCloseButton, ModalHeader } from '@chakra-ui/react';
+import { Box, Button, Divider, Flex, IconButton, Image, Input, ModalBody, ModalCloseButton, ModalHeader } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiFillTags } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
@@ -10,6 +10,7 @@ import { IPostRequestModel } from '../../../../../../models/post/post.model';
 import { formatTimePost } from '../../../../../../utils';
 import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
 import ModalContainer from '../../../../Modals/ModalContainer/index.component';
+import Select, { ActionMeta, MultiValue } from 'react-select';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -18,6 +19,14 @@ export interface ICreateNewPostProps {
   onSubmit: (params: any) => Promise<void>;
   currentUserId: string;
 }
+
+const optionsWarna = [
+  { value: 'biru', label: 'Biru' },
+  { value: 'kuning', label: 'Kuning' },
+  { value: 'hijau', label: 'Hijau' },
+  { value: 'cokelat', label: 'Cokelat' },
+  { value: 'merah', label: 'Merah' },
+];
 
 export default function CreateNewPost(props: ICreateNewPostProps) {
   const { type, isOpen, onClose, onSubmit, currentUserId } = props;
@@ -28,6 +37,8 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const [isDisabledBtnPost, setIsDisabledBtnPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const [isOpenTags, setIsOpenTags] = useState<boolean>(false);
 
   useEffect(() => {
     if (valuePost.length > 0) {
@@ -43,10 +54,14 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
 
   const handleClose = (isClear: boolean) => {
     if (!isClear) {
+      setTags([]);
+      setIsOpenTags(false);
       onClose();
     } else {
+      setTags([]);
       setSelectedFiles([]);
       setFilesToUpload([]);
+      setIsOpenTags(false);
       Array.from(selectedFiles).map(
         (file) => URL.revokeObjectURL(file) // avoid memory leak
       );
@@ -85,6 +100,28 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     }
   };
 
+  const handleWarnaChange = async (
+    selected: MultiValue<{
+      value: string;
+      label: string;
+    }>,
+    selectaction: ActionMeta<{
+      value: string;
+      label: string;
+    }>
+  ) => {
+    const { action } = selectaction;
+    if (action === 'clear') {
+    } else if (action === 'select-option') {
+    } else if (action === 'remove-value') {
+      console.log('remove');
+    }
+    const arrValuesTag = selected.map((item) => {
+      return item.value;
+    });
+    setTags(arrValuesTag);
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
@@ -96,7 +133,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           handleClose(false);
         }}
       />
-      <ModalBody maxH='80vh'>
+      <ModalBody maxH='90vh'>
         <AutoResizeTextarea
           maxH='80'
           border='1px'
@@ -115,6 +152,23 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
             ))}
           </Carousel>
         )}
+
+        {isOpenTags && (
+          <Box mt='2'>
+            <Select
+              id='selectWarna'
+              instanceId='selectWarna'
+              isMulti
+              name='colors'
+              className='basic-multi-select'
+              classNamePrefix='select'
+              options={optionsWarna}
+              onChange={handleWarnaChange}
+              placeholder='Pilih Warna'
+            />
+          </Box>
+        )}
+
         <Flex align='flex-start' w='full' gap='5' mt='2' mb='2'>
           <Input multiple type='file' display='none' ref={inputRef} onChange={handleFileChange} />
           <IconButton
@@ -134,6 +188,9 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
             color='gray.400'
             fontSize='xl'
             aria-label='Search database'
+            onClick={() => {
+              setIsOpenTags(!isOpenTags);
+            }}
             icon={<AiFillTags />}
           />
           <IconButton

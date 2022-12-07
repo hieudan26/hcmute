@@ -6,6 +6,7 @@ import { RoleConstants } from '../../../constants/roles.constant';
 import { useAppDispatch } from '../../../hooks/redux';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
 import userService from '../../../services/user/user.service';
+import Hero from '../../views/Discovery/Hero/index.component';
 import Footer from '../../views/Footer/index.component';
 import Navbar from '../../views/Navbar/index.component';
 import Header from '../../views/Profile/Header/index.component';
@@ -59,6 +60,7 @@ export default function AnonymousLayout({ children }: any) {
       <Navbar role={RoleConstants.ANONYMOUS} />
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={user} pt='90px' />}
+        {router.pathname === '/discovery' && <Hero />}
         <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
           {children}
         </Container>
