@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class HashTagController {
     private final HashTagService hashTagService;
     @PreAuthorize("permitAll()")
-    @PutMapping("/images")
+    @GetMapping("/images")
     public ResponseEntity<BaseResponse> getImages(QueryImageHashTagsParams params, PagingRequest pagingRequest){
         return ResponseEntity.ok(hashTagService.getImages(params,pagingRequest));
     }
