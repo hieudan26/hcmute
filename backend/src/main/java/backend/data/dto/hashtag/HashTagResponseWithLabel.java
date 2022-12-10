@@ -12,5 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class HashTagResponseWithLabel {
     String value;
     String label;
-    Integer placeId;
+    String placeUrl;
 }

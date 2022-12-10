@@ -11,5 +11,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class HashTagResponse {
     String name;
-    Integer placeId;
+    String placeUrl;
 }

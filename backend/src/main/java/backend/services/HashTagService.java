@@ -93,14 +93,14 @@ public class HashTagService {
                             .map(item-> HashTagResponseWithLabel.builder()
                                     .label(item.getName())
                                     .value(item.getName())
-                                    .placeId(item.getPlaces().getId()).build()));
+                                    .placeUrl(item.getPlaces().getUrl()).build()));
         } else {
             pagingResponse = new PagingResponse(
                     hashtagRepository.findHashTags(PagingUtils.getPageable(pagingRequest), hashTag)
                             .map(item-> HashTagResponseWithLabel.builder()
                                     .label(item.getName())
                                     .value(item.getName())
-                                    .placeId(item.getPlaces().getId()).build()));
+                                    .placeUrl(item.getPlaces().getUrl()).build()));
         }
 
 
