@@ -15,4 +15,5 @@ public class UpdatePostRequest {
     String type;
     String content;
     List<String> images;
+    List<String> hashTags;
 }

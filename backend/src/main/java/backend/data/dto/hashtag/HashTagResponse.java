@@ -1,4 +1,4 @@
-package backend.data.dto.post;
+package backend.data.dto.hashtag;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostQueryParams {
-    String type;
-    String hashTag;
-    String userId;
-    Boolean isDeleted = false;
+public class HashTagResponse {
+    String name;
+    Integer placeId;
 }

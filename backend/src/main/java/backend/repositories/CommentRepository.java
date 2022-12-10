@@ -11,7 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
-public interface CommentRepository  extends PagingAndSortingRepository<Comments, Integer>, JpaSpecificationExecutor<Posts> {
+public interface CommentRepository extends PagingAndSortingRepository<Comments, Integer>, JpaSpecificationExecutor<Posts> {
     @Query(value = "from Comments comment where (comment.post.id = ?1 and comment.parentId is null and comment.isDeleted = false) order by comment.time desc")
     Page<Comments> queryCommentsByPostId(Pageable pageable, Integer id);
 

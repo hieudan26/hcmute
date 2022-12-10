@@ -1,6 +1,8 @@
 package backend.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,7 @@ public class Posts extends Auditable<String> implements Serializable {
     @ManyToOne
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     Users owner;
 
@@ -41,11 +44,12 @@ public class Posts extends Auditable<String> implements Serializable {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonManagedReference
     Set<PostImages> images = new HashSet<>();
 
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonIgnore
+    @JsonManagedReference
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     Set<Comments> comments = new HashSet<>();
@@ -55,7 +59,7 @@ public class Posts extends Auditable<String> implements Serializable {
             name = "react_post",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    @JsonIgnore
+    @JsonManagedReference
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     Set<Users> reaction = new HashSet<>();
@@ -65,7 +69,7 @@ public class Posts extends Auditable<String> implements Serializable {
             name = "hashtag_post",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
-    @JsonIgnore
+    @JsonManagedReference
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     Set<HashTags> hashTags = new HashSet<>();

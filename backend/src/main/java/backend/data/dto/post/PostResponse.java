@@ -24,4 +24,5 @@ public class PostResponse {
     List<String> images;
     Boolean isReacted;
     Boolean isDeleted;
+    List<String> hashTags;
 }
