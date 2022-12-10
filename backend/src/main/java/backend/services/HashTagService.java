@@ -1,13 +1,27 @@
 package backend.services;
 
+import backend.data.dto.global.BaseResponse;
+import backend.data.dto.global.PagingRequest;
+import backend.data.dto.global.PagingResponse;
+import backend.data.dto.hashtag.HashTagResponseWithLabel;
+import backend.data.dto.hashtag.QueryImageHashTagsParams;
+import backend.data.dto.post.PostQueryParams;
+import backend.data.dto.post.PostResponse;
 import backend.data.entity.HashTags;
 import backend.data.entity.Places;
+import backend.data.entity.PostImages;
 import backend.data.entity.Users;
 import backend.exception.InvalidRequestException;
 import backend.exception.NoRecordFoundException;
+import backend.mapper.PostMapperImpl;
 import backend.repositories.HashtagRepository;
+import backend.utils.PagingUtils;
+import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -21,6 +35,7 @@ import java.util.stream.Collectors;
 @Transactional(rollbackOn = InvalidRequestException.class)
 public class HashTagService {
     private final HashtagRepository hashtagRepository;
+    private final PostMapperImpl postMapper;
 
 
     public  Set<HashTags> updateHashTag(List<String> names, Places place){
@@ -69,5 +84,38 @@ public class HashTagService {
         if(hashTags.isEmpty())
             throw new NoRecordFoundException(String.format("Can't find hashTag with name: %s.",name));
         return hashTags.get();
+    }
+    public BaseResponse findTag(PagingRequest pagingRequest, String hashTag){
+        PagingResponse<String> pagingResponse;
+        if (hashTag == null || hashTag.isBlank()){
+            pagingResponse = new PagingResponse(
+                    hashtagRepository.findAll(PagingUtils.getPageable(pagingRequest))
+                            .map(item-> HashTagResponseWithLabel.builder()
+                                    .label(item.getName())
+                                    .value(item.getName())
+                                    .placeId(item.getPlaces().getId()).build()));
+        } else {
+            pagingResponse = new PagingResponse(
+                    hashtagRepository.findHashTags(PagingUtils.getPageable(pagingRequest), hashTag)
+                            .map(item-> HashTagResponseWithLabel.builder()
+                                    .label(item.getName())
+                                    .value(item.getName())
+                                    .placeId(item.getPlaces().getId()).build()));
+        }
+
+
+        return BaseResponse.builder().message("Find all hashTag successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse getImages(QueryImageHashTagsParams params, PagingRequest pagingRequest){
+        PagingResponse<String> pagingResponse = new PagingResponse(
+                hashtagRepository.getHashTagImage(PagingUtils.getPageable(pagingRequest), params.getType(), params.getHashtag())
+                        .map(item -> item.getLink()));
+
+        return BaseResponse.builder().message("Find all images successful.")
+                .data(pagingResponse)
+                .build();
     }
 }

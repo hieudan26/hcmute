@@ -23,10 +23,10 @@ import java.util.Optional;
 @AllArgsConstructor
 @Transactional
 public class AreaService{
-    private AreaRepository areaRepository;
+    private final AreaRepository areaRepository;
 
-    private AreaMapper areaMapper;
-    private PlaceService placeService;
+    private final AreaMapper areaMapper;
+    private final PlaceService placeService;
 
     public BaseResponse listAllCountries(PagingRequest pagingRequest){
         PagingResponse pagingResponse = new PagingResponse(

@@ -45,7 +45,7 @@ public class PostController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("")
-    public ResponseEntity<BaseResponse> listAllPosts(PostQueryParams params,PagingRequest pagingRequest){
+    public ResponseEntity<BaseResponse> listAllPosts(PostQueryParams params, PagingRequest pagingRequest){
         return ResponseEntity.ok(postService.listAllPosts(pagingRequest,params));
     }
 
