@@ -38,8 +38,7 @@ public class SearchSpecificationUtils {
         for (var field: query.getClass().getDeclaredFields()) {
             if(!jsonNode.get(field.getName()).isNull()){
                 if(field.getName().equals("hashTag")){
-//                    builder.with("hashTags", "set", jsonNode.get(field.getName()).asText());
-                    continue;
+                    builder.with("hashTags", "hashTags", jsonNode.get(field.getName()).asText());
                 }
                 else if(field.getName().equals("userId")){
                     builder.with("owner", "nested", jsonNode.get(field.getName()).asText());
