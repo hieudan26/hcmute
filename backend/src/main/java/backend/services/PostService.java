@@ -49,11 +49,6 @@ public class PostService {
                  postRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
                         .map(postMapper::PostsToPostsResponse));
 
-        pagingResponse.setContent(
-                pagingResponse.getContent().stream().filter(item->item.getHashTags().contains(params.getHashTag()))
-                        .toList()
-        );
-
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
                 .build();

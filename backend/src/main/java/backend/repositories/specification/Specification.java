@@ -6,6 +6,7 @@ import backend.data.entity.Posts;
 import lombok.AllArgsConstructor;
 
 import javax.persistence.criteria.*;
+import java.util.Collection;
 
 
 @AllArgsConstructor
@@ -18,6 +19,11 @@ public class Specification<T> implements org.springframework.data.jpa.domain.Spe
         if (criteria.getOperation().equalsIgnoreCase("nested")) {
             return builder.equal(
                     root.get(criteria.getKey()).get("id"), criteria.getValue().toString());
+        }
+
+        if (criteria.getOperation().equalsIgnoreCase("hashTags")) {
+            Join<Posts, HashTags> hashTagsJoin = root.join("hashTags");
+            return builder.equal(hashTagsJoin.get("name"), criteria.getValue());
         }
 
         if (criteria.getOperation().equalsIgnoreCase("=")) {
