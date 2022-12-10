@@ -24,7 +24,7 @@ public class HashTagController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse> findHashTag(PagingRequest pagingRequest, String hashTag){
         return ResponseEntity.ok(hashTagService.findTag(pagingRequest,hashTag));
     }
