@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @SuperBuilder
 @Data
 @AllArgsConstructor
@@ -16,4 +18,5 @@ public class PlaceResponse {
     String image;
     String content;
     PlaceCategoryPayLoad category;
+    List<String> hashTags;
 }

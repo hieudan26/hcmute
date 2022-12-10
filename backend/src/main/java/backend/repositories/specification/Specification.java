@@ -1,12 +1,11 @@
 package backend.repositories.specification;
 
 import backend.data.dto.global.SearchCriteria;
+import backend.data.entity.HashTags;
+import backend.data.entity.Posts;
 import lombok.AllArgsConstructor;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 
 @AllArgsConstructor
@@ -20,6 +19,7 @@ public class Specification<T> implements org.springframework.data.jpa.domain.Spe
             return builder.equal(
                     root.get(criteria.getKey()).get("id"), criteria.getValue().toString());
         }
+
         if (criteria.getOperation().equalsIgnoreCase("=")) {
             return builder.equal(
                     root.<String> get(criteria.getKey()), criteria.getValue());

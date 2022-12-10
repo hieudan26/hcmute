@@ -3,13 +3,16 @@ package backend.mapper;
 import backend.data.dto.post.CreatePostRequest;
 import backend.data.dto.post.PostResponse;
 import backend.data.dto.post.UpdatePostRequest;
+import backend.data.entity.HashTags;
 import backend.data.entity.PostImages;
 import backend.data.entity.Posts;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.repositories.CommentRepository;
+import backend.repositories.HashtagRepository;
 import backend.repositories.PostRepository;
 import backend.repositories.UserRepository;
+import backend.services.HashTagService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +22,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +35,8 @@ public abstract class PostMapper {
 
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private HashtagRepository hashtagRepository;
 
     @Autowired
     private CommentRepository commentRepository;
@@ -38,6 +44,7 @@ public abstract class PostMapper {
     @Mapping(source = "userId", target = "owner", qualifiedByName = "fromStringToUsers")
     @Mapping(source = "images", target = "images", qualifiedByName = "fromListImageUrlToListPostImages")
     @Mapping(source = "time", target = "time", qualifiedByName = "fromStringToLocalDateTime")
+    @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "fromStringToHashTag")
     @BeanMapping(qualifiedByName = "setParentForListImages")
     public abstract Posts fromCreatePostRequestToPosts(CreatePostRequest post);
 
@@ -46,10 +53,12 @@ public abstract class PostMapper {
     @Mapping(source = "time", target = "time", qualifiedByName = "fromLocalDateTimeToString")
     @Mapping(source = "owner.avatar", target = "avatar")
     @Mapping(source = "owner", target = "fullName", qualifiedByName = "fromUserToFullName")
+    @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "fromHashTagToString")
     @BeanMapping(qualifiedByName = "setNumberForResponse")
     public abstract PostResponse PostsToPostsResponse(Posts post);
 
     @Mapping(source = "images", target = "images", qualifiedByName = "fromListImageUrlToListPostImages")
+    @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "fromStringToHashTag")
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
             qualifiedByName = "updateParentForListImages")
     public abstract void fromUpdatePostRequestToPosts(@MappingTarget Posts posts,UpdatePostRequest updatePostRequest);
@@ -122,6 +131,16 @@ public abstract class PostMapper {
     @Named("fromUserToFullName")
     protected String fromUserToFullName(Users users) {
         return String.format("%s %s",users.getFirstName(),users.getLastName());
+    }
+
+    @Named("fromHashTagToString")
+    protected List<String> fromHashTagToString(Set<HashTags> set) {
+        return set.stream().map(hashTags -> hashTags.getName()).toList();
+    }
+
+    @Named("fromStringToHashTag")
+    protected Set<HashTags>  fromStringToHashTag(List<String> list) {
+        return Collections.emptySet();
     }
 
 }

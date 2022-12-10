@@ -34,6 +34,7 @@ import java.util.Optional;
 public class PlaceService {
     private final PlaceRepository placeRepository;
     private final PlaceCategoryRepository placeCategoryRepository;
+    private final HashTagService hashTagService;
     private final PlaceMapper placeMapper;
 
     public BaseResponse createPlaceCategory(PlaceCategoryPayLoad categoryPayLoad){
@@ -45,6 +46,7 @@ public class PlaceService {
 
     public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest){
         Places places = placeMapper.fromCreatePlaceToPlaces(createPlaceRequest);
+        places.setHashTags(hashTagService.createNewHashTag(createPlaceRequest.getHashTags(),places));
         return BaseResponse.builder().message("Create place successful.")
                 .data(placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places)))
                 .build();
@@ -53,6 +55,7 @@ public class PlaceService {
     public BaseResponse updatePlace(String url, CreatePlaceRequest createPlaceRequest){
         Places places = getPlaceByUrl(url);
         placeMapper.update(places,createPlaceRequest);
+        places.setHashTags(hashTagService.updateHashTag(createPlaceRequest.getHashTags(), places));
         return BaseResponse.builder().message("update place successful.")
                 .data(placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places)))
                 .build();
@@ -61,6 +64,7 @@ public class PlaceService {
     public BaseResponse updatePlaceCategory(Integer id, PlaceCategoryPayLoad createPlaceRequest){
         PlaceCategories places = getPlaceCategory(id);
         placeMapper.updateCategory(places,createPlaceRequest);
+
         return BaseResponse.builder().message("update place successful.")
                 .data(placeMapper.fromEntityToCategoryPlayLoad(placeCategoryRepository.save(places)))
                 .build();

@@ -4,10 +4,7 @@ import backend.data.dto.place.CreatePlaceRequest;
 import backend.data.dto.place.PlaceCategoryPayLoad;
 import backend.data.dto.place.PlaceResponse;
 import backend.data.dto.user.UpdateUserRequest;
-import backend.data.entity.Areas;
-import backend.data.entity.PlaceCategories;
-import backend.data.entity.Places;
-import backend.data.entity.Users;
+import backend.data.entity.*;
 import backend.exception.NoRecordFoundException;
 import backend.repositories.AreaRepository;
 import backend.repositories.PlaceCategoryRepository;
@@ -17,7 +14,9 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public abstract class PlaceMapper {
@@ -27,9 +26,11 @@ public abstract class PlaceMapper {
     private AreaRepository areaRepository;
 
     @Mapping(source = "placeCategories", target = "category", qualifiedByName = "mapCategory")
+    @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "mapHashTagsToString")
     public abstract PlaceResponse fromPlaceToPlaceResponse(Places places);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    @Mapping(target = "hashTags", ignore = true)
     public abstract void update(@MappingTarget Places entity, CreatePlaceRequest createPlaceRequest);
 
     @Mapping(target = "id", ignore = true)
@@ -39,7 +40,9 @@ public abstract class PlaceMapper {
     @Mapping(source = "name", target = "url", qualifiedByName = "mapUrl")
     @Mapping(source = "category", target = "placeCategories", qualifiedByName = "mapPlaceCategory")
     @Mapping(source = "area", target = "areas", qualifiedByName = "mapArea")
+    @Mapping(target = "hashTags", ignore = true)
     public abstract Places fromCreatePlaceToPlaces(CreatePlaceRequest createPlaceRequest);
+
     @Mapping(target = "id", ignore = true)
     public abstract PlaceCategories fromCategoryPlayLoadToEntity(PlaceCategoryPayLoad placeCategoryPayLoad);
     public abstract PlaceCategoryPayLoad fromEntityToCategoryPlayLoad(PlaceCategories placeCategories);
@@ -51,6 +54,11 @@ public abstract class PlaceMapper {
                 .name(categories.getName())
                 .build();
         return category;
+    }
+
+    @Named("mapHashTagsToString")
+    protected List<String> mapHashTagsToString(Set<HashTags> set) throws EntityNotFoundException {
+        return set.stream().map(hashTags -> hashTags.getName()).toList();
     }
 
     @Named("mapPlaceCategory")

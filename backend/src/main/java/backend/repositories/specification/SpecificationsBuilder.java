@@ -1,7 +1,9 @@
 package backend.repositories.specification;
 
 import backend.data.dto.global.SearchCriteria;
+import backend.data.entity.Posts;
 
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 @SuperBuilder
 @Data
@@ -20,4 +21,6 @@ public class CreatePlaceRequest {
     Integer category;
     Integer area;
     String image;
+    List<String> hashTags;
+
 }

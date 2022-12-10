@@ -5,7 +5,9 @@ import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.post.CreatePostRequest;
 import backend.data.dto.post.PostQueryParams;
+import backend.data.dto.post.PostResponse;
 import backend.data.dto.post.UpdatePostRequest;
+import backend.data.entity.HashTags;
 import backend.data.entity.Posts;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
@@ -23,6 +25,7 @@ import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +33,7 @@ import java.util.Optional;
 public class PostService {
     private PostRepository postRepository;
     private CommentRepository commentRepository;
+    private HashTagService hashTagService;
     private UserService userService;
     private PostMapper postMapper;
     private CommentService commentService;
@@ -41,9 +45,15 @@ public class PostService {
     }
 
     public BaseResponse listAllPosts(PagingRequest pagingRequest, PostQueryParams params){
-        PagingResponse pagingResponse = new PagingResponse(
-                postRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
+        PagingResponse<PostResponse> pagingResponse = new PagingResponse(
+                 postRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
                         .map(postMapper::PostsToPostsResponse));
+
+        pagingResponse.setContent(
+                pagingResponse.getContent().stream().filter(item->item.getHashTags().contains(params.getHashTag()))
+                        .toList()
+        );
+
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
                 .build();
@@ -62,6 +72,11 @@ public class PostService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         createPostRequest.setUserId(userId);
         Posts post = postMapper.fromCreatePostRequestToPosts(createPostRequest);
+
+        post.setHashTags(createPostRequest.getHashTags().stream().map(
+                name -> hashTagService.getHashTag(name)
+        ).collect(Collectors.toSet()));
+
         return BaseResponse.builder().message("Create post successful.")
                 .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
                 .build();
@@ -91,6 +106,10 @@ public class PostService {
         if(!userId.equals(post.getOwner().getId()))
             throw new NoPermissionException("You can't update other person's information.");
         postMapper.fromUpdatePostRequestToPosts(post,updatePostRequest);
+
+        post.getHashTags().addAll(updatePostRequest.getHashTags().stream().map(
+                name -> hashTagService.getHashTag(name)
+        ).collect(Collectors.toSet()));
 
         return BaseResponse.builder().message("Update post successful.")
                 .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
