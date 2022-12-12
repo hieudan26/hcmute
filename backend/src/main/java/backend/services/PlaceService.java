@@ -135,11 +135,11 @@ public class PlaceService {
         PagingResponse pagingResponse ;
         if(type == null){
             pagingResponse = new PagingResponse(
-                    placeRepository.findAllPlaceByProvince(PagingUtils.getPageable(pagingRequest), places.getId())
+                    placeRepository.findAllPlaceByProvince(PagingUtils.getPageable(pagingRequest), places.getAreas().getId())
                             .map(placeMapper::fromPlaceToPlaceResponse));
         }else{
             pagingResponse = new PagingResponse(
-                    placeRepository.findAllPlaceByProvinceWithType(PagingUtils.getPageable(pagingRequest), places.getId(), type)
+                    placeRepository.findAllPlaceByProvinceWithType(PagingUtils.getPageable(pagingRequest),  places.getAreas().getId(), type)
                             .map(placeMapper::fromPlaceToPlaceResponse));
         }
 
@@ -163,7 +163,7 @@ public class PlaceService {
 
 
         return BaseResponse.builder().message("Find place successful.")
-                .data(placeMapper.fromPlaceToPlaceResponse(getPlaceWithParent(province,placeUrl)))
+                .data(placeMapper.fromPlaceToPlaceResponse(getPlaceWithArea(province,placeUrl)))
                 .build();
     }
 
@@ -187,11 +187,18 @@ public class PlaceService {
             throw new NoRecordFoundException(String.format("Can't find place with url: %s.",url));
         return places.get();
     }
-
-    public Places getPlaceWithParent(Places country, String provinceUrl){
-        Optional<Places> places = placeRepository.findProvinceByUrl(country.getAreas().getId(), provinceUrl);
+    public Places getPlaceWithArea(Places place, String placeUrl){
+        Optional<Places> places = placeRepository.findPlaceByUrl(place.getAreas().getId(), placeUrl);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",provinceUrl,country.getName()));
+            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",placeUrl,place.getName()));
+        return places.get();
+    }
+
+
+    public Places getPlaceWithParent(Places place, String placeUrl){
+        Optional<Places> places = placeRepository.findProvinceByUrl(place.getAreas().getId(), placeUrl);
+        if(places.isEmpty())
+            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",placeUrl,place.getName()));
         return places.get();
     }
 
