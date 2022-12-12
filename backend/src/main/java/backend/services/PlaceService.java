@@ -44,6 +44,16 @@ public class PlaceService {
                 .build();
     }
 
+    public BaseResponse getPlaceCategories(PagingRequest pagingRequest){
+        PagingResponse pagingResponse = new PagingResponse(
+                placeCategoryRepository.findAll(PagingUtils.getPageable(pagingRequest))
+                        .map(placeMapper::fromEntityToCategoryPlayLoad));
+
+        return BaseResponse.builder().message("Create user successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
     public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest){
         Places places = placeMapper.fromCreatePlaceToPlaces(createPlaceRequest);
         places.setHashTags(hashTagService.createNewHashTag(createPlaceRequest.getHashTags(),places));
