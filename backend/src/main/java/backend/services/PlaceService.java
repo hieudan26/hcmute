@@ -98,7 +98,7 @@ public class PlaceService {
             throw new InvalidRequestException("Url is not a country");
         }
 
-        Places province = getProvinceByUrl(places,provinceUrl);
+        Places province = getPlaceWithParent(places,provinceUrl);
 
         if (!province.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
             throw new InvalidRequestException("Url is not a province");
@@ -126,6 +126,47 @@ public class PlaceService {
                 .build();
     }
 
+    public BaseResponse listAllPlacesByProvinceUrl(String url, String type, PagingRequest pagingRequest){
+        Places places = getPlaceByUrl(url);
+
+        if (!places.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
+            throw new InvalidRequestException("Url is not a provinces");
+        }
+        PagingResponse pagingResponse ;
+        if(type == null){
+            pagingResponse = new PagingResponse(
+                    placeRepository.findAllPlaceByProvince(PagingUtils.getPageable(pagingRequest), places.getId())
+                            .map(placeMapper::fromPlaceToPlaceResponse));
+        }else{
+            pagingResponse = new PagingResponse(
+                    placeRepository.findAllPlaceByProvinceWithType(PagingUtils.getPageable(pagingRequest), places.getId(), type)
+                            .map(placeMapper::fromPlaceToPlaceResponse));
+        }
+
+        return BaseResponse.builder().message("Find places successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse getPlaceByProvinceUrl(String countryUrl, String provinceUrl, String placeUrl){
+        Places places = getPlaceByUrl(countryUrl);
+
+        if (!places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
+            throw new InvalidRequestException("Url is not a country");
+        }
+
+        Places province = getPlaceWithParent(places,provinceUrl);
+
+        if (!province.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
+            throw new InvalidRequestException("Url is not a province");
+        }
+
+
+        return BaseResponse.builder().message("Find place successful.")
+                .data(placeMapper.fromPlaceToPlaceResponse(getPlaceWithParent(province,placeUrl)))
+                .build();
+    }
+
     public Places getPlace(Integer id){
         Optional<Places> places = placeRepository.findById(id);
         if(places.isEmpty())
@@ -147,12 +188,14 @@ public class PlaceService {
         return places.get();
     }
 
-    public Places getProvinceByUrl(Places country, String provinceUrl){
+    public Places getPlaceWithParent(Places country, String provinceUrl){
         Optional<Places> places = placeRepository.findProvinceByUrl(country.getAreas().getId(), provinceUrl);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with url: %s in country %s",provinceUrl,country.getName()));
+            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",provinceUrl,country.getName()));
         return places.get();
     }
+
+
 
 
 }

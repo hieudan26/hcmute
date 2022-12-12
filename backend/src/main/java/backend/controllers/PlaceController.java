@@ -68,9 +68,23 @@ public class PlaceController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/countries/{url}/provinces/{provinceUrl}")
-    public ResponseEntity<BaseResponse> getProvinceByCountry(@PathVariable("url") String url,@PathVariable("provinceUrl") String provinceUrl){
+    public ResponseEntity<BaseResponse> getProvince(@PathVariable("url") String url,@PathVariable("provinceUrl") String provinceUrl){
         return ResponseEntity.ok(placeService.getProvince(url,provinceUrl));
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/countries/{url}/provinces/{provinceUrl}/places")
+    public ResponseEntity<BaseResponse> getPlaces(@PathVariable("url") String url,@PathVariable("provinceUrl") String provinceUrl, String type, PagingRequest pagingRequest){
+        return ResponseEntity.ok(placeService.listAllPlacesByProvinceUrl(provinceUrl,type,pagingRequest));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/countries/{url}/provinces/{provinceUrl}/places/{placeId}")
+    public ResponseEntity<BaseResponse> getPlace(@PathVariable("url") String url, @PathVariable("provinceUrl") String provinceUrl,@PathVariable("placeId")  String placeId){
+        return ResponseEntity.ok(placeService.getPlaceByProvinceUrl(url,provinceUrl,placeId));
+    }
+
+
 
 
 }
