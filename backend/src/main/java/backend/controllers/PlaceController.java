@@ -37,6 +37,12 @@ public class PlaceController {
     }
 
     @PreAuthorize("permitAll()")
+    @GetMapping("/categories")
+    public ResponseEntity<BaseResponse> getCategories(PagingRequest pagingRequest){
+        return ResponseEntity.ok(placeService.getPlaceCategories(pagingRequest));
+    }
+
+    @PreAuthorize("permitAll()")
     @PutMapping("/categories/{id}")
     public ResponseEntity<BaseResponse> updateCategory(@PathVariable("id") Integer id, @RequestBody PlaceCategoryPayLoad request){
         return ResponseEntity.ok(placeService.updatePlaceCategory(id,request));
