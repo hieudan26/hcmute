@@ -83,8 +83,4 @@ public class PlaceController {
     public ResponseEntity<BaseResponse> getPlace(@PathVariable("url") String url, @PathVariable("provinceUrl") String provinceUrl,@PathVariable("placeId")  String placeId){
         return ResponseEntity.ok(placeService.getPlaceByProvinceUrl(url,provinceUrl,placeId));
     }
-
-
-
-
 }
