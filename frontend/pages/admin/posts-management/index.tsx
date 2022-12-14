@@ -70,6 +70,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
     images: [''],
     isReacted: false,
     isDeleted: false,
+    hashTags: [''],
   });
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);

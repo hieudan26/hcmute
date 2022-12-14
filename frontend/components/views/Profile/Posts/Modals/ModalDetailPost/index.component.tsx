@@ -47,7 +47,7 @@ export interface IModalDetailPostProps {
   onClose: () => void;
   post: IPostResponseModel;
   currentUserId: string;
-  deletePostInDetail: () => void;
+  deletePostInDetail?: () => void;
 }
 
 export default function ModalDetailPost(props: IModalDetailPostProps) {
@@ -134,7 +134,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         }}
         onSubmit={() => {
           mutationDeletePost.mutate(post.id);
-          deletePostInDetail();
+          deletePostInDetail && deletePostInDetail();
           setIsOpenDelete(false);
         }}
       />
