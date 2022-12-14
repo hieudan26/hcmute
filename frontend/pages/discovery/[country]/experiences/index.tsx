@@ -1,47 +1,38 @@
-import { AddIcon, ChevronRightIcon, SmallAddIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon, SmallAddIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
-  Image,
-  Icon,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
   Center,
-  Spinner,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
+  Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { MdHeadset, MdLocationOn, MdEmail } from 'react-icons/md';
-import { BsFillBriefcaseFill } from 'react-icons/bs';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IPlaceCountryResponse } from '../../../../models/place/place.model';
-import { useFetchCountry } from '../../../../hooks/queries/place';
-import Link from 'next/link';
-import ExperienceCard from '../../../../components/views/Discovery/ExperienceCard/index.component';
-import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../hooks/queries/posts';
 import InfiniteScroll from 'react-infinite-scroller';
-import { ArrayTenTemp } from '../../../experiences';
 import { v4 as uuidv4 } from 'uuid';
-import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
-import { useAppSelector } from '../../../../hooks/redux';
-import { LocalUtils } from '../../../../utils/local.utils';
-import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
-import { RoleConstants } from '../../../../constants/roles.constant';
+import ExperienceCard from '../../../../components/views/Discovery/ExperienceCard/index.component';
 import CreateNewPost from '../../../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
+import { RoleConstants } from '../../../../constants/roles.constant';
+import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
+import { useFetchCountry } from '../../../../hooks/queries/place';
+import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../hooks/queries/posts';
+import { useAppSelector } from '../../../../hooks/redux';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
+import { LocalUtils } from '../../../../utils/local.utils';
+import { ArrayTenTemp } from '../../../experiences';
 
 export interface ICountryExperiencesProps {}
 

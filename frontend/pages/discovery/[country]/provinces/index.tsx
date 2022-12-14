@@ -1,21 +1,17 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Skeleton,
   Center,
+  chakra,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
   Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';

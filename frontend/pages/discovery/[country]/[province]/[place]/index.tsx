@@ -1,18 +1,5 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Heading, Text } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';

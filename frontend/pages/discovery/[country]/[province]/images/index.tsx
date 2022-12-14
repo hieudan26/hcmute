@@ -1,42 +1,31 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
-  Image,
-  Icon,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Spacer,
   Center,
-  Spinner,
-  SkeletonCircle,
-  SkeletonText,
-  Skeleton,
-  ModalHeader,
-  ModalCloseButton,
+  Flex,
+  Heading,
+  Image,
   ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  Skeleton,
+  Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
-import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
-import { useAppSelector } from '../../../../../hooks/redux';
-import { useFetchCountry, useFetchProvince } from '../../../../../hooks/queries/place';
-import { useImagesHashTag } from '../../../../../hooks/queries/hashtag';
 import InfiniteScroll from 'react-infinite-scroller';
-import { ArrayTenTemp } from '../../../../experiences';
 import ModalContainer from '../../../../../components/views/Modals/ModalContainer/index.component';
+import { useImagesHashTag } from '../../../../../hooks/queries/hashtag';
+import { useFetchCountry, useFetchProvince } from '../../../../../hooks/queries/place';
+import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
+import { ArrayTenTemp } from '../../../../experiences';
 
 export interface IProvinceImagesProps {}
 

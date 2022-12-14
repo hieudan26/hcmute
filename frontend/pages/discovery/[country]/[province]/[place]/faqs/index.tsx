@@ -1,31 +1,30 @@
-import { ChevronRightIcon, SmallAddIcon } from '@chakra-ui/icons';
+import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
-  Image,
-  Icon,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Button,
   Center,
-  Spinner,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
   Spacer,
+  Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
+import CreatePost from '../../../../../../components/views/Profile/Posts/CreatePost/index.component';
+import CreateNewPost from '../../../../../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
+import PostRender from '../../../../../../components/views/Profile/Posts/PostRender/index.component';
 import { RoleConstants } from '../../../../../../constants/roles.constant';
 import { CookieConstants, LocalStorageConstants } from '../../../../../../constants/store.constant';
 import { useFetchCountry, useFetchPlace, useFetchProvince } from '../../../../../../hooks/queries/place';
@@ -33,15 +32,9 @@ import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../../../hooks/qu
 import { useAppSelector } from '../../../../../../hooks/redux';
 import { IPlaceCountryResponse } from '../../../../../../models/place/place.model';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../../../models/post/post.model';
+import { defaultAvatar } from '../../../../../../utils';
 import { LocalUtils } from '../../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../../experiences';
-import { v4 as uuidv4 } from 'uuid';
-import CreateNewPost from '../../../../../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
-import Link from 'next/link';
-import CreatePost from '../../../../../../components/views/Profile/Posts/CreatePost/index.component';
-import InfiniteScroll from 'react-infinite-scroller';
-import PostRender from '../../../../../../components/views/Profile/Posts/PostRender/index.component';
-import { defaultAvatar } from '../../../../../../utils';
 
 export interface IPlaceFaqsProps {}
 

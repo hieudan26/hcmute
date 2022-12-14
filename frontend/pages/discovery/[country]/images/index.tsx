@@ -1,37 +1,31 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Skeleton,
   Center,
-  Spinner,
+  Flex,
+  Heading,
   Image,
-  ModalHeader,
-  ModalCloseButton,
   ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  Skeleton,
+  Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
-import { IPlaceCountryResponse } from '../../../../models/place/place.model';
-import { useEffect, useState } from 'react';
-import { useFetchCountry } from '../../../../hooks/queries/place';
 import { useRouter } from 'next/router';
-import { useImagesHashTag } from '../../../../hooks/queries/hashtag';
+import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import { ArrayTenTemp } from '../../../experiences';
 import ModalContainer from '../../../../components/views/Modals/ModalContainer/index.component';
+import { useImagesHashTag } from '../../../../hooks/queries/hashtag';
+import { useFetchCountry } from '../../../../hooks/queries/place';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { ArrayTenTemp } from '../../../experiences';
 
 export interface ICountryImagesProps {}
 
