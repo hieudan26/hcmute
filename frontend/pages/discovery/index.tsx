@@ -1,13 +1,11 @@
 import { Box, Center, Divider } from '@chakra-ui/react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import CountriesList from '../../components/views/Discovery/CountriesList/index.component';
 import ProvincesList from '../../components/views/Discovery/ProvincesList/index.component';
 import { usePlacesCountries, usePlacesProvincesByCountry } from '../../hooks/queries/place';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
-import placeService from '../../services/place/place.service';
 
 export interface IDiscoveryProps {}
 

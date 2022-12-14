@@ -1,27 +1,13 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from '@chakra-ui/react';
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Heading, Text } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { withProse, Prose } from '@nikolovlazar/chakra-ui-prose';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Introduce from '../../../components/views/Discovery/Introduce/index.component';
 import { useFetchCountry } from '../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../models/place/place.model';
-import Introduce from '../../../components/views/Discovery/Introduce/index.component';
 
 export interface IDiscoveryCountryProps {}
 

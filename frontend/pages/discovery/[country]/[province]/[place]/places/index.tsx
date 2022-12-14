@@ -1,34 +1,22 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
-  Image,
-  Icon,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  Spacer,
   Center,
-  Spinner,
-  SkeletonCircle,
-  SkeletonText,
+  chakra,
+  Flex,
+  Heading,
+  SimpleGrid,
   Skeleton,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Tabs,
-  TabList,
-  TabPanels,
+  Spinner,
   Tab,
+  TabList,
   TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -36,17 +24,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
 import {
   useFetchCategories,
   useFetchCountry,
   useFetchPlace,
   useFetchProvince,
   usePlacesPlacesByCountryProvince,
-  usePlacesProvincesByCountry,
 } from '../../../../../../hooks/queries/place';
-import { IPaginationRequest } from '../../../../../../models/common/ResponseMessage.model';
 import { ICategoryResponse, IPlaceCountryResponse } from '../../../../../../models/place/place.model';
-import { v4 as uuidv4 } from 'uuid';
 import { ArrayTenTemp } from '../../../../../experiences';
 
 export interface IPlacePlacesProps {}

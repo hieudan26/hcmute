@@ -1,26 +1,19 @@
 import { ChevronRightIcon, SmallAddIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
-  chakra,
-  SimpleGrid,
-  Image,
-  Icon,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Button,
   Center,
-  Spinner,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
+  Spinner,
+  Text,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -28,6 +21,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
 import ExperienceCard from '../../../../../../components/views/Discovery/ExperienceCard/index.component';
 import CreateNewPost from '../../../../../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
 import { RoleConstants } from '../../../../../../constants/roles.constant';
@@ -39,7 +33,6 @@ import { IPlaceCountryResponse } from '../../../../../../models/place/place.mode
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../../../models/post/post.model';
 import { LocalUtils } from '../../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../../experiences';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface IPlaceExperiencesProps {}
 
