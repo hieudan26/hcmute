@@ -17,57 +17,93 @@ import {
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { toggleMessage } from '../../../components/views/Message/index.component';
+import UpdatePost from '../../../components/views/Profile/Posts/Modals/UpdatePost/index.component';
 import TreeCommentRender from '../../../components/views/Profile/Posts/TreeCommentRender/index.component';
-import { useCommentsPost } from '../../../hooks/queries/comment';
+import { RoleConstants } from '../../../constants/roles.constant';
+import { CookieConstants, LocalStorageConstants } from '../../../constants/store.constant';
+import { useCommentsPost, useCUDComment } from '../../../hooks/queries/comment';
+import { useCUDPost, usePostsById } from '../../../hooks/queries/posts';
+import { useAppSelector } from '../../../hooks/redux';
 import { ICommentsPostResponse } from '../../../models/comment/comment.model';
-import { IPostResponseModel } from '../../../models/post/post.model';
+import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../models/post/post.model';
 import postService from '../../../services/post/post.service';
-import { timeSincePost } from '../../../utils';
+import { defaultAvatar, formatTimePost, timeSincePost } from '../../../utils';
+import { LocalUtils } from '../../../utils/local.utils';
+import { v4 as uuidv4 } from 'uuid';
+import { useQueryClient } from '@tanstack/react-query';
+import { BiCommentDetail } from 'react-icons/bi';
+import ConfirmDeletePost from '../../../components/views/Profile/Posts/Modals/ConfirmDeletePost/index.component';
+import CommentForm from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/CommentForm/index.component';
 
 export interface IDetailPostProps {
   post: IPostResponseModel;
 }
 
 const DetailPost: NextPage<IDetailPostProps> = (props) => {
-  // const { post: dataPost } = props;
   const router = useRouter();
+  const commentsEndRef = useRef<null | HTMLDivElement>(null);
+  const commentInputRef = useRef<null | HTMLInputElement>(null);
+  const queryClient = useQueryClient();
+  const [id, setId] = useState<string | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [dataPost, setDataPost] = useState<IPostResponseModel | undefined>(undefined);
+  const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const auth = useAppSelector((state) => state.auth.value);
+  const postFetch = usePostsById(id ? id : '', undefined, id !== undefined);
+  const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
+  const { mutationCreateComment } = useCUDComment();
+  const commentsPost = useCommentsPost(
+    { postId: id ? id : '1', pageNumber: 0, pageSize: 10, sortBy: 'time', sortType: 'DESC' },
+    postFetch.data !== undefined
+  );
+
+  useEffect(() => {
+    if (postFetch.data) {
+      setDataPost(postFetch.data.data as IPostResponseModel);
+    }
+  }, [postFetch]);
+
+  useEffect(() => {
+    if (postFetch.data && postFetch.data.isSuccess === undefined) {
+      router.push('/404');
+    }
+  }, [postFetch.data, router]);
+
+  useEffect(() => {
+    const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_FIRST_LOGIN) ? true : false;
+    const userIdLocalStorage = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
+
+    if (userIdLocalStorage) {
+      if (auth?.role === RoleConstants.USER) {
+        setCurrentUserId(userIdLocalStorage);
+        setIsLoggedIn(isLoggedInCookie);
+      }
+    }
+  }, [auth]);
 
   useEffect(() => {
     const { postId } = router.query;
     if (postId) {
-      const fetchPost = async () => {
-        const response = await postService.getPostById(postId as string);
-        if (response.isSuccess) {
-          setDataPost(response.data);
-        } else {
-          router.push('/404');
-        }
-      };
-
-      fetchPost();
-      console.log(dataPost);
+      setId(postId as string);
     }
   }, [router.query]);
-
-  const commentsPost = useCommentsPost(
-    { postId: dataPost ? dataPost.id : '1', pageNumber: 0, pageSize: 10, sortBy: 'time', sortType: 'DESC' },
-    dataPost !== undefined
-  );
 
   const copyLink = () => {
     var linkComment = 'http://localhost:3000';
     if (process.env.NODE_ENV === 'development') {
-      linkComment = `${linkComment}/detail-post/${dataPost?.id}`;
+      linkComment = `${linkComment}/detail-post/${id}`;
     } else {
       linkComment = 'https://lumiere.hcmute.me';
-      linkComment = `${linkComment}/detail-post/${dataPost?.id}`;
+      linkComment = `${linkComment}/detail-post/${id}`;
     }
 
     navigator.clipboard.writeText(linkComment);
@@ -77,19 +113,70 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
     });
   };
 
+  const _submitEditPost = async (params: IPostRequestModel) => {
+    const paramsPostId: IPostRequestModelPostId = { ...params, postId: id ? id : '1' };
+    mutationUpdatePost.mutate(paramsPostId);
+    setIsOpenEdit(false);
+  };
+
+  const reactPost = () => {
+    if (currentUserId === '') {
+      toggleMessage({
+        title: 'Authentication/Authorization',
+        message: 'You must login first',
+        type: 'warning',
+      });
+    } else {
+      if (id) {
+        mutationReactPost.mutate(id);
+      }
+    }
+  };
+
+  const scrollToBottom = () => {
+    commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const onSubmitComment = async (value: string) => {
+    if (currentUserId === '') {
+      if (commentInputRef.current && commentInputRef.current.value) {
+        commentInputRef.current.value = '';
+      }
+      toggleMessage({
+        title: 'Authentication/Authorization',
+        message: 'You must login first',
+        type: 'warning',
+      });
+    } else {
+      if (id) {
+        await mutationCreateComment.mutateAsync({
+          content: value,
+          postId: Number(id),
+          time: formatTimePost(new Date()),
+          setSubmitting: setIsSubmitting,
+        });
+        if (!isSubmitting) {
+          scrollToBottom();
+        }
+      }
+    }
+  };
+
   return (
     <Box width='80%' bg='white' rounded='lg' mb='5' px='4' shadow='md' overflow='scroll'>
-      {/* <UpdatePost
-        currentUserId={currentUserId}
-        post={dataPost}
-        type={dataPost.type === 'experience' ? 'experience' : 'faq'}
-        isOpen={isOpenEdit}
-        onClose={() => {
-          setIsOpenEdit(false);
-        }}
-        onSubmit={_submitEditPost}
-      /> */}
-      {/* <ConfirmDeletePost
+      {dataPost && (
+        <UpdatePost
+          currentUserId={currentUserId}
+          post={dataPost}
+          type={dataPost.type === 'experience' ? 'experience' : 'faq'}
+          isOpen={isOpenEdit}
+          onClose={() => {
+            setIsOpenEdit(false);
+          }}
+          onSubmit={_submitEditPost}
+        />
+      )}
+      <ConfirmDeletePost
         title='Confirm Delete Post'
         content='Do you want to delete post'
         isOpen={isOpenDelete}
@@ -97,9 +184,12 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
           setIsOpenDelete(false);
         }}
         onSubmit={() => {
-          mutationDeletePost.mutate(post.id);
+          if (id) {
+            mutationDeletePost.mutate(id);
+            router.push('/experiences');
+          }
         }}
-      /> */}
+      />
       <Flex justify='space-between' align='center' px='4' py='2'>
         <Flex gap='2' align='center'>
           <Box position='relative'>
@@ -109,7 +199,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
           <Box>
             <Box fontWeight='semibold'>{dataPost?.fullName}</Box>
             <Text fontSize='sm' color='gray.500'>
-              {dataPost && timeSincePost(dataPost?.time)}
+              {dataPost && timeSincePost(dataPost.time)}
             </Text>
           </Box>
         </Flex>
@@ -125,17 +215,17 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
               icon={<Icon as={HiOutlineDotsHorizontal} />}
             />
             <MenuList minW='32'>
-              {/* <MenuItem onClick={() => setIsOpenEdit(true)} hidden={currentUserId !== dataPost.userId}>
+              <MenuItem onClick={() => setIsOpenEdit(true)} hidden={dataPost && currentUserId !== dataPost.userId}>
                 Edit
-              </MenuItem> */}
-              {/* <MenuItem
+              </MenuItem>
+              <MenuItem
                 onClick={() => {
                   setIsOpenDelete(true);
                 }}
-                hidden={currentUserId !== post.userId}
+                hidden={dataPost && currentUserId !== dataPost.userId}
               >
                 Delete
-              </MenuItem> */}
+              </MenuItem>
               <MenuItem onClick={copyLink}>Copy link</MenuItem>
             </MenuList>
           </Menu>
@@ -146,31 +236,33 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
         {dataPost?.content}
       </Text>
 
+      {dataPost && dataPost.hashTags && dataPost.hashTags.length > 0 && (
+        <Flex direction='row' gap='2' px='4' mt='2'>
+          {dataPost.hashTags.map((item: string, index: number) => (
+            <Text
+              color='pink.700'
+              as='i'
+              key={`hs-${dataPost.id}-${index}-${uuidv4()}`}
+              cursor='pointer'
+              _hover={{ textDecoration: 'underline' }}
+            >
+              {item}
+            </Text>
+          ))}
+        </Flex>
+      )}
+
       {dataPost && dataPost.images.length > 0 && (
         <Box px='4' py='2' h='md'>
-          <Carousel infiniteLoop showArrows centerMode={dataPost?.images.length > 1} showThumbs={false}>
-            {dataPost?.images.map((item, index) => (
+          <Carousel infiniteLoop showArrows centerMode={dataPost.images.length > 1} showThumbs={false}>
+            {dataPost.images.map((item: string, index: number) => (
               <Image w='3xs' h='md' key={index} src={item} alt={item} />
             ))}
           </Carousel>
         </Box>
       )}
 
-      <Box mx='20' px='4' py='2' pt='6'>
-        <Flex align='center' justify='space-between'>
-          <Flex direction='row-reverse' align='center'>
-            <Text fontSize='md' ml='2' color='gray.500'>
-              {dataPost?.reactNumber}
-            </Text>
-            <Icon color='#D0637C' fontSize='xl' as={AiFillHeart} />
-          </Flex>
-          <Box fontSize='md' color='gray.500'>
-            <Text>{dataPost?.commentNumber} comments</Text>
-          </Box>
-        </Flex>
-      </Box>
-
-      {/* <Box px='4' py='2'>
+      <Box px='4' py='2'>
         <Box border='1px' borderColor='gray.200' borderX='0' py='1'>
           <Flex gap='2' fontSize='xs' width='100%'>
             <Flex
@@ -182,12 +274,12 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
               py='2'
               cursor='pointer'
               rounded='lg'
-              color={dataPost.isReacted ? '#D0637C' : 'gray.500'}
-              // onClick={reactPost}
+              color={dataPost?.isReacted ? '#D0637C' : 'gray.500'}
+              onClick={reactPost}
             >
               <Icon as={AiFillHeart} />
               &nbsp;
-              <Text fontSize='md'>Love</Text>
+              <Text fontSize='md'>{dataPost?.reactNumber} Love</Text>
             </Flex>
             <Flex
               w='100%'
@@ -202,11 +294,11 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
             >
               <Icon color='#D0637C' as={BiCommentDetail} />
               &nbsp;
-              <Text fontSize='md'>Comment</Text>
+              <Text fontSize='md'>{dataPost?.commentNumber} Comment</Text>
             </Flex>
           </Flex>
         </Box>
-      </Box> */}
+      </Box>
 
       <Box>
         {commentsPost.data?.pages[0].data.content.length === 0 ? (
@@ -217,7 +309,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
           commentsPost.data?.pages.map((page) =>
             page.data.content.map((item: ICommentsPostResponse, index: number) => (
               <>
-                <TreeCommentRender key={`${item.id}-${index}`} commentsPost={item} currentUserId={''} />
+                <TreeCommentRender key={`${item.id}-${index}`} commentsPost={item} currentUserId={currentUserId} />
                 <Center key={`${item.id}-${index}-ce`} px='8'>
                   <Divider key={`${item.id}-${index}-di`} orientation='horizontal' />
                 </Center>
@@ -238,6 +330,8 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
           </Button>
         </Center>
       </Box>
+
+      {currentUserId !== '' && <CommentForm isSubmitting={isSubmitting} _onSumbit={onSubmitComment} _ref={commentInputRef} />}
     </Box>
   );
 };

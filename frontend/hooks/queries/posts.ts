@@ -36,6 +36,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        queryClient.invalidateQueries(['post_by_Id']);
       },
     }
   );
@@ -52,6 +53,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        queryClient.invalidateQueries(['post_by_Id']);
       },
     }
   );
@@ -68,6 +70,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        queryClient.invalidateQueries(['post_by_Id']);
       },
     }
   );
@@ -83,6 +86,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        queryClient.invalidateQueries(['post_by_Id']);
       },
     }
   );
@@ -109,7 +113,7 @@ export const usePostsByTypeAndHashTag = (params: IPostPaginationByTypeAndHashTag
   );
 };
 
-export const usePostsById = (id: string, initialData: any | undefined) => {
+export const usePostsById = (id: string, initialData: any | undefined, isEnable: boolean) => {
   return useQuery(
     ['post_by_Id'],
     async () => {
@@ -119,6 +123,7 @@ export const usePostsById = (id: string, initialData: any | undefined) => {
     {
       initialData: initialData,
       keepPreviousData: true,
+      enabled: isEnable,
     }
   );
 };
