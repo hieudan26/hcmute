@@ -40,20 +40,23 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { useCUDPost } from '../../../../../../hooks/queries/posts';
 import { toggleMessage } from '../../../../Message/index.component';
 import UpdatePost from '../UpdatePost/index.component';
+import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
   onClose: () => void;
   post: IPostResponseModel;
   currentUserId: string;
+  deletePostInDetail: () => void;
 }
 
 export default function ModalDetailPost(props: IModalDetailPostProps) {
-  const { isOpen, onClose, post, currentUserId } = props;
+  const { isOpen, onClose, post, currentUserId, deletePostInDetail } = props;
   const commentsEndRef = useRef<null | HTMLDivElement>(null);
   const commentInputRef = useRef<null | HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
+  const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const bgModalContent = useColorModeValue('white', 'header.primary_darkMode');
   const commentsPost = useCommentsPost({ postId: post.id, pageNumber: 0, pageSize: 5, sortBy: 'time', sortType: 'DESC' }, isOpen);
   const { mutationCreateComment } = useCUDComment();
@@ -122,7 +125,20 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
 
   return (
     <>
-      {/* <UpdatePost
+      <ConfirmDeletePost
+        title='Confirm Delete Post'
+        content='Do you want to delete post'
+        isOpen={isOpenDelete}
+        onClose={() => {
+          setIsOpenDelete(false);
+        }}
+        onSubmit={() => {
+          mutationDeletePost.mutate(post.id);
+          deletePostInDetail();
+          setIsOpenDelete(false);
+        }}
+      />
+      <UpdatePost
         currentUserId={currentUserId}
         post={post}
         type={post.type === 'experience' ? 'experience' : 'faq'}
@@ -131,7 +147,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
           setIsOpenEdit(false);
         }}
         onSubmit={_submitEditPost}
-      /> */}
+      />
       <Modal motionPreset='slideInRight' isCentered isOpen={isOpen} onClose={onClose} size='2xl'>
         <ModalOverlay bg='blackAlpha.300' backdropFilter='blur(10px) hue-rotate(90deg)' />
         <ModalContent bg={bgModalContent} pb='0' width='2xl'>
@@ -167,8 +183,22 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                       icon={<Icon as={HiOutlineDotsHorizontal} />}
                     />
                     <MenuList minW='32'>
-                      {/* <MenuItem hidden={currentUserId !== post.userId}>Edit</MenuItem> */}
-                      <MenuItem hidden={currentUserId !== post.userId}>Delete</MenuItem>
+                      <MenuItem
+                        hidden={currentUserId !== post.userId}
+                        onClick={() => {
+                          setIsOpenEdit(true);
+                        }}
+                      >
+                        Edit
+                      </MenuItem>
+                      <MenuItem
+                        hidden={currentUserId !== post.userId}
+                        onClick={() => {
+                          setIsOpenDelete(true);
+                        }}
+                      >
+                        Delete
+                      </MenuItem>
                       <MenuItem onClick={copyLink}>Copy link</MenuItem>
                     </MenuList>
                   </Menu>
@@ -178,6 +208,22 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
               <Text textAlign='justify' px='4' py='2'>
                 {post.content}
               </Text>
+
+              {post.hashTags && post.hashTags.length > 0 && (
+                <Flex direction='row' gap='2' px='4' mb='2'>
+                  {post.hashTags.map((item: string, index: number) => (
+                    <Text
+                      color='pink.700'
+                      as='i'
+                      key={`hstdetail-${post.id}-${index}`}
+                      cursor='pointer'
+                      _hover={{ textDecoration: 'underline' }}
+                    >
+                      {item}
+                    </Text>
+                  ))}
+                </Flex>
+              )}
 
               {post.images.length > 0 && (
                 <Box px='4' py='2' h='xs'>

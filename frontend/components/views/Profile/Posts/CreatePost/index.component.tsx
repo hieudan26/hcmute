@@ -7,10 +7,12 @@ export interface ICreatePostProps {
   avatar: string;
   fullname?: string;
   onCreate: () => void;
+  content?: string;
+  isDicovery?: boolean;
 }
 
 export default function CreatePost(props: ICreatePostProps) {
-  const { onCreate, avatar, fullname } = props;
+  const { onCreate, avatar, fullname, content, isDicovery } = props;
   const bgInput = useColorModeValue('gray.100', 'blackAlpha.300');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
 
@@ -43,68 +45,70 @@ export default function CreatePost(props: ICreatePostProps) {
           flexDir='column'
           alignItems='flex-start'
         >
-          {fullname ? `What's on your mind, ${fullname}?` : 'How are you today?'}
+          {fullname ? `What's on your mind, ${fullname}?` : content ? content : 'How are you today?'}
         </Button>
       </Flex>
-      <Flex direction='row' align='center' color='gray.600' mb='-1' justify='center'>
-        <Button
-          w='100%'
-          bg='transparent'
-          color='gray.600'
-          h='8'
-          gap='2'
-          rounded='md'
-          _hover={{ bg: 'gray.100' }}
-          _focus={{ outline: 'none', bg: 'gray.200' }}
-        >
-          <Box>
-            <Icon fontSize={isMobile ? 'md' : 'lg'} color='red.400' as={AiFillYoutube} />
-          </Box>
-          <Box>
-            <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
-              Create Video
-            </Text>
-          </Box>
-        </Button>
-        <Button
-          w='100%'
-          bg='transparent'
-          color='gray.600'
-          h='8'
-          gap='2'
-          rounded='md'
-          _hover={{ bg: 'gray.100' }}
-          _focus={{ outline: 'none', bg: 'gray.200' }}
-        >
-          <Box>
-            <Icon fontSize={isMobile ? 'md' : 'lg'} color='green.500' as={AiFillFileImage} />
-          </Box>
-          <Box>
-            <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
-              Photos / Video
-            </Text>
-          </Box>
-        </Button>
-        <Button
-          w='100%'
-          bg='transparent'
-          color='gray.600'
-          h='8'
-          gap='2'
-          rounded='md'
-          _hover={{ bg: 'gray.100' }}
-          _focus={{ outline: 'none', bg: 'gray.200' }}
-        >
-          <Box>
-            <Icon fontSize={isMobile ? 'md' : 'lg'} color='yellow.500' as={AiFillSmile} />
-          </Box>
-          <Box>
-            <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
-              Feeling / Activity
-            </Text>
-          </Box>
-        </Button>
-      </Flex>
+      {!isDicovery && (
+        <Flex direction='row' align='center' color='gray.600' mb='-1' justify='center'>
+          <Button
+            w='100%'
+            bg='transparent'
+            color='gray.600'
+            h='8'
+            gap='2'
+            rounded='md'
+            _hover={{ bg: 'gray.100' }}
+            _focus={{ outline: 'none', bg: 'gray.200' }}
+          >
+            <Box>
+              <Icon fontSize={isMobile ? 'md' : 'lg'} color='red.400' as={AiFillYoutube} />
+            </Box>
+            <Box>
+              <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
+                Create Video
+              </Text>
+            </Box>
+          </Button>
+          <Button
+            w='100%'
+            bg='transparent'
+            color='gray.600'
+            h='8'
+            gap='2'
+            rounded='md'
+            _hover={{ bg: 'gray.100' }}
+            _focus={{ outline: 'none', bg: 'gray.200' }}
+          >
+            <Box>
+              <Icon fontSize={isMobile ? 'md' : 'lg'} color='green.500' as={AiFillFileImage} />
+            </Box>
+            <Box>
+              <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
+                Photos / Video
+              </Text>
+            </Box>
+          </Button>
+          <Button
+            w='100%'
+            bg='transparent'
+            color='gray.600'
+            h='8'
+            gap='2'
+            rounded='md'
+            _hover={{ bg: 'gray.100' }}
+            _focus={{ outline: 'none', bg: 'gray.200' }}
+          >
+            <Box>
+              <Icon fontSize={isMobile ? 'md' : 'lg'} color='yellow.500' as={AiFillSmile} />
+            </Box>
+            <Box>
+              <Text fontSize={isMobile ? '2xs' : 'sm'} fontWeight='semibold'>
+                Feeling / Activity
+              </Text>
+            </Box>
+          </Button>
+        </Flex>
+      )}
     </>
   );
 }

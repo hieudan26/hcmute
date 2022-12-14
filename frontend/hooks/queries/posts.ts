@@ -16,6 +16,12 @@ import {
 } from '../../models/post/post.model';
 import postService from '../../services/post/post.service';
 
+interface IPostPaginationByTypeAndHashTag {
+  pagination: IPaginationRequest;
+  type: string;
+  hashTag: string;
+}
+
 export const useCUDPost = () => {
   const queryClient = useQueryClient();
 
@@ -29,6 +35,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
@@ -44,6 +51,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
@@ -59,6 +67,7 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
@@ -73,11 +82,31 @@ export const useCUDPost = () => {
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
         queryClient.invalidateQueries(['comments_post']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
 
   return { mutationCreatePost, mutationReactPost, mutationUpdatePost, mutationDeletePost };
+};
+
+export const usePostsByTypeAndHashTag = (params: IPostPaginationByTypeAndHashTag) => {
+  return useInfiniteQuery(
+    ['posts_by_type_hashTag', params],
+    async ({ pageParam = 0 }) => {
+      params.pagination.pageNumber = pageParam;
+      const response = await postService.getAllPostsByTypeAndHashTag(params.pagination, params.type, params.hashTag);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      getNextPageParam: (lastPage) => {
+        const maxPages = lastPage.data.pageable.totalPages;
+        const nextPage = lastPage.data.pageable.pageNumber + 1;
+        return nextPage < maxPages ? nextPage : undefined;
+      },
+    }
+  );
 };
 
 export const usePostsById = (id: string, initialData: any | undefined) => {

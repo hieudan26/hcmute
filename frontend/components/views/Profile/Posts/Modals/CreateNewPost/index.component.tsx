@@ -10,7 +10,13 @@ import { IPostRequestModel } from '../../../../../../models/post/post.model';
 import { formatTimePost } from '../../../../../../utils';
 import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
 import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import Select, { ActionMeta, MultiValue } from 'react-select';
+import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
+import { toggleMessage } from '../../../../Message/index.component';
+import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
+import { IPaginationRequest } from '../../../../../../models/common/ResponseMessage.model';
+import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
+import useDebounce from '../../../../../../hooks/useDebounce';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -18,18 +24,12 @@ export interface ICreateNewPostProps {
   onClose: () => void;
   onSubmit: (params: any) => Promise<void>;
   currentUserId: string;
+  defaultValueTag?: { value: string; label: string }[];
 }
 
-const optionsWarna = [
-  { value: 'biru', label: 'Biru' },
-  { value: 'kuning', label: 'Kuning' },
-  { value: 'hijau', label: 'Hijau' },
-  { value: 'cokelat', label: 'Cokelat' },
-  { value: 'merah', label: 'Merah' },
-];
-
 export default function CreateNewPost(props: ICreateNewPostProps) {
-  const { type, isOpen, onClose, onSubmit, currentUserId } = props;
+  const { type, isOpen, onClose, onSubmit, currentUserId, defaultValueTag } = props;
+  const queryClient = useQueryClient();
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
@@ -39,6 +39,44 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [isOpenTags, setIsOpenTags] = useState<boolean>(false);
+  const [isLoadingFetchHashtag, setIsLoadingFetchHashtag] = useState<boolean>(false);
+  const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
+    pageNumber: 0,
+    pageSize: 10,
+  });
+  const [textSearchHashTag, setTextSearchHashTag] = useState<string>('');
+  const [textSearch, setTextSearch] = useState<string>('');
+  const dataHashTagQuery = useFindHashTag({ pagination: paramsPagination, hashTag: textSearchHashTag }, isOpenTags);
+  const [dataHashtag, setDataHashtag] = useState<IHashTagResponse[]>([]);
+
+  useEffect(() => {
+    if (defaultValueTag && defaultValueTag.length > 0) {
+      setIsOpenTags(true);
+    }
+
+    if (defaultValueTag) {
+      const defTags: string[] = [];
+      defaultValueTag.map((item) => {
+        defTags.push(item.value);
+      });
+      setTags(defTags);
+    }
+  }, [defaultValueTag]);
+
+  useEffect(() => {
+    if (isOpenTags) {
+      queryClient.invalidateQueries(['findHashTag']);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpenTags]);
+
+  useEffect(() => {
+    var tempData: IHashTagResponse[] = [];
+    dataHashTagQuery.data?.pages.map((page) => {
+      tempData = tempData.concat(page.data.content);
+    });
+    setDataHashtag(tempData);
+  }, [dataHashTagQuery.data]);
 
   useEffect(() => {
     if (valuePost.length > 0) {
@@ -47,6 +85,16 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       setIsDisabledBtnPost(true);
     }
   }, [valuePost]);
+
+  useDebounce(
+    () => {
+      if (textSearch !== textSearchHashTag) {
+        setTextSearchHashTag(textSearch);
+      }
+    },
+    [textSearch],
+    400
+  );
 
   const handleClick = () => {
     inputRef.current?.click();
@@ -69,14 +117,29 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   };
 
   const submit = async () => {
+    console.log();
+    if (type === 'experience') {
+      if (filesToUpload.length === 0) {
+        toggleMessage({ message: 'Experience needs at least one image', type: 'warning' });
+      } else {
+        submitPost();
+      }
+    } else {
+      submitPost();
+    }
+  };
+
+  const submitPost = async () => {
     setIsSubmitting(true);
-    await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
-    console.log(urlsRef);
+    if (filesToUpload.length > 0) {
+      await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
+    }
     const params: IPostRequestModel = {
       content: valuePost,
-      images: urlsRef.current,
+      images: filesToUpload.length === 0 ? [] : urlsRef.current,
       time: formatTimePost(new Date()),
       type: type,
+      hashTags: tags,
     };
     onSubmit(params);
     setValuePost('');
@@ -100,7 +163,11 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     }
   };
 
-  const handleWarnaChange = async (
+  const searchHashTag = (newValue: string, actionMeta: InputActionMeta) => {
+    setTextSearch(newValue);
+  };
+
+  const handleTagChange = async (
     selected: MultiValue<{
       value: string;
       label: string;
@@ -122,10 +189,18 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     setTags(arrValuesTag);
   };
 
+  const fetchData = async (event: WheelEvent | TouchEvent) => {
+    if (dataHashTagQuery.hasNextPage) {
+      setIsLoadingFetchHashtag(true);
+      await dataHashTagQuery.fetchNextPage();
+      setIsLoadingFetchHashtag(false);
+    }
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        Creat new {type}
+        Create new {type}
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -156,15 +231,19 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
         {isOpenTags && (
           <Box mt='2'>
             <Select
+              defaultValue={defaultValueTag}
+              onInputChange={searchHashTag}
               id='selectWarna'
               instanceId='selectWarna'
               isMulti
               name='colors'
               className='basic-multi-select'
               classNamePrefix='select'
-              options={optionsWarna}
-              onChange={handleWarnaChange}
-              placeholder='Pilih Warna'
+              options={dataHashtag}
+              onChange={handleTagChange}
+              placeholder='#vietnam'
+              onMenuScrollToBottom={fetchData}
+              isLoading={isLoadingFetchHashtag}
             />
           </Box>
         )}

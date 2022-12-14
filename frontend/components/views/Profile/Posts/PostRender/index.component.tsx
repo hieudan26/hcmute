@@ -61,8 +61,12 @@ export default function PostRender(props: IPostRenderProps) {
     });
   };
 
+  const deletePostInDetail = () => {
+    setIsOpenDetail(false);
+  };
+
   return (
-    <Box bg={bgColor} rounded='lg' mb='5' px='4' shadow='md'>
+    <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
       <ModalDetailPost
         currentUserId={currentUserId}
         post={post}
@@ -70,6 +74,7 @@ export default function PostRender(props: IPostRenderProps) {
         onClose={() => {
           setIsOpenDetail(false);
         }}
+        deletePostInDetail={deletePostInDetail}
       />
       <UpdatePost
         currentUserId={currentUserId}
@@ -140,6 +145,22 @@ export default function PostRender(props: IPostRenderProps) {
       <Text textAlign='justify' px='4' py='2'>
         {post.content}
       </Text>
+
+      {post.hashTags && post.hashTags.length > 0 && (
+        <Flex direction='row' gap='2' px='4' mt='2'>
+          {post.hashTags.map((item: string, index: number) => (
+            <Text
+              color='pink.700'
+              as='i'
+              key={`hst-${post.id}-${index}`}
+              cursor='pointer'
+              _hover={{ textDecoration: 'underline' }}
+            >
+              {item}
+            </Text>
+          ))}
+        </Flex>
+      )}
 
       {post.images.length > 0 && (
         <Box px='4' py='2' h='xs'>

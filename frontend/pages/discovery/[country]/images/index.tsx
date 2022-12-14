@@ -1,11 +1,227 @@
-import { Box } from '@chakra-ui/react';
+import { ChevronRightIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Flex,
+  Text,
+  AspectRatio,
+  Heading,
+  Stack,
+  Divider,
+  Highlight,
+  chakra,
+  SimpleGrid,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Skeleton,
+  Center,
+  Spinner,
+  Image,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+} from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { useEffect, useState } from 'react';
+import { useFetchCountry } from '../../../../hooks/queries/place';
+import { useRouter } from 'next/router';
+import { useImagesHashTag } from '../../../../hooks/queries/hashtag';
+import InfiniteScroll from 'react-infinite-scroller';
+import { ArrayTenTemp } from '../../../experiences';
+import ModalContainer from '../../../../components/views/Modals/ModalContainer/index.component';
 
 export interface ICountryImagesProps {}
 
 const CountryImages: NextPage = (props: ICountryImagesProps) => {
-  return <Box mb='10'>Discovery - country - images</Box>;
+  const router = useRouter();
+  const [country, setCountry] = useState<string | undefined>(undefined);
+  const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
+  const [modal, setModal] = useState<boolean>(false);
+  const [tempSrc, setTempSrc] = useState<string>('');
+  const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
+  const dataImagesQuery = useImagesHashTag(
+    { pagination: { pageNumber: 0, pageSize: 10 }, hashTag: data ? data.hashTags[0] : '#vietnam', type: 'experience' },
+    true
+  );
+
+  useEffect(() => {
+    const { country: countryQuery } = router.query;
+    if (countryQuery) {
+      setCountry(countryQuery as string);
+    }
+  }, [router.query]);
+
+  useEffect(() => {
+    if (dataCountry.data) {
+      setData(dataCountry.data?.data as IPlaceCountryResponse);
+    }
+  }, [dataCountry]);
+
+  const getImg = (url: string) => {
+    setTempSrc(url);
+    setModal(true);
+  };
+
+  return (
+    <Box w='full'>
+      <ModalContainer isOpen={modal} size='xl'>
+        <ModalHeader display='flex' flexDirection='column' alignItems='center'>
+          {/* Detail image about {data?.name} */}
+          Chi tiết hình ảnh về {data?.name}
+        </ModalHeader>
+        <ModalCloseButton
+          onClick={() => {
+            setModal(false);
+          }}
+        />
+        <ModalBody>
+          <Image src={tempSrc} alt={'no'} w='full' rounded='md' maxH='md' />
+        </ModalBody>
+      </ModalContainer>
+      <Box mx='6'>
+        <Box mb='4'>
+          <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
+            <BreadcrumbItem>
+              <Link href='/discovery'>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem>
+              <Link href={`/discovery/${data?.url}`}>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{data?.name}</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem isCurrentPage>
+              <Link href={`/discovery/${data?.url}/images`}>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Hình ảnh</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+          </Breadcrumb>
+        </Box>
+        <Heading mb='8' textTransform='uppercase' color='#D0637C'>
+          {data?.name}
+        </Heading>
+      </Box>
+      <Flex justify='space-between' w='full' align='flex-start' gap={6}>
+        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+          <Link href={`/discovery/${data?.url}`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Thông tin chung</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/provinces`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Tỉnh - Thành phố</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/experiences`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Kinh nghiệm</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/images`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+              <Text>Hình ảnh</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/faqs`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Hỏi đáp</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Flex cursor='pointer' justify='space-between' align='center'>
+            <Text>Hành trình</Text>
+            <ChevronRightIcon />
+          </Flex>
+        </Box>
+        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+          <Box>
+            {dataImagesQuery.data?.pages[0].data.content.length === 0 ? (
+              <Center py='2'>
+                <Text>Không có hình ảnh nào.</Text>
+              </Center>
+            ) : (
+              <InfiniteScroll
+                loadMore={() => dataImagesQuery.fetchNextPage()}
+                hasMore={dataImagesQuery.hasNextPage}
+                loader={
+                  <Center key={0} my='5'>
+                    <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
+                  </Center>
+                }
+              >
+                <Box
+                  style={{
+                    WebkitColumnCount: 3,
+                    MozColumnCount: 3,
+                    columnCount: 3,
+                    WebkitColumnWidth: '33%',
+                    MozColumnWidth: '33%',
+                    columnWidth: '33%',
+                    padding: '0 12px',
+                  }}
+                  className='gallery'
+                >
+                  {dataImagesQuery.data
+                    ? dataImagesQuery.data.pages.map((page) =>
+                        page.data.content.map((item: string, index: number) => (
+                          <Box
+                            style={{
+                              WebkitTransition: 'all 350ms ease',
+                              transition: 'all 350ms ease',
+                              cursor: 'pointer',
+                              marginBottom: '12px',
+                            }}
+                            _hover={{
+                              filter: 'opacity(.8)',
+                            }}
+                            className='pics'
+                            key={index}
+                            onClick={() => {
+                              getImg(item);
+                            }}
+                          >
+                            <Image src={item} alt={index.toString()} width='full' rounded='md' />
+                          </Box>
+                        ))
+                      )
+                    : ArrayTenTemp.map((item, index) => (
+                        <>
+                          <Box
+                            style={{
+                              WebkitTransition: 'all 350ms ease',
+                              transition: 'all 350ms ease',
+                              cursor: 'pointer',
+                              marginBottom: '12px',
+                            }}
+                            _hover={{
+                              filter: 'opacity(.8)',
+                            }}
+                            className='pics'
+                            key={index}
+                          >
+                            <Skeleton key={`skexp-${index}`} h='xs'></Skeleton>
+                          </Box>
+                        </>
+                      ))}
+                </Box>
+              </InfiniteScroll>
+            )}
+          </Box>
+        </Box>
+      </Flex>
+    </Box>
+  );
 };
 
 export default CountryImages;

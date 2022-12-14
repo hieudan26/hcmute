@@ -1,13 +1,21 @@
-import { Box, Button, Center, Divider, Flex, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Divider, Flex, Grid, Heading, Skeleton, Text } from '@chakra-ui/react';
+import { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { AxiosResponseStatus } from '../../../../constants/global.constant';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { ArrayTenTemp } from '../../../../pages/experiences';
 
-export interface ICountriesListProps {}
+export interface ICountriesListProps {
+  places_countries: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
+}
 
 export default function CountriesList(props: ICountriesListProps) {
+  const { places_countries } = props;
   const router = useRouter();
 
-  const redirectToCountry = () => {
-    router.push('/discovery/viet-nam');
+  const redirectToCountry = (urlName: string) => {
+    router.push(`/discovery/${urlName}`);
   };
 
   return (
@@ -24,42 +32,47 @@ export default function CountriesList(props: ICountriesListProps) {
         <Divider color='#D0637C' w='10%' my='10' borderY='2px' />
       </Flex>
       <Grid templateColumns='repeat(5, 1fr)' gap={6} mb='5'>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Nha Trang - Khánh Hòa
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
-        <Button textTransform='uppercase' variant='outline' color='gray.500' onClick={redirectToCountry}>
-          Hồ chí minh
-        </Button>
+        {places_countries.data &&
+          places_countries.data.pages.map((page) =>
+            page.data.content.map((item: IPlaceCountryResponse, index: number) => (
+              <Button
+                title={item.name}
+                key={item.id}
+                textTransform='uppercase'
+                variant='outline'
+                color='gray.500'
+                onClick={() => {
+                  redirectToCountry(item.url);
+                }}
+              >
+                <Text noOfLines={1}>{item.name}</Text>
+              </Button>
+            ))
+          )}
+        {!places_countries.data &&
+          ArrayTenTemp.map((item, index) => (
+            <Skeleton key={index}>
+              <Button textTransform='uppercase' variant='outline' color='gray.500'>
+                item
+              </Button>
+            </Skeleton>
+          ))}
       </Grid>
-      <Center>
-        <Button fontStyle='italic' variant='ghost' fontWeight='medium'>
-          Xem thêm
-        </Button>
-      </Center>
+      {places_countries.hasNextPage && (
+        <Center>
+          <Button
+            isLoading={places_countries.isFetching}
+            fontStyle='italic'
+            variant='ghost'
+            fontWeight='medium'
+            onClick={() => {
+              places_countries.fetchNextPage();
+            }}
+          >
+            Xem thêm
+          </Button>
+        </Center>
+      )}
     </Box>
   );
 }

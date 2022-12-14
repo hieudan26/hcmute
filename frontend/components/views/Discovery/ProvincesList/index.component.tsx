@@ -1,35 +1,15 @@
 import { Box, Button, Center, Divider, Flex, Grid, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import Link from 'next/link';
+import { AxiosResponseStatus } from '../../../../constants/global.constant';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 
-export interface IProvincesListProps {}
+export interface IProvincesListProps {
+  place_provinces_vn: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
+}
 
 export default function ProvincesList(props: IProvincesListProps) {
-  const data = [
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Việt nam',
-    'Úc',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-    'Áo',
-  ];
+  const { place_provinces_vn } = props;
 
   return (
     <Box>
@@ -42,68 +22,23 @@ export default function ProvincesList(props: IProvincesListProps) {
       </Flex>
       <Center justifyContent='center' alignItems='center' alignContent='center'>
         <SimpleGrid columns={[2, 3, 4]} w='full' textAlign='center' gap='8'>
-          <Link href='/discovery/viet-nam/ho-chi-minh' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
-          <Link href='/' passHref>
-            <Text cursor='pointer' textTransform='capitalize'>
-              an giang
-            </Text>
-          </Link>
+          {place_provinces_vn.data &&
+            place_provinces_vn.data.pages.map((page) =>
+              page.data.content.map((item: IPlaceCountryResponse, index: number) => (
+                <Link key={item.id} href={`/discovery/vietnam/${item.url}`}>
+                  <Text cursor='pointer' textTransform='capitalize'>
+                    {item.name}
+                  </Text>
+                </Link>
+              ))
+            )}
         </SimpleGrid>
       </Center>
-      <Center mt='5'>
+      {/* <Center mt='5'>
         <Button fontStyle='italic' variant='ghost' fontWeight='medium'>
           Xem thêm
         </Button>
-      </Center>
+      </Center> */}
     </Box>
   );
 }

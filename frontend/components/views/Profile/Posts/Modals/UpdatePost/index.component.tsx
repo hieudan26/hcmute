@@ -9,6 +9,7 @@ import {
   Button,
   Image,
   Center,
+  Box,
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
@@ -20,6 +21,10 @@ import { Carousel } from 'react-responsive-carousel';
 import { IPostRequestModel, IPostResponseModel } from '../../../../../../models/post/post.model';
 import useUploadFile from '../../../../../../hooks/useUploadFile';
 import { formatTimePost } from '../../../../../../utils';
+import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
+import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
+import useDebounce from '../../../../../../hooks/useDebounce';
+import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
 
 export interface IUpdatePostProps {
   type: 'experience' | 'faq';
@@ -39,6 +44,63 @@ export default function UpdatePost(props: IUpdatePostProps) {
   const [isDisabledBtnPost, setIsDisabledBtnPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [textSearchHashTag, setTextSearchHashTag] = useState<string>('');
+  const [textSearch, setTextSearch] = useState<string>('');
+  const [dataHashtag, setDataHashtag] = useState<IHashTagResponse[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [defaultValueTag, setDefaultValueTag] = useState<{ value: string; label: string }[]>([]);
+  const [isLoadingFetchHashtag, setIsLoadingFetchHashtag] = useState<boolean>(false);
+  const [isDisableResetTags, setIsDisableResetTags] = useState<boolean>(true);
+  const testRef = useRef<any>(null);
+  const dataHashTagQuery = useFindHashTag(
+    {
+      pagination: {
+        pageNumber: 0,
+        pageSize: 10,
+      },
+      hashTag: textSearchHashTag,
+    },
+    isOpen
+  );
+
+  useEffect(() => {
+    if (post.hashTags) {
+      var tempValueTags: { value: string; label: string }[] = [];
+      var tgs: string[] = [];
+      post.hashTags.map((item) => {
+        tempValueTags.push({ value: item, label: item });
+        tgs.push(item);
+      });
+      setTags(tgs);
+      setDefaultValueTag(tempValueTags);
+    }
+  }, [post]);
+
+  useEffect(() => {
+    var tempData: IHashTagResponse[] = [];
+    dataHashTagQuery.data?.pages.map((page) => {
+      tempData = tempData.concat(page.data.content);
+    });
+    setDataHashtag(tempData);
+  }, [dataHashTagQuery.data]);
+
+  useEffect(() => {
+    if (filesToUpload.length !== 0) {
+      setIsDisabledBtnPost(false);
+    } else {
+      setIsDisabledBtnPost(true);
+    }
+  }, [filesToUpload]);
+
+  useEffect(() => {
+    if (tags.join() !== post.hashTags.join()) {
+      setIsDisableResetTags(false);
+      setIsDisabledBtnPost(false);
+    } else {
+      setIsDisableResetTags(true);
+      setIsDisabledBtnPost(true);
+    }
+  }, [tags, post]);
 
   useEffect(() => {
     if (valuePost.length > 0 && valuePost !== post.content.trim()) {
@@ -48,6 +110,16 @@ export default function UpdatePost(props: IUpdatePostProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valuePost]);
+
+  useDebounce(
+    () => {
+      if (textSearch !== textSearchHashTag) {
+        setTextSearchHashTag(textSearch);
+      }
+    },
+    [textSearch],
+    400
+  );
 
   const handleClick = () => {
     inputRef.current?.click();
@@ -67,11 +139,15 @@ export default function UpdatePost(props: IUpdatePostProps) {
 
   const submit = async () => {
     setIsSubmitting(true);
-    await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
+    if (filesToUpload.length > 0) {
+      await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
+    }
+
     const params: IPostRequestModel = {
       content: valuePost,
       images: [...urlsRef.current, ...post.images],
       type: type,
+      hashTags: tags,
     };
     onSubmit(params);
     handleClose(true);
@@ -94,6 +170,40 @@ export default function UpdatePost(props: IUpdatePostProps) {
     }
   };
 
+  const searchHashTag = (newValue: string, actionMeta: InputActionMeta) => {
+    setTextSearch(newValue);
+  };
+
+  const handleTagChange = async (
+    selected: MultiValue<{
+      value: string;
+      label: string;
+    }>,
+    selectaction: ActionMeta<{
+      value: string;
+      label: string;
+    }>
+  ) => {
+    const { action } = selectaction;
+    if (action === 'clear') {
+    } else if (action === 'select-option') {
+    } else if (action === 'remove-value') {
+      console.log('remove');
+    }
+    const arrValuesTag = selected.map((item) => {
+      return item.value;
+    });
+    setTags(arrValuesTag);
+  };
+
+  const fetchData = async (event: WheelEvent | TouchEvent) => {
+    if (dataHashTagQuery.hasNextPage) {
+      setIsLoadingFetchHashtag(true);
+      await dataHashTagQuery.fetchNextPage();
+      setIsLoadingFetchHashtag(false);
+    }
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
@@ -112,10 +222,40 @@ export default function UpdatePost(props: IUpdatePostProps) {
           _focus={{ outline: '1px' }}
           minH='20vh'
           placeholder="what's on your mind ?"
-          mb='2'
           value={valuePost}
           onChange={changeValueTextarea}
         />
+
+        {post.hashTags && post.hashTags.length > 0 && (
+          <Flex my='2' gap='4'>
+            <Box w='full'>
+              <Select
+                ref={testRef}
+                defaultValue={defaultValueTag}
+                onInputChange={searchHashTag}
+                id='selectWarna'
+                instanceId='selectWarna'
+                isMulti
+                name='colors'
+                className='basic-multi-select'
+                classNamePrefix='select'
+                options={dataHashtag}
+                onChange={handleTagChange}
+                placeholder='#vietnam'
+                onMenuScrollToBottom={fetchData}
+                isLoading={isLoadingFetchHashtag}
+              />
+            </Box>
+            <Button
+              isDisabled={isDisabledBtnPost}
+              onClick={() => {
+                testRef.current.setValue(defaultValueTag);
+              }}
+            >
+              Reset
+            </Button>
+          </Flex>
+        )}
 
         {post.images.length > 0 && (
           <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>

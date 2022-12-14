@@ -13,14 +13,52 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
+  Skeleton,
+  Center,
+  Spinner,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { useFetchCountry, usePlacesProvincesByCountry } from '../../../../hooks/queries/place';
+import { IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { ArrayTenTemp } from '../../../experiences';
 
 export interface ICountryProvincesProps {}
 
 const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
+  const router = useRouter();
+  const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
+    pageNumber: 0,
+    pageSize: 12,
+    sortBy: 'name',
+    sortType: 'ASC',
+  });
+  const [country, setCountry] = useState<string | undefined>(undefined);
+  const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
+  const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
+  const dataProvince = usePlacesProvincesByCountry(
+    { pagination: paramsPagination, urlName: country ? country : '' },
+    country !== undefined
+  );
+
+  useEffect(() => {
+    const { country: countryQuery } = router.query;
+    if (countryQuery) {
+      setCountry(countryQuery as string);
+    }
+  }, [router.query]);
+
+  useEffect(() => {
+    if (dataCountry.data) {
+      setData(dataCountry.data?.data as IPlaceCountryResponse);
+    }
+  }, [dataCountry]);
+
   return (
     <Box w='full'>
       <Box mx='6'>
@@ -33,176 +71,148 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
             </BreadcrumbItem>
 
             <BreadcrumbItem>
-              <Link href='/discovery/viet-nam'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Việt Nam</BreadcrumbLink>
+              <Link href={`/discovery/${data?.url}`}>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{data?.name}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
             <BreadcrumbItem isCurrentPage>
-              <Link href='/discovery/viet-nam/provinces'>
+              <Link href={`/discovery/${data?.url}/provinces`}>
                 <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Tỉnh - Thành phố</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
         </Box>
         <Heading mb='8' textTransform='uppercase' color='#D0637C'>
-          Việt nam
+          {data?.name}
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
         <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-            <Text>Thông tin chung</Text>
-            <ChevronRightIcon />
-          </Flex>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
-            <Text>Tỉnh - Thành phố</Text>
-            <ChevronRightIcon />
-          </Flex>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-            <Text>Kinh nghiệm</Text>
-            <ChevronRightIcon />
-          </Flex>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-            <Text>Hình ảnh</Text>
-            <ChevronRightIcon />
-          </Flex>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-            <Text>Hỏi đáp</Text>
-            <ChevronRightIcon />
-          </Flex>
+          <Link href={`/discovery/${data?.url}`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Thông tin chung</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/provinces`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+              <Text>Tỉnh - Thành phố</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/experiences`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Kinh nghiệm</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/images`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Hình ảnh</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
+          <Link href={`/discovery/${data?.url}/faqs`}>
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+              <Text>Hỏi đáp</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
             <Text>Hành trình</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
         <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
-          <SimpleGrid columns={[2, null, 3]}>
-            <Flex direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
-              <Box
-                bg='gray.300'
-                h={40}
-                w='full'
-                rounded='lg'
-                shadow='md'
-                bgSize='cover'
-                bgPos='center'
-                style={{
-                  backgroundImage:
-                    'url(https://cdn3.ivivu.com/2022/07/h%E1%BB%93-g%C6%B0%C6%A1m-du-l%E1%BB%8Bch-H%C3%A0-N%E1%BB%99i-ivivu.jpg)',
-                }}
-              ></Box>
+          {!dataProvince.isFetching &&
+            (!dataProvince.data ||
+              (dataProvince.data.pages.length === 1 && dataProvince.data.pages[0].data.content.length === 0)) && (
+              <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
+                <Text>Hiện không có dữ liệu</Text>
+              </Flex>
+            )}
+          <InfiniteScroll
+            loadMore={() => dataProvince.fetchNextPage()}
+            hasMore={dataProvince.hasNextPage}
+            loader={
+              <Center key={0}>
+                <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='pink.500' size='xl' />
+              </Center>
+            }
+          >
+            <SimpleGrid columns={[2, null, 3]}>
+              {dataProvince.data &&
+                dataProvince.data.pages.map((page) =>
+                  page.data.content.map((item: IPlaceCountryResponse, index: number) => (
+                    <Flex key={item.id} direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
+                      <Box
+                        bg='gray.300'
+                        h={40}
+                        w='full'
+                        rounded='lg'
+                        shadow='md'
+                        bgSize='cover'
+                        bgPos='center'
+                        style={{
+                          backgroundImage: `url(${item.image})`,
+                        }}
+                      />
 
-              <Box w='44' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                <chakra.h3
-                  py={2}
-                  textAlign='center'
-                  fontWeight='bold'
-                  textTransform='capitalize'
-                  color='gray.800'
-                  letterSpacing={1}
-                >
-                  Hà nội
-                </chakra.h3>
-                <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                  <Text>Checkin now</Text>
-                </Flex>
-              </Box>
-            </Flex>
-            <Flex direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
-              <Box
-                bg='gray.300'
-                h={40}
-                w='full'
-                rounded='lg'
-                shadow='md'
-                bgSize='cover'
-                bgPos='center'
-                style={{
-                  backgroundImage:
-                    'url(https://images.unsplash.com/photo-1521903062400-b80f2cb8cb9d?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80)',
-                }}
-              ></Box>
+                      <Box w='90%' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                        <chakra.h3
+                          py={2}
+                          textAlign='center'
+                          fontWeight='bold'
+                          textTransform='capitalize'
+                          color='gray.800'
+                          letterSpacing={1}
+                        >
+                          {item.name}
+                        </chakra.h3>
+                        <Flex
+                          cursor='pointer'
+                          fontSize='sm'
+                          alignItems='center'
+                          justifyContent='center'
+                          py={2}
+                          px={3}
+                          bg='gray.200'
+                          onClick={() => {
+                            router.push(`/discovery/${data?.url}/${item.url}`);
+                          }}
+                        >
+                          <Text>Checkin now</Text>
+                        </Flex>
+                      </Box>
+                    </Flex>
+                  ))
+                )}
 
-              <Box w='44' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                <chakra.h3
-                  py={2}
-                  textAlign='center'
-                  fontWeight='bold'
-                  textTransform='capitalize'
-                  color='gray.800'
-                  letterSpacing={1}
-                >
-                  Hà nội
-                </chakra.h3>
-                <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                  <Text>Checkin now</Text>
-                </Flex>
-              </Box>
-            </Flex>
-            <Flex direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
-              <Box
-                bg='gray.300'
-                h={40}
-                w='full'
-                rounded='lg'
-                shadow='md'
-                bgSize='cover'
-                bgPos='center'
-                style={{
-                  backgroundImage:
-                    'url(https://images.unsplash.com/photo-1521903062400-b80f2cb8cb9d?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80)',
-                }}
-              ></Box>
+              {dataProvince.isFetching &&
+                ArrayTenTemp.map((item, index: number) => (
+                  <Skeleton key={index} w='3xs' mx='auto' my='4'>
+                    <Flex direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
+                      <Box bg='gray.300' h={40} w='full' rounded='lg' shadow='md' bgSize='cover' bgPos='center' />
 
-              <Box w='44' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                <chakra.h3
-                  py={2}
-                  textAlign='center'
-                  fontWeight='bold'
-                  textTransform='capitalize'
-                  color='gray.800'
-                  letterSpacing={1}
-                >
-                  Hà nội
-                </chakra.h3>
-                <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                  <Text>Checkin now</Text>
-                </Flex>
-              </Box>
-            </Flex>
-            <Flex direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
-              <Box
-                bg='gray.300'
-                h={40}
-                w='full'
-                rounded='lg'
-                shadow='md'
-                bgSize='cover'
-                bgPos='center'
-                style={{
-                  backgroundImage:
-                    'url(https://images.unsplash.com/photo-1521903062400-b80f2cb8cb9d?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1050&q=80)',
-                }}
-              ></Box>
-
-              <Box w='44' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                <chakra.h3
-                  py={2}
-                  textAlign='center'
-                  fontWeight='bold'
-                  textTransform='capitalize'
-                  color='gray.800'
-                  letterSpacing={1}
-                >
-                  Hà nội
-                </chakra.h3>
-                <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                  <Text>Checkin now</Text>
-                </Flex>
-              </Box>
-            </Flex>
-          </SimpleGrid>
+                      <Box w='44' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                        <chakra.h3
+                          py={2}
+                          textAlign='center'
+                          fontWeight='bold'
+                          textTransform='capitalize'
+                          color='gray.800'
+                          letterSpacing={1}
+                        ></chakra.h3>
+                        <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
+                          <Text>Checkin now</Text>
+                        </Flex>
+                      </Box>
+                    </Flex>
+                  </Skeleton>
+                ))}
+            </SimpleGrid>
+          </InfiniteScroll>
         </Box>
       </Flex>
     </Box>
