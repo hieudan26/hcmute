@@ -3,6 +3,7 @@ import { IPaginationRequest } from '../common/ResponseMessage.model';
 
 export interface IPostRequestModel {
   content: string;
+  hashTags?: string[];
   images: string[];
   time?: string;
   type: string;
@@ -25,6 +26,7 @@ export interface IPostResponseModel {
   images: string[];
   isReacted: boolean;
   isDeleted?: boolean;
+  hashTags: string[];
 }
 
 export interface IPostPaginationByType extends IPaginationRequest {

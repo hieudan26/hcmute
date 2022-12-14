@@ -114,6 +114,17 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
                   </Box>
                 </>
               ))}
+
+          {posts.isFetching &&
+            ArrayTenTemp.map((item, index) => (
+              <>
+                <Box key={`boxexpft-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                  <SkeletonCircle size='10' />
+                  <SkeletonText my='4' noOfLines={4} spacing='4' />
+                  <Skeleton h='xs'></Skeleton>
+                </Box>
+              </>
+            ))}
         </InfiniteScroll>
       </Flex>
     </Flex>

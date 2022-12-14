@@ -30,9 +30,16 @@ export default function UserLayout(props: IUserLayoutProps) {
   const bgMain = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
   const colorMain = useColorModeValue('textColor.primary_lightMode', 'textColor.primary_darkMode');
   const [isProfilePage, setIsProfilePage] = useState<boolean>(false);
+  const [isDiscoveryPage, setIsDiscoveryPage] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    if (router.pathname.includes('/discovery')) {
+      setIsDiscoveryPage(true);
+    } else {
+      setIsDiscoveryPage(false);
+    }
+
     if (router.pathname.includes('/profile')) {
       setIsProfilePage(true);
     } else {
@@ -50,10 +57,10 @@ export default function UserLayout(props: IUserLayoutProps) {
   }, [isSettingRoute, children]);
 
   useEffect(() => {
-    if (!isProfilePage) {
+    if (!isProfilePage && !isDiscoveryPage) {
       window.scrollTo(0, 0);
     }
-  }, [children, isProfilePage]);
+  }, [children, isProfilePage, isDiscoveryPage]);
 
   useEffect(() => {
     if (router.pathname.includes('/profile')) {

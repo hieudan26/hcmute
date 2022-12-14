@@ -22,6 +22,7 @@ export const useCUDComment = () => {
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
@@ -37,6 +38,7 @@ export const useCUDComment = () => {
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
@@ -51,6 +53,7 @@ export const useCUDComment = () => {
         queryClient.invalidateQueries(['comments_post']);
         queryClient.invalidateQueries(['posts_by_type']);
         queryClient.invalidateQueries(['posts_by_type_userId']);
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
       },
     }
   );
