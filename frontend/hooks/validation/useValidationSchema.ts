@@ -3,6 +3,16 @@ import { emailRegex, passwordRegex } from '../../utils';
 
 export default function useValidationSchema() {
   return {
+    //#region create category
+    createCategorySchema: yup.object().shape({
+      name: yup
+        .string()
+        .required('Category name is required.')
+        .min(3, 'Category name needs to be at least 3 characters long.')
+        .max(12, 'Category name must be at most 12 charaters.'),
+    }),
+    //#endregion
+
     //#region infor-admin
     inforAdminSchema: yup.object().shape({
       firstName: yup

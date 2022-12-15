@@ -1,5 +1,6 @@
 import { Icon } from '@chakra-ui/react';
-import { MdBarChart, MdAdminPanelSettings, MdHome, MdLock, MdLocationPin } from 'react-icons/md';
+import { MdCategory, MdAdminPanelSettings, MdHome, MdLock, MdLocationPin } from 'react-icons/md';
+import { TiLocationArrow } from 'react-icons/ti';
 import { FaUsers, FaUserCheck } from 'react-icons/fa';
 import { BsFileEarmarkPostFill } from 'react-icons/bs';
 import { IRoute } from '../../../../types/navigation';
@@ -9,6 +10,8 @@ import AdminUsersManagementPage from '../../../../pages/admin/users-management';
 import AdminPostsManagementPage from '../../../../pages/admin/posts-management';
 import AdminAccountsManagementPage from '../../../../pages/admin/accounts-management';
 import AdminAreasManagementPage from '../../../../pages/admin/areas-management';
+import AdminPlacesManagementPage from '../../../../pages/admin/places-management';
+import AdminCategoriesManagementPage from '../../../../pages/admin/categories-management';
 
 const routes: IRoute[] = [
   {
@@ -18,6 +21,22 @@ const routes: IRoute[] = [
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
     component: AdminDashboard,
     section: 'Statistics',
+  },
+  {
+    name: 'Places',
+    layout: '/admin',
+    path: '/places-management',
+    icon: <Icon as={TiLocationArrow} fontSize='lg' color='inherit' />,
+    component: AdminPlacesManagementPage,
+    section: 'Places Management',
+  },
+  {
+    name: 'Categories',
+    layout: '/admin',
+    path: '/categories-management',
+    icon: <Icon as={MdCategory} fontSize='lg' color='inherit' />,
+    component: AdminCategoriesManagementPage,
+    section: 'Places Management',
   },
   {
     name: 'Country & Province',

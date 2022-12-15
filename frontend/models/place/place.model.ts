@@ -13,3 +13,12 @@ export interface ICategoryResponse {
   name: string;
   image: string | null;
 }
+
+export interface ICategoryRequest {
+  name: string;
+  image: string;
+}
+
+export interface ICategoryRequestUpdate extends ICategoryRequest {
+  id: string;
+}
