@@ -22,9 +22,4 @@ public interface UserRepository extends PagingAndSortingRepository<Users, String
     @Query("select friends from Friends friends inner join  Users user on user = friends.owner where user.id = :userId and friends.status = :status order by friends.time desc ")
     Page<Friends> getFriendsByStatus(String userId, String status, Pageable pageable);
 
-    @Query("select friends from Friends friends  inner join Users user  on user = friends.owner where user.id = :userId and user.isDisable = false order by friends.time desc ")
-    Page<Friends> getFriends(String userId, Pageable pageable);
-
-    @Query("select friends from Friends friends inner join  Users user on user = friends.owner where user.id = :userId and friends.status = :status order by friends.time desc ")
-    Page<Friends> getFriendsByStatus(String userId, String status, Pageable pageable);
 }
