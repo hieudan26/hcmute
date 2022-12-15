@@ -21,6 +21,7 @@ public class Places extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     Integer id;
+
     @Column(unique=true,nullable = false)
     String name;
 
@@ -28,6 +29,7 @@ public class Places extends Auditable<String> implements Serializable {
     String url;
 
     String image;
+    String description;
 
     @Lob
     String content;

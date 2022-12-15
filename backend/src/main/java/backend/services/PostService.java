@@ -54,6 +54,25 @@ public class PostService {
                 .build();
     }
 
+    public BaseResponse findPosts(PagingRequest pagingRequest, String type, String key){
+        PagingResponse<PostResponse> pagingResponse = new PagingResponse(
+                postRepository.findByTypeAndContentIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),type,key));
+
+        return BaseResponse.builder().message("Find all posts successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse findPosts(PagingRequest pagingRequest, String key){
+        PagingResponse<PostResponse> pagingResponse = new PagingResponse(
+                postRepository.findByContentIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),key)
+                        .map(postMapper::PostsToPostsResponse));
+
+        return BaseResponse.builder().message("Find all posts successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
     public BaseResponse listAllPostsByUserId(PagingRequest pagingRequest,String userId){
         PagingResponse pagingResponse = new PagingResponse(
                 postRepository.queryPostsByUserId(PagingUtils.getPageable(pagingRequest), userId)

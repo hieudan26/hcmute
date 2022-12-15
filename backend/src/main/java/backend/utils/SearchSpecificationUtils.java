@@ -19,6 +19,7 @@ public class SearchSpecificationUtils {
         SpecificationsBuilder builder = new SpecificationsBuilder();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.valueToTree(query);
+
         for (var field: query.getClass().getDeclaredFields()) {
             if(!jsonNode.get(field.getName()).isNull()){
                 if(jsonNode.get(field.getName()).isBoolean()){
