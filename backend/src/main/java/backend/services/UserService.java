@@ -12,6 +12,7 @@ import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.UserMapper;
 import backend.repositories.UserRepository;
+import backend.repositories.specification.SearchSpecification;
 import backend.security.configuration.CustomUserDetail;
 import backend.utils.CognitoUtil;
 import backend.utils.PagingUtils;
@@ -26,6 +27,10 @@ import javax.naming.NoPermissionException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -261,6 +266,15 @@ public class UserService {
         if(users.isEmpty())
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",id));
         return  users.get();
+    }
+
+    public BaseResponse findUsers(PagingRequest pagingRequest,String key){
+        PagingResponse pagingResponse = new PagingResponse<Users>(
+                userRepository.findAll(SearchSpecification.containsTextInAttributes(key, List.of("firstName","lastName")), PagingUtils.getPageable(pagingRequest)));
+
+        return BaseResponse.builder().message("Find users successful.")
+                .data(pagingResponse)
+                .build();
     }
 
     public BaseResponse checkCognitoUserExist(CheckEmailExistRequest checkEmailExistRequest){

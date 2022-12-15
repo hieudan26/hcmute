@@ -22,4 +22,7 @@ public interface PostRepository extends PagingAndSortingRepository<Posts, Intege
     @Query(value = "from Posts post join post.reaction reaction where post.id =?1 and reaction.id = ?2")
     Optional<Posts> isReactPost(Integer postId, String userId);
 
+    Page<Posts> findByContentIgnoreCaseContaining(Pageable pageable, String key);
+    Page<Posts> findByTypeAndContentIgnoreCaseContaining(Pageable pageable, String type ,String key);
+
 }

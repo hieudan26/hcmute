@@ -54,6 +54,16 @@ public class PlaceService {
                 .build();
     }
 
+    public BaseResponse findPlaceWithKey(PagingRequest pagingRequest, String key){
+        PagingResponse pagingResponse = new PagingResponse(
+                placeRepository.findByNameIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest), key));
+
+        return BaseResponse.builder().message("find place successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+
     public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest){
         Places places = placeMapper.fromCreatePlaceToPlaces(createPlaceRequest);
         places.setHashTags(hashTagService.createNewHashTag(createPlaceRequest.getHashTags(),places));

@@ -30,4 +30,6 @@ public interface PlaceRepository extends PagingAndSortingRepository<Places,Integ
     Optional<Places> findProvinceByUrl(Integer areaId, String url);
     Optional<Places> findByUrl(String url);
 
+    Page<Places> findByNameIgnoreCaseContaining(Pageable pageable, String key);
+
 }

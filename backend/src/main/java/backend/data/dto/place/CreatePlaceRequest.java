@@ -18,6 +18,7 @@ public class CreatePlaceRequest {
     @NotEmpty
     String name;
     String content;
+    String description;
     Integer category;
     Integer area;
     String image;
