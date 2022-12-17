@@ -17,14 +17,15 @@ export function SidebarLinks(props: SidebarLinksProps) {
   const brandColor = useColorModeValue('#D0637C', '#D0637C');
 
   const activeRoute = (routeName: string) => {
-    return router.pathname.includes(routeName);
+    // return router.pathname.includes(routeName);
+    return router.pathname === routeName;
   };
 
   const createLinks = (routes: IRoute[]) => {
     return routes.map((route, index: number) => {
       if (route.layout === '/admin') {
         return (
-          <Link key={index} href={route.layout + route.path}>
+          <Link key={index} href={route.path}>
             <a>
               {route.icon ? (
                 <Box>

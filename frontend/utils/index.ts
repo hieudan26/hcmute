@@ -16,6 +16,44 @@ export const publicRouteContain = [
 export const privateRouteContain = ['/settings', '/chats'];
 export const authRouteContain = ['/login', '/register', '/forgot-password'];
 
+/* A Quill editor configuration. */
+export const modulesQuill = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { font: [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
+    ['link', 'image', 'video'],
+    ['clean'],
+  ],
+  clipboard: {
+    // toggle to add extra line breaks when pasting HTML:
+    matchVisual: false,
+  },
+};
+
+/* A list of formats that can be used in the Quill editor. */
+export const formatsQuill = [
+  'header',
+  'font',
+  'size',
+  'bold',
+  'italic',
+  'underline',
+  'align',
+  'strike',
+  'script',
+  'blockquote',
+  'background',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'image',
+  'color',
+  'code-block',
+];
+
 export const timeSincePost = (createdAt: string) => {
   var datePost = createdAt[0] + createdAt[1];
   var monthPost = createdAt[3] + createdAt[4];
