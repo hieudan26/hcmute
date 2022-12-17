@@ -12,28 +12,38 @@ import AdminAccountsManagementPage from '../../../../pages/admin/accounts-manage
 import AdminAreasManagementPage from '../../../../pages/admin/areas-management';
 import AdminPlacesManagementPage from '../../../../pages/admin/places-management';
 import AdminCategoriesManagementPage from '../../../../pages/admin/categories-management';
+import AdminPlacesManagementCreatePage from '../../../../pages/admin/places-management/create';
+import { IoCreate } from 'react-icons/io5';
 
 const routes: IRoute[] = [
   {
     name: 'Main dashboard',
     layout: '/admin',
-    path: '/dashboard',
+    path: '/admin/dashboard',
     icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
     component: AdminDashboard,
     section: 'Statistics',
   },
   {
-    name: 'Places',
+    name: 'Create new place',
     layout: '/admin',
-    path: '/places-management',
-    icon: <Icon as={TiLocationArrow} fontSize='lg' color='inherit' />,
+    path: '/admin/places-management/create',
+    icon: <Icon as={IoCreate} width='20px' height='20px' color='inherit' />,
+    component: AdminPlacesManagementCreatePage,
+    section: 'Places Management',
+  },
+  {
+    name: 'All places in system',
+    layout: '/admin',
+    path: '/admin/places-management',
+    icon: <Icon as={TiLocationArrow} fontSize='larger' color='inherit' />,
     component: AdminPlacesManagementPage,
     section: 'Places Management',
   },
   {
-    name: 'Categories',
+    name: 'All categories in system',
     layout: '/admin',
-    path: '/categories-management',
+    path: '/admin/categories-management',
     icon: <Icon as={MdCategory} fontSize='lg' color='inherit' />,
     component: AdminCategoriesManagementPage,
     section: 'Places Management',
@@ -41,7 +51,7 @@ const routes: IRoute[] = [
   {
     name: 'Country & Province',
     layout: '/admin',
-    path: '/areas-management',
+    path: '/admin/areas-management',
     icon: <Icon as={MdLocationPin} width='20px' height='20px' color='inherit' />,
     component: AdminAreasManagementPage,
     section: 'Areas Management',
@@ -49,7 +59,7 @@ const routes: IRoute[] = [
   {
     name: 'All users in system',
     layout: '/admin',
-    path: '/users-management',
+    path: '/admin/users-management',
     icon: <Icon as={FaUsers} width='20px' height='20px' color='inherit' />,
     component: AdminUsersManagementPage,
     section: 'Users Management',
@@ -57,7 +67,7 @@ const routes: IRoute[] = [
   {
     name: 'All posts in system',
     layout: '/admin',
-    path: '/posts-management',
+    path: '/admin/posts-management',
     icon: <Icon as={BsFileEarmarkPostFill} width='20px' height='20px' color='inherit' />,
     component: AdminPostsManagementPage,
     section: 'Posts Management',
@@ -65,7 +75,7 @@ const routes: IRoute[] = [
   {
     name: 'Create new account',
     layout: '/admin',
-    path: '/accounts-management',
+    path: '/admin/accounts-management',
     icon: <Icon as={MdAdminPanelSettings} width='20px' height='20px' color='inherit' />,
     component: AdminAccountsManagementPage,
     section: 'Accounts Management',

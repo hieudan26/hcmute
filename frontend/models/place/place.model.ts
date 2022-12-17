@@ -6,6 +6,7 @@ export interface IPlaceCountryResponse {
   content: string;
   category: ICategoryResponse;
   hashTags: string[];
+  description: string;
 }
 
 export interface ICategoryResponse {
@@ -21,4 +22,23 @@ export interface ICategoryRequest {
 
 export interface ICategoryRequestUpdate extends ICategoryRequest {
   id: string;
+}
+
+export interface IPlaceRequest {
+  area: number;
+  category: number;
+  content: string;
+  description: string;
+  hashTags: string[];
+  image: string;
+  name: string;
+}
+
+export interface IPlaceRequestUpdate {
+  category: number;
+  content: string;
+  description: string;
+  hashTags: string[];
+  image: string;
+  name: string;
 }

@@ -35,6 +35,7 @@ export default function Introduce(props: IIntroduceProps) {
             </Highlight>
           )}
         </Text>
+        <Text mt='4'>{data?.description}</Text>
       </Box>
       <AspectRatio ratio={16 / 9} rounded='md' mb='4'>
         <iframe src={`https://maps.google.com/maps?q=${data?.name}&t=&z=9&ie=UTF8&iwloc=&output=embed`} />

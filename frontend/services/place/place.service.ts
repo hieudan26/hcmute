@@ -2,10 +2,27 @@ import { Dispatch, SetStateAction } from 'react';
 import { async } from 'rxjs';
 import { AxiosResponseStatus } from '../../constants/global.constant';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
-import { ICategoryRequest, ICategoryRequestUpdate } from '../../models/place/place.model';
+import { ICategoryRequest, ICategoryRequestUpdate, IPlaceRequest, IPlaceRequestUpdate } from '../../models/place/place.model';
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class PlaceService {
+  updatePlace = async (
+    params: IPlaceRequestUpdate,
+    url: string,
+    setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
+  ): Promise<AxiosResponseStatus<any>> => {
+    var url = `/places/${url}`;
+    return putAsync(url, params, 'Update place successfully', false, true, true, undefined, setSubmitting);
+  };
+
+  createPlace = async (
+    params: IPlaceRequest,
+    setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
+  ): Promise<AxiosResponseStatus<any>> => {
+    var url = `/places/`;
+    return postAsync(url, params, 'Create place successfully', false, true, true, undefined, setSubmitting);
+  };
+
   updateCategory = async (
     params: ICategoryRequestUpdate,
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
@@ -32,7 +49,7 @@ class PlaceService {
     params: IPaginationRequest | undefined,
     urlCountry: string,
     urlProvince: string,
-    type: string
+    type: string | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `places/countries/${urlCountry}/provinces/${urlProvince}/places`;
     var mainParams = { ...params, type: type };
