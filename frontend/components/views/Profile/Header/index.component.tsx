@@ -58,12 +58,24 @@ export default function Header(props: IHeaderProps & BoxProps) {
   const [textStatusCancel, setTextStatusCancel] = useState<string>('');
   const [textStatusAccept, setTextStatusAccept] = useState<string>('');
   const [alertConfirm, setAlertConfirm] = useState<boolean>(false);
+  const [friendNumber, setFriendNumber] = useState<number>(0);
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const { mutationUpdateStatusFriends } = useCUDFriends();
   const bgHeader = useColorModeValue('white', 'header.primary_darkMode');
   const cancelRef = useRef<any>(null);
   const queryClient = useQueryClient();
   const auth = useAppSelector((state) => state.auth.value);
+
+  useEffect(() => {
+    if (user) {
+      const fetchFriendNumber = async () => {
+        const response = await userService.getUserFriends(user.id, 'friend', undefined);
+        setFriendNumber(response.data.pageable.totalItems as number);
+      };
+
+      fetchFriendNumber();
+    }
+  }, [user]);
 
   useEffect(() => {
     console.log(statusFriend);
@@ -240,7 +252,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
             />
             <Box p={5} mt={10}>
               <Heading>{user && user.fullName ? user.fullName : `${user?.firstName} ${user?.lastName}`}</Heading>
-              <Text color={'grey'}>10 Friends</Text>
+              <Text color={'grey'}>{friendNumber} Friends</Text>
             </Box>
             <Spacer />
             {isLoggedIn && auth?.role !== RoleConstants.ADMIN && !isEditButton && (

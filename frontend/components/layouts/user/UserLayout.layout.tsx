@@ -1,7 +1,7 @@
 import { Box, Container, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { setUserNotAuth } from '../../../app/slices/userNotAuthSlice';
+import { clearUserNotAuth, setUserNotAuth } from '../../../app/slices/userNotAuthSlice';
 import { RoleConstants } from '../../../constants/roles.constant';
 import { useAppDispatch } from '../../../hooks/redux';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
@@ -85,7 +85,7 @@ export default function UserLayout(props: IUserLayoutProps) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, userIdState]);
+  }, [router.pathname, userIdState, router.query]);
 
   const renderContainerLayout = () => {
     if (isSettingRoute) {

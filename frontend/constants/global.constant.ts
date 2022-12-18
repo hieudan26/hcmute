@@ -1,5 +1,19 @@
 import { AxiosResponse } from 'axios';
 
+export const ALL_TYPE_SEARCH = [
+  { value: 'faq', label: 'faq' },
+  { value: 'experience', label: 'experience' },
+  { value: 'place', label: 'place' },
+  { value: 'user', label: 'user' },
+];
+
+export enum TYPE_SEARCH {
+  FAQ = 'faq',
+  EXPERIENCE = 'experience',
+  PLACE = 'place',
+  USER = 'user',
+}
+
 export const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },

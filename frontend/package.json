@@ -18,7 +18,9 @@
     "lint-fix": "eslint ./components/** ./pages/** -c .eslintrc.json --fix --ext js,jsx"
   },
   "dependencies": {
+    "@anubra266/stickyreact": "^1.0.1",
     "@aws-sdk/client-cognito-identity-provider": "^3.171.0",
+    "@chakra-ui/card": "^2.1.3",
     "@chakra-ui/icons": "^2.0.9",
     "@chakra-ui/react": "2.3.7",
     "@choc-ui/paginator": "^3.4.0",

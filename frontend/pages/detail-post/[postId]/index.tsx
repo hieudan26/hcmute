@@ -58,7 +58,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const auth = useAppSelector((state) => state.auth.value);
-  const postFetch = usePostsById(id ? id : '', undefined, id !== undefined);
+  const postFetch = usePostsById(id ? id : '1', undefined, id !== undefined);
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
   const { mutationCreateComment } = useCUDComment();
   const commentsPost = useCommentsPost(
@@ -67,10 +67,18 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
   );
 
   useEffect(() => {
+    const { postId } = router.query;
+    if (postId) {
+      setId(postId as string);
+      queryClient.removeQueries(['post_by_Id']);
+    }
+  }, [queryClient, router.query]);
+
+  useEffect(() => {
     if (postFetch.data) {
       setDataPost(postFetch.data.data as IPostResponseModel);
     }
-  }, [postFetch]);
+  }, [postFetch.data]);
 
   useEffect(() => {
     if (postFetch.data && postFetch.data.isSuccess === undefined) {
@@ -89,13 +97,6 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
       }
     }
   }, [auth]);
-
-  useEffect(() => {
-    const { postId } = router.query;
-    if (postId) {
-      setId(postId as string);
-    }
-  }, [router.query]);
 
   const copyLink = () => {
     var linkComment = 'http://localhost:3000';

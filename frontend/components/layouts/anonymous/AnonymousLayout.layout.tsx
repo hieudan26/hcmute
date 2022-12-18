@@ -60,7 +60,7 @@ export default function AnonymousLayout({ children }: any) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname, userIdState]);
+  }, [router.pathname, userIdState, router.query]);
 
   return (
     <>
