@@ -25,7 +25,7 @@ public class PlaceController {
     private final PlaceService placeService;
 
     @PreAuthorize("permitAll()")
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<BaseResponse> createPlace(@RequestBody CreatePlaceRequest request){
         return ResponseEntity.ok(placeService.createPlace(request));
     }

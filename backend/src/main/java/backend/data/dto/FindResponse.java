@@ -13,4 +13,5 @@ public class FindResponse {
     String type;
     String name;
     String content;
+    String id;
 }
