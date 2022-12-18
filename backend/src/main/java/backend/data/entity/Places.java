@@ -29,6 +29,7 @@ public class Places extends Auditable<String> implements Serializable {
     String url;
 
     String image;
+    @Lob
     String description;
 
     @Lob

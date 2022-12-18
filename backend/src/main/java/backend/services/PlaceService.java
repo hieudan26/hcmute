@@ -222,7 +222,26 @@ public class PlaceService {
         return places.get();
     }
 
+    public Places getPlaceByArea(Integer id, String type){
+        Optional<Places> places = placeRepository.findPlaceWithArea(id, type);
+        if(places.isEmpty())
+            throw new NoRecordFoundException(String.format("Can't find place with id %s", id.toString()));
+        return places.get();
+    }
+    public String buildUrl(Places places){
+        String url =places.getUrl();
 
+        if (places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
+            return url;
+        }
 
+        if (places.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())) {
+            return getPlaceByArea(places.getAreas().getParentId(), AreaConstant.COUNTRY.getTypeName()).getUrl()+ "/" + url;
+        }
 
+        return
+                getPlaceByArea(places.getAreas().getParentId(), AreaConstant.COUNTRY.getTypeName()).getUrl()+ "/"
+                + getPlaceByArea(places.getAreas().getId(), AreaConstant.PROVINCE.getTypeName()).getUrl()+ "/"
+                + url;
+    }
 }
