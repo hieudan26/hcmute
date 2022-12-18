@@ -79,7 +79,7 @@ public class FindService {
                             item -> FindResponse.builder()
                                     .name(item.getName())
                                     .type("place")
-                                    .id(String.valueOf(item.getUrl()))
+                                    .id(placeService.buildUrl(item))
                                     .content(item.getDescription())
                                     .build()
                     ).toList()

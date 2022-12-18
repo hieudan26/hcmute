@@ -29,6 +29,8 @@ public interface PlaceRepository extends PagingAndSortingRepository<Places,Integ
     @Query("select places from Places places where places.areas.parentId = :areaId and places.url = :url")
     Optional<Places> findProvinceByUrl(Integer areaId, String url);
     Optional<Places> findByUrl(String url);
+    @Query("select places from Places places where places.areas.id = :areaId and places.placeCategories.name = :type")
+    Optional<Places> findPlaceWithArea(Integer areaId, String type);
 
     Page<Places> findByNameIgnoreCaseContaining(Pageable pageable, String key);
 
