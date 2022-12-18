@@ -27,57 +27,62 @@ public class FindService {
 
     public BaseResponse findAll(PagingRequest pagingRequest, FindQueryParams params){
         if(params.getType().equals("faq")){
-            var result = postService.findPosts(pagingRequest,"faq",params.getKey());
-            result.setData(
+            BaseResponse result = postService.findPosts(pagingRequest,"faq",params.getKey());
+            ((PagingResponse)result.getData()).setContent(
                     ((List<Posts>)((PagingResponse)result.getData()).getContent()).stream().map(
-                            item -> FindResponse.builder()
+                            item ->
+                            FindResponse.builder()
                                     .name(item.getOwner().getFirstName()+item.getOwner().getLastName()+"'s faq")
                                     .type("faq")
+                                    .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
                                     .build()
-                    )
+                    ).toList()
             );
             return result;
         }
 
         if(params.getType().equals("experience")){
             var result = postService.findPosts(pagingRequest,"experience",params.getKey());
-            result.setData(
+            ((PagingResponse)result.getData()).setContent(
                     ((List<Posts>)((PagingResponse)result.getData()).getContent()).stream().map(
                             item -> FindResponse.builder()
                                     .name(item.getOwner().getFirstName()+item.getOwner().getLastName()+"'s experience")
                                     .type("experience")
+                                    .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
                                     .build()
-                    )
+                    ).toList()
             );
             return result;
         }
 
         if(params.getType().equals("user")){
             var result = userService.findUsers(pagingRequest,params.getKey());
-            result.setData(
+            ((PagingResponse)result.getData()).setContent(
                     ((List<Users>)((PagingResponse)result.getData()).getContent()).stream().map(
                             item -> FindResponse.builder()
                                     .name(item.getFirstName()+" "+item.getLastName())
                                     .type("user")
+                                    .id(String.valueOf(item.getId()))
                                     .content(item.getSummary())
                                     .build()
-                    )
+                    ).toList()
             );
             return result;
         }
 
         if(params.getType().equals("place")){
             var result = placeService.findPlaceWithKey(pagingRequest,params.getKey());
-            result.setData(
+            ((PagingResponse)result.getData()).setContent(
                     ((List<Places>)((PagingResponse)result.getData()).getContent()).stream().map(
                             item -> FindResponse.builder()
                                     .name(item.getName())
                                     .type("place")
+                                    .id(String.valueOf(item.getUrl()))
                                     .content(item.getDescription())
                                     .build()
-                    )
+                    ).toList()
             );
             return result;
         }
