@@ -1,5 +1,6 @@
 package backend.repositories.specification;
 
+import backend.common.Roles;
 import backend.data.entity.Users;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +18,10 @@ public class SearchSpecification {
         for (var att : attributes){
             builder.with(att, ":", text);
         }
-        return builder.buildOr();
+        var buildQuery = builder.buildOr();
+
+        SpecificationsBuilder builder2 = new SpecificationsBuilder();
+        builder2.with("role", ":", Roles.USER.getRoleName());
+        return org.springframework.data.jpa.domain.Specification.where(buildQuery).and(builder2.buildAnd());
     }
 }

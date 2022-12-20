@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,7 @@ public class FindService {
                                     .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
                                     .build()
-                    ).toList()
+                    ).sorted(Comparator.comparing(a->a.getName().length())).toList()
             );
             return result;
         }
@@ -52,7 +53,7 @@ public class FindService {
                                     .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
                                     .build()
-                    ).toList()
+                    ).sorted(Comparator.comparing(a->a.getName().length())).toList()
             );
             return result;
         }
@@ -67,7 +68,7 @@ public class FindService {
                                     .id(String.valueOf(item.getId()))
                                     .content(item.getSummary())
                                     .build()
-                    ).toList()
+                    ).sorted(Comparator.comparing(a->a.getName().length())).toList()
             );
             return result;
         }
@@ -82,7 +83,7 @@ public class FindService {
                                     .id(placeService.buildUrl(item))
                                     .content(item.getDescription())
                                     .build()
-                    ).toList()
+                    ).sorted(Comparator.comparing(a->a.getName().length())).toList()
             );
             return result;
         }
