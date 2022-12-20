@@ -70,7 +70,7 @@ public class UserService {
 
     public BaseResponse findAll(UserQueryParams query, PagingRequest pagingRequest){
         PagingResponse pagingResponse = new PagingResponse<Users>(
-                userRepository.findSearch(Roles.USER.getRoleName(), SearchSpecificationUtils.searchBuilder(query), PagingUtils.getPageable(pagingRequest)));
+                userRepository.findAll(SearchSpecificationUtils.searchBuilder(query), PagingUtils.getPageable(pagingRequest)));
 
         return BaseResponse.builder().message("Find users successful.")
                 .data(pagingResponse)
@@ -270,7 +270,7 @@ public class UserService {
 
     public BaseResponse findUsers(PagingRequest pagingRequest,String key){
         PagingResponse pagingResponse = new PagingResponse<Users>(
-                userRepository.findSearch(Roles.USER.getRoleName(),SearchSpecification.containsTextInAttributes(key, List.of("firstName","lastName")), PagingUtils.getPageable(pagingRequest)));
+                userRepository.findAll(SearchSpecification.containsTextInAttributes(key, List.of("firstName","lastName")), PagingUtils.getPageable(pagingRequest)));
 
         return BaseResponse.builder().message("Find users successful.")
                 .data(pagingResponse)

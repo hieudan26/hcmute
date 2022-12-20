@@ -14,8 +14,7 @@ import java.util.Optional;
 
 public interface UserRepository extends PagingAndSortingRepository<Users, String>, JpaSpecificationExecutor<Users> {
     Optional<Users> findById(String userId);
-    @Query("select users from Users users where users.role = ?1 ")
-    Page<Users> findSearch(String role, Specification specification,  Pageable pageable);
+
     @Query("select images from Posts post inner join PostImages images on post = images.post where post.owner.id = :userId and post.isDeleted = false order by images.creationDate desc ")
     Page<PostImages> getUserImages(String userId, Pageable pageable);
 
