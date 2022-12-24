@@ -35,6 +35,7 @@ public class Posts extends Auditable<String> implements Serializable {
     String type;
 
     @Column(nullable = false)
+    @Lob
     String content;
 
     Boolean isDeleted = false;

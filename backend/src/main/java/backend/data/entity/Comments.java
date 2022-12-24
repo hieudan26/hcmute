@@ -19,6 +19,7 @@ public class Comments extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
+    @Lob
     private String content;
 
     private LocalDateTime time = LocalDateTime.now();
