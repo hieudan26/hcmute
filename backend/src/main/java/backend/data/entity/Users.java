@@ -28,6 +28,7 @@ public class Users extends Auditable<String> implements Serializable {
     String phoneNumber;
     @NotEmpty
     String email;
+    @Lob
     String summary;
     String country;
     String city;

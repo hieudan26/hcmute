@@ -27,6 +27,7 @@ public class Messages extends Auditable<String> implements Serializable{
     private ChatRooms room;
 
     private LocalDateTime time;
+    @Lob
     private String content;
 
 }
