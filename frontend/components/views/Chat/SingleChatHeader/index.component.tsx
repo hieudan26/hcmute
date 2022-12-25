@@ -44,7 +44,16 @@ export default function SingleChatHeader(props: ISingleChatHeaderProps) {
         isRound
       />
       {friend ? (
-        <Avatar mr={4} src={friend.avatar} bg={colorMode === 'light' ? 'teal.600' : 'teal.500'} />
+        <Avatar
+          onClick={() => {
+            router.push(`/profile/${friend.userId}/about`);
+          }}
+          title='Go to profile'
+          cursor='pointer'
+          mr={4}
+          src={friend.avatar}
+          bg={colorMode === 'light' ? 'teal.600' : 'teal.500'}
+        />
       ) : (
         <Avatar mr={4} name={friend ? friend.fullName : 'Loading'} bg={colorMode === 'light' ? 'teal.600' : 'teal.500'} />
       )}
