@@ -2,6 +2,7 @@ import { Box, Button, Flex, Image, Text, useColorModeValue } from '@chakra-ui/re
 import { FriendStatus } from '../../../../../constants/global.constant';
 import { IFriendResponse } from '../../../../../models/user/user.model';
 import { formatTimePost, timeSincePost } from '../../../../../utils';
+import { useRouter } from 'next/router';
 
 export interface IFriendCardProps {
   data: IFriendResponse;
@@ -12,6 +13,7 @@ export interface IFriendCardProps {
 }
 
 export default function FriendCard(props: IFriendCardProps) {
+  const router = useRouter();
   const { data, isCurrentUser, friendStatus, actionCancel, actionAccept } = props;
   const boxBg = useColorModeValue('#FEFBF6', '#111c44 !important');
   const mainText = useColorModeValue('gray.600', 'white');
@@ -19,6 +21,7 @@ export default function FriendCard(props: IFriendCardProps) {
 
   return (
     <Flex
+      title={data.fullName}
       borderRadius='20px'
       bg={boxBg}
       p='3'
@@ -27,9 +30,19 @@ export default function FriendCard(props: IFriendCardProps) {
       direction='column'
       boxShadow='2xl'
     >
-      <Image src='https://i.ibb.co/xmP2pS6/Profile.png' maxW='100%' borderRadius='20px' alt='temp' />
+      <Image
+        src='https://i.ibb.co/xmP2pS6/Profile.png'
+        fallbackSrc='https://via.placeholder.com/310x116'
+        maxW='100%'
+        borderRadius='20px'
+        alt='temp'
+      />
       <Flex flexDirection='column' mb='4'>
         <Image
+          onClick={() => {
+            router.push(`/profile/${data.userId}/about`);
+          }}
+          cursor='pointer'
           src={data.avatar}
           border='5px solid red'
           mx='auto'

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { CookieConstants } from './constants/store.constant';
-import { authRouteContain, privateRouteContain, publicRouteContain } from './utils';
+import { adminRouteContain, authRouteContain, privateRouteContain, publicRouteContain } from './utils';
 import { RoleConstants } from './constants/roles.constant';
 // import jsonwebtoken from 'jsonwebtoken';
 // import jwkToPem from 'jwk-to-pem';
@@ -74,6 +74,17 @@ function verifyJsonWebTokenSignature(token: string, jsonWebKey: any, clbk: any) 
 }
 */
 
+const checkAdminRoute = (pathname: string) => {
+  var isExisted = false;
+  adminRouteContain.forEach((item) => {
+    if (pathname.includes(item)) {
+      isExisted = true;
+      return isExisted;
+    }
+  });
+  return isExisted;
+};
+
 const checkPublicRoute = (pathname: string) => {
   var isExisted = false;
   publicRouteContain.forEach((item) => {
@@ -124,16 +135,26 @@ export function middleware(request: NextRequest) {
   if (token) {
     // Hiện tại trong nextjs không thể decoded jwt cognito vì một vài lí do nên chỉ demo sẽ có token
     // không thể handle trường hợp user sửa token trong console
-    if (checkAuthRoute(url.pathname)) {
+    if (!role) {
       return NextResponse.redirect(new URL('/experiences', request.url));
+    } else if (role === RoleConstants.USER) {
+      if (checkAuthRoute(url.pathname) || checkAdminRoute(url.pathname)) {
+        return NextResponse.redirect(new URL('/experiences', request.url));
+      } else {
+        return NextResponse.next();
+      }
     } else {
-      return NextResponse.next();
+      if (checkAuthRoute(url.pathname) || checkPrivateRoute(url.pathname)) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      } else {
+        return NextResponse.next();
+      }
     }
   } else {
     if (checkPublicRoute(url.pathname)) {
       return NextResponse.next();
     } else {
-      if (checkPrivateRoute(url.pathname)) {
+      if (checkPrivateRoute(url.pathname) || checkAdminRoute(url.pathname)) {
         return NextResponse.redirect(new URL('/login', request.url));
       } else {
         return NextResponse.next();

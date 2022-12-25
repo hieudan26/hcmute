@@ -3,6 +3,7 @@ import { IconType } from 'react-icons';
 import { FiSettings } from 'react-icons/fi';
 import { IoLanguage } from 'react-icons/io5';
 
+export const adminRouteContain = ['/admin'];
 export const publicRouteContain = [
   '/profile',
   '/experiences',
