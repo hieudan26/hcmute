@@ -1,4 +1,17 @@
-import { Box, Button, Divider, Flex, IconButton, Image, Input, ModalBody, ModalCloseButton, ModalHeader } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  IconButton,
+  Image,
+  Input,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  useColorModeValue,
+  useColorMode,
+} from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiFillTags } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
@@ -30,6 +43,8 @@ export interface ICreateNewPostProps {
 export default function CreateNewPost(props: ICreateNewPostProps) {
   const { type, isOpen, onClose, onSubmit, currentUserId, defaultValueTag } = props;
   const queryClient = useQueryClient();
+  const { colorMode } = useColorMode();
+  const bgAction = useColorModeValue('gray.200', 'gray.600');
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
@@ -231,6 +246,25 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
         {isOpenTags && (
           <Box mt='2'>
             <Select
+              styles={
+                colorMode === 'dark'
+                  ? {
+                      control: (styles) => ({ ...styles, backgroundColor: 'black' }),
+                      option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+                        ...styles,
+                        backgroundColor: isDisabled ? undefined : isSelected ? 'black' : isFocused ? 'black' : undefined,
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        background: '#2f3542',
+                      }),
+                      multiValueLabel: (styles, { data }) => ({
+                        ...styles,
+                        background: '#dfe4ea',
+                      }),
+                    }
+                  : undefined
+              }
               defaultValue={defaultValueTag}
               onInputChange={searchHashTag}
               id='selectWarna'
@@ -253,7 +287,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           <IconButton
             onClick={handleClick}
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'
@@ -262,7 +296,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           />
           <IconButton
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'
@@ -274,7 +308,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           />
           <IconButton
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'

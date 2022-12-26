@@ -172,6 +172,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
               />
               <Input
                 bg={bgInput}
+                color={colorTxt}
                 type='search'
                 placeholder='Find by first name or last name'
                 border='1px'
@@ -188,7 +189,9 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
               <Spinner />
             </Flex>
           ) : data.length === 0 ? (
-            <Flex justify='center'>Không có user nào trong hệ thống</Flex>
+            <Flex justify='center' color={colorTxt}>
+              Không có user nào trong hệ thống
+            </Flex>
           ) : (
             <>
               <Table color={colorTxt}>

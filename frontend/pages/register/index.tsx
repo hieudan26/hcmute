@@ -62,6 +62,9 @@ const Register: NextPage = (props: IRegisterProps) => {
         login={login}
         isOpen={isOpenConfirmModal}
         userData={userData}
+        close={() => {
+          setIsOpenConfirmModal(false);
+        }}
       />
       {/* <button onClick={() => AuthService.loginWithGoogle()}>Open Google</button> */}
     </>
@@ -70,11 +73,11 @@ const Register: NextPage = (props: IRegisterProps) => {
 
 export default Register;
 
-export const getStaticProps: GetStaticProps = async ({ locale }: any) =>{
+export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'register', 'confirm_modal'])),
       // Will be passed to the page component as props
     },
   };
-}
+};

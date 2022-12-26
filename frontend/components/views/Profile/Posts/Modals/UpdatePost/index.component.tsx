@@ -10,6 +10,8 @@ import {
   Image,
   Center,
   Box,
+  useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
@@ -37,6 +39,8 @@ export interface IUpdatePostProps {
 
 export default function UpdatePost(props: IUpdatePostProps) {
   const { type, isOpen, onClose, onSubmit, post, currentUserId } = props;
+  const { colorMode } = useColorMode();
+  const bgAction = useColorModeValue('gray.200', 'gray.600');
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
@@ -230,6 +234,25 @@ export default function UpdatePost(props: IUpdatePostProps) {
           <Flex my='2' gap='4'>
             <Box w='full'>
               <Select
+                styles={
+                  colorMode === 'dark'
+                    ? {
+                        control: (styles) => ({ ...styles, backgroundColor: 'black' }),
+                        option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+                          ...styles,
+                          backgroundColor: isDisabled ? undefined : isSelected ? 'black' : isFocused ? 'black' : undefined,
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          background: '#2f3542',
+                        }),
+                        multiValueLabel: (styles, { data }) => ({
+                          ...styles,
+                          background: '#dfe4ea',
+                        }),
+                      }
+                    : undefined
+                }
                 ref={testRef}
                 defaultValue={defaultValueTag}
                 onInputChange={searchHashTag}
@@ -279,7 +302,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
           <IconButton
             onClick={handleClick}
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'
@@ -288,7 +311,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
           />
           <IconButton
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'
@@ -297,7 +320,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
           />
           <IconButton
             w='full'
-            bg='gray.200'
+            bg={bgAction}
             _hover={{ bg: 'gray.500' }}
             color='gray.400'
             fontSize='xl'

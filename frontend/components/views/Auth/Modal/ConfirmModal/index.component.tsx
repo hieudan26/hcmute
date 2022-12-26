@@ -1,4 +1,4 @@
-import { Button, Flex, ModalBody, ModalHeader, Text } from '@chakra-ui/react';
+import { Button, Flex, ModalBody, ModalCloseButton, ModalHeader, Text } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { useState } from 'react';
 import { ILoginRequest } from '../../../../../models/auth/login.model';
@@ -11,10 +11,11 @@ export interface IConfirmModalProps {
   login: (data: ILoginRequest) => {};
   checkConfirm: boolean;
   resendConfirmEmail: (email: string) => {};
+  close: () => void;
 }
 
 export default function ConfirmModal(props: IConfirmModalProps) {
-  const { isOpen, login, userData, checkConfirm, resendConfirmEmail } = props;
+  const { isOpen, login, userData, checkConfirm, resendConfirmEmail, close } = props;
   const [disabled, setDisabled] = useState<boolean>(false);
   const { t } = useTranslation<'confirm_modal', undefined>('confirm_modal');
   const emailAfterHandle = hidePartOfEmail(userData.email);
@@ -36,6 +37,7 @@ export default function ConfirmModal(props: IConfirmModalProps) {
       <ModalHeader display='flex' flexDirection='column' alignItems='center'>
         {t('title')}
       </ModalHeader>
+      <ModalCloseButton onClick={close} />
       <ModalBody display='flex' flexDirection='column' alignItems='center' justifyContent='center' pb={6}>
         <Text mb='4'>
           {t('send_email')} {emailAfterHandle}. {t('check_email')}

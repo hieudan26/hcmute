@@ -14,6 +14,7 @@ import {
   Skeleton,
   Spinner,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -30,6 +31,7 @@ import { ArrayTenTemp } from '../../../../../experiences';
 export interface IPlaceImagesProps {}
 
 const PlaceImages: NextPage = (props: IPlaceImagesProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
@@ -122,7 +124,7 @@ const PlaceImages: NextPage = (props: IPlaceImagesProps) => {
 
             <BreadcrumbItem isCurrentPage>
               <Link href={`/discovery/${country}/${province}/${place}/experiences`}>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Kinh nghiệm</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Hình ảnh</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -132,7 +134,7 @@ const PlaceImages: NextPage = (props: IPlaceImagesProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${province}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>Thông tin chung</Text>
@@ -152,7 +154,15 @@ const PlaceImages: NextPage = (props: IPlaceImagesProps) => {
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/images`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Hình ảnh</Text>
               <ChevronRightIcon />
             </Flex>
@@ -168,7 +178,7 @@ const PlaceImages: NextPage = (props: IPlaceImagesProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           {dataImagesQuery.data?.pages[0].data.content.length === 0 ? (
             <Center py='2'>
               <Text>Không có hình ảnh nào.</Text>

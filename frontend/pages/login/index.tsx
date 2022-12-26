@@ -101,6 +101,9 @@ const Login: NextPage = (props: ILoginProps) => {
         login={relogin}
         isOpen={isOpenConfirmModal}
         userData={userData}
+        close={() => {
+          setIsOpenConfirmModal(false);
+        }}
       />
     </>
   );

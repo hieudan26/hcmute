@@ -12,6 +12,7 @@ import {
   Skeleton,
   Spinner,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -27,6 +28,9 @@ import { ArrayTenTemp } from '../../../experiences';
 export interface ICountryProvincesProps {}
 
 const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
+  const bgCard = useColorModeValue('white', 'blackAlpha.800');
+  const colorCard = useColorModeValue('gray.800', 'white');
   const router = useRouter();
   const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
     pageNumber: 0,
@@ -84,7 +88,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>Thông tin chung</Text>
@@ -92,7 +96,15 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
             </Flex>
           </Link>
           <Link href={`/discovery/${data?.url}/provinces`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Tỉnh - Thành phố</Text>
               <ChevronRightIcon />
             </Flex>
@@ -120,7 +132,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           {!dataProvince.isFetching &&
             (!dataProvince.data ||
               (dataProvince.data.pages.length === 1 && dataProvince.data.pages[0].data.content.length === 0)) && (
@@ -141,7 +153,16 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
               {dataProvince.data &&
                 dataProvince.data.pages.map((page) =>
                   page.data.content.map((item: IPlaceCountryResponse, index: number) => (
-                    <Flex key={item.id} direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
+                    <Flex
+                      title={item.name}
+                      key={item.id}
+                      direction='column'
+                      justifyContent='center'
+                      alignItems='center'
+                      w='3xs'
+                      mx='auto'
+                      my='4'
+                    >
                       <Box
                         bg='gray.300'
                         h={40}
@@ -155,17 +176,19 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
                         }}
                       />
 
-                      <Box w='90%' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                        <chakra.h3
-                          py={2}
+                      <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                        <Text
+                          noOfLines={1}
+                          px={2}
+                          my={2}
                           textAlign='center'
                           fontWeight='bold'
                           textTransform='capitalize'
-                          color='gray.800'
+                          color={colorCard}
                           letterSpacing={1}
                         >
                           {item.name}
-                        </chakra.h3>
+                        </Text>
                         <Flex
                           cursor='pointer'
                           fontSize='sm'
@@ -174,6 +197,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
                           py={2}
                           px={3}
                           bg='gray.200'
+                          color='blackAlpha.800'
                           onClick={() => {
                             router.push(`/discovery/${data?.url}/${item.url}`);
                           }}
