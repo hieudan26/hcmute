@@ -174,7 +174,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                 <Icon color={iconAccount} fontSize={'20px'} as={MdOutlineNotificationsActive} marginBottom='5px' />
               </MenuButton>
 
-              <MenuList>
+              <MenuList bg={bgMenu} color={colorMenu} zIndex={10000}>
                 <MenuItm fontFamily='titleFont' fontSize='14px'>
                   Nothing here
                 </MenuItm>

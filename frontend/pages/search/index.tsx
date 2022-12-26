@@ -49,6 +49,8 @@ const intialPagination: IPaginationRequest = {
 const Search: NextPage = (props: ISearchProps) => {
   const router = useRouter();
   const colorTxt = useColorModeValue('black', 'white');
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
+  const bgInput = useColorModeValue('white', '#4b4b4b');
   const [query, setQuery] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState<string>('');
   const [key, setKey] = useState<string>('');
@@ -181,7 +183,7 @@ const Search: NextPage = (props: ISearchProps) => {
   return (
     <Box mb='10' w='full' bg='transparent'>
       <Center mb='8'>
-        <InputGroup bg='white' w='60%' shadow='lg' rounded='md' size='lg'>
+        <InputGroup bg={bgInput} w='60%' shadow='lg' rounded='md' size='lg'>
           <InputLeftElement pointerEvents='none' children={<Search2Icon color='gray.300' />} />
           <Input
             type='search'
@@ -193,7 +195,7 @@ const Search: NextPage = (props: ISearchProps) => {
         </InputGroup>
       </Center>
       <Center>
-        <Tabs isFitted defaultIndex={1} bg='white' w='full' shadow='lg' rounded='md' px='8' py='6' colorScheme='pink'>
+        <Tabs isFitted defaultIndex={1} bg={bgBox} w='full' shadow='lg' rounded='md' px='8' py='6' colorScheme='pink'>
           <TabList>
             <Tab isDisabled>Tất cả</Tab>
             <Tab

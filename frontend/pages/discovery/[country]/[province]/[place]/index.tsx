@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Heading, Text } from '@chakra-ui/react';
+import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
 export interface IProvincePlaceProps {}
 
 const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
@@ -83,9 +84,17 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${province}/${data?.url}`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Thông tin chung</Text>
               <ChevronRightIcon />
             </Flex>
@@ -119,7 +128,7 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Introduce data={data} />
         </Box>
       </Flex>

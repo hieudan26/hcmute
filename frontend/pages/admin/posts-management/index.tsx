@@ -184,7 +184,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
           </Flex>
 
           <Flex justify='space-evenly' mb='4'>
-            <RadioGroup onChange={changeStatusPost} value={value} colorScheme='pink'>
+            <RadioGroup onChange={changeStatusPost} value={value} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
                 <Text>Type status posts: </Text>
                 <Radio value='true'>Valid</Radio>
@@ -192,7 +192,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
               </Stack>
             </RadioGroup>
 
-            <RadioGroup onChange={changeTypePost} value={valueType} colorScheme='pink'>
+            <RadioGroup onChange={changeTypePost} value={valueType} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
                 <Text>Get by type posts: </Text>
                 <Radio value='1'>All</Radio>

@@ -1,18 +1,29 @@
-import { Box, Flex, Icon, IconButton, Image, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import Link from 'next/link';
 import { useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { BiCommentDetail } from 'react-icons/bi';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
-import { defaultAvatar, timeSincePost } from '../../../../../utils';
-import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
-import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
 import { useCUDPost } from '../../../../../hooks/queries/posts';
+import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
+import { timeSincePost } from '../../../../../utils';
 import { toggleMessage } from '../../../Message/index.component';
-import UpdatePost from '../Modals/UpdatePost/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
-import Link from 'next/link';
-import { useColorModeValue } from '@chakra-ui/react';
+import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
+import UpdatePost from '../Modals/UpdatePost/index.component';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -150,7 +161,8 @@ export default function PostRender(props: IPostRenderProps) {
         <Flex direction='row' gap='2' px='4' mt='2'>
           {post.hashTags.map((item: string, index: number) => (
             <Text
-              color='pink.700'
+              fontWeight='semibold'
+              color='pink.600'
               as='i'
               key={`hst-${post.id}-${index}`}
               cursor='pointer'

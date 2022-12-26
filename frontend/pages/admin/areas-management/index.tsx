@@ -73,6 +73,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
   const [dataSelect, setDataSelect] = useState<ICountryResponse[]>([]);
   const [select, setSelect] = useState<string>('1');
   const colorTxt = useColorModeValue('black', 'white');
+  const tableBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
 
   const fetchDataCountries = useCallback(async () => {
     try {
@@ -216,7 +217,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
 
   return (
     <Box w='full'>
-      <Box w='full' bg='white' mb='4' rounded='md' px='4' py='6'>
+      <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
           Create new country
         </Heading>
@@ -237,7 +238,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
         </Center>
       </Box>
 
-      <Box w='full' bg='white' mb='4' rounded='md' px='4' py='6'>
+      <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
           Create new province
         </Heading>
@@ -287,7 +288,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
             md: 1,
           }}
           p='10'
-          bg='white'
+          bg={tableBg}
           rounded='lg'
           shadow='lg'
         >
@@ -384,7 +385,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
             md: 1,
           }}
           p='10'
-          bg='white'
+          bg={tableBg}
           rounded='lg'
           shadow='lg'
         >

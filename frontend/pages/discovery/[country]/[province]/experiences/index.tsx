@@ -14,6 +14,7 @@ import {
   SkeletonText,
   Spinner,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -37,6 +38,7 @@ import { ArrayTenTemp } from '../../../../experiences';
 export interface IProvinceExperiencesProps {}
 
 const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
@@ -149,7 +151,7 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>Thông tin chung</Text>
@@ -163,7 +165,15 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/experiences`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Kinh nghiệm</Text>
               <ChevronRightIcon />
             </Flex>
@@ -185,7 +195,7 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Flex justify='space-between' align='center' gap='6'>
             <Box>
               <Heading size='md' fontWeight='medium' mb='4'>

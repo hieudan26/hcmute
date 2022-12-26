@@ -14,6 +14,7 @@ import {
   Spacer,
   Spinner,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -39,6 +40,8 @@ import { ArrayTenTemp } from '../../../../experiences';
 export interface IProvinceFaqsProps {}
 
 const ProvinceFaqs: NextPage = (props: IProvinceFaqsProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
+  const bgHeading = useColorModeValue('gray.50', 'blackAlpha.400');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
@@ -157,7 +160,7 @@ const ProvinceFaqs: NextPage = (props: IProvinceFaqsProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>Thông tin chung</Text>
@@ -183,7 +186,15 @@ const ProvinceFaqs: NextPage = (props: IProvinceFaqsProps) => {
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/faqs`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Hỏi đáp</Text>
               <ChevronRightIcon />
             </Flex>
@@ -193,11 +204,11 @@ const ProvinceFaqs: NextPage = (props: IProvinceFaqsProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           {isLoggedIn && (
             <>
               <Box px='24'>
-                <Heading py='2' px='3' as='h5' size='sm' mb='2' bg='gray.50' fontWeight='medium'>
+                <Heading py='2' px='3' as='h5' size='sm' mb='2' bg={bgHeading} fontWeight='medium'>
                   Hỏi gì đáp nấy cùng cộng đồng Lumiere
                 </Heading>
                 <CreatePost

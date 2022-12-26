@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }: AppProps | any) {
             <ColorModeProvider>
               <CSSReset />
               <Head>
-                <title>Lumière</title>
+                <title>Lumière | Mạng xã hội du lịch</title>
               </Head>
               <QueryClientProvider client={queryClient} contextSharing={true}>
                 <Hydrate state={pageProps.dehydratedState}>

@@ -14,6 +14,7 @@ import {
   Text,
   Textarea,
   useColorModeValue,
+  useColorMode,
 } from '@chakra-ui/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { GetStaticProps, NextPage } from 'next';
@@ -55,9 +56,25 @@ export interface ISelectOption {
   label: string;
 }
 
+const styleSelect: any = {
+  control: (styles: any) => ({ ...styles, backgroundColor: '#dfe4ea' }),
+  option: (styles: any, { data, isDisabled, isFocused, isSelected }: any) => ({
+    ...styles,
+    backgroundColor: isDisabled ? undefined : isSelected ? 'black' : isFocused ? 'black' : undefined,
+  }),
+  menu: (base: any) => ({
+    ...base,
+    background: '#2f3542',
+  }),
+  multiValueLabel: (styles: any, { data }: any) => ({
+    ...styles,
+    background: '#dfe4ea',
+  }),
+};
+
 const AdminPlacesManagementCreatePage: NextPage = (props: IAdminPlacesManagementCreatePageProps) => {
+  const { colorMode } = useColorMode();
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
-  const colorTxt = useColorModeValue('black', 'white');
   const { upload, urlRef } = useUploadFile();
   const selectAreaRef = useRef<any>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -283,6 +300,7 @@ const AdminPlacesManagementCreatePage: NextPage = (props: IAdminPlacesManagement
           </Text>
           <Box w='full'>
             <Select
+              styles={colorMode === 'dark' ? styleSelect : undefined}
               onChange={handleSelectAreaChange}
               ref={selectAreaRef}
               id='selectArea'
@@ -301,6 +319,7 @@ const AdminPlacesManagementCreatePage: NextPage = (props: IAdminPlacesManagement
           </Text>
           <Box w='full'>
             <Select
+              styles={colorMode === 'dark' ? styleSelect : undefined}
               onChange={handleSelectCategoryChange}
               id='selectCategory'
               instanceId='selectCategory'

@@ -22,6 +22,7 @@ import {
   Spinner,
   SimpleGrid,
   Skeleton,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { GetServerSideProps, NextPage } from 'next';
@@ -42,6 +43,10 @@ import { ArrayTenTemp } from '../../../../experiences';
 export interface IProvincePlacesProps {}
 
 const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
+  const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
+  const bgCard = useColorModeValue('white', 'blackAlpha.800');
+  const colorCard = useColorModeValue('gray.800', 'white');
+  const bgNoResult = useColorModeValue('gray.200', 'blackAlpha.400');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
@@ -87,7 +92,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
         (dataPlacesQuery.data.pages.length === 1 && dataPlacesQuery.data.pages[0].data.content.length === 0))
     ) {
       return (
-        <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
+        <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg={bgNoResult}>
           <Text>Hiện không có dữ liệu</Text>
         </Flex>
       );
@@ -106,7 +111,16 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
             {dataPlacesQuery.data &&
               dataPlacesQuery.data.pages.map((page) =>
                 page.data.content.map((item: IPlaceCountryResponse, index: number) => (
-                  <Flex key={item.id} direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
+                  <Flex
+                    title={item.name}
+                    key={item.id}
+                    direction='column'
+                    justifyContent='center'
+                    alignItems='center'
+                    w='3xs'
+                    mx='auto'
+                    my='4'
+                  >
                     <Box
                       bg='gray.300'
                       h={40}
@@ -120,14 +134,16 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
                       }}
                     />
 
-                    <Box w='90%' bg='white' mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                    <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
                       <Text
+                        noOfLines={1}
                         fontSize='sm'
-                        p={2}
+                        px={2}
+                        my={2}
                         textAlign='center'
                         fontWeight='bold'
                         textTransform='capitalize'
-                        color='gray.800'
+                        color={colorCard}
                         letterSpacing={1}
                       >
                         {item.name}
@@ -140,6 +156,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
                         py={2}
                         px={3}
                         bg='gray.200'
+                        color='blackAlpha.800'
                         onClick={() => {
                           router.push(`/discovery/${country}/${province}/${item.url}`);
                         }}
@@ -214,7 +231,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
         </Heading>
       </Box>
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
-        <Box w='20%' bg='white' shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
+        <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>Thông tin chung</Text>
@@ -222,7 +239,15 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/places`}>
-            <Flex cursor='pointer' justify='space-between' align='center' mb='4' color='#D0637C'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              mb='4'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Địa điểm</Text>
               <ChevronRightIcon />
             </Flex>
@@ -250,7 +275,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
             <ChevronRightIcon />
           </Flex>
         </Box>
-        <Box w='80%' bg='white' p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
+        <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Tabs colorScheme='pink'>
             <TabList>
               {dataCategoriesQuery &&
