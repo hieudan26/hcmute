@@ -3,6 +3,7 @@ import { FormEvent, useEffect, useState } from 'react';
 import { IoNewspaper } from 'react-icons/io5';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 import GroupButtonControl from '../GroupButtonControl/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IDetailsTabProps {
   isCurrentUser: boolean;
@@ -13,6 +14,7 @@ export interface IDetailsTabProps {
 
 export default function DetailsTab(props: IDetailsTabProps) {
   const { isCurrentUser, user, saveChanges, isSubmitting } = props;
+  const { t } = useTranslation('profile');
   const [summary, setSummary] = useState<string | undefined>(user?.summary);
   const [editSummary, setEditSummary] = useState<boolean>(false);
 
@@ -75,9 +77,9 @@ export default function DetailsTab(props: IDetailsTabProps) {
         <Flex gap='3' align='center'>
           <Icon color='gray.400' fontSize='xl' as={IoNewspaper} />
           <Box>
-            <Text fontSize='md'>Tiểu sử, lý lịch</Text>
+            <Text fontSize='md'>{t('tababout.summary')}</Text>
             <Text fontSize='x-small' as='i'>
-              Summary, bio
+              {t('tababout.summary')}
             </Text>
           </Box>
         </Flex>

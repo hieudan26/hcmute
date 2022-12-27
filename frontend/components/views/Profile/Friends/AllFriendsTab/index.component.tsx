@@ -4,6 +4,7 @@ import { FriendStatus } from '../../../../../constants/global.constant';
 import { useCUDFriends, useFriends } from '../../../../../hooks/queries/friend';
 import { IFriendRequest, IFriendResponse, IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 import FriendCard from '../FriendCard/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IAllFriendsTabProps {
   user: IUserFirstLoginRequest | null;
@@ -13,6 +14,7 @@ export interface IAllFriendsTabProps {
 
 export default function AllFriendsTab(props: IAllFriendsTabProps) {
   const { user, isCurrentUser, friendStatus } = props;
+  const { t } = useTranslation('profile');
   const [noItemText, setNoItemText] = useState<string>('Không có bạn bè nào.');
   const friends = useFriends(
     {
@@ -39,12 +41,16 @@ export default function AllFriendsTab(props: IAllFriendsTabProps) {
 
   useEffect(() => {
     if (friendStatus === FriendStatus.FRIEND) {
-      setNoItemText('Không có bạn bè nào.');
+      // setNoItemText('Không có bạn bè nào.');
+      setNoItemText(t('nodata'));
     } else if (friendStatus === FriendStatus.PENDING) {
-      setNoItemText('Không có lời đề nghị kết bạn nào.');
+      // setNoItemText('Không có lời đề nghị kết bạn nào.');
+      setNoItemText(t('nodata'));
     } else if (friendStatus === FriendStatus.INVITED) {
-      setNoItemText('Bạn hiện đang không gửi lời mời kết bạn với ai.');
+      // setNoItemText('Bạn hiện đang không gửi lời mời kết bạn với ai.');
+      setNoItemText(t('nodata'));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friendStatus]);
 
   return (
@@ -75,7 +81,7 @@ export default function AllFriendsTab(props: IAllFriendsTabProps) {
             friends.fetchNextPage();
           }}
         >
-          Load more
+          {t('load_more')}
         </Button>
       </Center>
     </Box>

@@ -27,10 +27,12 @@ import { useImagesHashTag } from '../../../../../hooks/queries/hashtag';
 import { useFetchCountry, useFetchProvince } from '../../../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../../experiences';
+import { useTranslation } from 'next-i18next';
 
 export interface IProvinceImagesProps {}
 
 const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
+  const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
@@ -75,7 +77,7 @@ const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
       <ModalContainer isOpen={modal} size='xl'>
         <ModalHeader display='flex' flexDirection='column' alignItems='center'>
           {/* Detail image about {data?.name} */}
-          Chi tiết hình ảnh về {data?.name}
+          {t('detail_image')} {data?.name}
         </ModalHeader>
         <ModalCloseButton
           onClick={() => {
@@ -91,7 +93,7 @@ const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
           <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
             <BreadcrumbItem>
               <Link href='/discovery'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.discovery')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
@@ -109,7 +111,7 @@ const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
 
             <BreadcrumbItem isCurrentPage>
               <Link href={`/discovery/${country}/${province}/images`}>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Hình ảnh</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.images')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -122,19 +124,19 @@ const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
         <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Thông tin chung</Text>
+              <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/places`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Địa điểm</Text>
+              <Text>{t('breadcrumb.province')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/experiences`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Kinh nghiệm</Text>
+              <Text>{t('breadcrumb.experiences')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
@@ -148,25 +150,25 @@ const ProvinceImages: NextPage = (props: IProvinceImagesProps) => {
               fontStyle='italic'
               color='#D0637C'
             >
-              <Text>Hình ảnh</Text>
+              <Text>{t('breadcrumb.images')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/faqs`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hỏi đáp</Text>
+              <Text>{t('breadcrumb.faq')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
-            <Text>Hành trình</Text>
+            <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           {dataImagesQuery.data?.pages[0].data.content.length === 0 ? (
             <Center py='2'>
-              <Text>Không có hình ảnh nào.</Text>
+              <Text>{t('nodata')}</Text>
             </Center>
           ) : (
             <InfiniteScroll
@@ -246,7 +248,7 @@ export default ProvinceImages;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery_detail'])),
       // Will be passed to the page component as props
     },
   };

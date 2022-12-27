@@ -3,6 +3,7 @@ import { UseInfiniteQueryResult } from '@tanstack/react-query';
 import Link from 'next/link';
 import { AxiosResponseStatus } from '../../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { useTranslation } from 'next-i18next';
 
 export interface IProvincesListProps {
   place_provinces_vn: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
@@ -10,13 +11,13 @@ export interface IProvincesListProps {
 
 export default function ProvincesList(props: IProvincesListProps) {
   const { place_provinces_vn } = props;
+  const { t } = useTranslation('discovery');
 
   return (
     <Box>
       <Flex direction='column' justify='center' align='center' textAlign='center'>
         <Heading as='h3' size='lg' fontWeight='semibold'>
-          {/* List of countries in the world */}
-          Danh sách điểm đến tại Việt Nam
+          {t('provinces_vn')}
         </Heading>
         <Divider color='#D0637C' w='10%' my='10' borderY='2px' />
       </Flex>
@@ -34,11 +35,6 @@ export default function ProvincesList(props: IProvincesListProps) {
             )}
         </SimpleGrid>
       </Center>
-      {/* <Center mt='5'>
-        <Button fontStyle='italic' variant='ghost' fontWeight='medium'>
-          Xem thêm
-        </Button>
-      </Center> */}
     </Box>
   );
 }

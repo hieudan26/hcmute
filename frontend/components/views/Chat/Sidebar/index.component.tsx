@@ -25,6 +25,7 @@ import { useFriends } from '../../../../hooks/queries/friend';
 import { IFriendResponse, IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import SingleChat from '../SingleChat/index.component';
 import SingleFriend from '../SingleFriend/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface ISidebarProps {
   user: IUserFirstLoginRequest | null;
@@ -33,6 +34,7 @@ export interface ISidebarProps {
 
 export default function Sidebar(props: ISidebarProps) {
   const { fullWidth, user } = props;
+  const { t } = useTranslation('chat');
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
   const friends = useFriends(
@@ -88,11 +90,11 @@ export default function Sidebar(props: ISidebarProps) {
           </Stack>
         </Flex>
         <Stack direction='row' align='center' p='10px'>
-          <Button w='full'>Create Group Chat</Button>
+          <Button w='full'>{t('create_group')}</Button>
         </Stack>
         <Stack direction='row' align='center' p='10px'>
           <Flex w='full'>
-            <Input w='full' placeholder='Search chat name, group chat, etc.' />
+            <Input w='full' placeholder={t('input_search')} />
             <IconButton aria-label='search' icon={<Icon as={IoSearchSharp} />} />
           </Flex>
         </Stack>
@@ -100,10 +102,10 @@ export default function Sidebar(props: ISidebarProps) {
       <Stack w='full' p='10px' direction='column' overflow='scroll'>
         <Tabs isFitted colorScheme='pink' height='100vh'>
           <TabList>
-            <Tab fontSize='xs'>All Friends</Tab>
+            <Tab fontSize='xs'>{t('all_friends')}</Tab>
             <Tab fontSize='xs'>
               <Flex position='relative' align='center'>
-                <Text>Single Chats</Text>
+                <Text>{t('single_chats')}</Text>
                 <Circle position='absolute' top='-2.5' right='-4' bg='red' fontSize='2xs' size='4'>
                   <Text color='white' lineHeight='none'>
                     1
@@ -113,7 +115,7 @@ export default function Sidebar(props: ISidebarProps) {
             </Tab>
             <Tab fontSize='xs'>
               <Flex position='relative' align='center'>
-                <Text>Group Chats</Text>
+                <Text>{t('group_chats')}</Text>
                 <Circle position='absolute' top='-2.5' right='-4' bg='red' fontSize='2xs' size='4'>
                   <Text color='white' lineHeight='none'>
                     20
@@ -127,7 +129,7 @@ export default function Sidebar(props: ISidebarProps) {
             <TabPanel>
               <Box>
                 {friends.data?.pages[0].data.content.length === 0 ? (
-                  <Text py='2'>Không có bạn bè nào</Text>
+                  <Text py='2'>{t('nodata')}</Text>
                 ) : (
                   friends.data?.pages.map((page) =>
                     page.data.content.map((item: IFriendResponse, index: number) => (
@@ -144,14 +146,14 @@ export default function Sidebar(props: ISidebarProps) {
                     friends.fetchNextPage();
                   }}
                 >
-                  Load more
+                  {t('loadmore')}
                 </Button>
               </Center>
             </TabPanel>
             <TabPanel>
               <Box>
                 {singleChats.data?.pages[0].data.content.length === 0 ? (
-                  <Text py='2'>Không có cuộc hội thoại nào</Text>
+                  <Text py='2'>{t('nodata')}</Text>
                 ) : (
                   singleChats.data?.pages.map((page) =>
                     page.data.content.map((item: any, index: number) => <SingleChat curUser={user} data={item} key={index} />)
@@ -166,12 +168,12 @@ export default function Sidebar(props: ISidebarProps) {
                     singleChats.fetchNextPage();
                   }}
                 >
-                  Load more
+                  {t('loadmore')}
                 </Button>
               </Center>
             </TabPanel>
             <TabPanel>
-              <p>This functionality is not currently available</p>
+              <p>{t('function')}</p>
             </TabPanel>
           </TabPanels>
         </Tabs>

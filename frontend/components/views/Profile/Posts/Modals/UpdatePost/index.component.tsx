@@ -27,6 +27,7 @@ import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
 import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
 import useDebounce from '../../../../../../hooks/useDebounce';
 import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
+import { useTranslation } from 'next-i18next';
 
 export interface IUpdatePostProps {
   type: 'experience' | 'faq';
@@ -39,6 +40,7 @@ export interface IUpdatePostProps {
 
 export default function UpdatePost(props: IUpdatePostProps) {
   const { type, isOpen, onClose, onSubmit, post, currentUserId } = props;
+  const { t } = useTranslation('post');
   const { colorMode } = useColorMode();
   const bgAction = useColorModeValue('gray.200', 'gray.600');
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
@@ -211,7 +213,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        Update {post.fullName}&apos;s {type}
+        {t('update')} {post.fullName}&apos;s {type}
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -225,7 +227,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
           border='1px'
           _focus={{ outline: '1px' }}
           minH='20vh'
-          placeholder="what's on your mind ?"
+          placeholder={t('content')}
           value={valuePost}
           onChange={changeValueTextarea}
         />
@@ -275,7 +277,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
                 testRef.current.setValue(defaultValueTag);
               }}
             >
-              Reset
+              {t('reset')}
             </Button>
           </Flex>
         )}
@@ -338,10 +340,10 @@ export default function UpdatePost(props: IUpdatePostProps) {
               handleClose(true);
             }}
           >
-            Clear Images
+            {t('clear_images')}
           </Button>
           <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
-            Save changes
+            {t('update_save')}
           </Button>
         </Flex>
       </ModalBody>

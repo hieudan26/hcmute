@@ -1,5 +1,6 @@
 import { useColorModeValue } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 import NextLink from 'next/link';
 
 export interface ITopNavProps {
@@ -10,6 +11,7 @@ export interface ITopNavProps {
 
 export default function TopNav(props: ITopNavProps) {
   const { userId, mainCurrentRoute, pushRoute } = props;
+  const { t } = useTranslation('profile');
   const colorText = useColorModeValue('black', 'whtie');
 
   return (
@@ -23,7 +25,7 @@ export default function TopNav(props: ITopNavProps) {
           borderRadius='none'
           onClick={() => pushRoute('posts')}
         >
-          Posts
+          {t('navbar.posts')}
         </Button>
       </NextLink>
       <NextLink href={`../${userId}/about`} scroll={false}>
@@ -35,7 +37,7 @@ export default function TopNav(props: ITopNavProps) {
           borderRadius='none'
           onClick={() => pushRoute('about')}
         >
-          About
+          {t('navbar.about')}
         </Button>
       </NextLink>
       <NextLink href={`../${userId}/friends`} scroll={false}>
@@ -47,7 +49,7 @@ export default function TopNav(props: ITopNavProps) {
           borderRadius='none'
           onClick={() => pushRoute('friends')}
         >
-          Friends
+          {t('navbar.friends')}
         </Button>
       </NextLink>
       <NextLink href={`../${userId}/photos`} scroll={false}>
@@ -59,7 +61,7 @@ export default function TopNav(props: ITopNavProps) {
           borderRadius='none'
           onClick={() => pushRoute('photos')}
         >
-          Photos
+          {t('navbar.photos')}
         </Button>
       </NextLink>
     </>

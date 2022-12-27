@@ -9,6 +9,7 @@ import ContactInfoTab from './ContactInfoTab/index.component';
 import DetailsTab from './DetailsTab/index.component';
 import OverviewTab from './OverviewTab/index.component';
 import PlacesLivedTab from './PlacesLivedTab/index.components';
+import { useTranslation } from 'next-i18next';
 
 export interface IAboutProps {
   user: IUserFirstLoginRequest | null;
@@ -17,6 +18,7 @@ export interface IAboutProps {
 
 export default function About(props: IAboutProps) {
   const { user, isCurrentUser } = props;
+  const { t } = useTranslation('profile');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -32,16 +34,16 @@ export default function About(props: IAboutProps) {
       <Tabs zIndex='auto' isManual colorScheme='pink' variant='unstyled'>
         <TabList>
           <Tab _hover={{ bg: '#F8B5C1', color: '#0000008a' }} _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}>
-            Overview
+            {t('tababout.overview')}
           </Tab>
           <Tab _hover={{ bg: '#F8B5C1', color: '#0000008a' }} _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}>
-            Places lived
+            {t('tababout.places')}
           </Tab>
           <Tab _hover={{ bg: '#F8B5C1', color: '#0000008a' }} _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}>
-            Contact and basic info
+            {t('tababout.contact')}
           </Tab>
           <Tab _hover={{ bg: '#F8B5C1', color: '#0000008a' }} _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}>
-            Details about you
+            {t('tababout.detail')}
           </Tab>
         </TabList>
         <TabPanels>

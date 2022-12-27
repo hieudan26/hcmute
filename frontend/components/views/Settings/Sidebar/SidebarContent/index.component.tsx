@@ -1,6 +1,7 @@
 import { Box, BoxProps, Flex, useColorModeValue, Text, CloseButton, Spacer } from '@chakra-ui/react';
 import { LinkItems } from '../../../../../utils';
 import NavItem from '../NavItem/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface ISidebarContentProps extends BoxProps {
   onClose: () => void;
@@ -8,6 +9,7 @@ export interface ISidebarContentProps extends BoxProps {
 
 export default function SidebarContent(props: ISidebarContentProps) {
   const { onClose, ...rest } = props;
+  const { t } = useTranslation('settings');
 
   return (
     <Box
@@ -21,7 +23,7 @@ export default function SidebarContent(props: ISidebarContentProps) {
     >
       <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
         <Text fontSize='2xl' fontWeight='bold'>
-          Settings
+          {t('title_page')}
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
@@ -29,7 +31,7 @@ export default function SidebarContent(props: ISidebarContentProps) {
         return (
           <Box key={link.name} mb='2'>
             <NavItem query={link.query} key={link.name} icon={link.icon}>
-              {link.name}
+              {link.name === 'Account' ? t('title_sidebar01') : t('title_sidebar02')}
             </NavItem>
           </Box>
         );

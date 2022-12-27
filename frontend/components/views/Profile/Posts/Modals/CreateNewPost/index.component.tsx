@@ -30,6 +30,7 @@ import { IPaginationRequest } from '../../../../../../models/common/ResponseMess
 import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
 import useDebounce from '../../../../../../hooks/useDebounce';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -42,6 +43,7 @@ export interface ICreateNewPostProps {
 
 export default function CreateNewPost(props: ICreateNewPostProps) {
   const { type, isOpen, onClose, onSubmit, currentUserId, defaultValueTag } = props;
+  const { t } = useTranslation('modal_create_post');
   const queryClient = useQueryClient();
   const { colorMode } = useColorMode();
   const bgAction = useColorModeValue('gray.200', 'gray.600');
@@ -215,7 +217,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        Create new {type}
+        {type === 'experience' ? t('title_modal_experience') : t('title_modal_faq')}
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -229,7 +231,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           border='1px'
           _focus={{ outline: '1px' }}
           minH='20vh'
-          placeholder="what's on your mind ?"
+          placeholder={t('content')}
           mb='2'
           value={valuePost}
           onChange={changeValueTextarea}
@@ -326,10 +328,10 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
               handleClose(true);
             }}
           >
-            Clear Images
+            {t('clear_images')}
           </Button>
           <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
-            Post
+            {t('post')}
           </Button>
         </Flex>
       </ModalBody>

@@ -3,6 +3,7 @@ import { FriendStatus } from '../../../../../constants/global.constant';
 import { IFriendResponse } from '../../../../../models/user/user.model';
 import { formatTimePost, timeSincePost } from '../../../../../utils';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 
 export interface IFriendCardProps {
   data: IFriendResponse;
@@ -14,6 +15,7 @@ export interface IFriendCardProps {
 
 export default function FriendCard(props: IFriendCardProps) {
   const router = useRouter();
+  const { t } = useTranslation('profile');
   const { data, isCurrentUser, friendStatus, actionCancel, actionAccept } = props;
   const boxBg = useColorModeValue('#FEFBF6', '#111c44 !important');
   const mainText = useColorModeValue('gray.600', 'white');
@@ -70,7 +72,7 @@ export default function FriendCard(props: IFriendCardProps) {
             _hover={{ bg: 'black' }}
             w='full'
           >
-            {friendStatus === FriendStatus.FRIEND ? 'Unfriend' : 'Cancel'}
+            {friendStatus === FriendStatus.FRIEND ? t('navbar.friendstatus.unfriend') : t('navbar.roomchat.footer_cancel')}
           </Button>
           {friendStatus === FriendStatus.PENDING && (
             <Button
@@ -79,7 +81,7 @@ export default function FriendCard(props: IFriendCardProps) {
               }}
               w='full'
             >
-              Accept
+              {t('accept')}
             </Button>
           )}
         </Flex>

@@ -29,6 +29,7 @@ import searchService from '../../services/search/search.service';
 import Result from '../../components/views/Navbar/Search/Result/index.component';
 import { v4 as uuidv4 } from 'uuid';
 import Pagination from '@choc-ui/paginator';
+import { useTranslation } from 'next-i18next';
 
 export interface ISearchProps {}
 
@@ -47,6 +48,7 @@ const intialPagination: IPaginationRequest = {
 };
 
 const Search: NextPage = (props: ISearchProps) => {
+  const { t } = useTranslation('search');
   const router = useRouter();
   const colorTxt = useColorModeValue('black', 'white');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
@@ -187,7 +189,7 @@ const Search: NextPage = (props: ISearchProps) => {
           <InputLeftElement pointerEvents='none' children={<Search2Icon color='gray.300' />} />
           <Input
             type='search'
-            placeholder='Tìm kiếm bài đăng, địa điểm, thành viên, ...'
+            placeholder={t('input')}
             onKeyDown={onKeyDown}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -197,34 +199,34 @@ const Search: NextPage = (props: ISearchProps) => {
       <Center>
         <Tabs isFitted defaultIndex={1} bg={bgBox} w='full' shadow='lg' rounded='md' px='8' py='6' colorScheme='pink'>
           <TabList>
-            <Tab isDisabled>Tất cả</Tab>
+            <Tab isDisabled>{t('tab_all')}</Tab>
             <Tab
               onClick={() => {
                 setIndexTab(1);
               }}
             >
-              Kinh nghiệm
+              {t('tab_experience')}
             </Tab>
             <Tab
               onClick={() => {
                 setIndexTab(2);
               }}
             >
-              Hỏi đáp
+              {t('tab_faq')}
             </Tab>
             <Tab
               onClick={() => {
                 setIndexTab(3);
               }}
             >
-              Địa điểm
+              {t('tab_place')}
             </Tab>
             <Tab
               onClick={() => {
                 setIndexTab(4);
               }}
             >
-              Mọi người
+              {t('tab_people')}
             </Tab>
           </TabList>
 
@@ -370,9 +372,6 @@ const Search: NextPage = (props: ISearchProps) => {
             </TabPanel>
           </TabPanels>
         </Tabs>
-        {/* <Box h='100vh' bg='white' w='full' shadow='md' rounded='md' px='8' py='6'>
-          abc
-        </Box> */}
       </Center>
     </Box>
   );
@@ -383,7 +382,7 @@ export default Search;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'search'])),
       // Will be passed to the page component as props
     },
   };

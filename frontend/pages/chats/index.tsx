@@ -1,11 +1,14 @@
 import { Box, Button, Flex, Heading, Image, Stack, Text } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 
 export interface IChatsIndexProps {}
 
 const ChatsIndex: NextPage = (props: IChatsIndexProps) => {
+  const { t } = useTranslation('chat');
+
   return (
     <Flex
       display={{ base: 'none', md: 'flex' }}
@@ -19,7 +22,7 @@ const ChatsIndex: NextPage = (props: IChatsIndexProps) => {
     >
       <Stack spacing={4} w={{ base: '80%', md: '40%' }} align={['center', 'center', 'flex-start', 'flex-start']}>
         <Heading as='h1' size='xl' fontWeight='bold' color='primary.800' textAlign={['center', 'center', 'left', 'left']}>
-          Welcome to the Lumiere texting world.
+          {t('chat.heading')}
         </Heading>
         <Heading
           as='h2'
@@ -30,15 +33,15 @@ const ChatsIndex: NextPage = (props: IChatsIndexProps) => {
           lineHeight={1.5}
           textAlign={['center', 'center', 'left', 'left']}
         >
-          We will help you connect with all of your pals here. You may communicate in real time or through your group chat.
+          {t('chat.description')}
         </Heading>
         <Link href='/chats'>
           <Button colorScheme='primary' borderRadius='8px' py='4' px='4' lineHeight='1' size='md'>
-            Let&apos;s get started now
+            {t('chat.button')}
           </Button>
         </Link>
         <Text fontSize='xs' mt={2} textAlign='center' color='primary.800' opacity='0.6'>
-          No credit card required.
+          {t('chat.helpmessage')}
         </Text>
       </Stack>
       <Box w={{ base: '80%', sm: '40%', md: '50%' }} mb={{ base: 12, md: 0 }}>
@@ -58,7 +61,7 @@ export default ChatsIndex;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'chat'])),
       // Will be passed to the page component as props
     },
   };

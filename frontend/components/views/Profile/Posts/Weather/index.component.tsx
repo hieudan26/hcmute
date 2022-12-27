@@ -1,6 +1,7 @@
 import { StarIcon } from '@chakra-ui/icons';
 import { useColorModeValue } from '@chakra-ui/react';
 import { Badge, Box, Flex, Image, Skeleton, Text } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 import { useEffect, useState } from 'react';
 
 export interface IWeatherProps {}
@@ -15,6 +16,7 @@ export default function Weather(props: IWeatherProps) {
   const [curDate, setCurDate] = useState<Date>(new Date());
   const [weather, setWeather] = useState<any>(undefined);
   const [isError, setIsError] = useState<boolean>(false);
+  const { t } = useTranslation<'weather', undefined>('weather');
   const bgBox = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
@@ -48,9 +50,9 @@ export default function Weather(props: IWeatherProps) {
       <Box height='fit-content' width='30%' bg={bgBox} px='4' rounded='lg' shadow='md' py='6'>
         <Flex px='4' align='center'>
           <Badge py='1' borderRadius='md' colorScheme='pink'>
-            Thành phố Hồ Chí Minh
+            {t('city')}
           </Badge>
-          <Text>, Việt Nam</Text>
+          <Text>, {t('country')}</Text>
         </Flex>
 
         <Box p='4'>
@@ -59,37 +61,37 @@ export default function Weather(props: IWeatherProps) {
 
         <Flex fontSize='15px' px='4' direction='column'>
           <Flex justify='space-between'>
-            <Text>Temperature range:</Text>&nbsp;
+            <Text>{t('temperature')}</Text>&nbsp;
             <Text>
               {weather && `${weather.main.temp_min}`}&ordm;C - {`${weather.main.temp_max}`}&ordm;C
             </Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Humidity:</Text>&nbsp;
+            <Text>{t('humidity')}</Text>&nbsp;
             <Text>{weather && weather.main.humidity}%</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Pressure:</Text>&nbsp;
+            <Text>{t('pressure')}</Text>&nbsp;
             <Text>{weather && weather.main.pressure}hPa</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Wind speed:</Text>&nbsp;
+            <Text>{t('wind_speed')}</Text>&nbsp;
             <Text>{weather && weather.wind.speed}m/s</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Chance of rain:</Text>&nbsp;
+            <Text>{t('chance_of_rain')}</Text>&nbsp;
             <Text>{weather && weather.clouds.all}%</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Visibility:</Text>&nbsp;
+            <Text>{t('visibility')}</Text>&nbsp;
             <Text>{weather && Number(weather.visibility) / 1000}Km</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Sunrise:</Text>&nbsp;
+            <Text>{t('sunrise')}</Text>&nbsp;
             <Text>{weather && new Date(weather.sys.sunrise).toTimeString()}</Text>
           </Flex>
           <Flex pt='2.5' justify='space-between'>
-            <Text>Sunset:</Text>&nbsp;
+            <Text>{t('sunset')}</Text>&nbsp;
             <Text>{weather && new Date(weather.sys.sunset).toTimeString()}</Text>
           </Flex>
         </Flex>

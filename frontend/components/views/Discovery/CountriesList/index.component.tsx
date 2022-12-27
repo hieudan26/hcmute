@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { AxiosResponseStatus } from '../../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../../pages/experiences';
+import { useTranslation } from 'next-i18next';
 
 export interface ICountriesListProps {
   places_countries: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
@@ -12,6 +13,7 @@ export interface ICountriesListProps {
 
 export default function CountriesList(props: ICountriesListProps) {
   const { places_countries } = props;
+  const { t } = useTranslation('discovery');
   const router = useRouter();
 
   const redirectToCountry = (urlName: string) => {
@@ -22,13 +24,9 @@ export default function CountriesList(props: ICountriesListProps) {
     <Box>
       <Flex direction='column' justify='center' align='center' textAlign='center'>
         <Heading as='h3' size='lg' fontWeight='semibold' mb='5'>
-          {/* List of countries in the world */}
-          Danh sách các quốc gia trên thế giới
+          {t('countries_world')}
         </Heading>
-        <Text>
-          {/* Discover the next destination for your amazing journey */}
-          Khám phá điểm đến tiếp theo cho hành trình tuyệt vời của bạn
-        </Text>
+        <Text>{t('discover_destination')}</Text>
         <Divider color='#D0637C' w='10%' my='10' borderY='2px' />
       </Flex>
       <Grid templateColumns='repeat(5, 1fr)' gap={6} mb='5'>
@@ -69,7 +67,7 @@ export default function CountriesList(props: ICountriesListProps) {
               places_countries.fetchNextPage();
             }}
           >
-            Xem thêm
+            {t('load_more')}
           </Button>
         </Center>
       )}

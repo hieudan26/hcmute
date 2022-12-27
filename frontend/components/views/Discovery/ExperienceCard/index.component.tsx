@@ -1,4 +1,4 @@
-import { Box, Flex, Image, chakra, Icon } from '@chakra-ui/react';
+import { Box, Flex, Image, chakra, Icon, useColorModeValue } from '@chakra-ui/react';
 import { IPostResponseModel } from '../../../../models/post/post.model';
 import { AiFillHeart } from 'react-icons/ai';
 import { BiCommentDetail } from 'react-icons/bi';
@@ -10,6 +10,7 @@ export interface IExperienceCardProps {
 
 export default function ExperienceCard(props: IExperienceCardProps) {
   const { data } = props;
+  const footerbg = useColorModeValue('white', 'blackAlpha.600');
   const router = useRouter();
 
   const navigateDetail = () => {
@@ -36,7 +37,7 @@ export default function ExperienceCard(props: IExperienceCardProps) {
           </chakra.h1>
         </Flex>
       </Box>
-      <Flex py={4} px={6} alignItems='center' justify='space-around' color='gray.700'>
+      <Flex py={4} px={6} alignItems='center' justify='space-around' color='gray.700' bg={footerbg}>
         <Flex alignItems='center'>
           <Icon as={AiFillHeart} h={6} w={6} />
           <chakra.h1 px={2} fontSize='sm'>

@@ -32,6 +32,7 @@ import { ISearchResponse } from '../../../../models/search/search.model';
 import searchService from '../../../../services/search/search.service';
 import SearchResults from '../../Navbar/Search/Results/index.component';
 import Link from 'next/link';
+import { useTranslation } from 'next-i18next';
 
 export interface ISearchModalProps {
   isOpen: boolean;
@@ -45,6 +46,7 @@ const paginationLimit: IPaginationRequest = {
 
 export default function SearchModal(props: ISearchModalProps) {
   const { isOpen, onClose } = props;
+  const { t } = useTranslation('header');
   const bgSearchMore = useColorModeValue('gray.100', 'gray.800');
   const router = useRouter();
   const [search, setsearch] = useState<string>('');
@@ -142,7 +144,7 @@ export default function SearchModal(props: ISearchModalProps) {
             <Input
               variant='flushed'
               focusBorderColor='#D0637C'
-              placeholder='Tìm kiếm hành trình, trải nghiệm, ...'
+              placeholder={t('navbar.search')}
               size='lg'
               value={search}
               onChange={(e) => setsearch(e.target.value)}
@@ -215,7 +217,7 @@ export default function SearchModal(props: ISearchModalProps) {
               align='center'
               onClick={handleClose}
             >
-              <Text>Search more here</Text>
+              <Text>{t('modalSearch.searchMore')}</Text>
             </Flex>
           </Link>
         </ModalBody>
