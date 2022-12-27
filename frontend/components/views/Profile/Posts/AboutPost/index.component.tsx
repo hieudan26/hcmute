@@ -20,10 +20,12 @@ import { AiFillHome, AiFillFileText } from 'react-icons/ai';
 import { IoLocationSharp } from 'react-icons/io5';
 import Link from 'next/link';
 import { useColorModeValue } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 
 export interface IAboutPostProps {}
 
 export default function AboutPost(props: IAboutPostProps) {
+  const { t } = useTranslation('profile');
   const router = useRouter();
   const [user, setUser] = useState<IUserFirstLoginRequest | undefined>(undefined);
   const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
@@ -51,7 +53,7 @@ export default function AboutPost(props: IAboutPostProps) {
     <Box maxH='xl' rounded='lg' width='100%' bg={bgLayout} minH='xl' py='10' px='8' shadow='md'>
       <Flex gap='4' align='center' pb='4'>
         <Heading as='h4' size='md'>
-          About{' '}
+          {t('tabpost.about.heading')}{' '}
           <Text color='black' as='i' fontWeight='medium' px='2' py='1' rounded='lg' bg='red.100'>
             {user?.firstName + ' ' + user?.lastName}
           </Text>
@@ -65,13 +67,17 @@ export default function AboutPost(props: IAboutPostProps) {
           <Box h='40px'>
             <Flex align='center' gap='3'>
               <Icon fontSize='lg' as={AiFillHome} />
-              <Text fontSize='md'>Lives in {user?.country}</Text>
+              <Text fontSize='md'>
+                {t('tabpost.about.live')} {user?.country}
+              </Text>
             </Flex>
           </Box>
           <Box h='40px'>
             <Flex align='center' gap='3'>
               <Icon fontSize='lg' as={IoLocationSharp} />
-              <Text fontSize='md'>From {user?.city}</Text>
+              <Text fontSize='md'>
+                {t('tabpost.about.from')} {user?.city}
+              </Text>
             </Flex>
           </Box>
           <Box h='220px'>
@@ -88,7 +94,7 @@ export default function AboutPost(props: IAboutPostProps) {
                 router.push(`/profile/${user?.id}/about`, undefined, { scroll: false });
               }}
             >
-              Edit profile
+              {t('tabpost.about.editbtn')}
             </Button>
           </Box>
         </VStack>

@@ -35,10 +35,12 @@ import {
 } from '../../../../../../hooks/queries/place';
 import { ICategoryResponse, IPlaceCountryResponse } from '../../../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../../../experiences';
+import { useTranslation } from 'next-i18next';
 
 export interface IPlacePlacesProps {}
 
 const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
+  const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const bgCard = useColorModeValue('white', 'blackAlpha.800');
   const colorCard = useColorModeValue('gray.800', 'white');
@@ -99,7 +101,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
     ) {
       return (
         <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg={bgNoResult}>
-          <Text>Hiện không có dữ liệu</Text>
+          <Text>{t('nodata')}</Text>
         </Flex>
       );
     } else {
@@ -160,7 +162,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
                               router.push(`/discovery/${country}/${province}/${item.url}`);
                             }}
                           >
-                            <Text>Checkin now</Text>
+                            <Text>{t('checkin')}</Text>
                           </Flex>
                         </Box>
                       </Flex>
@@ -185,7 +187,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
                         letterSpacing={1}
                       ></chakra.h3>
                       <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                        <Text>Checkin now</Text>
+                        <Text>{t('checkin')}</Text>
                       </Flex>
                     </Box>
                   </Flex>
@@ -204,7 +206,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
           <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
             <BreadcrumbItem>
               <Link href='/discovery'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.discovery')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
@@ -228,7 +230,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
 
             <BreadcrumbItem isCurrentPage>
               <Link href={`/discovery/${country}/${province}/${place}/places`}>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Địa điểm khác</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.others_location')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -241,7 +243,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
         <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${province}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Thông tin chung</Text>
+              <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
@@ -255,30 +257,30 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
               fontStyle='italic'
               color='#D0637C'
             >
-              <Text>Địa điểm khác</Text>
+              <Text>{t('breadcrumb.others_location')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/experiences`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Kinh nghiệm</Text>
+              <Text>{t('breadcrumb.experiences')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/images`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hình ảnh</Text>
+              <Text>{t('breadcrumb.images')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/faqs`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hỏi đáp</Text>
+              <Text>{t('breadcrumb.faq')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
-            <Text>Hành trình</Text>
+            <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
@@ -322,7 +324,7 @@ export default PlacePlaces;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery_detail'])),
       // Will be passed to the page component as props
     },
   };

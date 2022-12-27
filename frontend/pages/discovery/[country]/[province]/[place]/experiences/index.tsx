@@ -34,10 +34,12 @@ import { IPlaceCountryResponse } from '../../../../../../models/place/place.mode
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../../../models/post/post.model';
 import { LocalUtils } from '../../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../../experiences';
+import { useTranslation } from 'next-i18next';
 
 export interface IPlaceExperiencesProps {}
 
 const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
+  const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
@@ -136,7 +138,7 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
           <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
             <BreadcrumbItem>
               <Link href='/discovery'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.discovery')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
@@ -160,7 +162,7 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
 
             <BreadcrumbItem isCurrentPage>
               <Link href={`/discovery/${country}/${province}/${place}/experiences`}>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Kinh nghiệm</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.experiences')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -173,13 +175,13 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
         <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${province}/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Thông tin chung</Text>
+              <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/places`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Địa điểm khác</Text>
+              <Text>{t('breadcrumb.province')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
@@ -193,24 +195,24 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
               fontStyle='italic'
               color='#D0637C'
             >
-              <Text>Kinh nghiệm</Text>
+              <Text>{t('breadcrumb.experiences')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/images`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hình ảnh</Text>
+              <Text>{t('breadcrumb.images')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${province}/${data?.url}/faqs`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hỏi đáp</Text>
+              <Text>{t('breadcrumb.faq')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
-            <Text>Hành trình</Text>
+            <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
@@ -218,16 +220,13 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
           <Flex justify='space-between' align='center' gap='6'>
             <Box>
               <Heading size='md' fontWeight='medium' mb='4'>
-                Bạn muốn bài viết của mình xuất hiện ở đây ?
+                {t('experience.heading')}
               </Heading>
-              <Text fontSize='sm'>
-                Chia sẻ trải nghiệm, review ... du lịch của bạn với cộng đồng LUMIERE để tích điểm và nhận nhiều phần quà hấp dẫn
-                đổi quà
-              </Text>
+              <Text fontSize='sm'>{t('experience.text')}</Text>
             </Box>
             <Box>
               <Button onClick={() => setIsCreatePost(true)} leftIcon={<SmallAddIcon />}>
-                CHIA SẺ TRẢI NGHIỆM
+                {t('experience.button')}
               </Button>
             </Box>
           </Flex>
@@ -281,7 +280,14 @@ export default PlaceExperiences;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, [
+        'header',
+        'footer',
+        'modal_is_first_login',
+        'modal_create_post',
+        'post',
+        'discovery_detail',
+      ])),
       // Will be passed to the page component as props
     },
   };

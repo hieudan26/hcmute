@@ -8,10 +8,12 @@ import { useEffect, useState } from 'react';
 import Introduce from '../../../../components/views/Discovery/Introduce/index.component';
 import { useFetchCountry, useFetchProvince } from '../../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { useTranslation } from 'next-i18next';
 
 export interface ICountryProvinceProps {}
 
 const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
+  const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const [country, setCountry] = useState<string | undefined>(undefined);
@@ -47,7 +49,7 @@ const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
           <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
             <BreadcrumbItem>
               <Link href='/discovery'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.discovery')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
@@ -80,36 +82,36 @@ const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
               fontStyle='italic'
               color='#D0637C'
             >
-              <Text>Thông tin chung</Text>
+              <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/places`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Địa điểm</Text>
+              <Text>{t('breadcrumb.location')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/experiences`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Kinh nghiệm</Text>
+              <Text>{t('breadcrumb.experiences')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/images`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hình ảnh</Text>
+              <Text>{t('breadcrumb.images')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${country}/${data?.url}/faqs`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hỏi đáp</Text>
+              <Text>{t('breadcrumb.faq')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
-            <Text>Hành trình</Text>
+            <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
@@ -126,7 +128,7 @@ export default CountryProvince;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery_detail'])),
       // Will be passed to the page component as props
     },
   };

@@ -24,10 +24,12 @@ import { useFetchCountry, usePlacesProvincesByCountry } from '../../../../hooks/
 import { IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../experiences';
+import { useTranslation } from 'next-i18next';
 
 export interface ICountryProvincesProps {}
 
 const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
+  const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const bgCard = useColorModeValue('white', 'blackAlpha.800');
   const colorCard = useColorModeValue('gray.800', 'white');
@@ -66,7 +68,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
           <Breadcrumb spacing='8px' separator={<ChevronRightIcon color='gray.500' />}>
             <BreadcrumbItem>
               <Link href='/discovery'>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Khám phá</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.discovery')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
 
@@ -78,7 +80,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
 
             <BreadcrumbItem isCurrentPage>
               <Link href={`/discovery/${data?.url}/provinces`}>
-                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Tỉnh - Thành phố</BreadcrumbLink>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{t('breadcrumb.province')}</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -91,7 +93,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
         <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${data?.url}`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Thông tin chung</Text>
+              <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
@@ -105,30 +107,30 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
               fontStyle='italic'
               color='#D0637C'
             >
-              <Text>Tỉnh - Thành phố</Text>
+              <Text>{t('breadcrumb.province')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${data?.url}/experiences`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Kinh nghiệm</Text>
+              <Text>{t('breadcrumb.experiences')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${data?.url}/images`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hình ảnh</Text>
+              <Text>{t('breadcrumb.images')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Link href={`/discovery/${data?.url}/faqs`}>
             <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-              <Text>Hỏi đáp</Text>
+              <Text>{t('breadcrumb.faq')}</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
           <Flex cursor='pointer' justify='space-between' align='center'>
-            <Text>Hành trình</Text>
+            <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
         </Box>
@@ -137,7 +139,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
             (!dataProvince.data ||
               (dataProvince.data.pages.length === 1 && dataProvince.data.pages[0].data.content.length === 0)) && (
               <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                <Text>Hiện không có dữ liệu</Text>
+                <Text>{t('nodata')}</Text>
               </Flex>
             )}
           <InfiniteScroll
@@ -202,7 +204,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
                             router.push(`/discovery/${data?.url}/${item.url}`);
                           }}
                         >
-                          <Text>Checkin now</Text>
+                          <Text>{t('checkin')}</Text>
                         </Flex>
                       </Box>
                     </Flex>
@@ -225,7 +227,7 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
                           letterSpacing={1}
                         ></chakra.h3>
                         <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg='gray.200'>
-                          <Text>Checkin now</Text>
+                          <Text>{t('checkin')}</Text>
                         </Flex>
                       </Box>
                     </Flex>
@@ -244,7 +246,7 @@ export default CountryProvinces;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery_detail'])),
       // Will be passed to the page component as props
     },
   };

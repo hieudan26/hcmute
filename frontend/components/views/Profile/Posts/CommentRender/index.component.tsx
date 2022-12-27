@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useCUDComment } from '../../../../../hooks/queries/comment';
 import Link from 'next/link';
 import { useColorModeValue } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 
 export interface ICommentRenderProps {
   comment: ICommentsPostResponse;
@@ -14,6 +15,7 @@ export interface ICommentRenderProps {
 
 export default function CommentRender(props: ICommentRenderProps) {
   const { comment, currentUserId } = props;
+  const { t } = useTranslation('post');
   const [isReply, setIsReply] = useState<boolean>(false);
   const [isDisable, setIsDisable] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -111,10 +113,10 @@ export default function CommentRender(props: ICommentRenderProps) {
                         setIsEdit(false);
                       }}
                     >
-                      Cancel
+                      {t('cancel')}
                     </Button>
                     <Button onClick={updateComment} disabled={isEditDisable}>
-                      Save
+                      {t('save')}
                     </Button>
                   </Flex>
                 </Flex>
@@ -123,7 +125,7 @@ export default function CommentRender(props: ICommentRenderProps) {
             <Flex p='2' fontSize='xs' color='gray.500' gap='4'>
               {currentUserId && (
                 <Text fontWeight='semibold' cursor='pointer' onClick={() => setIsReply(true)}>
-                  Reply
+                  {t('reply')}
                 </Text>
               )}
               <Text>{timeSincePost(comment.time)}</Text>
@@ -148,14 +150,14 @@ export default function CommentRender(props: ICommentRenderProps) {
                   mutationDeleteComment.mutate(comment.id);
                 }}
               >
-                Delete
+                {t('options.Delete')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
                   setIsEdit(true);
                 }}
               >
-                Edit
+                {t('options.Edit')}
               </MenuItem>
             </MenuList>
           </Menu>
@@ -163,12 +165,12 @@ export default function CommentRender(props: ICommentRenderProps) {
       </Flex>
       {isReply && (
         <Flex w='full' px='2' fontSize='xs' color='gray.500' gap='4'>
-          <Input value={value} onChange={onChangeReply} placeholder='Reply here ...' />
+          <Input value={value} onChange={onChangeReply} placeholder={t('reply_input')} />
           <Button disabled={isDisable} onClick={onReply}>
-            Reply
+            {t('reply')}
           </Button>
           <Button background='gray.600' _hover={{ bg: 'black' }} onClick={() => setIsReply(false)}>
-            Cancel
+            {t('cancel')}
           </Button>
         </Flex>
       )}

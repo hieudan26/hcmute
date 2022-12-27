@@ -4,6 +4,7 @@ import { LocalStorageConstants } from '../../../../../../../constants/store.cons
 import { defaultAvatar } from '../../../../../../../utils';
 import { LocalUtils } from '../../../../../../../utils/local.utils';
 import { toggleMessage } from '../../../../../Message/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface ICommentFormProps {
   _onSumbit: (value: string) => void;
@@ -13,6 +14,7 @@ export interface ICommentFormProps {
 
 export default function CommentForm(props: ICommentFormProps) {
   const { _onSumbit, _ref, isSubmitting } = props;
+  const { t } = useTranslation('post');
   const [value, setValue] = useState<string>('');
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
 
@@ -55,13 +57,13 @@ export default function CommentForm(props: ICommentFormProps) {
           rounded='full'
           px='3'
           type='text'
-          placeholder='Write a comment...'
+          placeholder={t('comment_input')}
           ref={_ref}
           onChange={changeComment}
           onKeyDown={handleKeyDown}
         />
         <Button isLoading={isSubmitting} mr='2' onClick={handleSubmit}>
-          Send
+          {t('send')}
         </Button>
       </Flex>
     </Box>

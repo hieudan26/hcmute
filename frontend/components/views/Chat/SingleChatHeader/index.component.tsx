@@ -3,6 +3,7 @@ import { Avatar, Box, Flex, Heading, IconButton, Text, useColorMode } from '@cha
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IMessagesResponse } from '../../../../models/chat/chat.model';
+import { useTranslation } from 'next-i18next';
 
 export interface ISingleChatHeaderProps {
   room: any;
@@ -10,6 +11,7 @@ export interface ISingleChatHeaderProps {
 }
 
 export default function SingleChatHeader(props: ISingleChatHeaderProps) {
+  const { t } = useTranslation('chat');
   const { room, userId } = props;
   const [friend, setFriend] = useState<any>(undefined);
   const { colorMode } = useColorMode();
@@ -61,7 +63,7 @@ export default function SingleChatHeader(props: ISingleChatHeaderProps) {
         <Heading size='md' noOfLines={1}>
           {friend && friend.fullName}
         </Heading>
-        <Text>Last Active: 2h</Text>
+        <Text>{t('singlechat.activeStatus')} 2h</Text>
       </Box>
     </Flex>
   );

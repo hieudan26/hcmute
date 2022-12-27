@@ -4,6 +4,7 @@ import { FriendStatus } from '../../../../constants/global.constant';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import LayoutTab from '../LayoutTab/index.component';
 import AllFriendsTab from './AllFriendsTab/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IFriendsProps {
   user: IUserFirstLoginRequest | null;
@@ -12,6 +13,7 @@ export interface IFriendsProps {
 
 export default function Friends(props: IFriendsProps) {
   const { user, isCurrentUser } = props;
+  const { t } = useTranslation('profile');
   const [friendStatus, setFriendStatus] = useState(FriendStatus.FRIEND);
 
   return (
@@ -25,7 +27,7 @@ export default function Friends(props: IFriendsProps) {
             _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
             _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
           >
-            All friends
+            {t('tabfriend.tab_all')}
           </Tab>
           <Tab
             onClick={() => {
@@ -35,7 +37,7 @@ export default function Friends(props: IFriendsProps) {
             _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
             _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
           >
-            Friend request to you
+            {t('tabfriend.tab_reqto')}
           </Tab>
           <Tab
             onClick={() => {
@@ -45,7 +47,7 @@ export default function Friends(props: IFriendsProps) {
             _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
             _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
           >
-            Your friend requests
+            {t('tabfriend.tab_yourreq')}
           </Tab>
         </TabList>
         <TabPanels>

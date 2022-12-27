@@ -8,6 +8,7 @@ import { AiFillEdit } from 'react-icons/ai';
 import { useState, useEffect } from 'react';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 import GroupButtonControl from '../GroupButtonControl/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IPlacesLivedTabProps {
   isCurrentUser: boolean;
@@ -18,6 +19,7 @@ export interface IPlacesLivedTabProps {
 
 export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
   const { isCurrentUser, user, isSubmitting, saveChanges } = props;
+  const { t } = useTranslation('profile');
   const [editCountry, setEditCountry] = useState<boolean>(false);
   const [editCity, setEditCity] = useState<boolean>(false);
   const [editDistrict, setEditDistrict] = useState<boolean>(false);
@@ -100,7 +102,7 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
       {editCountry ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>Country</FormLabel>
+            <FormLabel>{t('tababout.country')}</FormLabel>
             <InputGroup>
               <InputLeftElement pointerEvents='none' children={<Icon color='gray.400' fontSize='xl' as={FaCity} />} />
               <Input
@@ -125,9 +127,11 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={FaCity} />
             <Box>
-              <Text fontSize='md'>Quốc gia: {valueCountry}</Text>
+              <Text fontSize='md'>
+                {t('tababout.country')}: {valueCountry}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                Country
+                {t('tababout.country')}
               </Text>
             </Box>
           </Flex>
@@ -151,7 +155,7 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
       {editCity ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>City</FormLabel>
+            <FormLabel>{t('tababout.city')}</FormLabel>
             <InputGroup>
               <InputLeftElement pointerEvents='none' children={<Icon color='gray.400' fontSize='xl' as={BiCurrentLocation} />} />
               <Input
@@ -176,9 +180,11 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={BiCurrentLocation} />
             <Box>
-              <Text fontSize='md'>Thành phố: {valueCity}</Text>
+              <Text fontSize='md'>
+                {t('tababout.city')}: {valueCity}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                City
+                {t('tababout.city')}
               </Text>
             </Box>
           </Flex>
@@ -202,7 +208,7 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
       {editDistrict ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>District</FormLabel>
+            <FormLabel>{t('tababout.district')}</FormLabel>
             <InputGroup>
               <InputLeftElement pointerEvents='none' children={<Icon color='gray.400' fontSize='xl' as={RiPinDistanceLine} />} />
               <Input
@@ -227,9 +233,11 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={RiPinDistanceLine} />
             <Box>
-              <Text fontSize='md'>Quận: {valueDistrict ? valueDistrict : 'Không có'}</Text>
+              <Text fontSize='md'>
+                {t('tababout.district')}: {valueDistrict ? valueDistrict : 'Không có'}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                District
+                {t('tababout.district')}
               </Text>
             </Box>
           </Flex>
@@ -253,7 +261,7 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
       {editVillage ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>Village</FormLabel>
+            <FormLabel>{t('tababout.village')}</FormLabel>
             <InputGroup>
               <InputLeftElement pointerEvents='none' children={<Icon color='gray.400' fontSize='xl' as={TiLocationArrow} />} />
               <Input
@@ -278,9 +286,11 @@ export default function PlacesLivedTab(props: IPlacesLivedTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={TiLocationArrow} />
             <Box>
-              <Text fontSize='md'>Xã: {valueVillage ? valueVillage : 'Không có'}</Text>
+              <Text fontSize='md'>
+                {t('tababout.village')}: {valueVillage ? valueVillage : 'Không có'}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                Village
+                {t('tababout.village')}
               </Text>
             </Box>
           </Flex>

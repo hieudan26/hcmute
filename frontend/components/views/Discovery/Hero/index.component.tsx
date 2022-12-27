@@ -1,10 +1,12 @@
 import { SearchIcon } from '@chakra-ui/icons';
 import { Box, chakra, Flex, FormControl, Heading, IconButton, Input, Stack, useColorModeValue } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 import { useRef } from 'react';
 
 export interface IHeroProps {}
 
 export default function Hero(props: IHeroProps) {
+  const { t } = useTranslation('discovery');
   const refSection = useRef<HTMLElement | null>(null);
 
   const scorllToBottom = () => {
@@ -26,7 +28,7 @@ export default function Hero(props: IHeroProps) {
         <Flex align='center' pos='relative' justify='center' boxSize='full' bg='blackAlpha.700'>
           <Stack textAlign='center' alignItems='center' spacing={6} w='40%'>
             <Heading fontSize={['lg', '2xl']} fontWeight='semibold' color='white' textTransform='uppercase'>
-              Bạn muốn khám phá nơi đâu
+              {t('hero')}
             </Heading>
             <Flex align='center' justify='space-between' direction='row' w='full' onClick={scorllToBottom}>
               <FormControl>

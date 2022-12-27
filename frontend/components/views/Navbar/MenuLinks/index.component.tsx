@@ -211,7 +211,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         icon={<Icon fontSize='20px' as={MdAdminPanelSettings} />}
                         fontSize='14px'
                       >
-                        Admin dashboard
+                        {t('menuAdmin.dashboard')}
                       </MenuItm>
                     </Link>
                     <Link
@@ -236,7 +236,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         icon={<Icon fontSize='20px' as={BsChatLeftTextFill} />}
                         fontSize='14px'
                       >
-                        Go to chat
+                        {t('menuUser.chat')}
                       </MenuItm>
                     </Link>
                     <Link href='/settings?tab=account' replace>
@@ -246,7 +246,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         icon={<Icon fontSize='20px' as={RiSettings4Fill} />}
                         fontSize='14px'
                       >
-                        Privacy & Security settings
+                        {t('menuUser.setting')}
                       </MenuItm>
                     </Link>
                     <MenuItm
@@ -255,7 +255,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                       icon={<Icon paddingLeft='3px' fontSize='20px' as={GoSignOut} />}
                       fontSize='14px'
                     >
-                      Logout
+                      {t('menuUser.logout')}
                     </MenuItm>
                   </>
                 ) : (

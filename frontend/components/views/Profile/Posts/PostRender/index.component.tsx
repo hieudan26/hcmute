@@ -24,6 +24,7 @@ import { toggleMessage } from '../../../Message/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -32,6 +33,7 @@ export interface IPostRenderProps {
 
 export default function PostRender(props: IPostRenderProps) {
   const { post, currentUserId } = props;
+  const { t } = useTranslation('post');
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
@@ -98,8 +100,8 @@ export default function PostRender(props: IPostRenderProps) {
         onSubmit={_submitEditPost}
       />
       <ConfirmDeletePost
-        title='Confirm Delete Post'
-        content='Do you want to delete post'
+        title={t('title_delete')}
+        content={t('content_delete')}
         isOpen={isOpenDelete}
         onClose={() => {
           setIsOpenDelete(false);
@@ -137,7 +139,7 @@ export default function PostRender(props: IPostRenderProps) {
             />
             <MenuList minW='32'>
               <MenuItem onClick={() => setIsOpenEdit(true)} hidden={currentUserId !== post.userId}>
-                Edit
+                {t('options.Edit')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -145,9 +147,9 @@ export default function PostRender(props: IPostRenderProps) {
                 }}
                 hidden={currentUserId !== post.userId}
               >
-                Delete
+                {t('options.Delete')}
               </MenuItem>
-              <MenuItem onClick={copyLink}>Copy link</MenuItem>
+              <MenuItem onClick={copyLink}>{t('options.Link')}</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -193,7 +195,9 @@ export default function PostRender(props: IPostRenderProps) {
             <Icon color='#D0637C' fontSize='xl' as={AiFillHeart} />
           </Flex>
           <Box fontSize='xs' color='gray.500'>
-            <Text>{post.commentNumber} comments</Text>
+            <Text>
+              {post.commentNumber} {t('quality_comment')}
+            </Text>
           </Box>
         </Flex>
       </Box>
@@ -215,7 +219,7 @@ export default function PostRender(props: IPostRenderProps) {
             >
               <Icon as={AiFillHeart} />
               &nbsp;
-              <Text fontSize='md'>Love</Text>
+              <Text fontSize='md'>{t('love')}</Text>
             </Flex>
             <Flex
               w='100%'
@@ -233,7 +237,7 @@ export default function PostRender(props: IPostRenderProps) {
             >
               <Icon color='#D0637C' as={BiCommentDetail} />
               &nbsp;
-              <Text fontSize='md'>Comment</Text>
+              <Text fontSize='md'>{t('comment')}</Text>
             </Flex>
           </Flex>
         </Box>

@@ -18,7 +18,7 @@ export default Itinerary;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'soon'])),
       // Will be passed to the page component as props
     },
   };

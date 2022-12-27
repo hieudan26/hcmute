@@ -36,6 +36,7 @@ import chatService from '../../../../services/chat/chat.service';
 import { useQueryClient } from '@tanstack/react-query';
 import { RoleConstants } from '../../../../constants/roles.constant';
 import { useAppSelector } from '../../../../hooks/redux';
+import { useTranslation } from 'next-i18next';
 
 export interface IHeaderProps {
   user: IUserFirstLoginRequest | null;
@@ -43,6 +44,7 @@ export interface IHeaderProps {
 
 export default function Header(props: IHeaderProps & BoxProps) {
   const { user, ...rest } = props;
+  const { t } = useTranslation('profile');
   const router = useRouter();
   const currentRoute = router.pathname;
   const [mainCurrentRoute, setMainCurrentRoute] = useState<string>('');
@@ -78,19 +80,18 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, [user]);
 
   useEffect(() => {
-    console.log(statusFriend);
     if (statusFriend === FriendStatus.FRIEND) {
-      setTextStatusCancel('Hủy kết bạn');
+      setTextStatusCancel(t('navbar.friendstatus.unfriend'));
     } else if (statusFriend === FriendStatus.PENDING) {
-      setTextStatusCancel('Từ chối lời mời kết bạn');
+      setTextStatusCancel(t('navbar.friendstatus.declinefriendrequest'));
     } else if (statusFriend === FriendStatus.INVITED) {
-      setTextStatusCancel('Rút lại lời mời kết bạn');
+      setTextStatusCancel(t('navbar.friendstatus.retractfriendrequest'));
     }
 
     if (statusFriend === FriendStatus.NO_FRIEND) {
-      setTextStatusAccept('Kết bạn');
+      setTextStatusAccept(t('navbar.friendstatus.sendfriendrequest'));
     } else if (statusFriend === FriendStatus.PENDING) {
-      setTextStatusAccept('Chấp nhận lời mời kết bạn');
+      setTextStatusAccept(t('navbar.friendstatus.acceptfriendrequest'));
     }
   }, [statusFriend]);
 
@@ -252,13 +253,15 @@ export default function Header(props: IHeaderProps & BoxProps) {
             />
             <Box p={5} mt={10}>
               <Heading>{user && user.fullName ? user.fullName : `${user?.firstName} ${user?.lastName}`}</Heading>
-              <Text color={'grey'}>{friendNumber} Friends</Text>
+              <Text color={'grey'}>
+                {friendNumber} {t('navbar.friends')}
+              </Text>
             </Box>
             <Spacer />
             {isLoggedIn && auth?.role !== RoleConstants.ADMIN && !isEditButton && (
               <>
                 <Button onClick={goToChat} my={'80px'} mx='5'>
-                  Message now
+                  {t('navbar.message')}
                 </Button>
                 <AlertDialog
                   isCentered
@@ -269,19 +272,17 @@ export default function Header(props: IHeaderProps & BoxProps) {
                   <AlertDialogOverlay>
                     <AlertDialogContent>
                       <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                        Create new room chat
+                        {t('navbar.roomchat.header')}
                       </AlertDialogHeader>
 
-                      <AlertDialogBody>
-                        You have never texted with this person before, do you want to create a new chat room?
-                      </AlertDialogBody>
+                      <AlertDialogBody>{t('navbar.roomchat.body')}</AlertDialogBody>
 
                       <AlertDialogFooter>
                         <Button ref={cancelRef} onClick={() => setAlertConfirm(false)}>
-                          Cancel
+                          {t('navbar.roomchat.footer_cancel')}
                         </Button>
                         <Button colorScheme='red' onClick={createNewRoom} ml={3}>
-                          Start chat
+                          {t('navbar.roomchat.footer_start')}
                         </Button>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -299,7 +300,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
                     }}
                     m={'80px 50px'}
                   >
-                    Edit Picture
+                    {t('navbar.edit_picture')}
                   </Button>
                   <EditProfilePic
                     user={user}

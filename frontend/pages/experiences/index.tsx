@@ -136,7 +136,14 @@ export default Experiences;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, [
+        'header',
+        'footer',
+        'modal_is_first_login',
+        'weather',
+        'modal_create_post',
+        'post',
+      ])),
       // Will be passed to the page component as props
     },
   };

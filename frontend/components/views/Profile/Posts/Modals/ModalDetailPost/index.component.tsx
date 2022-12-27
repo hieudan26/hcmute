@@ -41,6 +41,7 @@ import { useCUDPost } from '../../../../../../hooks/queries/posts';
 import { toggleMessage } from '../../../../Message/index.component';
 import UpdatePost from '../UpdatePost/index.component';
 import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
@@ -52,6 +53,7 @@ export interface IModalDetailPostProps {
 
 export default function ModalDetailPost(props: IModalDetailPostProps) {
   const { isOpen, onClose, post, currentUserId, deletePostInDetail } = props;
+  const { t } = useTranslation('post');
   const commentsEndRef = useRef<null | HTMLDivElement>(null);
   const commentInputRef = useRef<null | HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -126,8 +128,8 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
   return (
     <>
       <ConfirmDeletePost
-        title='Confirm Delete Post'
-        content='Do you want to delete post'
+        title={t('title_delete')}
+        content={t('content_delete')}
         isOpen={isOpenDelete}
         onClose={() => {
           setIsOpenDelete(false);
@@ -189,7 +191,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                           setIsOpenEdit(true);
                         }}
                       >
-                        Edit
+                        {t('options.Edit')}
                       </MenuItem>
                       <MenuItem
                         hidden={currentUserId !== post.userId}
@@ -197,9 +199,9 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                           setIsOpenDelete(true);
                         }}
                       >
-                        Delete
+                        {t('options.Delete')}
                       </MenuItem>
-                      <MenuItem onClick={copyLink}>Copy link</MenuItem>
+                      <MenuItem onClick={copyLink}>{t('options.Link')}</MenuItem>
                     </MenuList>
                   </Menu>
                 </Flex>
@@ -244,7 +246,9 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                     <Icon color='#D0637C' fontSize='xl' as={AiFillHeart} />
                   </Flex>
                   <Box fontSize='xs' color='gray.500'>
-                    <Text>{post.commentNumber} comments</Text>
+                    <Text>
+                      {post.commentNumber} {t('quality_comment')}
+                    </Text>
                   </Box>
                 </Flex>
               </Box>
@@ -267,7 +271,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                     >
                       <Icon as={AiFillHeart} />
                       &nbsp;
-                      <Text fontSize='md'>Love</Text>
+                      <Text fontSize='md'>{t('love')}</Text>
                     </Flex>
                     <Flex
                       w='100%'
@@ -285,7 +289,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                     >
                       <Icon color='#D0637C' as={BiCommentDetail} />
                       &nbsp;
-                      <Text fontSize='md'>Comment</Text>
+                      <Text fontSize='md'>{t('comment')}</Text>
                     </Flex>
                   </Flex>
                 </Box>
@@ -294,7 +298,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
               <Box>
                 {commentsPost.data?.pages[0].data.content.length === 0 ? (
                   <Center py='2'>
-                    <Text>Không có bình luận nào</Text>
+                    <Text>{t('no_comment')}</Text>
                   </Center>
                 ) : (
                   commentsPost.data?.pages.map((page) =>
@@ -317,14 +321,14 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                       commentsPost.fetchNextPage();
                     }}
                   >
-                    Load more
+                    {t('load_more')}
                   </Button>
                 </Center>
               </Box>
             </Box>
             <ModalFooter bg={bgForm} rounded='md' justifyContent={currentUserId === '' ? 'center' : 'flex-start'}>
               {currentUserId === '' ? (
-                <Text>You must login to comment this post</Text>
+                <Text>{t('warn_auth')}</Text>
               ) : (
                 <CommentForm isSubmitting={isSubmitting} _onSumbit={onSubmitComment} _ref={commentInputRef} />
               )}

@@ -38,7 +38,7 @@ export default Discovery;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery'])),
       // Will be passed to the page component as props
     },
   };

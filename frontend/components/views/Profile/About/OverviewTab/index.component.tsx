@@ -11,6 +11,7 @@ import { formatDate, formatDateddMMYYYYtoDate, getMaxDate, uppercaseFirstLetter 
 
 import cookie from 'react-cookies';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
+import { useTranslation } from 'next-i18next';
 
 export interface IOverviewTabProps {
   isCurrentUser: boolean;
@@ -21,6 +22,7 @@ export interface IOverviewTabProps {
 
 export default function OverviewTab(props: IOverviewTabProps) {
   const { isCurrentUser, user, saveChanges, isSubmitting } = props;
+  const { t } = useTranslation('profile');
   const [statusEditGender, setStatusEditGender] = useState<boolean>(false);
   const [statusEditDob, setStatusEditDob] = useState<boolean>(false);
   const [valueGender, setValueGender] = useState<string | undefined>(user?.gender);
@@ -104,16 +106,16 @@ export default function OverviewTab(props: IOverviewTabProps) {
       <Flex gap='3' align='center' pb='10'>
         <Icon color='gray.400' fontSize='xl' as={FaGraduationCap} />
         <Box>
-          <Text fontSize='md'>Studies at Trường Đại Học Sư Phạm Kĩ Thuật Thành Phố HCM</Text>
+          <Text fontSize='md'>{t('tababout.studies')}</Text>
           <Text fontSize='x-small' as='i'>
-            Started in 2019
+            {t('tababout.studiesstart')}
           </Text>
         </Box>
       </Flex>
 
       <Flex gap='3' align='center' pb='10'>
         <Icon color='gray.400' fontSize='xl' as={AiFillHeart} />
-        <Text fontSize='md'>Single</Text>
+        <Text fontSize='md'>{t('tababout.single')}</Text>
       </Flex>
 
       {statusEditDob ? (
@@ -140,7 +142,7 @@ export default function OverviewTab(props: IOverviewTabProps) {
             <Box>
               <Text fontSize='md'>{date.toDateString()}</Text>
               <Text fontSize='x-small' as='i'>
-                Date of birth
+                {t('tababout.dob')}
               </Text>
             </Box>
           </Flex>
@@ -185,7 +187,7 @@ export default function OverviewTab(props: IOverviewTabProps) {
             <Box>
               <Text fontSize='md'>{uppercaseFirstLetter(user && user.gender ? user.gender : 'male')}</Text>
               <Text fontSize='x-small' as='i'>
-                Gender
+                {t('tababout.gender')}
               </Text>
             </Box>
           </Flex>

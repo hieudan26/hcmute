@@ -2,6 +2,7 @@ import { useColorModeValue, useMediaQuery } from '@chakra-ui/react';
 import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
 import { AiFillFileImage, AiFillSmile, AiFillYoutube } from 'react-icons/ai';
 import { ChakraNextImageGlobal } from '../../../ChakraNextImageGlobal/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface ICreatePostProps {
   avatar: string;
@@ -13,6 +14,7 @@ export interface ICreatePostProps {
 
 export default function CreatePost(props: ICreatePostProps) {
   const { onCreate, avatar, fullname, content, isDicovery } = props;
+  const { t } = useTranslation('modal_create_post');
   const bgInput = useColorModeValue('gray.100', 'blackAlpha.300');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
 
@@ -45,7 +47,7 @@ export default function CreatePost(props: ICreatePostProps) {
           flexDir='column'
           alignItems='flex-start'
         >
-          {fullname ? `What's on your mind, ${fullname}?` : content ? content : 'How are you today?'}
+          {fullname ? `${t('input_auth')} ${fullname}?` : content ? content : t('input_how')}
         </Button>
       </Flex>
       {!isDicovery && (

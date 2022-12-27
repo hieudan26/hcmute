@@ -31,6 +31,7 @@ import { useAppDispatch } from '../../../../../hooks/redux';
 import { update } from '../../../../../app/slices/authSlice';
 import BackgroundTab from './BackgroundTab/index.component';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 
 export interface IEditProfilePicProps {
   user: IUserFirstLoginRequest | null;
@@ -42,6 +43,7 @@ export interface IEditProfilePicProps {
 
 export default function EditProfilePic(props: IEditProfilePicProps) {
   const { user, isOpen, onClose } = props;
+  const { t } = useTranslation('profile');
   const { upload, urlRef } = useUploadFile();
   const dispatch = useAppDispatch();
   const [indexTab, setIndexTab] = useState<number>(0);
@@ -131,7 +133,7 @@ export default function EditProfilePic(props: IEditProfilePicProps) {
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        Edit Profile
+        {t('modal_edit_avatar.header')}
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -142,8 +144,8 @@ export default function EditProfilePic(props: IEditProfilePicProps) {
       <ModalBody>
         <Tabs colorScheme='pink' isFitted onChange={changeTabs}>
           <TabList>
-            <Tab>Edit Avatar</Tab>
-            <Tab>Edit Cover Background</Tab>
+            <Tab>{t('modal_edit_avatar.tabAvatar')}</Tab>
+            <Tab>{t('modal_edit_avatar.tabCover')}</Tab>
           </TabList>
 
           <TabPanels>
@@ -168,10 +170,10 @@ export default function EditProfilePic(props: IEditProfilePicProps) {
       </ModalBody>
       <ModalFooter>
         <Button background='gray.600' _hover={{ bg: 'black' }} mr={3} onClick={reset} isDisabled={statusBtnSave()}>
-          Cancel
+          {t('navbar.roomchat.footer_cancel')}
         </Button>
         <Button colorScheme='pink' onClick={save} isLoading={isSubmitting} isDisabled={statusBtnSave()}>
-          Save
+          {t('navbar.btn_save')}
         </Button>
       </ModalFooter>
     </ModalContainer>

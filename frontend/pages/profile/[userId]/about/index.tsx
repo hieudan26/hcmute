@@ -50,7 +50,7 @@ export default ProfileAbouts;
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login', 'profile'])),
       // Will be passed to the page component as props
     },
   };

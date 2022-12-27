@@ -35,10 +35,12 @@ import AboutPost from './AboutPost/index.component';
 import CreatePost from './CreatePost/index.component';
 import CreateNewPost from './Modals/CreateNewPost/index.component';
 import PostRender from './PostRender/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IPostsProps {}
 
 export default function Posts(props: IPostsProps) {
+  const { t } = useTranslation('profile');
   const [typePost, setTypePost] = useState<'experience' | 'faq'>('experience');
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -133,7 +135,7 @@ export default function Posts(props: IPostsProps) {
                     _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
                     _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
                   >
-                    Experiences
+                    {t('tabpost.create.tabExperience')}
                   </Tab>
                   <Tab
                     zIndex='5'
@@ -143,7 +145,7 @@ export default function Posts(props: IPostsProps) {
                     _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
                     _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
                   >
-                    FAQs
+                    {t('tabpost.create.tabFaqs')}
                   </Tab>
                 </TabList>
                 <TabPanels>

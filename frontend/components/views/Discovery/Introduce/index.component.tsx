@@ -15,20 +15,21 @@ import {
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
 import { useEffect } from 'react';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
+import { useTranslation } from 'next-i18next';
 
 export interface IIntroduceProps {
   data: IPlaceCountryResponse | undefined;
 }
 
 export default function Introduce(props: IIntroduceProps) {
+  const { t } = useTranslation('discovery_detail');
   const { data } = props;
-  const a = 'hochiminh';
 
   return (
     <>
       <Box border='1px' borderColor='gray.300' mb='4' p='6'>
         <Text borderLeft='1px' borderColor='gray.500' px='2'>
-          Chào mừng bạn đến với{' '}
+          {t('introduce.welcome')}{' '}
           {data && (
             <Highlight query={data.name} styles={{ px: '1', py: '1', bg: 'red.100', rounded: 'lg' }}>
               {data.name}

@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 import GroupButtonControl from '../GroupButtonControl/index.component';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 
 export interface IContactInfoTabProps {
   isCurrentUser: boolean;
@@ -17,6 +18,7 @@ export interface IContactInfoTabProps {
 
 export default function ContactInfoTab(props: IContactInfoTabProps) {
   const { isCurrentUser, user, saveChanges, isSubmitting } = props;
+  const { t } = useTranslation('profile');
   const [editFirstname, setEditFirstname] = useState<boolean>(false);
   const [editLastname, setEditLastname] = useState<boolean>(false);
   const [editPhone, setEditPhone] = useState<boolean>(false);
@@ -92,9 +94,11 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
         <Flex gap='3' align='center'>
           <Icon color='gray.400' fontSize='xl' as={AiTwotoneMail} />
           <Box>
-            <Text fontSize='md'>Địa chỉ mail: {user?.email}</Text>
+            <Text fontSize='md'>
+              {t('tababout.email')}: {user?.email}
+            </Text>
             <Text fontSize='x-small' as='i'>
-              Email
+              {t('tababout.email')}
             </Text>
           </Box>
         </Flex>
@@ -103,7 +107,7 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
       {editFirstname ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>First name</FormLabel>
+            <FormLabel>{t('tababout.fn')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents='none'
@@ -131,9 +135,11 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={BsFillInfoCircleFill} />
             <Box>
-              <Text fontSize='md'>Tên: {valueFirstname}</Text>
+              <Text fontSize='md'>
+                {t('tababout.fn')}: {valueFirstname}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                First name
+                {t('tababout.fn')}
               </Text>
             </Box>
           </Flex>
@@ -157,7 +163,7 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
       {editLastname ? (
         <Box w='90%' pb='10'>
           <FormControl>
-            <FormLabel>Last name</FormLabel>
+            <FormLabel>{t('tababout.ls')}</FormLabel>
             <InputGroup>
               <InputLeftElement
                 pointerEvents='none'
@@ -185,9 +191,11 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={BsFillInfoCircleFill} />
             <Box>
-              <Text fontSize='md'>Họ và tên đệm: {valueLastname}</Text>
+              <Text fontSize='md'>
+                {t('tababout.ls')}: {valueLastname}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                Last name
+                {t('tababout.ls')}
               </Text>
             </Box>
           </Flex>
@@ -211,7 +219,7 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
       {editPhone ? (
         <Box w='90%'>
           <FormControl>
-            <FormLabel>Phone number</FormLabel>
+            <FormLabel>{t('tababout.phone')}</FormLabel>
             <InputGroup>
               <InputLeftElement pointerEvents='none' children={<Icon color='gray.400' fontSize='xl' as={MdPermPhoneMsg} />} />
               <Input
@@ -236,9 +244,11 @@ export default function ContactInfoTab(props: IContactInfoTabProps) {
           <Flex gap='3' align='center'>
             <Icon color='gray.400' fontSize='xl' as={MdPermPhoneMsg} />
             <Box>
-              <Text fontSize='md'>Số điện thoại: {valuePhone ? valuePhone : 'Không có'}</Text>
+              <Text fontSize='md'>
+                {t('tababout.phone')}: {valuePhone ? valuePhone : 'Không có'}
+              </Text>
               <Text fontSize='x-small' as='i'>
-                Phone number
+                {t('tababout.phone')}
               </Text>
             </Box>
           </Flex>
