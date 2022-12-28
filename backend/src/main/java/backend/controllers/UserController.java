@@ -106,4 +106,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getFriendStatus(userId, friendId));
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @GetMapping("/friends")
+    public ResponseEntity<BaseResponse> getAdviceFriends(PagingRequest pagingRequest
+    ){
+        return ResponseEntity.ok(userService.getAdviceFriends(pagingRequest));
+    }
+
 }

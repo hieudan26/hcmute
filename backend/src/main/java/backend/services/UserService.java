@@ -289,4 +289,28 @@ public class UserService {
                 .build();
     }
 
+    public BaseResponse getAdviceFriends(PagingRequest pagingRequest){
+        String userId = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Users users= getUser(userId);
+
+        PagingResponse pagingResponse = new PagingResponse(
+                userRepository.getAdviceFriends(userId, users.getVillage(),users.getDistrict(),users.getCity(),users.getCountry(),PagingUtils.getPageable(pagingRequest))
+                        .map(this::mamAdviceFriend));
+
+        return BaseResponse.builder().message("get advice friends")
+                .data(pagingResponse)
+                .build();
+    }
+
+    public AdviceFriendResponse mamAdviceFriend(Users friend){
+        return AdviceFriendResponse.builder()
+                .avatar(friend.getAvatar())
+                .fullName(friend.getLastName() + " "+ friend.getFirstName())
+                .country(friend.getCountry())
+                .province(friend.getCity())
+                .friendStatus(getFriendStatusResult(friend.getId()))
+                .id(friend.getId())
+                .build();
+    }
+
 }
