@@ -1,5 +1,14 @@
 import { IPaginationRequest } from '../common/ResponseMessage.model';
 
+export interface IAdvanceFriend {
+  id: string;
+  avatar: string;
+  fullName: string;
+  province: string;
+  country: string;
+  friendStatus: string;
+}
+
 export interface IUserUpdateInformation {
   avatar: string;
   city: string;
