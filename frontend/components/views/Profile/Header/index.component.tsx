@@ -117,7 +117,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
         test();
       }
     }
-  }, [user]);
+  }, [user, router.query]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
