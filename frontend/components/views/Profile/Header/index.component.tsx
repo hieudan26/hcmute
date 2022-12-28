@@ -96,9 +96,25 @@ export default function Header(props: IHeaderProps & BoxProps) {
   }, [statusFriend]);
 
   useEffect(() => {
+    if (statusFriend === FriendStatus.FRIEND || statusFriend === FriendStatus.INVITED) {
+      setIsHiddenAccept(true);
+      setIsHiddenCancel(false);
+    }
+
+    if (statusFriend === FriendStatus.PENDING) {
+      setIsHiddenAccept(false);
+      setIsHiddenCancel(false);
+    }
+
+    if (statusFriend === FriendStatus.NO_FRIEND) {
+      setIsHiddenCancel(true);
+      setIsHiddenAccept(false);
+    }
+  }, [statusFriend]);
+
+  useEffect(() => {
     if (isLoggedIn && !isEditButton && auth?.role === RoleConstants.USER) {
       var curUserId: string | undefined | null = undefined; //if loggedin
-
       if (isLoggedIn) {
         curUserId = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
       }
@@ -108,16 +124,11 @@ export default function Header(props: IHeaderProps & BoxProps) {
         const test = async () => {
           const response = await userService.getUserFriendStatus(temp, user.id);
           setStatusFriend(response.data.status);
-          if (response.data.status === FriendStatus.FRIEND || response.data.status === FriendStatus.INVITED) {
-            setIsHiddenAccept(true);
-          } else if (response.data.status === FriendStatus.NO_FRIEND) {
-            setIsHiddenCancel(true);
-          }
         };
         test();
       }
     }
-  }, [user, router.query]);
+  }, [user, isEditButton, auth, isLoggedIn]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -143,7 +154,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
         setIsEditButton(false);
       }
     }
-  }, [user]);
+  }, [user, isLoggedIn]);
 
   useEffect(() => {
     if (user !== null) {
@@ -155,7 +166,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   useEffect(() => {
     const arrayRoute = currentRoute.split('/');
     setMainCurrentRoute(arrayRoute[arrayRoute.length - 1]);
-  }, [router.pathname]);
+  }, [currentRoute, router.pathname]);
 
   const handleScroll = () => {
     setClientWindowHeight(window.scrollY);
@@ -258,7 +269,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
               </Text>
             </Box>
             <Spacer />
-            {isLoggedIn && auth?.role !== RoleConstants.ADMIN && !isEditButton && (
+            {isLoggedIn && auth?.role !== RoleConstants.ADMIN && !isEditButton && statusFriend === FriendStatus.FRIEND && (
               <>
                 <Button onClick={goToChat} my={'80px'} mx='5'>
                   {t('navbar.message')}
@@ -298,7 +309,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
                     onClick={() => {
                       setIsOpen(true);
                     }}
-                    m={'80px 50px'}
+                    mt='80px'
                   >
                     {t('navbar.edit_picture')}
                   </Button>
@@ -329,7 +340,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
                       handleChangeStatus('accept');
                     }}
                     hidden={isHiddenAccept}
-                    ml={!isHiddenAccept ? '20px' : '0px'}
+                    ml={!isHiddenAccept ? '10px' : '0px'}
                   >
                     {textStatusAccept}
                   </Button>
