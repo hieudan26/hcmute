@@ -236,7 +236,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         icon={<Icon fontSize='20px' as={FaUserFriends} />}
                         fontSize='14px'
                       >
-                        Gợi ý kết bạn
+                        {t('menuUser.friendsuggest')}
                       </MenuItm>
                     </Link>
                     <Link href='/chats' replace>
