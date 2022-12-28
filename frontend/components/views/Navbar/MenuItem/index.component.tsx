@@ -34,7 +34,7 @@ export default function MenuItem(props: IMenuItemProps) {
             paddingBottom={currentRoute === to ? '5px' : '0px'}
             borderBottom={currentRoute === to ? '2px' : '0px'}
             borderBottomColor={currentRoute === to ? 'textColor.logo' : 'transparent'}
-            fontSize='14px'
+            fontSize='15px'
             color={navs}
             fontFamily='titleFont'
             display='block'

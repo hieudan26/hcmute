@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, Image, Input } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Image, Input, useColorModeValue } from '@chakra-ui/react';
 import { ChangeEvent, KeyboardEvent, MutableRefObject, useEffect, useState } from 'react';
 import { LocalStorageConstants } from '../../../../../../../constants/store.constant';
 import { defaultAvatar } from '../../../../../../../utils';
@@ -15,6 +15,8 @@ export interface ICommentFormProps {
 export default function CommentForm(props: ICommentFormProps) {
   const { _onSumbit, _ref, isSubmitting } = props;
   const { t } = useTranslation('post');
+  const bgInput = useColorModeValue('gray.100', 'blackAlpha.50');
+  const colorInput = useColorModeValue('black', 'white');
   const [value, setValue] = useState<string>('');
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
 
@@ -52,7 +54,8 @@ export default function CommentForm(props: ICommentFormProps) {
       <Flex gap='2' width='100%'>
         <Image src={avatar} alt='Profile picture' w='10' h='10' rounded='full' />
         <Input
-          bg='gray.100'
+          color={colorInput}
+          bg={bgInput}
           minW='80%'
           rounded='full'
           px='3'
