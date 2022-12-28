@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { BsFillMoonFill, BsChatLeftTextFill } from 'react-icons/bs';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaUserFriends } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import { HiOutlineLink } from 'react-icons/hi';
 import { IoIosLogIn } from 'react-icons/io';
@@ -227,6 +227,16 @@ export default function MenuLinks(props: IMenuLinksProps) {
                         fontSize='14px'
                       >
                         {t('menuUser.profile')}
+                      </MenuItm>
+                    </Link>
+                    <Link href='/suggest-friends' replace>
+                      <MenuItm
+                        hidden={userInfor?.role === RoleConstants.ADMIN}
+                        fontFamily='titleFont'
+                        icon={<Icon fontSize='20px' as={FaUserFriends} />}
+                        fontSize='14px'
+                      >
+                        Gợi ý kết bạn
                       </MenuItm>
                     </Link>
                     <Link href='/chats' replace>

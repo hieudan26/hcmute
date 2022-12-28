@@ -9,6 +9,12 @@ import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 import { LocalUtils } from '../../utils/local.utils';
 
 class UserService {
+  getAdviceFriends = async (params: IPaginationRequest | undefined): Promise<AxiosResponse<any>> => {
+    var url = `/users/friends`;
+    const result = await getAsync(url, params, false, false, true);
+    return result;
+  };
+
   enableUser = async (userId: string): Promise<AxiosResponse<any>> => {
     var url = `/users/enable`;
     const params = {
