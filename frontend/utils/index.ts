@@ -14,7 +14,7 @@ export const publicRouteContain = [
   '/register',
   '/forgot-password',
 ];
-export const privateRouteContain = ['/settings', '/chats'];
+export const privateRouteContain = ['/settings', '/chats', '/suggest-friends'];
 export const authRouteContain = ['/login', '/register', '/forgot-password'];
 
 /* A Quill editor configuration. */
