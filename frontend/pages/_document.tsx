@@ -10,7 +10,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
-        <Script src='https://app.embed.im/snow.js' strategy='beforeInteractive' />
+        {/* <Script src='https://app.embed.im/snow.js' strategy='beforeInteractive' /> */}
       </body>
     </Html>
   );
