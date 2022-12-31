@@ -36,6 +36,7 @@ import CreatePost from './CreatePost/index.component';
 import CreateNewPost from './Modals/CreateNewPost/index.component';
 import PostRender from './PostRender/index.component';
 import { useTranslation } from 'next-i18next';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IPostsProps {}
 
@@ -63,11 +64,11 @@ export default function Posts(props: IPostsProps) {
   const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
-    if (isLoggedIn) {
-      const { userId: userIdq } = router.query;
-      if (userIdq) {
-        const tempCp = userIdq as string;
-        setUserIdQuery(tempCp);
+    const { userId: userIdq } = router.query;
+    if (userIdq) {
+      const tempCp = userIdq as string;
+      setUserIdQuery(tempCp);
+      if (isLoggedIn) {
         const curUserId = LocalUtils.getLocalStorage(LocalStorageConstants.USER_ID);
         if (tempCp === curUserId) {
           setIsCurrentUser(true);
@@ -81,6 +82,8 @@ export default function Posts(props: IPostsProps) {
       } else {
         setIsCurrentUser(false);
       }
+    } else {
+      setIsCurrentUser(false);
     }
   }, [isLoggedIn, router.query]);
 
@@ -196,7 +199,7 @@ export default function Posts(props: IPostsProps) {
             {posts.data
               ? posts.data.pages.map((page) =>
                   page.data.content.map((item: IPostResponseModel, index: number) => (
-                    <PostRender key={index} post={item} currentUserId={currentUserId} />
+                    <PostRender key={`profile-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
                   ))
                 )
               : ArrayTenTemp.map((item, index) => (

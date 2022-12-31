@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../hooks/redux';
 import { ILoginRequest } from '../../models/auth/login.model';
 import { AuthService } from '../../services/auth/auth.service';
 import userService from '../../services/user/user.service';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface ILoginProps {}
 
@@ -25,6 +26,7 @@ const Login: NextPage = (props: ILoginProps) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { url } = router.query;
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!url) setRedirectPath('');
@@ -50,6 +52,10 @@ const Login: NextPage = (props: ILoginProps) => {
       }
 
       if (response?.data.role === RoleConstants.USER) {
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        queryClient.invalidateQueries(['post_by_Id']);
+        queryClient.invalidateQueries(['posts_by_type_userId']);
+        queryClient.invalidateQueries(['posts_by_type']);
         if (redirectPath) {
           router.push(redirectPath);
         } else {

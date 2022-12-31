@@ -34,6 +34,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { SocketContext } from '../../../contexts/Socket';
 import MenuItem from '../MenuItem/index.component';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IMenuLinksProps {
   isOpen: boolean;
@@ -53,6 +54,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
   const { stompClient } = useContext(SocketContext);
   const { t } = useTranslation('header');
   const { colorMode, toggleColorMode } = useColorMode();
+  const queryClient = useQueryClient();
   const iconAccount = useColorModeValue('blackAlpha.600', 'white');
   const bgMenu = useColorModeValue('white', 'black');
   const colorMenu = useColorModeValue('textColor.black', 'textColor.white');
@@ -121,6 +123,10 @@ export default function MenuLinks(props: IMenuLinksProps) {
       stompClient.deactivate();
       dispatch(isConnected(false));
     }
+    queryClient.invalidateQueries(['posts_by_type_hashTag']);
+    queryClient.invalidateQueries(['post_by_Id']);
+    queryClient.invalidateQueries(['posts_by_type_userId']);
+    queryClient.invalidateQueries(['posts_by_type']);
     router.push('/experiences');
   };
 

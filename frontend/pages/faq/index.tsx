@@ -16,6 +16,7 @@ import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from 
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
 import { ArrayTenTemp } from '../experiences';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IFAQProps {}
 
@@ -50,7 +51,7 @@ const FAQ: NextPage = (props: IFAQProps) => {
     if (isLoggedInCookie && avatarLocalStorage) {
       setAvatar(avatarLocalStorage);
     }
-  }, []);
+  }, [auth]);
 
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
@@ -102,7 +103,7 @@ const FAQ: NextPage = (props: IFAQProps) => {
           {posts.data
             ? posts.data.pages.map((page) =>
                 page.data.content.map((item: IPostResponseModel, index: number) => (
-                  <PostRender key={index} post={item} currentUserId={currentUserId} />
+                  <PostRender key={`faq-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
                 ))
               )
             : ArrayTenTemp.map((item, index) => (
