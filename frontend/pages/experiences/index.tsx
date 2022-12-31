@@ -14,6 +14,7 @@ import { useAppSelector } from '../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface IExperiencesProps {}
 
@@ -50,7 +51,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
     if (isLoggedInCookie && avatarLocalStorage) {
       setAvatar(avatarLocalStorage);
     }
-  }, []);
+  }, [auth]);
 
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
@@ -102,7 +103,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
           {posts.data
             ? posts.data.pages.map((page) =>
                 page.data.content.map((item: IPostResponseModel, index: number) => (
-                  <PostRender key={index} post={item} currentUserId={currentUserId} />
+                  <PostRender key={`exp-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
                 ))
               )
             : ArrayTenTemp.map((item, index) => (
