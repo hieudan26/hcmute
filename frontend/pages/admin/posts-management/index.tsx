@@ -337,7 +337,7 @@ export default AdminPostsManagementPage;
 export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'post'])),
       // Will be passed to the page component as props
     },
   };
