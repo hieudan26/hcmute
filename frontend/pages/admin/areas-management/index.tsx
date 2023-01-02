@@ -1,37 +1,34 @@
 import {
   Box,
+  Button,
+  Link as ChakraLink,
   Flex,
   GridItem,
   Heading,
+  Icon,
   SimpleGrid,
   Table,
   TableCaption,
   TableContainer,
   Tbody,
   Td,
+  Text,
   Tfoot,
   Th,
   Thead,
   Tr,
   useColorModeValue,
-  Link as ChakraLink,
-  Text,
-  Button,
-  Icon,
-  FormControl,
-  FormLabel,
-  Input,
-  Center,
-  Select,
 } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ICountryRequest, ICountryResponse, IProvinceRequest, IProvinceResponse } from '../../../models/area/country.model';
+import { TiTick } from 'react-icons/ti';
+import CountryForm from '../../../components/views/Admin/Areas/CountryForm/index.component';
+import ProvinceForm from '../../../components/views/Admin/Areas/ProvinceForm/index.component';
+import { ICountryResponse, IProvinceResponse } from '../../../models/area/country.model';
 import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
 import areaService from '../../../services/area/area.service';
-import { TiTick } from 'react-icons/ti';
 
 export interface IAdminAreasManagementPageProps {}
 
@@ -68,10 +65,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
   });
   const [countryChoose, setCountryChoose] = useState<string | undefined>(undefined);
   const idRef = useRef<string | undefined>(undefined);
-  const [modelCountry, setModelCountry] = useState<ICountryRequest>({ name: '', enName: '' });
-  const [modelProvince, setModelProvince] = useState<IProvinceRequest>({ parentId: 1, name: '', enName: '' });
   const [dataSelect, setDataSelect] = useState<ICountryResponse[]>([]);
-  const [select, setSelect] = useState<string>('1');
   const colorTxt = useColorModeValue('black', 'white');
   const tableBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
 
@@ -180,93 +174,20 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
     }
   };
 
-  const handleChangeCountry = (event: React.ChangeEvent<HTMLInputElement> | undefined) => {
-    if (event) {
-      const { name, value } = event.target;
-      setModelCountry((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleChangeProvince = (event: React.ChangeEvent<HTMLInputElement> | undefined) => {
-    if (event) {
-      const { name, value } = event.target;
-      setModelProvince((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-  };
-
-  const createNewCountry = async () => {
-    const response = await areaService.createCountry(modelCountry);
-  };
-
-  const handleChangeSelect = (event: React.ChangeEvent<HTMLSelectElement> | undefined) => {
-    if (event) {
-      setSelect(event.target.value);
-    }
-  };
-
-  const createNewProvince = async () => {
-    modelProvince.parentId = Number(select);
-    const response = await areaService.createProvince(modelProvince);
-  };
-
   return (
     <Box w='full'>
       <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
           Create new country
         </Heading>
-        <Flex direction='row' justify='space-between' gap='6' align='center' mb='2'>
-          <FormControl>
-            <FormLabel>Vietnamese name</FormLabel>
-            <Input name='name' onChange={handleChangeCountry} value={modelCountry?.name} type='text' />
-          </FormControl>
-          <FormControl>
-            <FormLabel>English name</FormLabel>
-            <Input name='enName' onChange={handleChangeCountry} value={modelCountry?.enName} type='text' />
-          </FormControl>
-        </Flex>
-        <Center>
-          <Button w='30%' onClick={createNewCountry}>
-            Create
-          </Button>
-        </Center>
+        <CountryForm />
       </Box>
 
       <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
           Create new province
         </Heading>
-        <Flex direction='row' justify='space-between' gap='6' align='center' mb='2'>
-          <FormControl>
-            <FormLabel>Country</FormLabel>
-            <Select onChange={handleChangeSelect}>
-              {dataSelect.map((item, index) => (
-                <option key={item.id} value={item.id}>
-                  {item.enName}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Vietnamese name</FormLabel>
-            <Input name='name' onChange={handleChangeProvince} value={modelProvince.name} type='text' />
-          </FormControl>
-          <FormControl>
-            <FormLabel>English name</FormLabel>
-            <Input name='enName' onChange={handleChangeProvince} value={modelProvince.enName} type='text' />
-          </FormControl>
-        </Flex>
-        <Center>
-          <Button w='30%' onClick={createNewProvince}>
-            Create
-          </Button>
-        </Center>
+        <ProvinceForm dataSelect={dataSelect} />
       </Box>
 
       <SimpleGrid

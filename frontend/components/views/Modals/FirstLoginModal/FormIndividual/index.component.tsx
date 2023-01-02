@@ -130,7 +130,7 @@ export default function FormIndividual(props: IFormIndividualProps) {
       <GridItem colSpan={2}>
         <FormControl isRequired isInvalid={!!errors?.phoneNumber?.message}>
           <FormLabel>
-            <Text as='b'>{t('phoneNumber')}</Text>
+            <Text as='b'>{t('phone')}</Text>
           </FormLabel>
           <Input {...register('phoneNumber')} type='tel' placeholder='Dương Đức' />
           <FormErrorMessage>{errors?.phoneNumber?.message}</FormErrorMessage>
