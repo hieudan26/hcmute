@@ -40,12 +40,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { BiCommentDetail } from 'react-icons/bi';
 import ConfirmDeletePost from '../../../components/views/Profile/Posts/Modals/ConfirmDeletePost/index.component';
 import CommentForm from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/CommentForm/index.component';
+import { useTranslation } from 'next-i18next';
 
 export interface IDetailPostProps {
   post: IPostResponseModel;
 }
 
 const DetailPost: NextPage<IDetailPostProps> = (props) => {
+  const { t } = useTranslation('post');
   const router = useRouter();
   const commentsEndRef = useRef<null | HTMLDivElement>(null);
   const commentInputRef = useRef<null | HTMLInputElement>(null);
@@ -217,7 +219,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
             />
             <MenuList minW='32'>
               <MenuItem onClick={() => setIsOpenEdit(true)} hidden={dataPost && currentUserId !== dataPost.userId}>
-                Edit
+                {t('options.Edit')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -225,9 +227,9 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
                 }}
                 hidden={dataPost && currentUserId !== dataPost.userId}
               >
-                Delete
+                {t('options.Delete')}
               </MenuItem>
-              <MenuItem onClick={copyLink}>Copy link</MenuItem>
+              <MenuItem onClick={copyLink}>{t('options.Link')}</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -280,7 +282,9 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
             >
               <Icon as={AiFillHeart} />
               &nbsp;
-              <Text fontSize='md'>{dataPost?.reactNumber} Love</Text>
+              <Text fontSize='md'>
+                {dataPost?.reactNumber} {t('love')}
+              </Text>
             </Flex>
             <Flex
               w='100%'
@@ -295,7 +299,9 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
             >
               <Icon color='#D0637C' as={BiCommentDetail} />
               &nbsp;
-              <Text fontSize='md'>{dataPost?.commentNumber} Comment</Text>
+              <Text fontSize='md'>
+                {dataPost?.commentNumber} {t('comment')}
+              </Text>
             </Flex>
           </Flex>
         </Box>
@@ -304,7 +310,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
       <Box>
         {commentsPost.data?.pages[0].data.content.length === 0 ? (
           <Center py='2'>
-            <Text>Không có bình luận nào</Text>
+            <Text>{t('no_comment')}</Text>
           </Center>
         ) : (
           commentsPost.data?.pages.map((page) =>
@@ -327,7 +333,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
               commentsPost.fetchNextPage();
             }}
           >
-            Load more
+            {t('load_more')}
           </Button>
         </Center>
       </Box>
@@ -359,7 +365,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale, params }:
   return {
     props: {
       // post,
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login'])),
+      ...(await serverSideTranslations(locale, ['header', 'footer', 'common', 'modal_is_first_login', 'post'])),
       // Will be passed to the page component as props
     },
   };
