@@ -17,13 +17,15 @@ export default function Message(props: IMessageProps) {
     <Box
       bg={auth?.id === userId ? '#D0637C' : bgColor[colorMode]}
       w='fit-content'
+      maxW='60%'
       py={1}
       px={3}
       rounded='xl'
       margin={2}
       ml={auth?.id === userId ? 'auto' : '0'}
       position='relative'
-      textAlign={auth?.id === userId ? 'right' : 'left'}
+      textAlign='justify'
+      // textAlign={auth?.id === userId ? 'right' : 'left'}
       wordBreak='break-word'
       color={auth?.id === userId ? 'white' : textColor[colorMode]}
     >
