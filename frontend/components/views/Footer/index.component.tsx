@@ -29,7 +29,7 @@ export default function Footer(props: IFooterProps) {
         <Flex direction={['column', 'column', 'row']}>
           <VStack spacing={2} align='flex-start' w={{ base: 'full', lg: 2 / 5 }} mr={8}>
             <Logo />
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis, nisi! Id.</Text>
+            <Text>Đi và khám phá theo cách của bạn. Mạng xã hội du lịch Việt Nam😍</Text>
             <HStack spacing={1}>
               <IconButton aria-label='Facebook' icon={<SiFacebook />}></IconButton>
               <IconButton aria-label='Twitter' icon={<SiTwitter />}></IconButton>
