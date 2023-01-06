@@ -278,7 +278,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                             >
                               <Icon as={RiPencilLine} fontSize='16' />
                             </Button>
-                            <Button
+                            {/* <Button
                               hidden={post.isDeleted !== undefined && post.isDeleted}
                               onClick={() => {
                                 // deletePost(post.id);
@@ -288,7 +288,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                               fontSize='sm'
                             >
                               <Icon as={RiDeleteBin5Fill} fontSize='16' />
-                            </Button>
+                            </Button> */}
                             <Button
                               hidden={post.isDeleted !== undefined && !post.isDeleted}
                               onClick={() => {
