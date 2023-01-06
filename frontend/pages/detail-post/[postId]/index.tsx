@@ -13,6 +13,7 @@ import {
   MenuList,
   Spacer,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -48,6 +49,7 @@ export interface IDetailPostProps {
 
 const DetailPost: NextPage<IDetailPostProps> = (props) => {
   const { t } = useTranslation('post');
+  const bgColor = useColorModeValue('white', 'backgroundBox.primary_darkMode');
   const router = useRouter();
   const commentsEndRef = useRef<null | HTMLDivElement>(null);
   const commentInputRef = useRef<null | HTMLInputElement>(null);
@@ -166,7 +168,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
   };
 
   return (
-    <Box width='80%' bg='white' rounded='lg' mb='5' px='4' shadow='md' overflow='scroll'>
+    <Box width='80%' bg={bgColor} rounded='lg' mb='5' px='4' shadow='md' overflow='scroll'>
       {dataPost && (
         <UpdatePost
           currentUserId={currentUserId}

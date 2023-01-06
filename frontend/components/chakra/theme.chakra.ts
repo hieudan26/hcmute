@@ -4,12 +4,12 @@ import { CheckBox } from './checkbox.chakra';
 
 export const theme = extendTheme({
   fonts: {
-    headlineFont: 'MontserratAlternates',
-    subheadFont: 'MontserratAlternates',
-    textFont: 'MontserratAlternates Regular',
-    titleFont: 'MontserratAlternates SemiBold',
-    fontBold: 'MontserratAlternates Bold',
-    extraBold: 'MontserratAlternates ExtraBold',
+    headlineFont: 'Montserrat',
+    subheadFont: 'Montserrat',
+    textFont: 'Montserrat Regular',
+    titleFont: 'Montserrat SemiBold',
+    fontBold: 'Montserrat Bold',
+    extraBold: 'Montserrat ExtraBold',
   },
   colors: {
     backgroundButton: {
