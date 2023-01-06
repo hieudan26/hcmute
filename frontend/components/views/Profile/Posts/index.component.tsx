@@ -115,42 +115,42 @@ export default function Posts(props: IPostsProps) {
           <AboutPost />
         </Box>
         <Box width='60%'>
-          {isCurrentUser && (
-            <>
-              <Tabs
-                py='5'
-                px='8'
-                isFitted
-                zIndex='5'
-                isManual
-                colorScheme='pink'
-                variant='unstyled'
-                bg={bgLayout}
-                rounded='lg'
-                shadow='md'
-              >
-                <TabList>
-                  <Tab
-                    zIndex='5'
-                    onClick={() => {
-                      setTypePost('experience');
-                    }}
-                    _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
-                    _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
-                  >
-                    {t('tabpost.create.tabExperience')}
-                  </Tab>
-                  <Tab
-                    zIndex='5'
-                    onClick={() => {
-                      setTypePost('faq');
-                    }}
-                    _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
-                    _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
-                  >
-                    {t('tabpost.create.tabFaqs')}
-                  </Tab>
-                </TabList>
+          <>
+            <Tabs
+              py='5'
+              px='8'
+              isFitted
+              zIndex='5'
+              isManual
+              colorScheme='pink'
+              variant='unstyled'
+              bg={bgLayout}
+              rounded='lg'
+              shadow='md'
+            >
+              <TabList>
+                <Tab
+                  zIndex='5'
+                  onClick={() => {
+                    setTypePost('experience');
+                  }}
+                  _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
+                  _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
+                >
+                  {t('tabpost.create.tabExperience')}
+                </Tab>
+                <Tab
+                  zIndex='5'
+                  onClick={() => {
+                    setTypePost('faq');
+                  }}
+                  _hover={{ bg: '#F8B5C1', color: '#0000008a' }}
+                  _selected={{ borderBottom: '2px', borderColor: '#D0637C' }}
+                >
+                  {t('tabpost.create.tabFaqs')}
+                </Tab>
+              </TabList>
+              {isCurrentUser && (
                 <TabPanels>
                   <TabPanel px='4'>
                     <CreatePost
@@ -171,21 +171,21 @@ export default function Posts(props: IPostsProps) {
                     />
                   </TabPanel>
                 </TabPanels>
-              </Tabs>
+              )}
+            </Tabs>
 
-              <CreateNewPost
-                currentUserId={currentUserId}
-                onSubmit={_submitPost}
-                type={typePost}
-                isOpen={isCreatePost}
-                onClose={() => setIsCreatePost(false)}
-              />
+            <CreateNewPost
+              currentUserId={currentUserId}
+              onSubmit={_submitPost}
+              type={typePost}
+              isOpen={isCreatePost}
+              onClose={() => setIsCreatePost(false)}
+            />
 
-              <Spacer h='7'>
-                <Center color='gray.300'>---</Center>
-              </Spacer>
-            </>
-          )}
+            <Spacer h='7'>
+              <Center color='gray.300'>---</Center>
+            </Spacer>
+          </>
 
           <InfiniteScroll
             loadMore={() => posts.fetchNextPage()}
