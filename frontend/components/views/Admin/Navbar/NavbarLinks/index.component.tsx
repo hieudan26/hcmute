@@ -46,7 +46,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       stompClient.deactivate();
       dispatch(isConnected(false));
     }
-    router.push('/login');
+    router.push('/admin/login');
   };
 
   const goToSocial = () => {

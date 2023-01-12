@@ -23,6 +23,51 @@ export class AuthService {
     LOGIN: 'login',
   };
 
+  static adminLogin = async (data: ILoginRequest, setSubmitting: Dispatch<SetStateAction<boolean>>) => {
+    setSubmitting(true);
+    try {
+      const { email, password } = data;
+      const result = await Auth.signIn(email, password);
+
+      logger.info('login user ' + JSON.stringify(result));
+
+      // await LocalUtils.storeAuthenticationData();
+      return { ...result, isSuccess: true };
+    } catch (error: any) {
+      const { __type, message } = error;
+
+      logger.warn("Couldn't login: ", error);
+
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+
+      return { ...error, isSuccess: false };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  static adminLoginFail = async () => {
+    try {
+      await Auth.signOut();
+      LogOut();
+    } catch (error: any) {
+      const { __type, message } = error;
+      logger.error("Couldn't logout: ", error);
+      toggleMessage({
+        title: __type,
+        code: uuidv4(),
+        type: 'error',
+        message: message,
+      });
+    } finally {
+    }
+  };
+
   static changePassword = async (data: IChangePassword, setSubmitting: Dispatch<SetStateAction<boolean>>) => {
     setSubmitting(true);
     try {
