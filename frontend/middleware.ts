@@ -121,7 +121,6 @@ const checkPrivateRoute = (pathname: string) => {
 export function middleware(request: NextRequest) {
   const role = request.cookies.get(CookieConstants.ROLE);
   const url = request.nextUrl.clone();
-  console.log(url.pathname);
   if (url.pathname === '/') {
     if (!role) {
       return NextResponse.redirect(new URL('/experiences', request.url));
@@ -156,7 +155,6 @@ export function middleware(request: NextRequest) {
       return NextResponse.next();
     } else {
       if (checkPrivateRoute(url.pathname) || checkAdminRoute(url.pathname)) {
-        console.log(url.pathname);
         if (url.pathname.includes('/admin')) {
           return NextResponse.redirect(new URL('/admin/login', request.url));
         } else {
