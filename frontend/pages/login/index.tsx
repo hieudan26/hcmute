@@ -11,6 +11,7 @@ import { ILoginRequest } from '../../models/auth/login.model';
 import { AuthService } from '../../services/auth/auth.service';
 import userService from '../../services/user/user.service';
 import { useQueryClient } from '@tanstack/react-query';
+import { toggleMessage } from '../../components/views/Message/index.component';
 
 export interface ILoginProps {}
 
@@ -62,8 +63,14 @@ const Login: NextPage = (props: ILoginProps) => {
           router.push('/experiences');
         }
       } else if (response?.data.role === RoleConstants.ADMIN) {
-        router.push('/admin/dashboard');
+        AuthService.adminLoginFail();
+        toggleMessage({
+          message: 'Incorrect account and password',
+          type: 'error',
+          title: 'Login',
+        });
       } else {
+        AuthService.adminLoginFail();
         router.push('/register');
       }
     }

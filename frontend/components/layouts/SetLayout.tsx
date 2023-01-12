@@ -90,7 +90,11 @@ export default function SetLayout({ children }: any) {
   } else if (router.pathname.includes('/chats')) {
     return <ChatLayout>{children}</ChatLayout>;
   } else if (router.pathname.includes('/admin')) {
-    return <AdminLayout>{children}</AdminLayout>;
+    if (router.pathname === '/admin/login' || router.pathname === '/admin/forgot-password') {
+      return <>{children}</>;
+    } else {
+      return <AdminLayout>{children}</AdminLayout>;
+    }
   } else {
     if (isLoggedIn) {
       // if (role === RoleConstants.USER) {

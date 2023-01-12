@@ -3,7 +3,18 @@ import { IconType } from 'react-icons';
 import { FiSettings } from 'react-icons/fi';
 import { IoLanguage } from 'react-icons/io5';
 
-export const adminRouteContain = ['/admin'];
+export const adminRouteContain = [
+  '/admin/accounts-management',
+  '/admin/areas-management',
+  '/admin/categories-management',
+  '/admin/dashboard',
+  '/admin/places-management',
+  '/admin/places-management/create',
+  '/admin/places-management/update',
+  '/admin/posts-management',
+  '/admin/profile',
+  '/admin/users-management',
+];
 export const publicRouteContain = [
   '/profile',
   '/experiences',
@@ -15,7 +26,7 @@ export const publicRouteContain = [
   '/forgot-password',
 ];
 export const privateRouteContain = ['/settings', '/chats', '/suggest-friends'];
-export const authRouteContain = ['/login', '/register', '/forgot-password'];
+export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
 /* A Quill editor configuration. */
 export const modulesQuill = {
