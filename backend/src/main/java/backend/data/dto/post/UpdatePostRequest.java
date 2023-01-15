@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdatePostRequest {
     String type;
+    String title;
     String content;
     List<String> images;
     List<String> hashTags;

@@ -38,19 +38,27 @@ public class SearchSpecificationUtils {
         JsonNode jsonNode = objectMapper.valueToTree(query);
         for (var field: query.getClass().getDeclaredFields()) {
             if(!jsonNode.get(field.getName()).isNull()){
-                if(field.getName().equals("hashTag")){
-                    builder.with("hashTags", "hashTags", jsonNode.get(field.getName()).asText());
+                if(field.getName().equals("hashTags")){
+                    continue;
                 }
-                else if(field.getName().equals("userId")){
+                if(field.getName().equals("userId")){
                     builder.with("owner", "nested", jsonNode.get(field.getName()).asText());
                 }
                 else if(jsonNode.get(field.getName()).isBoolean()){
-                builder.with(field.getName(), "=", Boolean.valueOf(jsonNode.get(field.getName()).asText()));
+                    builder.with(field.getName(), "=", Boolean.valueOf(jsonNode.get(field.getName()).asText()));
                 }else{
                     builder.with(field.getName(), ":", jsonNode.get(field.getName()).asText());
                 }
             }
         }
-        return builder.buildAnd();
+
+        SpecificationsBuilder<Posts> builder2 = new SpecificationsBuilder();
+
+        if(jsonNode.get("hashTags") != null){
+            for (final JsonNode objNode : jsonNode.get("hashTags"))
+                builder2.with("hashTags", "hashTags", objNode.asText());
+        }
+
+        return builder.buildAnd().and(builder2.buildOr());
     }
 }
