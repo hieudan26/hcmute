@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostQueryParams {
     String type;
-    String hashTag;
+    List<String> hashTags;
     String userId;
     Boolean isDeleted = false;
 }

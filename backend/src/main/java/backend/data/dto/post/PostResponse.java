@@ -16,6 +16,7 @@ public class PostResponse {
     String userId;
     String avatar;
     String fullName;
+    String title;
     String type;
     String content;
     String time;

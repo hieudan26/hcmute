@@ -38,6 +38,10 @@ public class Posts extends Auditable<String> implements Serializable {
     @Lob
     String content;
 
+    @Column(nullable = false)
+    @Lob
+    String title;
+
     Boolean isDeleted = false;
 
     private LocalDateTime time = LocalDateTime.now();

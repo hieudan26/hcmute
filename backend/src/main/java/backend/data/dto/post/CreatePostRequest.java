@@ -24,6 +24,7 @@ public class CreatePostRequest {
     private String time;
     @NotEmpty(message = "The content is required")
     String content;
+    String title;
     List<String> images;
     List<String> hashTags;
     @JsonIgnore

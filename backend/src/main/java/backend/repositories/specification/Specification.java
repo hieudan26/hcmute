@@ -16,7 +16,7 @@ public class Specification<T> implements org.springframework.data.jpa.domain.Spe
     @Override
     public Predicate toPredicate
             (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-
+        query.distinct(true);
         if (criteria.getOperation().equalsIgnoreCase("nested")) {
             return builder.equal(
                     root.get(criteria.getKey()).get("id"), criteria.getValue().toString());

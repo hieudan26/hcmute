@@ -56,7 +56,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String type, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByTypeAndContentIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),type,key));
+                postRepository.findByTypeAndTitleIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),type,key));
 
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
@@ -65,7 +65,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByContentIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),key)
+                postRepository.findByTitleIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),key)
                         .map(postMapper::PostsToPostsResponse));
 
         return BaseResponse.builder().message("Find all posts successful.")
