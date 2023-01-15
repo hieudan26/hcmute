@@ -22,11 +22,11 @@ export default function useUploadFile() {
           },
         },
       });
-      toggleMessage({
-        title: 'Upload image S3',
-        type: 'success',
-        message: 'Upload image successfully',
-      });
+      // toggleMessage({
+      //   title: 'Upload image S3',
+      //   type: 'success',
+      //   message: 'Upload image successfully',
+      // });
       urlRef.current = `https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/${res.key}`;
     } catch (err: any) {
       toggleMessage({
@@ -56,11 +56,11 @@ export default function useUploadFile() {
         });
         tempArray.push(`https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/${res.key}`);
       }
-      toggleMessage({
-        title: 'Upload images S3',
-        type: 'success',
-        message: 'Upload images successfully',
-      });
+      // toggleMessage({
+      //   title: 'Upload images S3',
+      //   type: 'success',
+      //   message: 'Upload images successfully',
+      // });
       urlsRef.current = tempArray;
     } catch (err: any) {
       toggleMessage({

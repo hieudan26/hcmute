@@ -42,6 +42,7 @@ import { toggleMessage } from '../../../../Message/index.component';
 import UpdatePost from '../UpdatePost/index.component';
 import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
 import { useTranslation } from 'next-i18next';
+import { Prose } from '@nikolovlazar/chakra-ui-prose';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
@@ -154,7 +155,8 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         <ModalOverlay bg='blackAlpha.300' backdropFilter='blur(10px) hue-rotate(90deg)' />
         <ModalContent bg={bgModalContent} pb='0' width='2xl'>
           <ModalHeader fontWeight={700} textAlign={'center'}>
-            {post.fullName}&apos;s Post
+            {/* {post.fullName}&apos;s Post */}
+            {post.title}
           </ModalHeader>
           <Divider />
           <ModalCloseButton onClick={onClose} />
@@ -207,9 +209,9 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
                 </Flex>
               </Flex>
 
-              <Text textAlign='justify' px='4' py='2'>
-                {post.content}
-              </Text>
+              <Box textAlign='justify' px='4' py='2'>
+                <Prose dangerouslySetInnerHTML={{ __html: post.content }} />
+              </Box>
 
               {post.hashTags && post.hashTags.length > 0 && (
                 <Flex direction='row' gap='2' px='4' mb='2'>

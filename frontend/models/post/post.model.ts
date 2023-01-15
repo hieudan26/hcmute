@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { IPaginationRequest } from '../common/ResponseMessage.model';
 
 export interface IPostRequestModel {
+  title: string;
   content: string;
   hashTags?: string[];
   images: string[];
@@ -19,6 +20,7 @@ export interface IPostResponseModel {
   avatar: string;
   fullName: string;
   type: string;
+  title: string;
   content: string;
   time: string;
   commentNumber: number;

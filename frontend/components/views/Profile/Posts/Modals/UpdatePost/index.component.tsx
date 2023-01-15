@@ -22,12 +22,23 @@ import { IoLocation } from 'react-icons/io5';
 import { Carousel } from 'react-responsive-carousel';
 import { IPostRequestModel, IPostResponseModel } from '../../../../../../models/post/post.model';
 import useUploadFile from '../../../../../../hooks/useUploadFile';
-import { formatTimePost } from '../../../../../../utils';
+import { capitalized, formatTimePost } from '../../../../../../utils';
 import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
 import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
 import useDebounce from '../../../../../../hooks/useDebounce';
 import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
 import { useTranslation } from 'next-i18next';
+import BulletList from '@tiptap/extension-bullet-list';
+import Document from '@tiptap/extension-document';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Paragraph from '@tiptap/extension-paragraph';
+import Placeholder from '@tiptap/extension-placeholder';
+import Text from '@tiptap/extension-text';
+import Underline from '@tiptap/extension-underline';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
 
 export interface IUpdatePostProps {
   type: 'experience' | 'faq';
@@ -46,7 +57,6 @@ export default function UpdatePost(props: IUpdatePostProps) {
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
-  const [valuePost, setValuePost] = useState<string>(post.content);
   const [isDisabledBtnPost, setIsDisabledBtnPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -57,6 +67,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
   const [defaultValueTag, setDefaultValueTag] = useState<{ value: string; label: string }[]>([]);
   const [isLoadingFetchHashtag, setIsLoadingFetchHashtag] = useState<boolean>(false);
   const [isDisableResetTags, setIsDisableResetTags] = useState<boolean>(true);
+  const [valueTitle, setValueTitle] = useState<string>(post.title);
   const testRef = useRef<any>(null);
   const dataHashTagQuery = useFindHashTag(
     {
@@ -68,6 +79,31 @@ export default function UpdatePost(props: IUpdatePostProps) {
     },
     isOpen
   );
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: t('content'),
+      }),
+      ListItem,
+      Document,
+      Paragraph,
+      Text,
+      BulletList,
+      OrderedList,
+      Underline,
+    ],
+    content: post.content,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl my-1 focus:outline-none border px-1 py-2',
+      },
+    },
+    editable: true,
+    autofocus: true,
+    injectCSS: false,
+  });
 
   useEffect(() => {
     if (post.hashTags) {
@@ -91,6 +127,14 @@ export default function UpdatePost(props: IUpdatePostProps) {
   }, [dataHashTagQuery.data]);
 
   useEffect(() => {
+    if (valueTitle.trim() !== post.title.trim()) {
+      setIsDisabledBtnPost(false);
+    } else {
+      setIsDisabledBtnPost(true);
+    }
+  }, [post, valueTitle]);
+
+  useEffect(() => {
     if (filesToUpload.length !== 0) {
       setIsDisabledBtnPost(false);
     } else {
@@ -109,13 +153,13 @@ export default function UpdatePost(props: IUpdatePostProps) {
   }, [tags, post]);
 
   useEffect(() => {
-    if (valuePost.length > 0 && valuePost !== post.content.trim()) {
+    if (editor?.getHTML() !== '<p></p>' && editor?.getHTML() !== post.content.trim()) {
       setIsDisabledBtnPost(false);
     } else {
       setIsDisabledBtnPost(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuePost]);
+  }, [editor?.getHTML()]);
 
   useDebounce(
     () => {
@@ -150,7 +194,8 @@ export default function UpdatePost(props: IUpdatePostProps) {
     }
 
     const params: IPostRequestModel = {
-      content: valuePost,
+      title: capitalized(valueTitle.trim()),
+      content: editor ? editor.getHTML() : 'content',
       images: [...urlsRef.current, ...post.images],
       type: type,
       hashTags: tags,
@@ -167,12 +212,6 @@ export default function UpdatePost(props: IUpdatePostProps) {
       const filesArray = Array.from(e?.target.files).map((file) => URL.createObjectURL(file));
 
       setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-    }
-  };
-
-  const changeValueTextarea = (e: ChangeEvent<HTMLTextAreaElement> | undefined) => {
-    if (e) {
-      setValuePost(e.target.value);
     }
   };
 
@@ -210,10 +249,28 @@ export default function UpdatePost(props: IUpdatePostProps) {
     }
   };
 
+  const changeValueTextarea = (event: ChangeEvent<HTMLTextAreaElement> | undefined) => {
+    if (event) {
+      setValueTitle(event.target.value);
+    }
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        {t('update')} {post.fullName}&apos;s {type}
+        {/* {t('update')} {post.fullName}&apos;s {type} */}
+        <AutoResizeTextarea
+          w='95%'
+          maxH='16'
+          border='1px'
+          _focus={{ outline: '1px' }}
+          minH='16'
+          placeholder='Title of post'
+          mb='2'
+          fontWeight='semibold'
+          value={valueTitle}
+          onChange={changeValueTextarea}
+        />
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -222,65 +279,57 @@ export default function UpdatePost(props: IUpdatePostProps) {
         }}
       />
       <ModalBody>
-        <AutoResizeTextarea
-          maxH='80'
-          border='1px'
-          _focus={{ outline: '1px' }}
-          minH='20vh'
-          placeholder={t('content')}
-          value={valuePost}
-          onChange={changeValueTextarea}
-        />
+        <BubbleEditor editor={editor} />
 
-        {post.hashTags && post.hashTags.length > 0 && (
-          <Flex my='2' gap='4'>
-            <Box w='full'>
-              <Select
-                styles={
-                  colorMode === 'dark'
-                    ? {
-                        control: (styles) => ({ ...styles, backgroundColor: 'black' }),
-                        option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
-                          ...styles,
-                          backgroundColor: isDisabled ? undefined : isSelected ? 'black' : isFocused ? 'black' : undefined,
-                        }),
-                        menu: (base) => ({
-                          ...base,
-                          background: '#2f3542',
-                        }),
-                        multiValueLabel: (styles, { data }) => ({
-                          ...styles,
-                          background: '#dfe4ea',
-                        }),
-                      }
-                    : undefined
-                }
-                ref={testRef}
-                defaultValue={defaultValueTag}
-                onInputChange={searchHashTag}
-                id='selectWarna'
-                instanceId='selectWarna'
-                isMulti
-                name='colors'
-                className='basic-multi-select'
-                classNamePrefix='select'
-                options={dataHashtag}
-                onChange={handleTagChange}
-                placeholder='#vietnam'
-                onMenuScrollToBottom={fetchData}
-                isLoading={isLoadingFetchHashtag}
-              />
-            </Box>
-            <Button
-              isDisabled={isDisabledBtnPost}
-              onClick={() => {
-                testRef.current.setValue(defaultValueTag);
-              }}
-            >
-              {t('reset')}
-            </Button>
-          </Flex>
-        )}
+        {/* {post.hashTags && post.hashTags.length > 0 && ( */}
+        <Flex my='2' gap='4'>
+          <Box w='full'>
+            <Select
+              styles={
+                colorMode === 'dark'
+                  ? {
+                      control: (styles) => ({ ...styles, backgroundColor: 'black' }),
+                      option: (styles, { data, isDisabled, isFocused, isSelected }) => ({
+                        ...styles,
+                        backgroundColor: isDisabled ? undefined : isSelected ? 'black' : isFocused ? 'black' : undefined,
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        background: '#2f3542',
+                      }),
+                      multiValueLabel: (styles, { data }) => ({
+                        ...styles,
+                        background: '#dfe4ea',
+                      }),
+                    }
+                  : undefined
+              }
+              ref={testRef}
+              defaultValue={defaultValueTag}
+              onInputChange={searchHashTag}
+              id='selectWarna'
+              instanceId='selectWarna'
+              isMulti
+              name='colors'
+              className='basic-multi-select'
+              classNamePrefix='select'
+              options={dataHashtag}
+              onChange={handleTagChange}
+              placeholder='#vietnam'
+              onMenuScrollToBottom={fetchData}
+              isLoading={isLoadingFetchHashtag}
+            />
+          </Box>
+          <Button
+            isDisabled={isDisabledBtnPost}
+            onClick={() => {
+              testRef.current.setValue(defaultValueTag);
+            }}
+          >
+            {t('reset')}
+          </Button>
+        </Flex>
+        {/* )} */}
 
         {post.images.length > 0 && (
           <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
