@@ -42,6 +42,7 @@ import { BiCommentDetail } from 'react-icons/bi';
 import ConfirmDeletePost from '../../../components/views/Profile/Posts/Modals/ConfirmDeletePost/index.component';
 import CommentForm from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/CommentForm/index.component';
 import { useTranslation } from 'next-i18next';
+import { Prose } from '@nikolovlazar/chakra-ui-prose';
 
 export interface IDetailPostProps {
   post: IPostResponseModel;
@@ -237,9 +238,9 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
         </Flex>
       </Flex>
 
-      <Text textAlign='justify' px='4' py='2'>
-        {dataPost?.content}
-      </Text>
+      <Box textAlign='justify' px='4' py='2'>
+        <Prose dangerouslySetInnerHTML={{ __html: dataPost ? dataPost.content : '' }} />
+      </Box>
 
       {dataPost && dataPost.hashTags && dataPost.hashTags.length > 0 && (
         <Flex direction='row' gap='2' px='4' mt='2'>

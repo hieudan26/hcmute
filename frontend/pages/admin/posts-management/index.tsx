@@ -63,6 +63,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
     avatar: 'string',
     fullName: 'string',
     type: 'string',
+    title: 'string',
     content: 'string',
     time: 'string',
     commentNumber: 0,

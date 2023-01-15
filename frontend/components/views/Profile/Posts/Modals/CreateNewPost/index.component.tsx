@@ -9,28 +9,39 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalHeader,
-  useColorModeValue,
   useColorMode,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
+import BulletList from '@tiptap/extension-bullet-list';
+import Document from '@tiptap/extension-document';
+import ListItem from '@tiptap/extension-list-item';
+import OrderedList from '@tiptap/extension-ordered-list';
+import Paragraph from '@tiptap/extension-paragraph';
+import Placeholder from '@tiptap/extension-placeholder';
+import Text from '@tiptap/extension-text';
+import Underline from '@tiptap/extension-underline';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { useTranslation } from 'next-i18next';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { AiFillTags } from 'react-icons/ai';
 import { BiImageAdd } from 'react-icons/bi';
 import { IoLocation } from 'react-icons/io5';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import useUploadFile from '../../../../../../hooks/useUploadFile';
-import { IPostRequestModel } from '../../../../../../models/post/post.model';
-import { formatTimePost } from '../../../../../../utils';
-import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
-import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
-import { toggleMessage } from '../../../../Message/index.component';
+import Select, { ActionMeta, InputActionMeta, MultiValue } from 'react-select';
 import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
+import useDebounce from '../../../../../../hooks/useDebounce';
+import useUploadFile from '../../../../../../hooks/useUploadFile';
 import { IPaginationRequest } from '../../../../../../models/common/ResponseMessage.model';
 import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
-import useDebounce from '../../../../../../hooks/useDebounce';
-import { useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from 'next-i18next';
+import { IPostRequestModel } from '../../../../../../models/post/post.model';
+import { capitalized, formatTimePost, uppercaseFirstLetter } from '../../../../../../utils';
+import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
+import { toggleMessage } from '../../../../Message/index.component';
+import ModalContainer from '../../../../Modals/ModalContainer/index.component';
+import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -50,8 +61,6 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const { uploadMultipleFiles, urlsRef } = useUploadFile();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
-  const [valuePost, setValuePost] = useState<string>('');
-  const [isDisabledBtnPost, setIsDisabledBtnPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -65,6 +74,32 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const [textSearch, setTextSearch] = useState<string>('');
   const dataHashTagQuery = useFindHashTag({ pagination: paramsPagination, hashTag: textSearchHashTag }, isOpenTags);
   const [dataHashtag, setDataHashtag] = useState<IHashTagResponse[]>([]);
+  const [valueTitle, setValueTitle] = useState<string>('');
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Placeholder.configure({
+        placeholder: t('content'),
+      }),
+      ListItem,
+      Document,
+      Paragraph,
+      Text,
+      BulletList,
+      OrderedList,
+      Underline,
+    ],
+    content: ``,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none',
+      },
+    },
+    editable: true,
+    autofocus: true,
+    injectCSS: false,
+  });
 
   useEffect(() => {
     if (defaultValueTag && defaultValueTag.length > 0) {
@@ -95,14 +130,6 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     setDataHashtag(tempData);
   }, [dataHashTagQuery.data]);
 
-  useEffect(() => {
-    if (valuePost.length > 0) {
-      setIsDisabledBtnPost(false);
-    } else {
-      setIsDisabledBtnPost(true);
-    }
-  }, [valuePost]);
-
   useDebounce(
     () => {
       if (textSearch !== textSearchHashTag) {
@@ -122,6 +149,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       setTags([]);
       setIsOpenTags(false);
       onClose();
+      editor?.commands.clearContent();
     } else {
       setTags([]);
       setSelectedFiles([]);
@@ -134,7 +162,6 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   };
 
   const submit = async () => {
-    console.log();
     if (type === 'experience') {
       if (filesToUpload.length === 0) {
         toggleMessage({ message: 'Experience needs at least one image', type: 'warning' });
@@ -152,14 +179,15 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       await uploadMultipleFiles(filesToUpload, 'post', currentUserId);
     }
     const params: IPostRequestModel = {
-      content: valuePost,
+      title: capitalized(valueTitle),
+      content: editor ? editor.getHTML() : 'content',
       images: filesToUpload.length === 0 ? [] : urlsRef.current,
       time: formatTimePost(new Date()),
       type: type,
       hashTags: tags,
     };
     onSubmit(params);
-    setValuePost('');
+    editor?.commands.clearContent();
     handleClose(true);
     setIsSubmitting(false);
     handleClose(false);
@@ -171,12 +199,6 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       const filesArray = Array.from(e?.target.files).map((file) => URL.createObjectURL(file));
 
       setSelectedFiles((prevImages) => prevImages.concat(filesArray));
-    }
-  };
-
-  const changeValueTextarea = (e: ChangeEvent<HTMLTextAreaElement> | undefined) => {
-    if (e) {
-      setValuePost(e.target.value);
     }
   };
 
@@ -214,8 +236,14 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     }
   };
 
+  const changeValueTextarea = (event: ChangeEvent<HTMLTextAreaElement> | undefined) => {
+    if (event) {
+      setValueTitle(event.target.value);
+    }
+  };
+
   return (
-    <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
+    <ModalContainer isOpen={isOpen} size='3xl' haveFooter={true} scrollBehavior='inside'>
       <ModalHeader fontWeight={700} textAlign={'center'}>
         {type === 'experience' ? t('title_modal_experience') : t('title_modal_faq')}
       </ModalHeader>
@@ -225,17 +253,20 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           handleClose(false);
         }}
       />
-      <ModalBody maxH='90vh'>
+      <ModalBody>
         <AutoResizeTextarea
-          maxH='80'
+          maxH='10'
           border='1px'
           _focus={{ outline: '1px' }}
-          minH='20vh'
-          placeholder={t('content')}
+          minH='10'
+          placeholder='Title of post'
           mb='2'
-          value={valuePost}
+          fontWeight='semibold'
+          value={valueTitle}
           onChange={changeValueTextarea}
         />
+
+        <BubbleEditor editor={editor} />
 
         {selectedFiles.length > 0 && (
           <Carousel infiniteLoop showArrows centerMode={selectedFiles.length > 1} showThumbs={false}>
@@ -330,7 +361,12 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           >
             {t('clear_images')}
           </Button>
-          <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
+          <Button
+            w={'100%'}
+            isLoading={isSubmitting}
+            disabled={editor?.getHTML() === '<p></p>' || valueTitle.trim() === ''}
+            onClick={submit}
+          >
             {t('post')}
           </Button>
         </Flex>

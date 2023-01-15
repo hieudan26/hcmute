@@ -10,6 +10,7 @@ import {
   MenuList,
   Text,
   useColorModeValue,
+  Heading,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -19,12 +20,13 @@ import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
 import { useCUDPost } from '../../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
-import { timeSincePost } from '../../../../../utils';
+import { timeSincePost, uppercaseFirstLetter } from '../../../../../utils';
 import { toggleMessage } from '../../../Message/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
 import { useTranslation } from 'next-i18next';
+import { Prose } from '@nikolovlazar/chakra-ui-prose';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -111,6 +113,9 @@ export default function PostRender(props: IPostRenderProps) {
           setIsOpenDelete(false);
         }}
       />
+      <Heading as='h4' size='md' px='4' py='2'>
+        {uppercaseFirstLetter(post.title)}
+      </Heading>
       <Flex justify='space-between' align='center' px='4' py='2'>
         <Flex gap='2' align='center'>
           <Link href={`/profile/${post.userId}/about`}>
@@ -155,9 +160,9 @@ export default function PostRender(props: IPostRenderProps) {
         </Flex>
       </Flex>
 
-      <Text textAlign='justify' px='4' py='2'>
-        {post.content}
-      </Text>
+      <Box textAlign='justify' px='4' py='2'>
+        <Prose dangerouslySetInnerHTML={{ __html: post.content }} />
+      </Box>
 
       {post.hashTags && post.hashTags.length > 0 && (
         <Flex direction='row' gap='2' px='4' mt='2'>
