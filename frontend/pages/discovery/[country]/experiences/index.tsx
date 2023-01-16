@@ -52,8 +52,9 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
   const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
   const dataExperiencesQuery = usePostsByTypeAndHashTag({
     pagination: { pageNumber: 0, pageSize: 12, sortBy: 'time', sortType: 'DESC' },
-    hashTag: data ? data.hashTags[0] : '#vietnam',
+    hashTags: data ? data.hashTags : ['#vietnam'],
     type: 'experience',
+    isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
 

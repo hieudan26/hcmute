@@ -61,8 +61,9 @@ const ProvinceFaqs: NextPage = (props: IProvinceFaqsProps) => {
   );
   const dataFaqsQuery = usePostsByTypeAndHashTag({
     pagination: { pageNumber: 0, pageSize: 12, sortBy: 'time', sortType: 'DESC' },
-    hashTag: data ? data.hashTags[0] : '#vietnam',
+    hashTags: data ? data.hashTags : ['#vietnam'],
     type: 'faq',
+    isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
 
