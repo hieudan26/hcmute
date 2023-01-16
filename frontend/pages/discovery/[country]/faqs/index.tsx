@@ -56,8 +56,9 @@ const CountryFaqs: NextPage = (props: ICountryFaqsProps) => {
   const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
   const dataFaqsQuery = usePostsByTypeAndHashTag({
     pagination: { pageNumber: 0, pageSize: 12, sortBy: 'time', sortType: 'DESC' },
-    hashTag: data ? data.hashTags[0] : '#vietnam',
+    hashTags: data ? data.hashTags : ['#vietnam'],
     type: 'faq',
+    isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
 

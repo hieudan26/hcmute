@@ -19,7 +19,8 @@ import postService from '../../services/post/post.service';
 interface IPostPaginationByTypeAndHashTag {
   pagination: IPaginationRequest;
   type: string;
-  hashTag: string;
+  hashTags: string[];
+  isDeleted: boolean;
 }
 
 export const useCUDPost = () => {
@@ -99,7 +100,12 @@ export const usePostsByTypeAndHashTag = (params: IPostPaginationByTypeAndHashTag
     ['posts_by_type_hashTag', params],
     async ({ pageParam = 0 }) => {
       params.pagination.pageNumber = pageParam;
-      const response = await postService.getAllPostsByTypeAndHashTag(params.pagination, params.type, params.hashTag);
+      const response = await postService.getAllPostsByTypeAndHashTag(
+        params.pagination,
+        params.type,
+        params.hashTags,
+        params.isDeleted
+      );
       return response;
     },
     {

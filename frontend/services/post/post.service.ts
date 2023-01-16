@@ -1,4 +1,3 @@
-import { AxiosResponse } from 'axios';
 import { Dispatch, SetStateAction } from 'react';
 import { API_PATH } from '../../constants/api-path.constant';
 import { AxiosResponseStatus } from '../../constants/global.constant';
@@ -10,10 +9,11 @@ class PostService {
   getAllPostsByTypeAndHashTag = async (
     params: IPaginationRequest | undefined,
     type: string,
-    hashTag: string
+    hashTags: string[],
+    isDeleted: boolean = false
   ): Promise<AxiosResponseStatus<any>> => {
     var url = API_PATH.POST;
-    const mainParams = { ...params, type: type, hashTag: hashTag };
+    const mainParams = { ...params, type: type, hashTag: hashTags, isDeleted: isDeleted };
     return getAsync(url, mainParams, false, false, true);
   };
 
