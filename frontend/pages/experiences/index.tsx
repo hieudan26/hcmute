@@ -3,10 +3,10 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
 import CreatePost from '../../components/views/Profile/Posts/CreatePost/index.component';
 import CreateNewPost from '../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
 import PostRender from '../../components/views/Profile/Posts/PostRender/index.component';
-import Weather from '../../components/views/Profile/Posts/Weather/index.component';
 import { RoleConstants } from '../../constants/roles.constant';
 import { CookieConstants, LocalStorageConstants } from '../../constants/store.constant';
 import { useCUDPost, usePostsByType } from '../../hooks/queries/posts';
@@ -14,7 +14,6 @@ import { useAppSelector } from '../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
 import { defaultAvatar } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface IExperiencesProps {}
 
@@ -59,7 +58,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
   };
 
   return (
-    <Flex gap={{ base: '0', md: '0', lg: '0', xl: '0', '2xl': '6' }} w='100%' position='relative'>
+    <>
       <CreateNewPost
         currentUserId={currentUserId}
         onSubmit={_submitPost}
@@ -67,13 +66,6 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
         isOpen={isCreatePost}
         onClose={() => setIsCreatePost(false)}
       />
-      <Box
-        display={{ base: 'none', lg: 'block' }}
-        mr={{ base: '0', md: '0', lg: '65px', xl: '0', '2xl': '6' }}
-        width={{ md: '0%', lg: '30%', xl: '40%', '2xl': '40%' }}
-      >
-        <Weather />
-      </Box>
       <Flex position='relative' justify='center' width={{ base: '100%', lg: '70%', xl: '65%', '2xl': '60%' }} direction='column'>
         {isLoggedIn && (
           <>
@@ -128,7 +120,7 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
             ))}
         </InfiniteScroll>
       </Flex>
-    </Flex>
+    </>
   );
 };
 
