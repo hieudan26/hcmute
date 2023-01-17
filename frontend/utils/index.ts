@@ -254,6 +254,15 @@ export const passwordRegex: RegExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-
 
 export const getCurrentYear: number = new Date().getFullYear();
 
+export const removeHashtag = (word: string) => {
+  const firstLetter = word.charAt(0);
+  if (firstLetter === '#') {
+    return word.slice(1);
+  } else {
+    return word;
+  }
+};
+
 export const capitalized = (word: string): string => {
   return word.charAt(0).toUpperCase() + word.slice(1);
 };

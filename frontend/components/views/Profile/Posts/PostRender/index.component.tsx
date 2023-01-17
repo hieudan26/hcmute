@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Heading,
   Icon,
   IconButton,
   Image,
@@ -10,8 +11,9 @@ import {
   MenuList,
   Text,
   useColorModeValue,
-  Heading,
 } from '@chakra-ui/react';
+import { Prose } from '@nikolovlazar/chakra-ui-prose';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
@@ -22,11 +24,10 @@ import { useCUDPost } from '../../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
 import { timeSincePost, uppercaseFirstLetter } from '../../../../../utils';
 import { toggleMessage } from '../../../Message/index.component';
+import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
-import { useTranslation } from 'next-i18next';
-import { Prose } from '@nikolovlazar/chakra-ui-prose';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -39,6 +40,8 @@ export default function PostRender(props: IPostRenderProps) {
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
+  const [isOpenHashTag, setIsOpenHashTag] = useState<boolean>(false);
+  const [queryHashtag, setQueryHashtag] = useState<string>('#vietnam');
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
   const bgColor = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
@@ -82,6 +85,13 @@ export default function PostRender(props: IPostRenderProps) {
 
   return (
     <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
+      <QueryHashtagModal
+        isOpen={isOpenHashTag}
+        query={queryHashtag}
+        onClose={() => {
+          setIsOpenHashTag(false);
+        }}
+      />
       <ModalDetailPost
         currentUserId={currentUserId}
         post={post}
@@ -174,6 +184,10 @@ export default function PostRender(props: IPostRenderProps) {
               key={`hst-${post.id}-${index}`}
               cursor='pointer'
               _hover={{ textDecoration: 'underline' }}
+              onClick={() => {
+                setQueryHashtag(item);
+                setIsOpenHashTag(true);
+              }}
             >
               {item}
             </Text>

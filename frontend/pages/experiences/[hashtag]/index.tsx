@@ -1,35 +1,37 @@
 import { Box, Center, Flex, Skeleton, SkeletonCircle, SkeletonText, Spacer, Spinner, useColorModeValue } from '@chakra-ui/react';
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
-import CreatePost from '../../components/views/Profile/Posts/CreatePost/index.component';
-import CreateNewPost from '../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
-import PostRender from '../../components/views/Profile/Posts/PostRender/index.component';
-import { RoleConstants } from '../../constants/roles.constant';
-import { CookieConstants, LocalStorageConstants } from '../../constants/store.constant';
-import { useCUDPost, usePostsByType } from '../../hooks/queries/posts';
-import { useAppSelector } from '../../hooks/redux';
-import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
-import { defaultAvatar } from '../../utils';
-import { LocalUtils } from '../../utils/local.utils';
-import { ArrayTenTemp } from '../experiences';
+import { ArrayTenTemp } from '..';
+import CreatePost from '../../../components/views/Profile/Posts/CreatePost/index.component';
+import CreateNewPost from '../../../components/views/Profile/Posts/Modals/CreateNewPost/index.component';
+import PostRender from '../../../components/views/Profile/Posts/PostRender/index.component';
+import { RoleConstants } from '../../../constants/roles.constant';
+import { CookieConstants, LocalStorageConstants } from '../../../constants/store.constant';
+import { useCUDPost, usePostsByTypeAndHashTag } from '../../../hooks/queries/posts';
+import { useAppSelector } from '../../../hooks/redux';
+import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../models/post/post.model';
+import { defaultAvatar } from '../../../utils';
+import { LocalUtils } from '../../../utils/local.utils';
 
-export interface IFAQProps {}
+export interface IExperienceHashtagProps {}
 
-const FAQ: NextPage = (props: IFAQProps) => {
+const ExperienceHashtag: NextPage = (props: IExperienceHashtagProps) => {
+  const router = useRouter();
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [avatar, setAvatar] = useState<string>(defaultAvatar);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const auth = useAppSelector((state) => state.auth.value);
-  const posts = usePostsByType({
-    type: 'faq',
-    sortBy: 'time',
-    sortType: 'DESC',
-    pageNumber: 0,
-    pageSize: 10,
+  const hashtag = `#${router.query.hashtag}`;
+  const posts = usePostsByTypeAndHashTag({
+    pagination: { pageNumber: 0, pageSize: 12, sortBy: 'time', sortType: 'DESC' },
+    hashTags: [hashtag],
+    type: 'experience',
+    isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
   const bgCreatePost = useColorModeValue('white', 'backgroundBox.primary_darkMode');
@@ -61,7 +63,7 @@ const FAQ: NextPage = (props: IFAQProps) => {
       <CreateNewPost
         currentUserId={currentUserId}
         onSubmit={_submitPost}
-        type='faq'
+        type='experience'
         isOpen={isCreatePost}
         onClose={() => setIsCreatePost(false)}
       />
@@ -94,15 +96,15 @@ const FAQ: NextPage = (props: IFAQProps) => {
           {posts.data
             ? posts.data.pages.map((page) =>
                 page.data.content.map((item: IPostResponseModel, index: number) => (
-                  <PostRender key={`faq-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
+                  <PostRender key={`exphash-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
                 ))
               )
             : ArrayTenTemp.map((item, index) => (
                 <>
-                  <Box key={`boxfaq-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
-                    <SkeletonCircle key={`skcfaq-${index}`} size='10' />
-                    <SkeletonText key={`sktfaq-${index}`} my='4' noOfLines={4} spacing='4' />
-                    <Skeleton key={`skfaq-${index}`} h='xs'></Skeleton>
+                  <Box key={`boxexphash-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                    <SkeletonCircle key={`skcexphash-${index}`} size='10' />
+                    <SkeletonText key={`sktexphash-${index}`} my='4' noOfLines={4} spacing='4' />
+                    <Skeleton key={`skexphash-${index}`} h='xs'></Skeleton>
                   </Box>
                 </>
               ))}
@@ -110,7 +112,7 @@ const FAQ: NextPage = (props: IFAQProps) => {
           {posts.isFetching &&
             ArrayTenTemp.map((item, index) => (
               <>
-                <Box key={`boxfaqft-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
+                <Box key={`boxexpfthash-${index}`} padding='6' boxShadow='lg' bg='white' mb='5' rounded='md'>
                   <SkeletonCircle size='10' />
                   <SkeletonText my='4' noOfLines={4} spacing='4' />
                   <Skeleton h='xs'></Skeleton>
@@ -123,9 +125,9 @@ const FAQ: NextPage = (props: IFAQProps) => {
   );
 };
 
-export default FAQ;
+export default ExperienceHashtag;
 
-export const getStaticProps: GetStaticProps = async ({ locale }: any) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, [

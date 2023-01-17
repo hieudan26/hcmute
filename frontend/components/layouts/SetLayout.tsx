@@ -16,6 +16,7 @@ import AnonymousLayout from './anonymous/AnonymousLayout.layout';
 import AuthLayout from './auth/AuthLayout.layout';
 import ChatLayout from './chat/ChatLayout.layout';
 import UserLayout from './user/UserLayout.layout';
+import PostsLayout from './posts/PostsLayout.layout';
 
 export default function SetLayout({ children }: any) {
   const router = useRouter();
@@ -98,11 +99,21 @@ export default function SetLayout({ children }: any) {
   } else {
     if (isLoggedIn) {
       // if (role === RoleConstants.USER) {
-      return (
-        <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
-          {children}
-        </UserLayout>
-      );
+      // return (
+      if (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) {
+        return (
+          <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
+            <PostsLayout>{children}</PostsLayout>
+          </UserLayout>
+        );
+      } else {
+        return (
+          <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
+            {children}
+          </UserLayout>
+        );
+      }
+      // );
       // } else {
       //   if (router.pathname.includes('/admin')) {
       //     return <AdminLayout>{children}</AdminLayout>;
@@ -112,7 +123,15 @@ export default function SetLayout({ children }: any) {
     }
     // }
     else {
-      return <AnonymousLayout>{children}</AnonymousLayout>;
+      if (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) {
+        return (
+          <AnonymousLayout>
+            <PostsLayout>{children}</PostsLayout>
+          </AnonymousLayout>
+        );
+      } else {
+        return <AnonymousLayout>{children}</AnonymousLayout>;
+      }
     }
   }
 }
