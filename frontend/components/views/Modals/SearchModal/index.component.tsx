@@ -33,6 +33,8 @@ import searchService from '../../../../services/search/search.service';
 import SearchResults from '../../Navbar/Search/Results/index.component';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
+import hashtagService from '../../../../services/hashtag/hashtag.service';
+import { removeHashtag } from '../../../../utils';
 
 export interface ISearchModalProps {
   isOpen: boolean;
@@ -56,6 +58,7 @@ export default function SearchModal(props: ISearchModalProps) {
   const [searchExperienceResults, setsearchExperienceResults] = useState<ISearchResponse[]>([]);
   const [searchPlaceResults, setsearchPlaceResults] = useState<ISearchResponse[]>([]);
   const [searchUserResults, setsearchUserResults] = useState<ISearchResponse[]>([]);
+  const [searchHashtagResults, setsearchHashtagResults] = useState<ISearchResponse[]>([]);
   const [activeSectionIndex, setActiveSectionIndex] = useState<number>(0);
 
   useEffect(() => {
@@ -79,16 +82,33 @@ export default function SearchModal(props: ISearchModalProps) {
       setsearchUserResults(response.data.content);
     };
 
+    const fetchDataHashtag = async () => {
+      const response = await hashtagService.findHashTag(paginationLimit, key);
+      const listHashtag: ISearchResponse[] = [];
+      response.data.content.map((item: any) => {
+        const temp: ISearchResponse = {
+          content: item.value,
+          name: item.placeUrl,
+          type: 'hashtag',
+          id: removeHashtag(item.value),
+        };
+        listHashtag.push(temp);
+      });
+      setsearchHashtagResults(listHashtag);
+    };
+
     if (key.trim() === '') {
       setsearchFaqResults([]);
       setsearchExperienceResults([]);
       setsearchPlaceResults([]);
       setsearchUserResults([]);
+      setsearchHashtagResults([]);
     } else {
       fetchDataFaq();
       fetchDataExperience();
       fetchDataPlace();
       fetchDataUser();
+      fetchDataHashtag();
     }
     setIsFetching(false);
   }, [key]);
@@ -192,6 +212,15 @@ export default function SearchModal(props: ISearchModalProps) {
               <SearchResults
                 results={searchUserResults}
                 category='user'
+                close={handleClose}
+                activeSectionIndex={activeSectionIndex}
+              />
+            )}
+
+            {searchHashtagResults.length > 0 && (
+              <SearchResults
+                results={searchHashtagResults}
+                category='hashtag'
                 close={handleClose}
                 activeSectionIndex={activeSectionIndex}
               />

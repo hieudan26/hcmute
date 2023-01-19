@@ -8,12 +8,12 @@ interface ISearchResultProps {
   results: ISearchResponse[];
   close: () => void;
   activeSectionIndex: number;
-  category: 'faq' | 'experience' | 'user' | 'place';
+  category: 'faq' | 'experience' | 'user' | 'place' | 'hashtag';
 }
 
 interface ICategoryProps {
   results: ISearchResponse[];
-  category: 'faq' | 'experience' | 'user' | 'place';
+  category: 'faq' | 'experience' | 'user' | 'place' | 'hashtag';
   close: () => void;
   activeSectionIndex: number;
 }
