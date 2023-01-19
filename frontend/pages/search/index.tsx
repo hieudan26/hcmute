@@ -30,6 +30,8 @@ import Result from '../../components/views/Navbar/Search/Result/index.component'
 import { v4 as uuidv4 } from 'uuid';
 import Pagination from '@choc-ui/paginator';
 import { useTranslation } from 'next-i18next';
+import hashtagService from '../../services/hashtag/hashtag.service';
+import { removeHashtag } from '../../utils';
 
 export interface ISearchProps {}
 
@@ -69,6 +71,9 @@ const Search: NextPage = (props: ISearchProps) => {
   const [searchUserResults, setsearchUserResults] = useState<ISearchResponse[]>([]);
   const [paginationUser, setPaginationUser] = useState<IPaginationRequest>(intialPagination);
   const [pageableUser, setPageableUser] = useState<IPageableResponse>(initialPageable);
+  const [searchHashtagResults, setsearchHashtagResults] = useState<ISearchResponse[]>([]);
+  const [paginationHashtag, setPaginationHashtag] = useState<IPaginationRequest>(intialPagination);
+  const [pageableHashtag, setPageableHashtag] = useState<IPageableResponse>(initialPageable);
 
   useEffect(() => {
     const fetchDataFaq = async () => {
@@ -93,6 +98,22 @@ const Search: NextPage = (props: ISearchProps) => {
       const response = await searchService.searchByType_Loading(paginationUser, key, 'user');
       setsearchUserResults(response.data.content);
       setPageableUser(response.data.pageable);
+    };
+
+    const fetchDataHashtag = async () => {
+      const response = await hashtagService.findHashTag(paginationHashtag, key);
+      const listHashtag: ISearchResponse[] = [];
+      response.data.content.map((item: any) => {
+        const temp: ISearchResponse = {
+          content: item.value,
+          name: item.placeUrl,
+          type: 'hashtag',
+          id: removeHashtag(item.value),
+        };
+        listHashtag.push(temp);
+      });
+      setsearchHashtagResults(listHashtag);
+      setPageableHashtag(response.data.pageable);
     };
 
     //indexTab === 0
@@ -128,8 +149,16 @@ const Search: NextPage = (props: ISearchProps) => {
       } else {
         fetchDataUser();
       }
+    } else if (indexTab === 5) {
+      if (key.trim() === '') {
+        setsearchHashtagResults([]);
+        setPaginationHashtag(intialPagination);
+        setPageableHashtag(initialPageable);
+      } else {
+        fetchDataHashtag();
+      }
     }
-  }, [indexTab, key, paginationExperience, paginationFaq, paginationPlace, paginationUser]);
+  }, [indexTab, key, paginationExperience, paginationFaq, paginationHashtag, paginationPlace, paginationUser]);
 
   useDebounce(
     () => {
@@ -178,6 +207,10 @@ const Search: NextPage = (props: ISearchProps) => {
         const tempPagination = { ...paginationUser };
         tempPagination.pageNumber = page - 1;
         setPaginationUser(tempPagination);
+      } else if (indexTab === 5) {
+        const tempPagination = { ...paginationHashtag };
+        tempPagination.pageNumber = page - 1;
+        setPaginationHashtag(tempPagination);
       }
     }
   };
@@ -227,6 +260,13 @@ const Search: NextPage = (props: ISearchProps) => {
               }}
             >
               {t('tab_people')}
+            </Tab>
+            <Tab
+              onClick={() => {
+                setIndexTab(5);
+              }}
+            >
+              Hashtag
             </Tab>
           </TabList>
 
@@ -363,6 +403,40 @@ const Search: NextPage = (props: ISearchProps) => {
                   }}
                   defaultCurrent={1}
                   total={pageableUser.totalItems}
+                  paginationProps={{
+                    display: 'flex',
+                  }}
+                  pageNeighbours={1}
+                />
+              </Flex>
+            </TabPanel>
+            <TabPanel>
+              {searchHashtagResults.map((item, index) => (
+                <Box key={`hashtag-${index}-${uuidv4()}`} my='4'>
+                  <Result
+                    active={false}
+                    category='hashtag'
+                    component={item.content ? item.content : ''}
+                    section={item.name}
+                    onClick={() => {}}
+                    url={item.id}
+                    key={`hashtag-key-${index}-${uuidv4()}`}
+                  />
+                  <Divider />
+                </Box>
+              ))}
+              <Flex mt='8' w='full' color={colorTxt} alignItems='center' justifyContent='center'>
+                <Pagination
+                  onChange={(page) => {
+                    changePagination(page);
+                  }}
+                  activeStyles={{ bg: '#D0637C', color: 'white' }}
+                  hoverStyles={{
+                    bg: '#F5DDe0',
+                    color: 'black',
+                  }}
+                  defaultCurrent={1}
+                  total={pageableHashtag.totalItems}
                   paginationProps={{
                     display: 'flex',
                   }}

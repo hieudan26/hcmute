@@ -20,10 +20,12 @@ export interface IQueryHashtagModalProps {
   isOpen: boolean;
   onClose: () => void;
   query: string;
+  isSearch?: boolean;
+  onCloseSearch?: () => void;
 }
 
 export default function QueryHashtagModal(props: IQueryHashtagModalProps) {
-  const { isOpen, onClose, query } = props;
+  const { isOpen, onClose, query, isSearch, onCloseSearch } = props;
   const bgModalContent = useColorModeValue('white', 'header.primary_darkMode');
   const router = useRouter();
   const [value, setValue] = useState<string>('experience');
@@ -35,8 +37,14 @@ export default function QueryHashtagModal(props: IQueryHashtagModalProps) {
   const filter = () => {
     const handleQuery = removeHashtag(query);
     if (value === 'experience') {
+      if (isSearch) {
+        onCloseSearch && onCloseSearch();
+      }
       router.push(`/experiences/${handleQuery}`);
     } else {
+      if (isSearch) {
+        onCloseSearch && onCloseSearch();
+      }
       router.push(`/faq/${handleQuery}`);
     }
   };
