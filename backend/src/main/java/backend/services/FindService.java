@@ -33,7 +33,7 @@ public class FindService {
                     ((List<Posts>)((PagingResponse)result.getData()).getContent()).stream().map(
                             item ->
                             FindResponse.builder()
-                                    .name(item.getOwner().getFirstName()+item.getOwner().getLastName()+"'s faq")
+                                    .name(item.getTitle())
                                     .type("faq")
                                     .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
@@ -48,7 +48,7 @@ public class FindService {
             ((PagingResponse)result.getData()).setContent(
                     ((List<Posts>)((PagingResponse)result.getData()).getContent()).stream().map(
                             item -> FindResponse.builder()
-                                    .name(item.getOwner().getFirstName()+item.getOwner().getLastName()+"'s experience")
+                                    .name(item.getTitle())
                                     .type("experience")
                                     .id(String.valueOf(item.getId()))
                                     .content(item.getContent())
