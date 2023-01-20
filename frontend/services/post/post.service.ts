@@ -13,7 +13,7 @@ class PostService {
     isDeleted: boolean = false
   ): Promise<AxiosResponseStatus<any>> => {
     var url = API_PATH.POST;
-    const mainParams = { ...params, type: type, hashTag: hashTags, isDeleted: isDeleted };
+    const mainParams = { ...params, type: type, hashTags: hashTags, isDeleted: isDeleted };
     return getAsync(url, mainParams, false, false, true);
   };
 

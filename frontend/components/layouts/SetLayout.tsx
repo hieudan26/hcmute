@@ -100,7 +100,10 @@ export default function SetLayout({ children }: any) {
     if (isLoggedIn) {
       // if (role === RoleConstants.USER) {
       // return (
-      if (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) {
+      if (
+        (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) &&
+        !router.pathname.includes('/discovery')
+      ) {
         return (
           <UserLayout curUser={auth} is_first_login={auth === null ? 'true' : 'false'}>
             <PostsLayout>{children}</PostsLayout>
@@ -123,7 +126,10 @@ export default function SetLayout({ children }: any) {
     }
     // }
     else {
-      if (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) {
+      if (
+        (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) &&
+        !router.pathname.includes('/discovery')
+      ) {
         return (
           <AnonymousLayout>
             <PostsLayout>{children}</PostsLayout>
