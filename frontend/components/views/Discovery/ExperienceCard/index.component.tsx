@@ -1,4 +1,4 @@
-import { Box, Flex, Image, chakra, Icon, useColorModeValue } from '@chakra-ui/react';
+import { Box, Flex, Image, chakra, Icon, useColorModeValue, Avatar } from '@chakra-ui/react';
 import { IPostResponseModel } from '../../../../models/post/post.model';
 import { AiFillHeart } from 'react-icons/ai';
 import { BiCommentDetail } from 'react-icons/bi';
@@ -10,7 +10,9 @@ export interface IExperienceCardProps {
 
 export default function ExperienceCard(props: IExperienceCardProps) {
   const { data } = props;
-  const footerbg = useColorModeValue('white', 'blackAlpha.600');
+  const footerbg = useColorModeValue('white', 'blackAlpha.400');
+  const namebg = useColorModeValue('white', 'blackAlpha.400');
+  const dividerbg = useColorModeValue('gray.300', 'blackAlpha.400');
   const router = useRouter();
 
   const navigateDetail = () => {
@@ -33,7 +35,13 @@ export default function ExperienceCard(props: IExperienceCardProps) {
         />
         <Flex alignItems='center' px={4} py={2} bg='gray.700'>
           <chakra.h1 color='white' fontWeight='medium' fontSize='sm' noOfLines={1}>
-            {data.fullName}&apos;s experience
+            {data.title}
+          </chakra.h1>
+        </Flex>
+        <Flex alignItems='center' px={4} py={2} bg={namebg} borderBottom='1px' borderBottomColor={dividerbg} gap={2}>
+          <Avatar size='xs' name={data.fullName} src={data.avatar} />
+          <chakra.h1 color='gray.700' fontWeight='medium' fontSize='sm' noOfLines={1}>
+            {data.fullName}
           </chakra.h1>
         </Flex>
       </Box>

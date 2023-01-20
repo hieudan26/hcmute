@@ -7,6 +7,7 @@ import { MdPlace } from 'react-icons/md';
 import { CgHashtag } from 'react-icons/cg';
 import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component';
 import { removeHashtag } from '../../../../../utils';
+import { Prose } from '@nikolovlazar/chakra-ui-prose';
 
 interface ResultProps {
   active: boolean;
@@ -150,6 +151,10 @@ const Result = (props: ResultProps) => {
             <Box textTransform='capitalize' color={resultsTextColor} _groupHover={{ color: 'black' }}>
               {props.category === 'user' && !props.component ? (
                 <Text noOfLines={1}>No description</Text>
+              ) : props.category === 'experience' || props.category === 'faq' ? (
+                <Text noOfLines={1}>
+                  <Prose dangerouslySetInnerHTML={{ __html: props.component }} />
+                </Text>
               ) : (
                 <Text noOfLines={1}>{props.component}</Text>
               )}
