@@ -22,18 +22,12 @@ const SuggetFriends: NextPage = (props: ISuggetFriendsProps) => {
   );
 
   return (
-    <Box mb='10' w='full' bg='transparent'>
-      <Heading mb='4' textTransform='uppercase' color='#D0637C'>
+    <Box mb='4' w='full' bg='transparent'>
+      <Heading mb='6' textTransform='uppercase' color='#D0637C'>
         {t('heading')}
       </Heading>
       <Text fontSize='md'>{t('introduce')}</Text>
-      <Center my='4'>
-        <Divider w='10%' />
-      </Center>
-      <Center>
-        <Input type='search' bg={bgInput} shadow='md' w='70%' />
-      </Center>
-      <Center my='4'>
+      <Center mb='6'>
         <Divider w='10%' />
       </Center>
 
@@ -60,6 +54,11 @@ const SuggetFriends: NextPage = (props: ISuggetFriendsProps) => {
               </Skeleton>
             ))}
       </InfiniteScroll>
+      {!suggetFriends.hasNextPage && (
+        <Center mt='8' w='full'>
+          <Text>Không còn dữ liệu.</Text>
+        </Center>
+      )}
     </Box>
   );
 };
