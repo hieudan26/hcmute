@@ -32,6 +32,6 @@ public interface PlaceRepository extends PagingAndSortingRepository<Places,Integ
     @Query("select places from Places places where  places.isDisable = false and places.areas.id = :areaId and places.placeCategories.name = :type")
     Optional<Places> findPlaceWithArea(Integer areaId, String type);
 
-    Page<Places> findByNameIgnoreCaseContainingAndDisableIsFalse(Pageable pageable, String key);
+    Page<Places> findByNameIgnoreCaseContainingAndIsDisableIsFalse(Pageable pageable, String key);
 
 }
