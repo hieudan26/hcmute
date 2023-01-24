@@ -64,6 +64,18 @@ export default function TopNav(props: ITopNavProps) {
           {t('navbar.photos')}
         </Button>
       </NextLink>
+      <NextLink href={`../${userId}/suggest-friends`} scroll={false}>
+        <Button
+          borderBottom={mainCurrentRoute === 'suggest-friends' ? '2px' : '0px'}
+          borderBottomColor={mainCurrentRoute === 'suggest-friends' ? 'textColor.logo' : 'transparent'}
+          bg='none'
+          color={colorText}
+          borderRadius='none'
+          onClick={() => pushRoute('suggest-friends')}
+        >
+          Đề xuất kết bạn
+        </Button>
+      </NextLink>
     </>
   );
 }
