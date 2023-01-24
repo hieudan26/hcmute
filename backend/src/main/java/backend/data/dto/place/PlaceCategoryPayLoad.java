@@ -13,4 +13,5 @@ public class PlaceCategoryPayLoad {
     Integer id;
     String name;
     String image;
+    Boolean isDisable = false;
 }
