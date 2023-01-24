@@ -39,6 +39,7 @@ public class CommentService {
                 deleteChild(comment);
         }
         parents.setIsDeleted(true);
+        parents.setDisable(true);
     }
 
     public List<CommentResponse> mappingChilds(List<Comments> parents) {
@@ -76,6 +77,7 @@ public class CommentService {
             throw new NoPermissionException("You can't update other person's information.");
 
         comments.setIsDeleted(true);
+        comments.setDisable(true);
         deleteChilds(comments.getChildComments().stream().toList());
         return BaseResponse.builder().message("delete comment successful.")
                 .data(commentMapper.fromCommentsToCommentResponse(commentRepository.save(comments)))
