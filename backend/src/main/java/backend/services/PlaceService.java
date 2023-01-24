@@ -56,7 +56,7 @@ public class PlaceService {
 
     public BaseResponse findPlaceWithKey(PagingRequest pagingRequest, String key){
         PagingResponse pagingResponse = new PagingResponse(
-                placeRepository.findByNameIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest), key));
+                placeRepository.findByNameIgnoreCaseContainingAndDisableIsFalse(PagingUtils.getPageable(pagingRequest), key));
 
         return BaseResponse.builder().message("find place successful.")
                 .data(pagingResponse)

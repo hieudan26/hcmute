@@ -14,24 +14,24 @@ import java.util.Optional;
 public interface PlaceRepository extends PagingAndSortingRepository<Places,Integer>, JpaSpecificationExecutor<Places> {
     Page<Places> findByPlaceCategories_Name(Pageable pageable, String name);
 
-    @Query("select places from Places places where places.areas.parentId = :areaId and places.placeCategories.name = :type order by places.name asc")
+    @Query("select places from Places places where  places.isDisable = false and places.areas.parentId = :areaId and places.placeCategories.name = :type order by places.name asc")
     Page<Places> findAllProvince(Pageable pageable, Integer areaId, String type);
 
-    @Query("select places from Places places where places.areas.id = :areaId and  places.placeCategories.name not in ('country','province') order by places.name asc")
+    @Query("select places from Places places where places.areas.id = :areaId and places.isDisable = false and places.placeCategories.name not in ('country','province') order by places.name asc")
     Page<Places> findAllPlaceByProvince(Pageable pageable, Integer areaId);
 
-    @Query("select places from Places places where places.areas.id = :areaId and places.placeCategories.name = :type order by places.name asc")
+    @Query("select places from Places places where places.areas.id = :areaId and places.isDisable = false and places.placeCategories.name = :type order by places.name asc")
     Page<Places> findAllPlaceByProvinceWithType(Pageable pageable, Integer areaId, String type);
 
-    @Query("select places from Places places where places.areas.id = :areaId and places.url = :url")
+    @Query("select places from Places places where  places.isDisable = false and places.areas.id = :areaId and places.url = :url")
     Optional<Places> findPlaceByUrl(Integer areaId, String url);
 
-    @Query("select places from Places places where places.areas.parentId = :areaId and places.url = :url")
+    @Query("select places from Places places where  places.isDisable = false and places.areas.parentId = :areaId and places.url = :url")
     Optional<Places> findProvinceByUrl(Integer areaId, String url);
     Optional<Places> findByUrl(String url);
-    @Query("select places from Places places where places.areas.id = :areaId and places.placeCategories.name = :type")
+    @Query("select places from Places places where  places.isDisable = false and places.areas.id = :areaId and places.placeCategories.name = :type")
     Optional<Places> findPlaceWithArea(Integer areaId, String type);
 
-    Page<Places> findByNameIgnoreCaseContaining(Pageable pageable, String key);
+    Page<Places> findByNameIgnoreCaseContainingAndDisableIsFalse(Pageable pageable, String key);
 
 }

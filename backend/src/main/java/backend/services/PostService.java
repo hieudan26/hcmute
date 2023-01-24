@@ -56,7 +56,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String type, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByTypeAndTitleIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),type,key));
+                postRepository.findByTypeAndTitleIgnoreCaseContainingAndDisableIsFalse(PagingUtils.getPageable(pagingRequest),type,key));
 
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
@@ -65,7 +65,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByTitleIgnoreCaseContaining(PagingUtils.getPageable(pagingRequest),key)
+                postRepository.findByTitleIgnoreCaseContainingAndDisableIsFalse(PagingUtils.getPageable(pagingRequest),key)
                         .map(postMapper::PostsToPostsResponse));
 
         return BaseResponse.builder().message("Find all posts successful.")
@@ -138,6 +138,7 @@ public class PostService {
             throw new NoPermissionException("You can't update other person's information.");
 
         post.setIsDeleted(true);
+        post.setDisable(true);
         return BaseResponse.builder().message("Update post successful.")
                 .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
                 .build();
