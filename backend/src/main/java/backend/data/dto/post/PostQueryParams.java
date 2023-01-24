@@ -16,4 +16,5 @@ public class PostQueryParams {
     List<String> hashTags;
     String userId;
     Boolean isDeleted = false;
+    Boolean isDisable = false;
 }

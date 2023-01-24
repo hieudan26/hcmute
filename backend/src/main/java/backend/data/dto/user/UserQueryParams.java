@@ -25,4 +25,5 @@ public class UserQueryParams{
     String district;
     String village;
     String role;
+    Boolean isDisable;
 }
