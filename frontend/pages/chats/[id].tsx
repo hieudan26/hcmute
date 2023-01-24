@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Center, Flex, useColorModeValue } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -12,19 +12,38 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import useChatScroll from '../../hooks/useChatScroll';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 import chatService from '../../services/chat/chat.service';
+import { useTranslation } from 'next-i18next';
 
 export interface IChatsProps {}
 
 const Chats: NextPage<IChatsProps> = (props) => {
+  const { t } = useTranslation('chat');
+  const bgCantChat = useColorModeValue('gray.200', 'gray.700');
+  const textCantChat = useColorModeValue('black', 'white');
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [enableGetRoom, setEnableGetRoom] = useState<boolean>(false);
   const [curUserId, setCurUserId] = useState<string | undefined>(undefined);
+  const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const dataChat = useAppSelector((state) => state.singleChats.value);
   const lastMessage = useChatScroll(dataChat.content);
   const [pageable, setPageable] = useState<IPaginationRequest>({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' });
   const detailInforRoom = useRoom(roomId as string, enableGetRoom);
+
+  useEffect(() => {
+    if (detailInforRoom.data) {
+      const fetchStatusInRoom = async () => {
+        const filtered = detailInforRoom.data.data.members.filter((item: any) => {
+          return item.userId !== curUserId;
+        })[0];
+        const response = await chatService.isInRoom(filtered.userId);
+        const isInRoom = response.data.isInChatRoom;
+        setIsInRoom(isInRoom);
+      };
+      fetchStatusInRoom();
+    }
+  }, [curUserId, detailInforRoom.data]);
 
   useEffect(() => {
     if (roomId) {
@@ -48,7 +67,7 @@ const Chats: NextPage<IChatsProps> = (props) => {
       dispatch(resetMessage());
       setPageable({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' });
     }
-  }, [router.query]);
+  }, [roomId, router.query]);
 
   useEffect(() => {
     const { curUser } = router.query;
@@ -71,7 +90,13 @@ const Chats: NextPage<IChatsProps> = (props) => {
     <Flex direction='column' grow='1' height='100vh' maxWidth='100%'>
       <SingleChatHeader room={detailInforRoom.data?.data} userId={curUserId} />
       <ChatMessages loadMoreMessage={loadMoreMessage} data={dataChat} scrollRef={lastMessage} />
-      <ChatBox scrollRef={lastMessage} userId={curUserId} roomId={roomId} />
+      {isInRoom ? (
+        <ChatBox scrollRef={lastMessage} userId={curUserId} roomId={roomId} />
+      ) : (
+        <Center minH='10' bg={bgCantChat} color={textCantChat}>
+          {t('cant_chat')}
+        </Center>
+      )}
     </Flex>
   );
 };

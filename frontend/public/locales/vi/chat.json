@@ -1,1 +1,20 @@
-{"all_friends":"Tất cả bạn bè","chat":{"button":"Hãy bắt đầu ngay bây giờ","description":"Chúng tôi sẽ giúp bạn kết nối với tất cả bạn bè của bạn ở đây. Bạn có thể giao tiếp trong thời gian thực hoặc thông qua trò chuyện nhóm của mình.","heading":"Chào mừng đến với thế giới nhắn tin Lumiere.","helpmessage":"Không cần thẻ tín dụng."},"create_group":"Tạo trò chuyện nhóm","function":"Chức năng này hiện không khả dụng","group_chats":"Trò chuyện nhóm","input_search":"Tìm kiếm cuộc trò chuyện, v.v","loadmore":"Xem thêm","nodata":"Hiện tại không có sẵn dữ liệu.","singlechat":{"activeStatus":"Hoạt động lần cuối:"},"single_chats":"Trò chuyện đơn"}
+{
+  "all_friends": "Tất cả bạn bè",
+  "chat": {
+    "button": "Hãy bắt đầu ngay bây giờ",
+    "description": "Chúng tôi sẽ giúp bạn kết nối với tất cả bạn bè của bạn ở đây. Bạn có thể giao tiếp trong thời gian thực hoặc thông qua trò chuyện nhóm của mình.",
+    "heading": "Chào mừng đến với thế giới nhắn tin Lumiere.",
+    "helpmessage": "Không cần thẻ tín dụng."
+  },
+  "create_group": "Tạo trò chuyện nhóm",
+  "function": "Chức năng này hiện không khả dụng",
+  "group_chats": "Trò chuyện nhóm",
+  "input_search": "Tìm kiếm cuộc trò chuyện, v.v",
+  "loadmore": "Xem thêm",
+  "nodata": "Hiện tại không có sẵn dữ liệu.",
+  "singlechat": {
+    "activeStatus": "Hoạt động lần cuối:"
+  },
+  "single_chats": "Trò chuyện đơn",
+  "cant_chat": "Kết bạn để nhắn tin"
+}
