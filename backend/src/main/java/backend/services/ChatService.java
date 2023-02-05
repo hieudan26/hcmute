@@ -42,10 +42,16 @@ public class ChatService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     public void sendPrivateMessage(MessagePayLoad messagePayLoad, SimpMessageHeaderAccessor headerAccessor) throws NoPermissionException {
         if(headerAccessor == null || headerAccessor.getUser() == null){
-            throw new NoPermissionException(String.format("You are not allowed to send message"));
+            throw new NoPermissionException("You are not allowed to send message");
         }
+
         String userId = headerAccessor.getUser().getName();
         ChatRooms chatRooms = getUserChatRoom(messagePayLoad.getRoom(),userId);
+
+        if(!getChatRoomFriendStatus(chatRooms)){
+            throw new NoPermissionException("You are not friend");
+        }
+
         Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
         for (var user : chatRooms.getMembers()){
             simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),mapper.fromMessagesToMessagePayload(messages));
@@ -81,6 +87,13 @@ public class ChatService {
         return BaseResponse.builder().message("Get rooms successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRooms))
                 .build();
+    }
+
+    public Boolean getChatRoomFriendStatus(ChatRooms rooms) throws NoPermissionException {
+        var listUser = rooms.getMembers().stream().toList();
+        var status = userService.checkCoupleStatus(listUser.get(0).getId(), listUser.get(1).getId());
+
+        return status.equals(FriendStatuses.FRIEND.getStatus());
     }
 
     public ChatRooms getUserChatRoom (Integer roomId, String userId) throws NoPermissionException {

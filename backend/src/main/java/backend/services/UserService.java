@@ -16,6 +16,7 @@ import backend.repositories.specification.SearchSpecification;
 import backend.security.configuration.CustomUserDetail;
 import backend.utils.CognitoUtil;
 import backend.utils.PagingUtils;
+import backend.utils.S3Util;
 import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +45,9 @@ public class UserService {
     private UserRepository userRepository;
     private final String owner_key = "owner";
     private final String friend_key = "friend";
+
+    private S3Util s3Util;
+
 
     public BaseResponse createUser(UserFirstLoginRequest userFirstLoginRequest){
         CustomUserDetail userDetail = ((CustomUserDetail)SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -112,6 +116,15 @@ public class UserService {
             throw new NoPermissionException("You can't update other person's information.");
 
         Users users = getUser(id);
+
+        if (!updateUserRequest.getAvatar().equals(users.getAvatar())){
+            s3Util.deleteByUrl(users.getAvatar());
+        }
+
+        if (!updateUserRequest.getCoverBackground().equals(users.getCoverBackground())){
+            s3Util.deleteByUrl(users.getCoverBackground());
+        }
+
         userMapper.update(users,updateUserRequest);
 
         return BaseResponse.builder().message("Update user successful")
@@ -143,7 +156,11 @@ public class UserService {
     }
     public String getFriendStatusResult(String friendId){
         String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        Users users = getUser(id);
+        return checkCoupleStatus(id, friendId);
+    }
+
+    public String checkCoupleStatus(String userId, String friendId){
+        Users users = getUser(userId);
         var friend = users.getFriends().stream()
                 .filter(friends -> friends.getFriend().getId().equals(friendId))
                 .findFirst();

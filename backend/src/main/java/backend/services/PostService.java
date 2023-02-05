@@ -15,6 +15,7 @@ import backend.mapper.PostMapper;
 import backend.repositories.CommentRepository;
 import backend.repositories.PostRepository;
 import backend.utils.PagingUtils;
+import backend.utils.S3Util;
 import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +38,8 @@ public class PostService {
     private UserService userService;
     private PostMapper postMapper;
     private CommentService commentService;
+
+    private S3Util s3Util;
 
     public BaseResponse getAllPosts(){
         return BaseResponse.builder().message("Find all posts successful.")
@@ -104,6 +107,7 @@ public class PostService {
         if(isReactPost.isPresent()){
             posts.getReaction().remove(users);
         }
+
         else{
             posts.getReaction().add(users);
         }
@@ -119,6 +123,13 @@ public class PostService {
 
         if(!userId.equals(post.getOwner().getId()))
             throw new NoPermissionException("You can't update other person's information.");
+
+        for (var image : post.getImages()){
+            if(updatePostRequest.getImages().indexOf(image.getLink()) < 0){
+                s3Util.deleteByUrl(image.getLink());
+            }
+        }
+
         postMapper.fromUpdatePostRequestToPosts(post,updatePostRequest);
 
         post.getHashTags().addAll(updatePostRequest.getHashTags().stream().map(
