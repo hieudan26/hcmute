@@ -31,15 +31,15 @@ export default function MenuItem(props: IMenuItemProps) {
           paddingY={['3px', '3px', '3px', '3px', '5px']}
         >
           <Text
-            paddingBottom={currentRoute === to ? '5px' : '0px'}
-            borderBottom={currentRoute === to ? '2px' : '0px'}
-            borderBottomColor={currentRoute === to ? 'textColor.logo' : 'transparent'}
+            paddingBottom={currentRoute.includes(to) ? '5px' : '0px'}
+            borderBottom={currentRoute.includes(to) ? '2px' : '0px'}
+            borderBottomColor={currentRoute.includes(to) ? 'textColor.logo' : 'transparent'}
             fontSize='15px'
             color={navs}
             fontFamily='titleFont'
             display='block'
             _hover={{
-              color: currentRoute !== to && '#D0637C',
+              color: !currentRoute.includes(to) && '#D0637C',
             }}
             {...rest}
           >
