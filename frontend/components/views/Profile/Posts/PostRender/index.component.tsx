@@ -220,17 +220,18 @@ export default function PostRender(props: IPostRenderProps) {
       )}
 
       {post.images.length > 0 && (
-        <Box
-          pb='2'
-          pt='6'
-          cursor='pointer'
-          onClick={() => {
-            setModalImage(true);
-          }}
-        >
+        <Box pb='2' pt='6'>
           <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
             {post.images.map((item, index) => (
-              <ImageBox key={index} src={item} alt={item} isDelete={false} />
+              <Box
+                key={index}
+                cursor='pointer'
+                onClick={() => {
+                  setModalImage(true);
+                }}
+              >
+                <ImageBox src={item} alt={item} isDelete={false} />
+              </Box>
             ))}
           </Carousel>
         </Box>

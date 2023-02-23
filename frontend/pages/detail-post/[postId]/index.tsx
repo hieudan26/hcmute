@@ -11,6 +11,9 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
   Spacer,
   Text,
   useColorModeValue,
@@ -43,6 +46,8 @@ import ConfirmDeletePost from '../../../components/views/Profile/Posts/Modals/Co
 import CommentForm from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/CommentForm/index.component';
 import { useTranslation } from 'next-i18next';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
+import ImageBox from '../../../components/views/ImageBox/index.component';
+import ModalContainer from '../../../components/views/Modals/ModalContainer/index.component';
 
 export interface IDetailPostProps {
   post: IPostResponseModel;
@@ -62,6 +67,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [modalImage, setModalImage] = useState<boolean>(false);
   const auth = useAppSelector((state) => state.auth.value);
   const postFetch = usePostsById(id ? id : '1', undefined, id !== undefined);
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
@@ -170,6 +176,25 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
 
   return (
     <Box width='80%' bg={bgColor} rounded='lg' mb='5' px='4' shadow='md' overflow='scroll'>
+      <ModalContainer isOpen={modalImage} size='xl'>
+        <ModalHeader display='flex' flexDirection='column' alignItems='center'>
+          Detail image
+        </ModalHeader>
+        <ModalCloseButton
+          onClick={() => {
+            setModalImage(false);
+          }}
+        />
+        <ModalBody>
+          {dataPost && dataPost.images.length > 0 && (
+            <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
+              {dataPost.images.map((item: string, index: number) => (
+                <ImageBox key={index} src={item} alt={item} isDelete={false} />
+              ))}
+            </Carousel>
+          )}
+        </ModalBody>
+      </ModalContainer>
       {dataPost && (
         <UpdatePost
           currentUserId={currentUserId}
@@ -260,9 +285,17 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
 
       {dataPost && dataPost.images.length > 0 && (
         <Box px='4' py='2' h='md'>
-          <Carousel infiniteLoop showArrows centerMode={dataPost.images.length > 1} showThumbs={false}>
+          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
             {dataPost.images.map((item: string, index: number) => (
-              <Image w='3xs' h='md' key={index} src={item} alt={item} />
+              <Box
+                cursor='pointer'
+                key={index}
+                onClick={() => {
+                  setModalImage(true);
+                }}
+              >
+                <ImageBox src={item} alt={item} isDelete={false} />
+              </Box>
             ))}
           </Carousel>
         </Box>
