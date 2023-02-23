@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CloseButton,
   Divider,
   Flex,
   IconButton,
@@ -42,6 +43,7 @@ import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
 import { toggleMessage } from '../../../../Message/index.component';
 import ModalContainer from '../../../../Modals/ModalContainer/index.component';
 import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
+import ImageBox from '../../../../ImageBox/index.component';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -242,6 +244,18 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     }
   };
 
+  const removeImage = (url: string) => {
+    const index = selectedFiles.indexOf(url);
+    if (index !== -1) {
+      const filesTemp = [...filesToUpload];
+      const newSelected = selectedFiles.filter((item) => item !== url);
+      setSelectedFiles(newSelected);
+      filesTemp.splice(index, 1);
+      setFilesToUpload(filesTemp);
+      URL.revokeObjectURL(url);
+    }
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='3xl' haveFooter={true} scrollBehavior='inside'>
       <ModalHeader fontWeight={700} textAlign={'center'}>
@@ -269,9 +283,9 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
         <BubbleEditor editor={editor} />
 
         {selectedFiles.length > 0 && (
-          <Carousel infiniteLoop showArrows centerMode={selectedFiles.length > 1} showThumbs={false}>
+          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
             {selectedFiles.map((item, index) => (
-              <Image width='100%' height='44' key={index} src={item} alt={item} />
+              <ImageBox key={index} src={item} alt={item} _removeImage={removeImage} />
             ))}
           </Carousel>
         )}

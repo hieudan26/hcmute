@@ -39,6 +39,7 @@ import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
+import ImageBox from '../../../../ImageBox/index.component';
 
 export interface IUpdatePostProps {
   type: 'experience' | 'faq';
@@ -68,6 +69,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
   const [isLoadingFetchHashtag, setIsLoadingFetchHashtag] = useState<boolean>(false);
   const [isDisableResetTags, setIsDisableResetTags] = useState<boolean>(true);
   const [valueTitle, setValueTitle] = useState<string>(post.title);
+  const [imagesUpdate, setImagesUpdate] = useState<string[]>([]);
   const testRef = useRef<any>(null);
   const dataHashTagQuery = useFindHashTag(
     {
@@ -106,6 +108,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
   });
 
   useEffect(() => {
+    setImagesUpdate(post.images);
     if (post.hashTags) {
       var tempValueTags: { value: string; label: string }[] = [];
       var tgs: string[] = [];
@@ -135,12 +138,17 @@ export default function UpdatePost(props: IUpdatePostProps) {
   }, [post, valueTitle]);
 
   useEffect(() => {
-    if (filesToUpload.length !== 0) {
-      setIsDisabledBtnPost(false);
+    if (filesToUpload.length === 0) {
+      console.log(post.type, imagesUpdate.length);
+      if (post.type === 'experience' && imagesUpdate.length === 0) {
+        setIsDisabledBtnPost(true);
+      } else {
+        setIsDisabledBtnPost(false);
+      }
     } else {
-      setIsDisabledBtnPost(true);
+      setIsDisabledBtnPost(false);
     }
-  }, [filesToUpload]);
+  }, [filesToUpload, imagesUpdate, post]);
 
   useEffect(() => {
     if (tags.join() !== post.hashTags.join()) {
@@ -181,6 +189,19 @@ export default function UpdatePost(props: IUpdatePostProps) {
     } else {
       setSelectedFiles([]);
       setFilesToUpload([]);
+      setValueTitle(post.title);
+      if (post.hashTags) {
+        var tempValueTags: { value: string; label: string }[] = [];
+        var tgs: string[] = [];
+        post.hashTags.map((item) => {
+          tempValueTags.push({ value: item, label: item });
+          tgs.push(item);
+        });
+        setTags(tgs);
+        setDefaultValueTag(tempValueTags);
+      }
+      editor?.commands.clearContent();
+      setImagesUpdate(post.images);
       Array.from(selectedFiles).map(
         (file) => URL.revokeObjectURL(file) // avoid memory leak
       );
@@ -196,14 +217,13 @@ export default function UpdatePost(props: IUpdatePostProps) {
     const params: IPostRequestModel = {
       title: capitalized(valueTitle.trim()),
       content: editor ? editor.getHTML() : 'content',
-      images: [...urlsRef.current, ...post.images],
+      images: [...urlsRef.current, ...imagesUpdate],
       type: type,
       hashTags: tags,
     };
     onSubmit(params);
     handleClose(true);
     setIsSubmitting(false);
-    handleClose(false);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement> | undefined) => {
@@ -255,10 +275,30 @@ export default function UpdatePost(props: IUpdatePostProps) {
     }
   };
 
+  const removeImage = (url: string) => {
+    const isNew = url.includes('blob');
+    if (isNew) {
+      const index = selectedFiles.indexOf(url);
+      if (index !== -1) {
+        const filesTemp = [...filesToUpload];
+        const newSelected = selectedFiles.filter((item) => item !== url);
+        setSelectedFiles(newSelected);
+        filesTemp.splice(index, 1);
+        setFilesToUpload(filesTemp);
+        URL.revokeObjectURL(url);
+      }
+    } else {
+      const index = imagesUpdate.indexOf(url);
+      if (index !== -1) {
+        const newImages = imagesUpdate.filter((item) => item !== url);
+        setImagesUpdate(newImages);
+      }
+    }
+  };
+
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        {/* {t('update')} {post.fullName}&apos;s {type} */}
         <AutoResizeTextarea
           w='95%'
           maxH='16'
@@ -281,7 +321,6 @@ export default function UpdatePost(props: IUpdatePostProps) {
       <ModalBody>
         <BubbleEditor editor={editor} />
 
-        {/* {post.hashTags && post.hashTags.length > 0 && ( */}
         <Flex my='2' gap='4'>
           <Box w='full'>
             <Select
@@ -329,22 +368,11 @@ export default function UpdatePost(props: IUpdatePostProps) {
             {t('reset')}
           </Button>
         </Flex>
-        {/* )} */}
 
-        {post.images.length > 0 && (
-          <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
-            {post.images.map((item, index) => (
-              <Image width='100%' height='44' key={index} src={item} alt={item} />
-            ))}
-          </Carousel>
-        )}
-        <Center mt='5' hidden={selectedFiles.length <= 0}>
-          New images -- Update to reset all images
-        </Center>
-        {selectedFiles.length > 0 && (
-          <Carousel infiniteLoop showArrows centerMode={selectedFiles.length > 1} showThumbs={false}>
-            {selectedFiles.map((item, index) => (
-              <Image width='100%' height='44' key={index} src={item} alt={item} />
+        {(imagesUpdate.length > 0 || selectedFiles.length > 0) && (
+          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
+            {imagesUpdate.concat(selectedFiles).map((item, index) => (
+              <ImageBox key={index} src={item} alt={item} _removeImage={removeImage} />
             ))}
           </Carousel>
         )}
@@ -384,12 +412,12 @@ export default function UpdatePost(props: IUpdatePostProps) {
             background='gray.600'
             _hover={{ bg: 'black' }}
             w={'100%'}
-            disabled={selectedFiles.length <= 0}
+            disabled={!isDisabledBtnPost}
             onClick={() => {
               handleClose(true);
             }}
           >
-            {t('clear_images')}
+            Khôi phục
           </Button>
           <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
             {t('update_save')}

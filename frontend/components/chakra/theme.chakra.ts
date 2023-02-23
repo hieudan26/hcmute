@@ -1,6 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 import { Button } from './button.chakra';
 import { CheckBox } from './checkbox.chakra';
+import { Divider } from './divider.chakra';
 
 export const theme = extendTheme({
   fonts: {
@@ -50,6 +51,7 @@ export const theme = extendTheme({
   components: {
     Button,
     CheckBox,
+    Divider,
   },
   initialColorMode: 'light',
   useSystemColorMode: false,

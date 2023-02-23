@@ -9,6 +9,9 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -23,11 +26,13 @@ import { Carousel } from 'react-responsive-carousel';
 import { useCUDPost } from '../../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
 import { timeSincePost, uppercaseFirstLetter } from '../../../../../utils';
+import ImageBox from '../../../ImageBox/index.component';
 import { toggleMessage } from '../../../Message/index.component';
 import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
+import ModalContainer from '../../../Modals/ModalContainer/index.component';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -42,6 +47,8 @@ export default function PostRender(props: IPostRenderProps) {
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [isOpenHashTag, setIsOpenHashTag] = useState<boolean>(false);
   const [queryHashtag, setQueryHashtag] = useState<string>('#vietnam');
+  const [modalImage, setModalImage] = useState<boolean>(false);
+  const [srcImage, setSrcImage] = useState<string>('');
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
   const bgColor = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
@@ -85,6 +92,23 @@ export default function PostRender(props: IPostRenderProps) {
 
   return (
     <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
+      <ModalContainer isOpen={modalImage} size='xl'>
+        <ModalHeader display='flex' flexDirection='column' alignItems='center'>
+          Detail image
+        </ModalHeader>
+        <ModalCloseButton
+          onClick={() => {
+            setModalImage(false);
+          }}
+        />
+        <ModalBody>
+          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
+            {post.images.map((item, index) => (
+              <ImageBox key={index} src={item} alt={item} isDelete={false} />
+            ))}
+          </Carousel>
+        </ModalBody>
+      </ModalContainer>
       <QueryHashtagModal
         isOpen={isOpenHashTag}
         query={queryHashtag}
@@ -196,10 +220,17 @@ export default function PostRender(props: IPostRenderProps) {
       )}
 
       {post.images.length > 0 && (
-        <Box px='4' py='2' h='xs'>
-          <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
+        <Box
+          pb='2'
+          pt='6'
+          cursor='pointer'
+          onClick={() => {
+            setModalImage(true);
+          }}
+        >
+          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
             {post.images.map((item, index) => (
-              <Image w='3xs' h='xs' key={index} src={item} alt={item} />
+              <ImageBox key={index} src={item} alt={item} isDelete={false} />
             ))}
           </Carousel>
         </Box>

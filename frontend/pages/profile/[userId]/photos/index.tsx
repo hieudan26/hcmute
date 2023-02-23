@@ -29,6 +29,7 @@ import LayoutTab from '../../../../components/views/Profile/LayoutTab/index.comp
 import { ArrayTenTemp } from '../../../experiences';
 import { useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import ImageBox from '../../../../components/views/ImageBox/index.component';
 
 export interface IProfilePhotosProps {}
 
@@ -84,7 +85,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
           }}
         />
         <ModalBody>
-          <Image src={tempSrc} alt={'no'} w='full' rounded='md' maxH='md' />
+          <Image src={tempSrc} alt={'no'} w='full' rounded='md' maxH='md' objectFit='contain' />
         </ModalBody>
       </ModalContainer>
       <Box boxShadow='md' rounded='md' minW='6xl' bg={bgLayout} minH='300px' py='10' px='8'>
@@ -93,19 +94,11 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
             Photos
           </Heading>
         </Flex>
-        <Center mx='28' pb='4' zIndex='1'>
+        <Center mx='28' pb='8' zIndex='1'>
           <Divider hidden={clientWindowHeight >= 650} variant='dashed' orientation='horizontal' zIndex='1' />
         </Center>
         <Box pl='14' maxW='full'>
           <Box pr='12'>
-            <Container>
-              <InputGroup pb='1rem'>
-                <Input placeholder='Find your images' variant='filled' />
-                <InputRightElement
-                  children={<IconButton aria-label='Search' icon={<SearchIcon />} bg='pink.400' color='white' />}
-                />
-              </InputGroup>
-            </Container>
             <Box>
               {images.data?.pages[0].data.content.length === 0 ? (
                 <Center py='2'>

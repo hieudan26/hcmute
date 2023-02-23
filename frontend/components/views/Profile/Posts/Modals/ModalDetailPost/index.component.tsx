@@ -43,6 +43,7 @@ import UpdatePost from '../UpdatePost/index.component';
 import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
 import { useTranslation } from 'next-i18next';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
+import ImageBox from '../../../../ImageBox/index.component';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
@@ -230,10 +231,10 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
               )}
 
               {post.images.length > 0 && (
-                <Box px='4' py='2' h='xs'>
-                  <Carousel infiniteLoop showArrows centerMode={post.images.length > 1} showThumbs={false}>
+                <Box pb='2' pt='6'>
+                  <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
                     {post.images.map((item, index) => (
-                      <Image w='3xs' h='xs' key={index} src={item} alt={item} />
+                      <ImageBox key={index} src={item} alt={item} isDelete={false} />
                     ))}
                   </Carousel>
                 </Box>

@@ -22,44 +22,19 @@ export default function BubbleEditor(props: IBubbleEditorProps) {
       {editor && (
         <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
           <SimpleGrid columns={4} spacing='0.5'>
-            <Button rounded='none' size='xs' onClick={() => editor.chain().focus().toggleBold().run()}>
+            <Button fontWeight='semibold' rounded='none' size='xs' onClick={() => editor.chain().focus().toggleBold().run()}>
               B
             </Button>
-            <Button rounded='none' size='xs' onClick={() => editor.chain().focus().toggleItalic().run()}>
+            <Button fontStyle='italic' rounded='none' size='xs' onClick={() => editor.chain().focus().toggleItalic().run()}>
               I
             </Button>
-            <Button rounded='none' size='xs' onClick={() => editor.chain().focus().toggleUnderline().run()}>
+            <Button
+              textDecoration='underline'
+              rounded='none'
+              size='xs'
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+            >
               U
-            </Button>
-            <Button rounded='none' size='xs' onClick={() => editor.chain().focus().toggleBulletList().run()}>
-              Bullet List
-            </Button>
-            <Button rounded='none' size='xs' onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-              Ordered List
-            </Button>
-            <Button
-              rounded='none'
-              size='xs'
-              onClick={() => editor.chain().focus().splitListItem('listItem').run()}
-              disabled={!editor.can().splitListItem('listItem')}
-            >
-              Split List
-            </Button>
-            <Button
-              rounded='none'
-              size='xs'
-              onClick={() => editor.chain().focus().sinkListItem('listItem').run()}
-              disabled={!editor.can().sinkListItem('listItem')}
-            >
-              Sink List
-            </Button>
-            <Button
-              rounded='none'
-              size='xs'
-              onClick={() => editor.chain().focus().liftListItem('listItem').run()}
-              disabled={!editor.can().liftListItem('listItem')}
-            >
-              Lift List
             </Button>
           </SimpleGrid>
         </BubbleMenu>
