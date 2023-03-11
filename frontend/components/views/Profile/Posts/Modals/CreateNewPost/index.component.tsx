@@ -265,6 +265,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       <ModalCloseButton
         onClick={() => {
           handleClose(false);
+          handleClose(true);
         }}
       />
       <ModalBody>

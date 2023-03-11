@@ -97,7 +97,9 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
       !dataPlacesQuery.isFetching &&
       (!dataPlacesQuery.data ||
         (dataPlacesQuery.data.pages.length === 1 && dataPlacesQuery.data.pages[0].data.content.length === 0) ||
-        (dataPlacesQuery.data.pages.length === 1 && dataPlacesQuery.data.pages[0].data.content[0].url === place))
+        (dataPlacesQuery.data.pages.length === 1 &&
+          dataPlacesQuery.data.pages[0].data.content.length === 1 &&
+          dataPlacesQuery.data.pages[0].data.content[0].url === place))
     ) {
       return (
         <Flex fontSize='sm' alignItems='center' justifyContent='center' py={2} px={3} bg={bgNoResult}>

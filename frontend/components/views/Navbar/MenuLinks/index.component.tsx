@@ -174,6 +174,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/faq'>{t('navbar.navlink02')}</MenuItem>
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
           <MenuItem to='/discovery'>{t('navbar.navlink04')}</MenuItem>
+          <MenuItem to='/contribute'>Đóng góp</MenuItem>
           {role !== RoleConstants.ANONYMOUS && (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px' mr='5px'>

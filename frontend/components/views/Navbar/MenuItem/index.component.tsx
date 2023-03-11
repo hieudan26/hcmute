@@ -1,10 +1,8 @@
 import { Link as LinkChakra, Text, useColorModeValue } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import * as React from 'react';
 import { darkColor } from '../../../../utils/ColorMode/dark';
 import { lightColor } from '../../../../utils/ColorMode/light';
-import ActiveLink from '../ActiveLink/index.component';
 
 export interface IMenuItemProps {
   children: any;
@@ -27,19 +25,19 @@ export default function MenuItem(props: IMenuItemProps) {
             bg: { navsbg_hover },
           }}
           marginX='10px'
-          paddingX={['2px', '2px', '2px', '4px', '10px']}
+          paddingX={['1px', '1px', '1px', '3px', '6px']}
           paddingY={['3px', '3px', '3px', '3px', '5px']}
         >
           <Text
-            paddingBottom={currentRoute.includes(to) ? '5px' : '0px'}
-            borderBottom={currentRoute.includes(to) ? '2px' : '0px'}
-            borderBottomColor={currentRoute.includes(to) ? 'textColor.logo' : 'transparent'}
+            paddingBottom={currentRoute === to ? '5px' : '0px'}
+            borderBottom={currentRoute === to ? '2px' : '0px'}
+            borderBottomColor={currentRoute === to ? 'textColor.logo' : 'transparent'}
             fontSize='15px'
             color={navs}
             fontFamily='titleFont'
             display='block'
             _hover={{
-              color: !currentRoute.includes(to) && '#D0637C',
+              color: currentRoute !== to && '#D0637C',
             }}
             {...rest}
           >
