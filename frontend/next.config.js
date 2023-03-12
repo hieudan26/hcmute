@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
-const { i18n } = require("./next-i18next.config");
+const {
+  i18n
+} = require("./next-i18next.config");
 
 const nextConfig = {
   reactStrictMode: true,
@@ -17,17 +19,15 @@ const nextConfig = {
     minimumCacheTTL: 60,
     // dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: ['lumiere-s3.s3.ap-southeast-1.amazonaws.com'],
+    domains: ['lumiere-s3.s3.ap-southeast-1.amazonaws.com', '18.142.192.152:3000'],
     formats: ['image/avif', 'image/webp'],
     unoptimized: false,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'assets.vercel.com',
-        // port: '',
-        pathname: '/image/upload/**',
-      },
-    ],
+    remotePatterns: [{
+      protocol: 'https',
+      hostname: 'assets.vercel.com',
+      // port: '',
+      pathname: '/image/upload/**',
+    }, ],
   },
   // async rewrites() {
   //   return [
