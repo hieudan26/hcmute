@@ -19,7 +19,7 @@ const nextConfig = {
     minimumCacheTTL: 60,
     // dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    domains: ['lumiere-s3.s3.ap-southeast-1.amazonaws.com', '18.142.192.152:3000'],
+    domains: ['lumiere-s3.s3.ap-southeast-1.amazonaws.com'],
     formats: ['image/avif', 'image/webp'],
     unoptimized: false,
     remotePatterns: [{
