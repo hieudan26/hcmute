@@ -7,9 +7,6 @@ export default function Document() {
       <Head>
         <link rel='shortcut icon' href='/icons/icon-plane.png' />
       </Head>
-      <Head>
-        <meta http-equiv='Content-Security-Policy' content='upgrade-insecure-requests' />
-      </Head>
       <body>
         <Main />
         <NextScript />

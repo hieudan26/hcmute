@@ -44,8 +44,8 @@ if (
   navigator.userAgent &&
   process.env.NODE_ENV === 'production'
 ) {
-  // const disableDevtool = require('disable-devtool');
-  // disableDevtool();
+  const disableDevtool = require('disable-devtool');
+  disableDevtool();
 }
 
 Amplify.configure({ ...awsConfig, ssr: true });
