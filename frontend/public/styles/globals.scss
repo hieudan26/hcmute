@@ -143,3 +143,13 @@ body {
   height: 0;
   pointer-events: none;
 }
+
+// react-quill
+.ql-toolbar {
+  position: sticky;
+}
+
+.ql-container {
+  overflow-x: auto;
+  height: 250px;
+}

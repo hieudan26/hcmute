@@ -1,14 +1,16 @@
-import { Box } from '@chakra-ui/react';
+import { Box, useColorModeValue } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import WorkInProgress from '../../components/views/WorkInProgress/index.component';
+import Create from '../../components/views/Contribute/Create/index.component';
 
 export interface ContributeProps {}
 
 const Contribute: NextPage = (props: ContributeProps) => {
+  const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
+
   return (
-    <Box mb='10'>
-      <WorkInProgress />
+    <Box mb='10' w='120%' bg={boxBg} shadow='md' rounded='md' p='8'>
+      <Create />
     </Box>
   );
 };

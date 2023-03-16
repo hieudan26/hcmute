@@ -32,7 +32,7 @@ import { ICountryResponse } from '../../../../models/area/country.model';
 import { ICategoryResponse, IPlaceRequest } from '../../../../models/place/place.model';
 import areaService from '../../../../services/area/area.service';
 import placeService from '../../../../services/place/place.service';
-import { defaultAvatar, formatsQuill, modulesQuill } from '../../../../utils';
+import { noImage, formatsQuill, modulesQuill } from '../../../../utils';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false, loading: () => <p>Loading ...</p> });
 
 export interface IAdminPlacesManagementCreatePageProps {}
@@ -56,7 +56,7 @@ export interface ISelectOption {
   label: string;
 }
 
-const styleSelect: any = {
+export const styleSelect: any = {
   control: (styles: any) => ({ ...styles, backgroundColor: '#dfe4ea' }),
   option: (styles: any, { data, isDisabled, isFocused, isSelected }: any) => ({
     ...styles,
@@ -339,7 +339,7 @@ const AdminPlacesManagementCreatePage: NextPage = (props: IAdminPlacesManagement
           <Image
             boxSize='140px'
             objectFit='cover'
-            src={selectedFileAvatar ? previewAvatar : defaultAvatar}
+            src={selectedFileAvatar ? previewAvatar : noImage}
             fallbackSrc='https://via.placeholder.com/150'
             alt='Image Category'
             rounded='md'

@@ -25,7 +25,7 @@ export const publicRouteContain = [
   '/register',
   '/forgot-password',
 ];
-export const privateRouteContain = ['/settings', '/chats', '/suggest-friends'];
+export const privateRouteContain = ['/settings', '/chats', '/suggest-friends', '/contribute'];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
 /* A Quill editor configuration. */
@@ -234,6 +234,7 @@ export const LinkItems: Array<LinkItemProps> = [
   { name: 'Language', query: 'language', icon: IoLanguage },
 ];
 
+export const noImage = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/no+image.jpg';
 export const defaultAvatar = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/avatar.png';
 export const defaultCoverBackground = 'https://lumiere-s3.s3.ap-southeast-1.amazonaws.com/default/coverbackground.png';
 
