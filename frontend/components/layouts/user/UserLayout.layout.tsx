@@ -1,12 +1,13 @@
 import { Box, Container, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
-import { clearUserNotAuth, setUserNotAuth } from '../../../app/slices/userNotAuthSlice';
+import { useEffect, useState } from 'react';
+import { setUserNotAuth } from '../../../app/slices/userNotAuthSlice';
 import { RoleConstants } from '../../../constants/roles.constant';
 import { useAppDispatch } from '../../../hooks/redux';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
 import userService from '../../../services/user/user.service';
-import Hero from '../../views/Discovery/Hero/index.component';
+import HeroContribute from '../../views/Contribute/Hero/index.component';
+import HeroDiscovery from '../../views/Discovery/Hero/index.component';
 import Footer from '../../views/Footer/index.component';
 import FirstLoginModal from '../../views/Modals/FirstLoginModal/index.component';
 import Navbar from '../../views/Navbar/index.component';
@@ -105,7 +106,8 @@ export default function UserLayout(props: IUserLayoutProps) {
       <Navbar role={RoleConstants.USER} />
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
-        {router.pathname === '/discovery' && <Hero />}
+        {router.pathname === '/discovery' && <HeroDiscovery />}
+        {router.pathname === '/contribute' && <HeroContribute />}
         {renderContainerLayout()}
       </Box>
       <ScrollToTop />

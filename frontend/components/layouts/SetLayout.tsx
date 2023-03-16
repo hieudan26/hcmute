@@ -3,20 +3,19 @@ import { Auth } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cookie from 'react-cookies';
-import { login, logout } from '../../app/slices/authSlice';
+import { logout } from '../../app/slices/authSlice';
 import { clearUserNotAuth } from '../../app/slices/userNotAuthSlice';
 import { RoleConstants } from '../../constants/roles.constant';
-import { CookieConstants, LocalStorageConstants } from '../../constants/store.constant';
+import { CookieConstants } from '../../constants/store.constant';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { AuthService } from '../../services/auth/auth.service';
-import userService from '../../services/user/user.service';
 import { LocalUtils } from '../../utils/local.utils';
 import AdminLayout from './admin/AdminLayout.layout';
 import AnonymousLayout from './anonymous/AnonymousLayout.layout';
 import AuthLayout from './auth/AuthLayout.layout';
 import ChatLayout from './chat/ChatLayout.layout';
-import UserLayout from './user/UserLayout.layout';
 import PostsLayout from './posts/PostsLayout.layout';
+import UserLayout from './user/UserLayout.layout';
 
 export default function SetLayout({ children }: any) {
   const router = useRouter();
