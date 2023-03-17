@@ -1,18 +1,34 @@
-import { ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Heading, Text, useColorModeValue } from '@chakra-ui/react';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { ChevronRightIcon } from '@chakra-ui/icons';
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Center,
+  Flex,
+  Heading,
+  Image,
+  ModalBody,
+  ModalCloseButton,
+  ModalHeader,
+  Skeleton,
+  Spinner,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Introduce from '../../../../../components/views/Discovery/Introduce/index.component';
-import { useFetchCountry, useFetchPlace, useFetchProvince } from '../../../../../hooks/queries/place';
-import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
+import { useRouter } from 'next/router';
+import { IPlaceCountryResponse } from '../../../../../../models/place/place.model';
+import { useFetchCountry, useFetchPlace, useFetchProvince } from '../../../../../../hooks/queries/place';
 import { useTranslation } from 'next-i18next';
 
-export interface IProvincePlaceProps {}
+export interface ICountryProvincePlaceContributeProps {}
 
-const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
+const CountryProvincePlaceContribute: NextPage = (props: ICountryProvincePlaceContributeProps) => {
   const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
@@ -20,6 +36,7 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
   const [province, setProvince] = useState<string | undefined>(undefined);
   const [place, setPlace] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
+
   const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
   const dataProvince = useFetchProvince(
     { urlCountry: country ? country : '', urlProvince: province ? province : '' },
@@ -74,9 +91,15 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
               </Link>
             </BreadcrumbItem>
 
-            <BreadcrumbItem isCurrentPage>
+            <BreadcrumbItem>
               <Link href={`/discovery/${country}/${province}/${place}`}>
                 <BreadcrumbLink _hover={{ textDecoration: 'none' }}>{data?.name}</BreadcrumbLink>
+              </Link>
+            </BreadcrumbItem>
+
+            <BreadcrumbItem isCurrentPage>
+              <Link href={`/discovery/${country}/${province}/${place}/contribute`}>
+                <BreadcrumbLink _hover={{ textDecoration: 'none' }}>Đóng góp</BreadcrumbLink>
               </Link>
             </BreadcrumbItem>
           </Breadcrumb>
@@ -88,15 +111,7 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
       <Flex justify='space-between' w='full' align='flex-start' gap={6}>
         <Box w='20%' bg={bgBox} shadow='md' border='1px' borderColor='gray.300' p='6' h='fit-content' position='sticky' top='20'>
           <Link href={`/discovery/${country}/${province}/${data?.url}`}>
-            <Flex
-              cursor='pointer'
-              justify='space-between'
-              align='center'
-              mb='4'
-              fontWeight='semibold'
-              fontStyle='italic'
-              color='#D0637C'
-            >
+            <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
               <Text>{t('breadcrumb.introduce')}</Text>
               <ChevronRightIcon />
             </Flex>
@@ -130,26 +145,41 @@ const ProvincePlace: NextPage = (props: IProvincePlaceProps) => {
             <ChevronRightIcon />
           </Flex>
           <Link href={`/discovery/${country}/${province}/${data?.url}/contribute`}>
-            <Flex cursor='pointer' justify='space-between' align='center'>
+            <Flex
+              cursor='pointer'
+              justify='space-between'
+              align='center'
+              fontWeight='semibold'
+              fontStyle='italic'
+              color='#D0637C'
+            >
               <Text>Đóng góp</Text>
               <ChevronRightIcon />
             </Flex>
           </Link>
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
-          <Introduce data={data} />
+          <Text mb='8' align='center'>
+            Hãy đóng góp những điểm du lịch, vui chơi, tham quan hấp dẫn tại {data?.name} nhé 😘
+          </Text>
         </Box>
       </Flex>
     </Box>
   );
 };
 
-export default ProvincePlace;
+export default CountryProvincePlaceContribute;
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }: any) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['header', 'footer', 'modal_is_first_login', 'discovery_detail'])),
+      ...(await serverSideTranslations(locale, [
+        'header',
+        'footer',
+        'modal_is_first_login',
+        'modal_create_post',
+        'discovery_detail',
+      ])),
       // Will be passed to the page component as props
     },
   };

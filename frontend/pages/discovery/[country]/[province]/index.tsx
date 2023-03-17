@@ -110,10 +110,16 @@ const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center'>
+          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
+          <Link href={`/discovery/${country}/${data?.url}/contribute`}>
+            <Flex cursor='pointer' justify='space-between' align='center'>
+              <Text>Đóng góp</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Introduce data={data} />

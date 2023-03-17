@@ -67,7 +67,7 @@ const ExperienceHashtag: NextPage = (props: IExperienceHashtagProps) => {
         isOpen={isCreatePost}
         onClose={() => setIsCreatePost(false)}
       />
-      <Flex position='relative' justify='center' width={{ base: '100%', lg: '70%', xl: '65%', '2xl': '60%' }} direction='column'>
+      <Flex justify='center' width={{ base: '100%', lg: '60%' }} direction='column'>
         {isLoggedIn && (
           <>
             <Box bg={bgCreatePost} width='100%' px='4' rounded='lg' shadow='md' py='5'>

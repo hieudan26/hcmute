@@ -174,10 +174,16 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center'>
+          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
+          <Link href={`/discovery/${data?.url}/contribute`}>
+            <Flex cursor='pointer' justify='space-between' align='center'>
+              <Text>Đóng góp</Text>
+              <ChevronRightIcon />
+            </Flex>
+          </Link>
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Flex justify='space-between' align='center' gap='6'>
