@@ -9,12 +9,8 @@ export default function PostsLayout(props: IPostsLayoutProps) {
   const { children } = props;
 
   return (
-    <Flex gap={{ base: '0', md: '0', lg: '0', xl: '0', '2xl': '6' }} w='100%' position='relative'>
-      <Box
-        display={{ base: 'none', lg: 'block' }}
-        mr={{ base: '0', md: '0', lg: '65px', xl: '0', '2xl': '6' }}
-        width={{ md: '0%', lg: '30%', xl: '40%', '2xl': '40%' }}
-      >
+    <Flex justify='space-between' align='flex-start' gap={6} w='full'>
+      <Box position='sticky' top='20' display={{ base: 'none', lg: 'block' }} width={{ md: '0%', lg: '40%' }}>
         <Weather />
       </Box>
       {children}
