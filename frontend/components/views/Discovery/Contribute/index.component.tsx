@@ -1,27 +1,26 @@
 import { Box, Button, Divider, Flex, Text } from '@chakra-ui/react';
-import Section1 from '../Section1/index.component';
-import Section2 from '../Section2/index.component';
-import Section3 from '../Section3/index.component';
 import { KeyboardEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
-import useUploadFile from '../../../../hooks/useUploadFile';
-import areaService from '../../../../services/area/area.service';
-import { ICountryResponse } from '../../../../models/area/country.model';
 import { ISelectOption, Option, createOption } from '../../../../pages/admin/places-management/create';
+import useUploadFile from '../../../../hooks/useUploadFile';
 import { ActionMeta, SingleValue } from 'react-select';
-import placeService from '../../../../services/place/place.service';
+import { ICountryResponse } from '../../../../models/area/country.model';
+import areaService from '../../../../services/area/area.service';
 import { ICategoryResponse, IPlaceRequest } from '../../../../models/place/place.model';
+import placeService from '../../../../services/place/place.service';
+import Section2 from '../../Contribute/Section2/index.component';
+import Section3 from '../../Contribute/Section3/index.component';
+import DiscoveryContributeSection1 from './Section1/index.component';
 
-export interface ICreateProps {}
+export interface IDiscoveryContributeProps {
+  areaData: any | undefined;
+}
 
-export default function Create(props: ICreateProps) {
+export default function DiscoveryContribute(props: IDiscoveryContributeProps) {
+  const { areaData } = props;
   const { upload, urlRef } = useUploadFile();
-  const selectAreaRef = useRef<any>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
-  const [checkCountry, setCheckCountry] = useState<boolean>(true);
-  const [dataArea, setDataArea] = useState<ISelectOption[]>([]);
-  const [selectedArea, setSelectedArea] = useState<string>('');
   const [dataCategory, setDataCategory] = useState<ISelectOption[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedFileAvatar, setSelectedFileAvatar] = useState<File | undefined>(undefined);
@@ -48,38 +47,6 @@ export default function Create(props: ICreateProps) {
   }, []);
 
   useEffect(() => {
-    if (checkCountry) {
-      const fetchCountry = async () => {
-        selectAreaRef.current.setValue(null);
-        const response = await areaService.getCountriesPagination(undefined);
-        const tempArr: {
-          value: string;
-          label: string;
-        }[] = [];
-        response.data.content.map((item: ICountryResponse) => {
-          tempArr.push({ value: item.id.toString(), label: item.name });
-        });
-        setDataArea(tempArr);
-      };
-      fetchCountry();
-    } else {
-      const fetchProvince = async () => {
-        selectAreaRef.current.setValue(null);
-        const response = await areaService.getProvinces(undefined);
-        const tempArr: {
-          value: string;
-          label: string;
-        }[] = [];
-        response.data.content.map((item: ICountryResponse) => {
-          tempArr.push({ value: item.id.toString(), label: item.name });
-        });
-        setDataArea(tempArr);
-      };
-      fetchProvince();
-    }
-  }, [checkCountry]);
-
-  useEffect(() => {
     if (!selectedFileAvatar) {
       setPreviewAvatar(undefined);
       return;
@@ -94,7 +61,6 @@ export default function Create(props: ICreateProps) {
 
   useEffect(() => {
     if (
-      selectedArea.trim() === '' ||
       selectedCategory.trim() === '' ||
       !selectedFileAvatar ||
       valueName.trim() === '' ||
@@ -107,20 +73,7 @@ export default function Create(props: ICreateProps) {
     } else {
       setIsDisableSubmit(false);
     }
-  }, [selectedArea, selectedCategory, selectedFileAvatar, valueContent, valueDescription, valueHashTags.length, valueName]);
-
-  const handleSelectAreaChange = (
-    newValue: SingleValue<{
-      value: string;
-      label: string;
-    }>,
-    actionMeta: ActionMeta<{
-      value: string;
-      label: string;
-    }>
-  ) => {
-    newValue && setSelectedArea(newValue.value);
-  };
+  }, [selectedCategory, selectedFileAvatar, valueContent, valueDescription, valueHashTags.length, valueName]);
 
   const handleSelectCategoryChange = (
     newValue: SingleValue<{
@@ -166,7 +119,6 @@ export default function Create(props: ICreateProps) {
   };
 
   const clear = () => {
-    setSelectedArea('');
     setSelectedCategory('');
     setSelectedFileAvatar(undefined);
     setValueName('');
@@ -182,7 +134,7 @@ export default function Create(props: ICreateProps) {
     });
     selectedFileAvatar && (await upload(selectedFileAvatar, 'places', 'places'));
     const params: IPlaceRequest = {
-      area: Number(selectedArea),
+      area: areaData ? areaData.id : 1,
       category: Number(selectedCategory),
       content: valueContent.trim(),
       description: valueDescription.trim(),
@@ -197,14 +149,10 @@ export default function Create(props: ICreateProps) {
 
   return (
     <Box>
-      <Section1
-        checkCountry={checkCountry}
-        setCheckCountry={setCheckCountry}
-        dataArea={dataArea}
-        selectAreaRef={selectAreaRef}
-        handleSelectAreaChange={handleSelectAreaChange}
+      <DiscoveryContributeSection1
         dataCategory={dataCategory}
         handleSelectCategoryChange={handleSelectCategoryChange}
+        areaName={areaData ? areaData.name : ''}
       />
       <Divider my='8' />
       <Section2
@@ -220,6 +168,7 @@ export default function Create(props: ICreateProps) {
         setInputValueHashTag={setInputValueHashTag}
         setValueHashTags={setValueHashTags}
         valueHashTags={valueHashTags}
+        isDiscovery
       />
       <Divider my='8' />
       <Section3
