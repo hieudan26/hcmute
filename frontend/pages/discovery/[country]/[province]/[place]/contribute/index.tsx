@@ -1,6 +1,3 @@
-import { NextPage } from 'next';
-import { GetServerSideProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -10,21 +7,18 @@ import {
   Center,
   Flex,
   Heading,
-  Image,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
-  Skeleton,
-  Spinner,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { IPlaceCountryResponse } from '../../../../../../models/place/place.model';
-import { useFetchCountry, useFetchPlace, useFetchProvince } from '../../../../../../hooks/queries/place';
+import { GetServerSideProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import DiscoveryContribute from '../../../../../../components/views/Discovery/Contribute/index.component';
+import { useFetchCountry, useFetchPlace, useFetchProvince } from '../../../../../../hooks/queries/place';
+import { IPlaceCountryResponse } from '../../../../../../models/place/place.model';
 
 export interface ICountryProvincePlaceContributeProps {}
 
@@ -159,9 +153,12 @@ const CountryProvincePlaceContribute: NextPage = (props: ICountryProvincePlaceCo
           </Link>
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
-          <Text mb='8' align='center'>
-            Hãy đóng góp những điểm du lịch, vui chơi, tham quan hấp dẫn tại {data?.name} nhé 😘
+          <Text mb='5' align='center'>
+            Hãy đóng góp những điểm du lịch, tham quan, vui chơi hấp dẫn giống như {data?.name} nhé 😘
           </Text>
+          <Center>
+            <DiscoveryContribute areaData={dataProvince.data?.data} />
+          </Center>
         </Box>
       </Flex>
     </Box>
