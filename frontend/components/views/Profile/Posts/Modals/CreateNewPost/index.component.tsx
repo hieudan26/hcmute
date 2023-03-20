@@ -274,7 +274,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           border='1px'
           _focus={{ outline: '1px' }}
           minH='10'
-          placeholder='Title of post'
+          placeholder='Tiêu đề bài đăng'
           mb='2'
           fontWeight='semibold'
           value={valueTitle}

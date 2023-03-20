@@ -299,18 +299,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
   return (
     <ModalContainer isOpen={isOpen} size='2xl' haveFooter={true}>
       <ModalHeader fontWeight={700} textAlign={'center'}>
-        <AutoResizeTextarea
-          w='95%'
-          maxH='16'
-          border='1px'
-          _focus={{ outline: '1px' }}
-          minH='16'
-          placeholder='Title of post'
-          mb='2'
-          fontWeight='semibold'
-          value={valueTitle}
-          onChange={changeValueTextarea}
-        />
+        Chỉnh sửa bài đăng
       </ModalHeader>
       <Divider />
       <ModalCloseButton
@@ -319,6 +308,17 @@ export default function UpdatePost(props: IUpdatePostProps) {
         }}
       />
       <ModalBody>
+        <AutoResizeTextarea
+          maxH='10'
+          border='1px'
+          _focus={{ outline: '1px' }}
+          minH='10'
+          placeholder='Tiêu đề bài đăng'
+          mb='2'
+          fontWeight='semibold'
+          value={valueTitle}
+          onChange={changeValueTextarea}
+        />
         <BubbleEditor editor={editor} />
 
         <Flex my='2' gap='4'>

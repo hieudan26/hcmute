@@ -9,6 +9,8 @@ import Introduce from '../../../components/views/Discovery/Introduce/index.compo
 import { useFetchCountry } from '../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../models/place/place.model';
 import { useTranslation } from 'next-i18next';
+import { useAppSelector } from '../../../hooks/redux';
+import { RoleConstants } from '../../../constants/roles.constant';
 
 export interface IDiscoveryCountryProps {}
 
@@ -19,6 +21,7 @@ const DiscoveryCountry: NextPage = (props: IDiscoveryCountryProps) => {
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
   const dataCountry = useFetchCountry(country ? country : '', country !== undefined);
+  const auth = useAppSelector((state) => state.auth.value);
 
   useEffect(() => {
     const { country: countryQuery } = router.query;
@@ -95,16 +98,23 @@ const DiscoveryCountry: NextPage = (props: IDiscoveryCountryProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+          <Flex
+            cursor='pointer'
+            justify='space-between'
+            align='center'
+            mb={!auth || auth.role !== RoleConstants.USER ? '0' : '4'}
+          >
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
-          <Link href={`/discovery/${data?.url}/contribute`}>
-            <Flex cursor='pointer' justify='space-between' align='center'>
-              <Text>Đóng góp</Text>
-              <ChevronRightIcon />
-            </Flex>
-          </Link>
+          {auth && auth.role === RoleConstants.USER && (
+            <Link href={`/discovery/${data?.url}/contribute`}>
+              <Flex cursor='pointer' justify='space-between' align='center'>
+                <Text>Đóng góp</Text>
+                <ChevronRightIcon />
+              </Flex>
+            </Link>
+          )}
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Introduce data={data} />
