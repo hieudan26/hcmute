@@ -151,7 +151,7 @@ export function middleware(request: NextRequest) {
       }
     }
   } else {
-    if (checkPublicRoute(url.pathname)) {
+    if (checkPublicRoute(url.pathname) && !checkPrivateRoute(url.pathname)) {
       return NextResponse.next();
     } else {
       if (checkPrivateRoute(url.pathname) || checkAdminRoute(url.pathname)) {

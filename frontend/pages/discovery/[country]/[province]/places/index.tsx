@@ -1,45 +1,42 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Flex,
-  Text,
-  AspectRatio,
-  Heading,
-  Stack,
-  Divider,
-  Highlight,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator,
-  chakra,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Center,
-  Spinner,
+  Flex,
+  Heading,
   SimpleGrid,
   Skeleton,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  chakra,
   useColorModeValue,
 } from '@chakra-ui/react';
-import Link from 'next/link';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
+import { RoleConstants } from '../../../../../constants/roles.constant';
 import {
   useFetchCategories,
   useFetchCountry,
   useFetchProvince,
   usePlacesPlacesByCountryProvince,
 } from '../../../../../hooks/queries/place';
+import { useAppSelector } from '../../../../../hooks/redux';
 import { ICategoryResponse, IPlaceCountryResponse } from '../../../../../models/place/place.model';
-import { v4 as uuidv4 } from 'uuid';
-import InfiniteScroll from 'react-infinite-scroller';
 import { ArrayTenTemp } from '../../../../experiences';
-import { useTranslation } from 'next-i18next';
 
 export interface IProvincePlacesProps {}
 
@@ -50,6 +47,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
   const colorCard = useColorModeValue('gray.800', 'white');
   const bgNoResult = useColorModeValue('gray.200', 'blackAlpha.400');
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth.value);
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
@@ -272,16 +270,23 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+          <Flex
+            cursor='pointer'
+            justify='space-between'
+            align='center'
+            mb={!auth || auth.role !== RoleConstants.USER ? '0' : '4'}
+          >
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
-          <Link href={`/discovery/${country}/${data?.url}/contribute`}>
-            <Flex cursor='pointer' justify='space-between' align='center'>
-              <Text>Đóng góp</Text>
-              <ChevronRightIcon />
-            </Flex>
-          </Link>
+          {auth && auth.role === RoleConstants.USER && (
+            <Link href={`/discovery/${country}/${data?.url}/contribute`}>
+              <Flex cursor='pointer' justify='space-between' align='center'>
+                <Text>Đóng góp</Text>
+                <ChevronRightIcon />
+              </Flex>
+            </Link>
+          )}
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Tabs colorScheme='pink'>

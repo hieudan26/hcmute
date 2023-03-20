@@ -212,16 +212,23 @@ const PlaceExperiences: NextPage = (props: IPlaceExperiencesProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+          <Flex
+            cursor='pointer'
+            justify='space-between'
+            align='center'
+            mb={!auth || auth.role !== RoleConstants.USER ? '0' : '4'}
+          >
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
-          <Link href={`/discovery/${country}/${province}/${data?.url}/contribute`}>
-            <Flex cursor='pointer' justify='space-between' align='center'>
-              <Text>Đóng góp</Text>
-              <ChevronRightIcon />
-            </Flex>
-          </Link>
+          {auth && auth.role === RoleConstants.USER && (
+            <Link href={`/discovery/${country}/${province}/${data?.url}/contribute`}>
+              <Flex cursor='pointer' justify='space-between' align='center'>
+                <Text>Đóng góp</Text>
+                <ChevronRightIcon />
+              </Flex>
+            </Link>
+          )}
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Flex justify='space-between' align='center' gap='6'>

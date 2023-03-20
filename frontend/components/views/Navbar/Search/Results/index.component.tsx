@@ -21,6 +21,21 @@ interface ICategoryProps {
 const Category = (props: ICategoryProps) => {
   const { results, close, category, activeSectionIndex } = props;
 
+  const handleStickyVietnamese = () => {
+    switch (category) {
+      case 'experience':
+        return 'Bài đăng trải nghiệm';
+      case 'faq':
+        return 'Bài đăng hỏi đáp';
+      case 'hashtag':
+        return 'hashtag';
+      case 'place':
+        return 'Địa điểm';
+      default:
+        return 'Người dùng';
+    }
+  };
+
   return (
     <>
       <Sticky
@@ -35,7 +50,7 @@ const Category = (props: ICategoryProps) => {
         }}
         py={1}
       >
-        {category}
+        {handleStickyVietnamese()}
       </Sticky>
       <Stack spacing={3} mt={3}>
         {results.map((item, index) => (

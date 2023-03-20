@@ -9,6 +9,8 @@ import Introduce from '../../../../components/views/Discovery/Introduce/index.co
 import { useFetchCountry, useFetchProvince } from '../../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { useTranslation } from 'next-i18next';
+import { useAppSelector } from '../../../../hooks/redux';
+import { RoleConstants } from '../../../../constants/roles.constant';
 
 export interface ICountryProvinceProps {}
 
@@ -16,6 +18,7 @@ const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
   const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth.value);
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
@@ -110,16 +113,23 @@ const CountryProvince: NextPage = (props: ICountryProvinceProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
+          <Flex
+            cursor='pointer'
+            justify='space-between'
+            align='center'
+            mb={!auth || auth.role !== RoleConstants.USER ? '0' : '4'}
+          >
             <Text>{t('breadcrumb.itinerary')}</Text>
             <ChevronRightIcon />
           </Flex>
-          <Link href={`/discovery/${country}/${data?.url}/contribute`}>
-            <Flex cursor='pointer' justify='space-between' align='center'>
-              <Text>Đóng góp</Text>
-              <ChevronRightIcon />
-            </Flex>
-          </Link>
+          {auth && auth.role === RoleConstants.USER && (
+            <Link href={`/discovery/${country}/${data?.url}/contribute`}>
+              <Flex cursor='pointer' justify='space-between' align='center'>
+                <Text>Đóng góp</Text>
+                <ChevronRightIcon />
+              </Flex>
+            </Link>
+          )}
         </Box>
         <Box w='80%' bg={bgBox} p='6' h='fit-content' flexGrow='1' shadow='lg' rounded='md'>
           <Introduce data={data} />
