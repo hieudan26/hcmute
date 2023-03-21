@@ -5,6 +5,9 @@ on:
     branches: 
       - release
       - master
+    paths:
+      - backend/**
+      - .github/**
 jobs:
   deploy-be:
     runs-on: ubuntu-latest
