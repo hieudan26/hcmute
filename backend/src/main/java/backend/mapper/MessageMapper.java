@@ -1,9 +1,9 @@
 package backend.mapper;
 
-import backend.data.dto.chat.ChatRoomResponse;
-import backend.data.dto.chat.MessagePayLoad;
-import backend.data.dto.chat.MessageResponse;
-import backend.data.dto.chat.RoomChatUserResponse;
+import backend.data.dto.socketdto.chat.ChatRoomResponse;
+import backend.data.dto.socketdto.chat.MessagePayLoad;
+import backend.data.dto.socketdto.chat.MessageResponse;
+import backend.data.dto.socketdto.chat.RoomChatUserResponse;
 import backend.data.entity.ChatRooms;
 import backend.data.entity.Messages;
 import backend.data.entity.Users;

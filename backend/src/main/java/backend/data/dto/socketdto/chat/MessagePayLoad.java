@@ -1,4 +1,4 @@
-package backend.data.dto.chat;
+package backend.data.dto.socketdto.chat;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

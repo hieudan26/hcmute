@@ -1,15 +1,17 @@
-package backend.data.dto.chat;
+package backend.data.dto.socketdto.chat;
 
-import backend.data.dto.global.BaseUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomChatUserResponse extends BaseUserResponse {
-    String userId;
+public class CreateChatRoomRequest {
+    String time;
+    List<String> friends;
 }

@@ -22,6 +22,13 @@ public class Places extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     Integer id;
 
+    @ManyToOne
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    @JoinColumn(name = "user_id", nullable = false)
+    Users owner;
+
     @Column(unique=true,nullable = false)
     String name;
 
@@ -34,6 +41,11 @@ public class Places extends Auditable<String> implements Serializable {
 
     @Lob
     String content;
+
+    @Lob
+    String statusDescription;
+
+    String status;
 
     @ManyToOne
     @EqualsAndHashCode.Exclude

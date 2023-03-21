@@ -6,6 +6,8 @@ import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.place.CreatePlaceRequest;
 import backend.data.dto.place.PlaceCategoryPayLoad;
+import backend.data.dto.place.PlaceRequestParams;
+import backend.data.dto.post.PostQueryParams;
 import backend.data.entity.Places;
 import backend.services.PlaceService;
 import backend.services.PostService;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.naming.NoPermissionException;
 
 @Slf4j
 @RestController
@@ -50,7 +54,7 @@ public class PlaceController {
 
     @PreAuthorize("permitAll()")
     @PutMapping("/{url}")
-    public ResponseEntity<BaseResponse> updatePlace(@PathVariable("url") String url, @RequestBody CreatePlaceRequest request){
+    public ResponseEntity<BaseResponse> updatePlace(@PathVariable("url") String url, @RequestBody CreatePlaceRequest request) throws NoPermissionException {
         return ResponseEntity.ok(placeService.updatePlace(url,request));
     }
 
@@ -88,5 +92,11 @@ public class PlaceController {
     @GetMapping("/countries/{url}/provinces/{provinceUrl}/places/{placeId}")
     public ResponseEntity<BaseResponse> getPlace(@PathVariable("url") String url, @PathVariable("provinceUrl") String provinceUrl,@PathVariable("placeId")  String placeId){
         return ResponseEntity.ok(placeService.getPlaceByProvinceUrl(url,provinceUrl,placeId));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @GetMapping("")
+    public ResponseEntity<BaseResponse> getPlaces(PlaceRequestParams params, PagingRequest pagingRequest){
+        return ResponseEntity.ok(placeService.getPlace(params, pagingRequest));
     }
 }

@@ -9,6 +9,7 @@ import backend.exception.NoRecordFoundException;
 import backend.repositories.AreaRepository;
 import backend.repositories.PlaceCategoryRepository;
 import backend.repositories.PostRepository;
+import backend.repositories.UserRepository;
 import backend.utils.LinkUtils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,12 @@ public abstract class PlaceMapper {
     @Autowired
     private AreaRepository areaRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Mapping(source = "placeCategories", target = "category", qualifiedByName = "mapCategory")
     @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "mapHashTagsToString")
+    @Mapping(source = "owner.id", target = "userId")
     public abstract PlaceResponse fromPlaceToPlaceResponse(Places places);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
@@ -45,6 +50,7 @@ public abstract class PlaceMapper {
 
     @Mapping(target = "id", ignore = true)
     public abstract PlaceCategories fromCategoryPlayLoadToEntity(PlaceCategoryPayLoad placeCategoryPayLoad);
+
     public abstract PlaceCategoryPayLoad fromEntityToCategoryPlayLoad(PlaceCategories placeCategories);
 
     @Named("mapCategory")
@@ -64,8 +70,8 @@ public abstract class PlaceMapper {
     @Named("mapPlaceCategory")
     protected PlaceCategories mapPlaceCategory(Integer id) throws EntityNotFoundException {
         Optional<PlaceCategories> optionalPlaceCategories = placeCategoryRepository.findById(id);
-        if(optionalPlaceCategories.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find category with Id: %s.",id));
+        if (optionalPlaceCategories.isEmpty()) {
+            throw new NoRecordFoundException(String.format("Can't find category with Id: %s.", id));
         }
         return optionalPlaceCategories.get();
     }
@@ -73,8 +79,8 @@ public abstract class PlaceMapper {
     @Named("mapArea")
     protected Areas mapArea(Integer id) throws EntityNotFoundException {
         Optional<Areas> optionalAreas = areaRepository.findById(id);
-        if(optionalAreas.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find area with Id: %s.",id));
+        if (optionalAreas.isEmpty()) {
+            throw new NoRecordFoundException(String.format("Can't find area with Id: %s.", id));
         }
         return optionalAreas.get();
     }
@@ -83,4 +89,14 @@ public abstract class PlaceMapper {
     protected String mapUrl(String name) throws EntityNotFoundException {
         return LinkUtils.getLink(name);
     }
+
+    @Named("fromStringToUsers")
+    protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
+        Optional<Users> optionalUsers = userRepository.findById(userId);
+        if(optionalUsers.isEmpty()){
+            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
+        }
+        return optionalUsers.get();
+    }
 }
+

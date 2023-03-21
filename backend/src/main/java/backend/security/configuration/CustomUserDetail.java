@@ -86,4 +86,8 @@ public class CustomUserDetail  implements UserDetails {
     public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
+
+    public boolean isHasRole(String role) {
+        return this.authorities.stream().map(GrantedAuthority::getAuthority).toList().contains(role);
+    }
 }
