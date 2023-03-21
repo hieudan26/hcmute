@@ -54,4 +54,4 @@ jobs:
               --log-opt loki-retries=5 \
               --log-opt loki-batch-size=400 \
               --detach --name backend_server -p 8080:8080 hieudan/hcmute
-            sudo docker rmi  $(sudo docker images -aq)
+#            sudo docker rmi  $(sudo docker images -aq)
