@@ -40,6 +40,7 @@ jobs:
       - name: ssh key passphrase
         uses: appleboy/ssh-action@master
         with:
+          continue-on-error: true
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_KEY }}
