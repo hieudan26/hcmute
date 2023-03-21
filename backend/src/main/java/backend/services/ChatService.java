@@ -1,8 +1,8 @@
 package backend.services;
 
 import backend.common.FriendStatuses;
-import backend.data.dto.chat.CreateChatRoomRequest;
-import backend.data.dto.chat.MessagePayLoad;
+import backend.data.dto.socketdto.chat.CreateChatRoomRequest;
+import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;

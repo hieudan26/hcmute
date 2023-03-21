@@ -18,6 +18,9 @@ public class PlaceResponse {
     String description;
     String image;
     String content;
+    String status;
+    String userId;
+    String statusDescription;
     PlaceCategoryPayLoad category;
     List<String> hashTags;
 }

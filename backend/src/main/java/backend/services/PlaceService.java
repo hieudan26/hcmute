@@ -1,12 +1,16 @@
 package backend.services;
 
 import backend.common.AreaConstant;
+import backend.common.PlaceStatuses;
 import backend.common.Roles;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.place.CreatePlaceRequest;
 import backend.data.dto.place.PlaceCategoryPayLoad;
+import backend.data.dto.place.PlaceRequestParams;
+import backend.data.dto.place.PlaceResponse;
+import backend.data.dto.post.PostResponse;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.data.entity.Areas;
 import backend.data.entity.PlaceCategories;
@@ -19,14 +23,19 @@ import backend.repositories.PlaceCategoryRepository;
 import backend.repositories.PlaceRepository;
 import backend.security.configuration.CustomUserDetail;
 import backend.utils.PagingUtils;
+import backend.utils.SearchSpecificationUtils;
 import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.util.Optional;
+
+import static backend.common.Roles.ROLE_USER;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +45,8 @@ public class PlaceService {
     private final PlaceCategoryRepository placeCategoryRepository;
     private final HashTagService hashTagService;
     private final PlaceMapper placeMapper;
+    private final UserService userService;
+
 
     public BaseResponse createPlaceCategory(PlaceCategoryPayLoad categoryPayLoad){
         PlaceCategories categories = placeMapper.fromCategoryPlayLoadToEntity(categoryPayLoad);
@@ -48,7 +59,6 @@ public class PlaceService {
         PagingResponse pagingResponse = new PagingResponse(
                 placeCategoryRepository.findAll(PagingUtils.getPageable(pagingRequest))
                         .map(placeMapper::fromEntityToCategoryPlayLoad));
-
         return BaseResponse.builder().message("Create user successful.")
                 .data(pagingResponse)
                 .build();
@@ -56,7 +66,7 @@ public class PlaceService {
 
     public BaseResponse findPlaceWithKey(PagingRequest pagingRequest, String key){
         PagingResponse pagingResponse = new PagingResponse(
-                placeRepository.findByNameIgnoreCaseContainingAndIsDisableIsFalse(PagingUtils.getPageable(pagingRequest), key));
+                placeRepository.findByNameIgnoreCaseContainingAndStatusIsAndIsDisableIsFalse(PagingUtils.getPageable(pagingRequest), key, PlaceStatuses.APPROVED.getStatus()));
 
         return BaseResponse.builder().message("find place successful.")
                 .data(pagingResponse)
@@ -66,15 +76,43 @@ public class PlaceService {
 
     public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest){
         Places places = placeMapper.fromCreatePlaceToPlaces(createPlaceRequest);
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        if (user.isHasRole(ROLE_USER.getRoleName())) {
+            places.setStatus(PlaceStatuses.PENDING.getStatus());
+            places.setStatusDescription("User created");
+        } else {
+            places.setStatus(PlaceStatuses.APPROVED.getStatus());
+            places.setStatusDescription("Admin created");
+
+        }
+
         places.setHashTags(hashTagService.createNewHashTag(createPlaceRequest.getHashTags(),places));
+        places.setOwner(userService.getUser(user.getUsername()));
+
         return BaseResponse.builder().message("Create place successful.")
                 .data(placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places)))
                 .build();
     }
 
-    public BaseResponse updatePlace(String url, CreatePlaceRequest createPlaceRequest){
+    public BaseResponse updatePlace(String url, CreatePlaceRequest createPlaceRequest) throws NoPermissionException {
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         Places places = getPlaceByUrl(url);
+
+        if (user.isHasRole(ROLE_USER.getRoleName())) {
+            if(!user.getUsername().equals(places.getOwner().getId())) {
+                throw new NoPermissionException("You can't update other person's information.");
+            }
+
+            if(places.getStatus().equals(PlaceStatuses.PENDING.getStatus())) {
+                throw new NoPermissionException("You can update only pending places.");
+            }
+            createPlaceRequest.setStatusDescription(null);
+            createPlaceRequest.setStatus(null);
+        }
+
         placeMapper.update(places,createPlaceRequest);
+
         places.setHashTags(hashTagService.updateHashTag(createPlaceRequest.getHashTags(), places));
         return BaseResponse.builder().message("update place successful.")
                 .data(placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places)))
@@ -214,7 +252,6 @@ public class PlaceService {
         return places.get();
     }
 
-
     public Places getPlaceWithParent(Places place, String placeUrl){
         Optional<Places> places = placeRepository.findProvinceByUrl(place.getAreas().getId(), placeUrl);
         if(places.isEmpty())
@@ -240,8 +277,25 @@ public class PlaceService {
         }
 
         return
-                getPlaceByArea(places.getAreas().getParentId(), AreaConstant.COUNTRY.getTypeName()).getUrl()+ "/"
-                + getPlaceByArea(places.getAreas().getId(), AreaConstant.PROVINCE.getTypeName()).getUrl()+ "/"
-                + url;
+        getPlaceByArea(places.getAreas().getParentId(), AreaConstant.COUNTRY.getTypeName()).getUrl()+ "/"
+        + getPlaceByArea(places.getAreas().getId(), AreaConstant.PROVINCE.getTypeName()).getUrl()+ "/"
+        + url;
     }
+
+    public BaseResponse getPlace(PlaceRequestParams placeRequestParams, PagingRequest pagingRequest){
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        if (user.isHasRole(ROLE_USER.getRoleName())) {
+            placeRequestParams.setUserId(user.getUsername());
+        }
+
+        PagingResponse<PlaceResponse> pagingResponse = new PagingResponse(
+                placeRepository.findAll(SearchSpecificationUtils.searchBuilder(placeRequestParams), PagingUtils.getPageable(pagingRequest))
+                        .map(placeMapper::fromPlaceToPlaceResponse));
+
+        return BaseResponse.builder().message("Find place successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
 }

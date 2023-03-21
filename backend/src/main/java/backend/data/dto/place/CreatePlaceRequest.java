@@ -19,6 +19,9 @@ public class CreatePlaceRequest {
     String name;
     String content;
     String description;
+    String status;
+    String statusDescription;
+
     Integer category;
     Integer area;
     String image;

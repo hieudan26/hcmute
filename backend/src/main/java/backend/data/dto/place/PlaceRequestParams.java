@@ -1,17 +1,16 @@
-package backend.data.dto.chat;
+package backend.data.dto.place;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateChatRoomRequest {
-    String time;
-    List<String> friends;
+public class PlaceRequestParams {
+    String type;
+    String status;
+    String userId;
 }
