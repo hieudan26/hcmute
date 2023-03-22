@@ -10,6 +10,7 @@ import { ISelectOption, Option, createOption } from '../../../../pages/admin/pla
 import { ActionMeta, SingleValue } from 'react-select';
 import placeService from '../../../../services/place/place.service';
 import { ICategoryResponse, IPlaceRequest } from '../../../../models/place/place.model';
+import { scrollToTop } from '../../../../utils';
 
 export interface ICreateProps {}
 
@@ -190,7 +191,8 @@ export default function Create(props: ICreateProps) {
       image: urlRef.current,
       name: valueName.trim(),
     };
-    // const response = await placeService.createPlace(params, setSubmitting);
+    const response = await placeService.createPlace(params, setSubmitting);
+    scrollToTop();
     // queryClient.invalidateQueries();
     clear();
   };
@@ -239,7 +241,7 @@ export default function Create(props: ICreateProps) {
           <Button w='20%' bg='gray.600' disabled={isDisableSubmit} _hover={{ bg: 'black' }} onClick={clear}>
             Xóa tất cả
           </Button>
-          <Button w='20%' disabled={isDisableSubmit} isLoading={submitting}>
+          <Button w='20%' disabled={isDisableSubmit} isLoading={submitting} onClick={onSubmit}>
             Đóng góp
           </Button>
         </Flex>

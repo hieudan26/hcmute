@@ -28,6 +28,15 @@ export const publicRouteContain = [
 export const privateRouteContain = ['/settings', '/chats', '/suggest-friends', '/contribute'];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+//#region Scroll To Top after doing something
+const isBrowser = () => typeof window !== 'undefined';
+
+export const scrollToTop = () => {
+  if (!isBrowser()) return;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+//#endregion
+
 /* A Quill editor configuration. */
 export const modulesQuill = {
   toolbar: [

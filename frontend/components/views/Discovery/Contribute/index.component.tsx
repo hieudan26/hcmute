@@ -10,6 +10,7 @@ import placeService from '../../../../services/place/place.service';
 import Section2 from '../../Contribute/Section2/index.component';
 import Section3 from '../../Contribute/Section3/index.component';
 import DiscoveryContributeSection1 from './Section1/index.component';
+import { scrollToTop } from '../../../../utils';
 
 export interface IDiscoveryContributeProps {
   areaData: any | undefined;
@@ -128,13 +129,27 @@ export default function DiscoveryContribute(props: IDiscoveryContributeProps) {
   };
 
   const onSubmit = async () => {
+    let areaId = 1;
+    var dataArea;
+    if (areaData && areaData.category.id !== 2) {
+      dataArea = await areaService.getProvinces(undefined);
+    } else {
+      dataArea = await areaService.getCountriesPagination(undefined);
+    }
+
+    for (var i = 0; i < dataArea.data.content.length; i++) {
+      if (areaData && (areaData.name === dataArea.data.content[i].name || areaData.name === dataArea.data.content[i].enName)) {
+        areaId = dataArea.data.content[i].id;
+        break;
+      }
+    }
     const arrHashTags: string[] = [];
     valueHashTags.map((item) => {
       arrHashTags.push(item.value);
     });
     selectedFileAvatar && (await upload(selectedFileAvatar, 'places', 'places'));
     const params: IPlaceRequest = {
-      area: areaData ? areaData.id : 1,
+      area: areaId,
       category: Number(selectedCategory),
       content: valueContent.trim(),
       description: valueDescription.trim(),
@@ -142,7 +157,8 @@ export default function DiscoveryContribute(props: IDiscoveryContributeProps) {
       image: urlRef.current,
       name: valueName.trim(),
     };
-    // const response = await placeService.createPlace(params, setSubmitting);
+    const response = await placeService.createPlace(params, setSubmitting);
+    scrollToTop();
     // queryClient.invalidateQueries();
     clear();
   };
@@ -188,7 +204,7 @@ export default function DiscoveryContribute(props: IDiscoveryContributeProps) {
           <Button w='20%' bg='gray.600' disabled={isDisableSubmit} _hover={{ bg: 'black' }} onClick={clear}>
             Xóa tất cả
           </Button>
-          <Button w='20%' disabled={isDisableSubmit} isLoading={submitting}>
+          <Button w='20%' disabled={isDisableSubmit} isLoading={submitting} onClick={onSubmit}>
             Đóng góp
           </Button>
         </Flex>

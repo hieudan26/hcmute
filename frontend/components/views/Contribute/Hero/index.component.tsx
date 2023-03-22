@@ -1,10 +1,12 @@
 import { Badge, Box, Button, Flex, Image, SimpleGrid, chakra } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import { useRef } from 'react';
 
 export interface IHeroProps {}
 
 export default function Hero(props: IHeroProps) {
   const refSection = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   const scorllToBottom = () => {
     window.scrollTo({
@@ -67,9 +69,19 @@ export default function Hero(props: IHeroProps) {
         >
           Hãy đóng góp địa điểm du lịch - cộng đồng ..
         </chakra.h1>
-        <Button w='full' onClick={scorllToBottom}>
-          Đóng góp tại đây
-        </Button>
+        <Flex w='full' gap='2' pr='6'>
+          <Button w='full' onClick={scorllToBottom}>
+            Đóng góp tại đây
+          </Button>
+          <Button
+            w='full'
+            onClick={() => {
+              router.push('/contribute/list-of-previous-contributions');
+            }}
+          >
+            Các địa điểm đã đóng góp
+          </Button>
+        </Flex>
       </Flex>
       <Box>
         <Image
