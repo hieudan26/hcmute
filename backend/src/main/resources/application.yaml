@@ -31,9 +31,9 @@ spring:
     type: redis
 
 server:
-  url: https://api.hcmute.me
   servlet:
     context-path: /v1
+
 
 aws:
   accessKeyId: AKIAWGH2PX7YNHVLL564
@@ -47,6 +47,7 @@ backend:
       S3:
         bucket:
           name: lumiere-s3
+
 
 
 
