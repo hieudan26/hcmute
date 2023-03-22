@@ -3,6 +3,13 @@ import { async } from 'rxjs';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 import placeService from '../../services/place/place.service';
 
+export interface placesSpecification {
+  pagination: IPaginationRequest | undefined;
+  status: 'pending' | 'approved' | 'rejected' | undefined;
+  type: string | undefined;
+  userId: string | undefined;
+}
+
 export interface paginationUrlName {
   pagination: IPaginationRequest | undefined;
   urlName: string;
@@ -25,6 +32,42 @@ export interface IUrlsGetPlace {
   urlProvince: string;
   urlPlace: string;
 }
+
+export const useFetchPlacesSpecification_Pagination = (params: placesSpecification, isEnable: boolean) => {
+  return useQuery(
+    ['places_specification_pagination', params],
+    async () => {
+      const response = await placeService.getPlacesSpecification(params.pagination, params.status, params.type, params.userId);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+    }
+  );
+};
+
+export const useFetchPlacesSpecification_Infinite = (params: placesSpecification, isEnable: boolean) => {
+  return useInfiniteQuery(
+    ['places_specification_infinite', params],
+    async ({ pageParam = 0 }) => {
+      if (params.pagination) {
+        params.pagination.pageNumber = pageParam;
+      }
+      const response = await placeService.getPlacesSpecification(params.pagination, params.status, params.type, params.userId);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+      getNextPageParam: (lastPage) => {
+        const maxPages = lastPage.data.pageable.totalPages;
+        const nextPage = lastPage.data.pageable.pageNumber + 1;
+        return nextPage < maxPages ? nextPage : undefined;
+      },
+    }
+  );
+};
 
 export const useFetchPlace = (params: IUrlsGetPlace, isEnable: boolean) => {
   return useQuery(

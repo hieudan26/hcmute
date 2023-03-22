@@ -1,15 +1,37 @@
-import { Box } from '@chakra-ui/react';
+import { Heading } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import WorkInProgress from '../../../components/views/WorkInProgress/index.component';
+import ListContribution from '../../../components/views/Contribute/ListContributions/index.component';
+import { useState } from 'react';
+import { IPlaceCountryResponse } from '../../../models/place/place.model';
+import DetailContribution from '../../../components/views/Contribute/DetailContribution/index.component';
 
 export interface IListOfPreviousContributionsProps {}
 
 const ListOfPreviousContributions: NextPage = (props: IListOfPreviousContributionsProps) => {
+  const [isDetail, setIsDetail] = useState<boolean>(false);
+  const [dataDetail, setDataDetail] = useState<IPlaceCountryResponse | undefined>(undefined);
+
+  const setDetailData = (item: IPlaceCountryResponse) => {
+    setIsDetail(true);
+    setDataDetail(item);
+  };
+
+  const pushBackListPage = () => {
+    setIsDetail(false);
+  };
+
   return (
-    <Box mb='10'>
-      <WorkInProgress />
-    </Box>
+    <>
+      <Heading as='h2' size='xl' alignItems='center' mb='5'>
+        {!isDetail ? 'Danh sách các địa điểm bạn đã đóng góp nè 🤩😝' : `Cập nhật điểm đóng góp: ${dataDetail?.name}`}
+      </Heading>
+      {!isDetail ? (
+        <ListContribution setDetailData={setDetailData} />
+      ) : (
+        <DetailContribution place={dataDetail} pushBackListPage={pushBackListPage} />
+      )}
+    </>
   );
 };
 

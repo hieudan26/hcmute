@@ -1,5 +1,11 @@
 import { AxiosResponse } from 'axios';
 
+export enum STATUS_PLACES {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+}
+
 export const ALL_TYPE_SEARCH = [
   { value: 'faq', label: 'faq' },
   { value: 'experience', label: 'experience' },

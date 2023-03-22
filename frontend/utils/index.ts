@@ -28,6 +28,12 @@ export const publicRouteContain = [
 export const privateRouteContain = ['/settings', '/chats', '/suggest-friends', '/contribute'];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+//#region truncate 7
+export const truncate = (str: string, quantity: number) => {
+  return str.length > 10 ? str.substring(0, quantity) + '...' : str;
+};
+//#endregion
+
 //#region Scroll To Top after doing something
 const isBrowser = () => typeof window !== 'undefined';
 
