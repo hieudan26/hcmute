@@ -31,6 +31,7 @@ spring:
     type: redis
 
 server:
+  url: https://api.hcmute.me
   servlet:
     context-path: /v1
 

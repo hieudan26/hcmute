@@ -74,6 +74,9 @@ public class SearchSpecificationUtils {
                 if(field.getName().equals("userId")){
                     builder.with("owner", "nested", jsonNode.get(field.getName()).asText());
                 }
+                else if(field.getName().equals("type")){
+                    builder.with("placeCategories", "nestedName", jsonNode.get(field.getName()).asText());
+                }
                 else if(jsonNode.get(field.getName()).isBoolean()){
                     builder.with(field.getName(), "=", Boolean.valueOf(jsonNode.get(field.getName()).asText()));
                 }else{
@@ -81,6 +84,6 @@ public class SearchSpecificationUtils {
                 }
             }
         }
-        return builder.buildOr();
+        return builder.buildAnd();
     }
 }

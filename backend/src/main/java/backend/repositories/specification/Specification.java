@@ -22,6 +22,11 @@ public class Specification<T> implements org.springframework.data.jpa.domain.Spe
                     root.get(criteria.getKey()).get("id"), criteria.getValue().toString());
         }
 
+        if (criteria.getOperation().equalsIgnoreCase("nestedName")) {
+            return builder.equal(
+                    root.get(criteria.getKey()).get("name"), criteria.getValue().toString());
+        }
+
         if (criteria.getOperation().equalsIgnoreCase("hashTags")) {
             Join<Posts, HashTags> hashTagsJoin = root.join("hashTags");
             return builder.equal(hashTagsJoin.get("name"), criteria.getValue());
