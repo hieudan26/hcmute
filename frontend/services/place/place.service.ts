@@ -1,11 +1,21 @@
 import { Dispatch, SetStateAction } from 'react';
-import { async } from 'rxjs';
 import { AxiosResponseStatus } from '../../constants/global.constant';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 import { ICategoryRequest, ICategoryRequestUpdate, IPlaceRequest, IPlaceRequestUpdate } from '../../models/place/place.model';
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class PlaceService {
+  getPlacesSpecification = async (
+    params: IPaginationRequest | undefined,
+    status: 'pending' | 'approved' | 'rejected' | undefined,
+    type: string | undefined,
+    userId: string | undefined
+  ): Promise<AxiosResponseStatus<any>> => {
+    var url = `/places`;
+    var mainParams = { ...params, status: status, type: type, userId: userId };
+    return getAsync(url, mainParams, false, false, true);
+  };
+
   updatePlace = async (
     params: IPlaceRequestUpdate,
     url: string,

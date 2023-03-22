@@ -7,6 +7,9 @@ export interface IPlaceCountryResponse {
   category: ICategoryResponse;
   hashTags: string[];
   description: string;
+  status?: string;
+  statusDescription?: string;
+  userId?: string;
 }
 
 export interface ICategoryResponse {
@@ -43,4 +46,6 @@ export interface IPlaceRequestUpdate {
   hashTags: string[];
   image: string;
   name: string;
+  status?: string;
+  statusDescription?: string;
 }

@@ -8,11 +8,27 @@ export default function Hero(props: IHeroProps) {
   const refSection = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  const scorllToBottom = () => {
+  const scrollToBottom = () => {
     window.scrollTo({
       top: refSection.current?.scrollHeight,
       behavior: 'smooth',
     });
+  };
+
+  const handleClick = (type: number) => {
+    if (router.pathname === '/contribute') {
+      if (type === 1) {
+        scrollToBottom();
+      } else {
+        router.push('/contribute/list-of-previous-contributions');
+      }
+    } else {
+      if (type === 1) {
+        router.push('/contribute');
+      } else {
+        scrollToBottom();
+      }
+    }
   };
 
   return (
@@ -70,13 +86,18 @@ export default function Hero(props: IHeroProps) {
           Hãy đóng góp địa điểm du lịch - cộng đồng ..
         </chakra.h1>
         <Flex w='full' gap='2' pr='6'>
-          <Button w='full' onClick={scorllToBottom}>
+          <Button
+            w='full'
+            onClick={() => {
+              handleClick(1);
+            }}
+          >
             Đóng góp tại đây
           </Button>
           <Button
             w='full'
             onClick={() => {
-              router.push('/contribute/list-of-previous-contributions');
+              handleClick(2);
             }}
           >
             Các địa điểm đã đóng góp
