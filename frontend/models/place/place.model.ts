@@ -32,6 +32,8 @@ export interface IPlaceRequest {
   hashTags: string[];
   image: string;
   name: string;
+  status?: string;
+  statusDescription?: string;
 }
 
 export interface IPlaceRequestUpdate {
