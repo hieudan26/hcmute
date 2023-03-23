@@ -1,4 +1,4 @@
-import { Heading } from '@chakra-ui/react';
+import { Heading, chakra } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ListContribution from '../../../components/views/Contribute/ListContributions/index.component';
@@ -23,9 +23,21 @@ const ListOfPreviousContributions: NextPage = (props: IListOfPreviousContributio
 
   return (
     <>
-      <Heading as='h2' size='xl' alignItems='center' mb='5'>
-        {!isDetail ? 'Danh sách các địa điểm bạn đã đóng góp nè 🤩😝' : `Cập nhật điểm đóng góp: ${dataDetail?.name}`}
-      </Heading>
+      <chakra.h1
+        mb={!isDetail ? '0' : '5'}
+        fontSize={{
+          base: '2xl',
+          md: '2xl',
+          lg: '4xl',
+        }}
+        fontWeight='bold'
+        _dark={{
+          color: 'gray.300',
+        }}
+        lineHeight='shorter'
+      >
+        {!isDetail ? 'Danh sách các địa điểm bạn đã đóng góp nè 🤩😝' : `Thông tin địa điểm đóng góp: ${dataDetail?.name}`}
+      </chakra.h1>
       {!isDetail ? (
         <ListContribution setDetailData={setDetailData} />
       ) : (

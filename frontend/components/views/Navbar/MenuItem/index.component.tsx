@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { darkColor } from '../../../../utils/ColorMode/dark';
 import { lightColor } from '../../../../utils/ColorMode/light';
+import { useEffect, useState } from 'react';
 
 export interface IMenuItemProps {
   children: any;
@@ -15,6 +16,42 @@ export default function MenuItem(props: IMenuItemProps) {
   const currentRoute = router.pathname;
   const navs = useColorModeValue(lightColor.colorTextHeader, darkColor.colorTextHeader);
   const navsbg_hover = useColorModeValue('#fafafa', '#121212');
+  const [toRoute, setToRoute] = useState<string>(to);
+
+  useEffect(() => {
+    if (currentRoute === '/contribute/list-of-previous-contributions' && to === '/contribute') {
+      setToRoute(currentRoute);
+    } else if (
+      (currentRoute === '/experiences/[hashtag]' && to === '/experiences') ||
+      (currentRoute === '/faq/[hashtag]' && to === '/faq')
+    ) {
+      setToRoute(currentRoute);
+    } else if (
+      to === '/discovery' &&
+      (currentRoute === '/discovery/[country]' ||
+        currentRoute === '/discovery/[country]/contribute' ||
+        currentRoute === '/discovery/[country]/experiences' ||
+        currentRoute === '/discovery/[country]/faqs' ||
+        currentRoute === '/discovery/[country]/provinces' ||
+        currentRoute === '/discovery/[country]/images' ||
+        currentRoute === '/discovery/[country]/[province]' ||
+        currentRoute === '/discovery/[country]/[province]/contribute' ||
+        currentRoute === '/discovery/[country]/[province]/experiences' ||
+        currentRoute === '/discovery/[country]/[province]/faqs' ||
+        currentRoute === '/discovery/[country]/[province]/images' ||
+        currentRoute === '/discovery/[country]/[province]/places' ||
+        currentRoute === '/discovery/[country]/[province]/[place]' ||
+        currentRoute === '/discovery/[country]/[province]/[place]/contribute' ||
+        currentRoute === '/discovery/[country]/[province]/[place]/experiences' ||
+        currentRoute === '/discovery/[country]/[province]/[place]/faqs' ||
+        currentRoute === '/discovery/[country]/[province]/[place]/images' ||
+        currentRoute === '/discovery/[country]/[province]/[place]/places')
+    ) {
+      setToRoute(currentRoute);
+    } else {
+      setToRoute(to);
+    }
+  }, [currentRoute, to]);
 
   return (
     <>
@@ -29,15 +66,15 @@ export default function MenuItem(props: IMenuItemProps) {
           paddingY={['3px', '3px', '3px', '3px', '5px']}
         >
           <Text
-            paddingBottom={currentRoute === to ? '5px' : '0px'}
-            borderBottom={currentRoute === to ? '2px' : '0px'}
-            borderBottomColor={currentRoute === to ? 'textColor.logo' : 'transparent'}
+            paddingBottom={currentRoute === toRoute ? '5px' : '0px'}
+            borderBottom={currentRoute === toRoute ? '2px' : '0px'}
+            borderBottomColor={currentRoute === toRoute ? 'textColor.logo' : 'transparent'}
             fontSize='15px'
             color={navs}
             fontFamily='titleFont'
             display='block'
             _hover={{
-              color: currentRoute !== to && '#D0637C',
+              color: currentRoute !== toRoute && '#D0637C',
             }}
             {...rest}
           >
