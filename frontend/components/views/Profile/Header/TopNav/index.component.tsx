@@ -2,15 +2,17 @@ import { useColorModeValue } from '@chakra-ui/react';
 import { Button } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import NextLink from 'next/link';
+import { IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 
 export interface ITopNavProps {
   userId: string;
   mainCurrentRoute: string;
   pushRoute: (link: string) => void;
+  auth: IUserFirstLoginRequest | null;
 }
 
 export default function TopNav(props: ITopNavProps) {
-  const { userId, mainCurrentRoute, pushRoute } = props;
+  const { userId, mainCurrentRoute, pushRoute, auth } = props;
   const { t } = useTranslation('profile');
   const colorText = useColorModeValue('black', 'whtie');
 
@@ -64,18 +66,20 @@ export default function TopNav(props: ITopNavProps) {
           {t('navbar.photos')}
         </Button>
       </NextLink>
-      <NextLink href={`../${userId}/suggest-friends`} scroll={false}>
-        <Button
-          borderBottom={mainCurrentRoute === 'suggest-friends' ? '2px' : '0px'}
-          borderBottomColor={mainCurrentRoute === 'suggest-friends' ? 'textColor.logo' : 'transparent'}
-          bg='none'
-          color={colorText}
-          borderRadius='none'
-          onClick={() => pushRoute('suggest-friends')}
-        >
-          Đề xuất kết bạn
-        </Button>
-      </NextLink>
+      {auth && auth.id === userId && (
+        <NextLink href={`../${userId}/suggest-friends`} scroll={false}>
+          <Button
+            borderBottom={mainCurrentRoute === 'suggest-friends' ? '2px' : '0px'}
+            borderBottomColor={mainCurrentRoute === 'suggest-friends' ? 'textColor.logo' : 'transparent'}
+            bg='none'
+            color={colorText}
+            borderRadius='none'
+            onClick={() => pushRoute('suggest-friends')}
+          >
+            Đề xuất kết bạn
+          </Button>
+        </NextLink>
+      )}
     </>
   );
 }

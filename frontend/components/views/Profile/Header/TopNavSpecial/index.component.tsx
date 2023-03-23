@@ -9,10 +9,11 @@ export interface ITopNavSpecialProps {
   pushRoute: (link: string) => void;
   user: IUserFirstLoginRequest | null;
   avatar: string;
+  auth: IUserFirstLoginRequest | null;
 }
 
 export default function TopNavSpecial(props: ITopNavSpecialProps) {
-  const { userId, mainCurrentRoute, pushRoute, user, avatar } = props;
+  const { userId, mainCurrentRoute, pushRoute, user, avatar, auth } = props;
   const bg = useColorModeValue('white', 'black');
 
   return (
@@ -41,7 +42,7 @@ export default function TopNavSpecial(props: ITopNavSpecialProps) {
         <Text>{user ? user.fullName : 'Default Fullname'}</Text>
       </Flex>
       <Box zIndex='5' bg={bg}>
-        <TopNav userId={userId} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
+        <TopNav auth={auth} userId={userId} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
       </Box>
     </Flex>
   );

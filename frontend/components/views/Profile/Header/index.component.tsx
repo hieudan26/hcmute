@@ -351,10 +351,11 @@ export default function Header(props: IHeaderProps & BoxProps) {
         </Box>
         <Divider />
 
-        <TopNavNormal userId={user ? user.id : 'a'} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
+        <TopNavNormal auth={auth} userId={user ? user.id : 'a'} mainCurrentRoute={mainCurrentRoute} pushRoute={pushRoute} />
         <Slide direction='top' in={true}>
           {clientWindowHeight >= 534.4 && (
             <TopNavSpecial
+              auth={auth}
               avatar={avatar}
               user={user}
               userId={user ? user.id : 'a'}

@@ -6,6 +6,7 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Highlight,
   IconButton,
   Image,
   Input,
@@ -113,13 +114,19 @@ export default function DetailContribution(props: IDetailContributionProps) {
     ) {
       setIsDisableSubmit(true);
     } else {
-      if (place && place.status !== STATUS_PLACES.PENDING) {
-        setIsDisableSubmit(true);
+      if (place) {
+        if (place.status !== STATUS_PLACES.PENDING) {
+          setIsDisableSubmit(true);
+        } else if (isDisableReset) {
+          setIsDisableSubmit(true);
+        } else {
+          setIsDisableSubmit(false);
+        }
       } else {
         setIsDisableSubmit(false);
       }
     }
-  }, [valueContent, valueDescription, valueHashTags, valuePlaceName, place]);
+  }, [valueContent, valueDescription, valueHashTags, valuePlaceName, place, isDisableReset]);
 
   const uploadImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) {
@@ -213,6 +220,7 @@ export default function DetailContribution(props: IDetailContributionProps) {
           />
           <Flex direction='column' gap='2'>
             <IconButton
+              disabled={selectedFileAvatar === undefined}
               title='Cancel'
               aria-label='Cancel'
               onClick={() => {
@@ -223,7 +231,7 @@ export default function DetailContribution(props: IDetailContributionProps) {
               icon={<TiCancel />}
             />
             <IconButton
-              disabled={place?.status === STATUS_PLACES.APPROVED}
+              disabled={place?.status !== STATUS_PLACES.PENDING || selectedFileAvatar !== undefined}
               title='Upload'
               onClick={() => {
                 inputRef.current?.click();
@@ -235,23 +243,23 @@ export default function DetailContribution(props: IDetailContributionProps) {
         </Flex>
         <Flex direction='column' justify='flex-start'>
           <FormControl isRequired>
-            <FormLabel fontSize='sm'>Name of place</FormLabel>
+            <FormLabel fontSize='sm'>Tên địa điểm</FormLabel>
             <Input
-              readOnly={place?.status === STATUS_PLACES.APPROVED}
+              readOnly={place?.status !== STATUS_PLACES.PENDING}
               type='text'
               value={valuePlaceName}
               onChange={changePlaceName}
             />
-            <FormHelperText>Identifiers of the respective area of place</FormHelperText>
+            <FormHelperText>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
           </FormControl>
         </Flex>
         <Flex direction='column'>
           <Text fontSize='sm' mb='2'>
-            Create hashtags for this place
+            Tạo hashtag cho địa điểm này
           </Text>
           <Box w='full'>
             <CreatableSelect
-              isDisabled={place?.status === STATUS_PLACES.APPROVED}
+              isDisabled={place?.status !== STATUS_PLACES.PENDING}
               components={components}
               inputValue={inputValueHashTag}
               isClearable
@@ -260,7 +268,7 @@ export default function DetailContribution(props: IDetailContributionProps) {
               onChange={(newValue) => setValueHashTags(newValue)}
               onInputChange={(newValue) => setInputValueHashTag(newValue)}
               onKeyDown={handleKeyDown}
-              placeholder='Type something and press enter...'
+              placeholder='Nhập nội dung và nhấn enter...'
               value={valueHashTags}
             />
           </Box>
@@ -268,22 +276,22 @@ export default function DetailContribution(props: IDetailContributionProps) {
       </SimpleGrid>
       <Divider my='8' />
       <FormControl>
-        <FormLabel fontSize='sm'>Description: </FormLabel>
+        <FormLabel fontSize='sm'>Mô tả: </FormLabel>
         <Textarea
-          readOnly={place?.status === STATUS_PLACES.APPROVED}
+          readOnly={place?.status !== STATUS_PLACES.PENDING}
           value={valueDescription}
           onChange={changeDescription}
           placeholder='Description about place'
           size='sm'
         />
-        <FormHelperText fontSize='xs'>Identifiers of the respective area of place</FormHelperText>
+        <FormHelperText fontSize='xs'>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
       </FormControl>
       <Divider my='8' />
       <Text fontSize='sm' ml='2' mb='4'>
-        Content:
+        Nội dung:
       </Text>
       <ReactQuill
-        readOnly={place?.status === STATUS_PLACES.APPROVED}
+        readOnly={place?.status !== STATUS_PLACES.PENDING}
         value={valueContent}
         onChange={setValueContent}
         modules={modulesQuill}
@@ -292,14 +300,26 @@ export default function DetailContribution(props: IDetailContributionProps) {
       />
       <Divider my='8' />
       <Flex w='full' justify='center' align='center' direction='column' gap='3'>
-        <Flex w='full' gap='6' justify='center' align='center'>
-          <Button w='20%' disabled={isDisableReset} bg='gray.600' _hover={{ bg: 'black' }} onClick={reset}>
-            Reset
-          </Button>
-          <Button w='20%' disabled={isDisableSubmit} isLoading={submitting} onClick={change}>
-            Save changes
-          </Button>
-        </Flex>
+        {place?.status === STATUS_PLACES.APPROVED && (
+          <Text fontStyle='italic' fontSize='smaller' color='red.500'>
+            * Địa điểm đóng góp ĐÃ ĐƯỢC PHÊ DUYỆT nên không thể thay đổi.
+          </Text>
+        )}
+        {place?.status === STATUS_PLACES.REJECTED && (
+          <Text fontStyle='italic' fontSize='smaller' color='red.500'>
+            * Địa điểm đóng góp đã KHÔNG ĐƯỢC CHẤP THUẬN nên không thể thay đổi.
+          </Text>
+        )}
+        {place?.status === STATUS_PLACES.PENDING && (
+          <Flex w='full' gap='6' justify='center' align='center'>
+            <Button w='20%' disabled={isDisableReset} bg='gray.600' _hover={{ bg: 'black' }} onClick={reset}>
+              Cài lại
+            </Button>
+            <Button w='20%' disabled={isDisableSubmit} isLoading={submitting} onClick={change}>
+              Lưu thay đổi
+            </Button>
+          </Flex>
+        )}
       </Flex>
     </Box>
   );

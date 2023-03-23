@@ -70,6 +70,7 @@ export default function Section2(props: ISection2Props) {
           />
           <Flex direction='column' gap='2'>
             <IconButton
+              disabled={selectedFileAvatar === undefined}
               title='Cancel'
               aria-label='Cancel'
               onClick={() => {
@@ -80,6 +81,7 @@ export default function Section2(props: ISection2Props) {
               icon={<TiCancel />}
             />
             <IconButton
+              disabled={selectedFileAvatar !== undefined}
               title='Upload'
               onClick={() => {
                 inputRef.current?.click();
@@ -95,7 +97,7 @@ export default function Section2(props: ISection2Props) {
           <FormControl isRequired>
             <FormLabel fontSize='sm'>Tên địa danh</FormLabel>
             <Input type='text' value={valueName} onChange={handleChangeName} placeholder='Tên địa danh' />
-            <FormHelperText>Số nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
+            <FormHelperText>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
           </FormControl>
         </Flex>
       </GridItem>

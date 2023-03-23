@@ -19,7 +19,7 @@ export default function Section3(props: ISection3Props) {
       <FormControl>
         <FormLabel fontSize='sm'>Mô tả: </FormLabel>
         <Textarea placeholder='Mô tả về địa điểm' size='sm' value={valueDescription} onChange={handleDescriptionChange} />
-        <FormHelperText fontSize='xs'>Số nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
+        <FormHelperText fontSize='xs'>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
       </FormControl>
       <Divider my='8' />
       <Text fontSize='sm' ml='2' mb='4'>
