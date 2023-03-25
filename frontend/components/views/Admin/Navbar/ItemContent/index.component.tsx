@@ -8,18 +8,18 @@ export function ItemContent(props: { info: string }) {
       <Flex
         justify='center'
         align='center'
-        borderRadius='16px'
-        minH={{ base: '60px', md: '70px' }}
-        h={{ base: '60px', md: '70px' }}
-        minW={{ base: '60px', md: '70px' }}
-        w={{ base: '60px', md: '70px' }}
-        me='14px'
-        bg='linear-gradient(135deg, #868CFF 0%, #4318FF 100%)'
+        borderRadius='10px'
+        minH={{ base: '40px', md: '50px' }}
+        h={{ base: '40px', md: '50px' }}
+        minW={{ base: '40px', md: '50px' }}
+        w={{ base: '40px', md: '50px' }}
+        me='4'
+        bg='linear-gradient(135deg, #fab1a0 0%, #D0637C 100%)'
       >
         <Icon as={MdUpgrade} color='white' w={8} h={14} />
       </Flex>
       <Flex flexDirection='column'>
-        <Text mb='5px' fontWeight='bold' color={textColor} fontSize={{ base: 'md', md: 'md' }}>
+        <Text mb='2px' fontWeight='bold' color={textColor} fontSize={{ base: 'md', md: 'md' }}>
           New Update: {props.info}
         </Text>
         <Flex alignItems='center'>

@@ -103,7 +103,7 @@ export default function UserLayout(props: IUserLayoutProps) {
 
   return (
     <Box>
-      <Navbar role={RoleConstants.USER} />
+      <Navbar role={curUser ? curUser.role : RoleConstants.USER} />
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
         {router.pathname === '/discovery' && <HeroDiscovery />}

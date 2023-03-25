@@ -22,9 +22,12 @@ import Link from 'next/link';
 import { useColorModeValue } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 
-export interface IAboutPostProps {}
+export interface IAboutPostProps {
+  auth: IUserFirstLoginRequest | null;
+}
 
 export default function AboutPost(props: IAboutPostProps) {
+  const { auth } = props;
   const { t } = useTranslation('profile');
   const router = useRouter();
   const [user, setUser] = useState<IUserFirstLoginRequest | undefined>(undefined);
@@ -49,8 +52,20 @@ export default function AboutPost(props: IAboutPostProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
+  const hiddenEditButtion = () => {
+    if (user && auth) {
+      if (user.id !== auth.id) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  };
+
   return (
-    <Box maxH='xl' rounded='lg' width='100%' bg={bgLayout} minH='xl' py='10' px='8' shadow='md'>
+    <Box maxH='xl' rounded='lg' width='100%' bg={bgLayout} minH={hiddenEditButtion() ? 'md' : 'xl'} py='10' px='8' shadow='md'>
       <Flex gap='4' align='center' pb='4'>
         <Heading as='h4' size='md'>
           {t('tabpost.about.heading')}{' '}
@@ -85,9 +100,16 @@ export default function AboutPost(props: IAboutPostProps) {
               <Icon fontSize='lg' as={AiFillFileText} />
               <Text fontSize='md'>{user?.firstName}&apos;s summary</Text>
             </Flex>
-            <Textarea display='inline-block' value={user?.summary} readOnly minH='180px' maxH='180px' h='180px' />
+            <Textarea
+              display='inline-block'
+              value={user?.summary?.trim() === '' ? 'Không có thông tin' : user?.summary}
+              readOnly
+              minH='180px'
+              maxH='180px'
+              h='180px'
+            />
           </Box>
-          <Box>
+          <Box hidden={hiddenEditButtion()}>
             <Button
               width='full'
               onClick={() => {

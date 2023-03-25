@@ -112,7 +112,7 @@ export default function Posts(props: IPostsProps) {
     <>
       <Flex gap='5' minW='6xl' minH='300px'>
         <Box width='40%'>
-          <AboutPost />
+          <AboutPost auth={auth} />
         </Box>
         <Box width='60%'>
           <>
