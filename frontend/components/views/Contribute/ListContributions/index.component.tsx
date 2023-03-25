@@ -9,13 +9,14 @@ import { truncate } from '../../../../utils';
 
 export interface IListContributionProps {
   setDetailData: (item: IPlaceCountryResponse) => void;
+  isAdmin?: boolean;
+  status?: 'pending' | 'rejected' | 'approved';
 }
 
 export default function ListContribution(props: IListContributionProps) {
-  const { setDetailData } = props;
+  const { setDetailData, isAdmin = false, status = undefined } = props;
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const color1 = useColorModeValue('gray.400', 'gray.400');
-  const color2 = useColorModeValue('gray.400', 'gray.400');
   const colorTxt = useColorModeValue('black', 'white');
   const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
     pageNumber: 0,
@@ -29,11 +30,12 @@ export default function ListContribution(props: IListContributionProps) {
     totalItems: 0,
     totalPages: 0,
   });
-  const header = ['name', 'category', 'description', 'hashtag', 'status', 'detail'];
+  // const header = ['name', 'category', 'description', 'hashtag', 'status', 'detail'];
+  const header = ['tên', 'loại', 'miêu tả', 'hashtag', 'trạng thái', 'chi tiết'];
   const dataContributions = useFetchPlacesSpecification_Pagination(
     {
       pagination: { pageNumber: paramsPagination.pageNumber, pageSize: paramsPagination.pageSize },
-      status: undefined,
+      status: status,
       type: undefined,
       userId: undefined,
     },
@@ -41,7 +43,6 @@ export default function ListContribution(props: IListContributionProps) {
   );
 
   useEffect(() => {
-    console.log(dataContributions.data);
     if (dataContributions.data) {
       const tempPageable = dataContributions.data.data.pageable;
       setPageable({
@@ -65,7 +66,7 @@ export default function ListContribution(props: IListContributionProps) {
 
   return (
     <>
-      <Flex w='120%' p='8' alignItems='center' justifyContent='center'>
+      <Flex w={isAdmin ? 'full' : '120%'} px='8' pb='8' pt={isAdmin ? '4' : '8'} alignItems='center' justifyContent='center'>
         <Table
           rounded='md'
           shadow='md'
@@ -98,85 +99,89 @@ export default function ListContribution(props: IListContributionProps) {
               ))}
             </Tr>
           </Thead>
-          <Tbody
-            display={{
-              base: 'block',
-              lg: 'table-row-group',
-            }}
-            sx={{
-              '@media print': {
-                display: 'table-row-group',
-              },
-            }}
-          >
-            {dataContributions &&
-              dataContributions.data &&
-              dataContributions.data.data.content.map((item: IPlaceCountryResponse) => {
-                return (
-                  <Tr
-                    key={item.id}
-                    display={{
-                      base: 'grid',
-                      md: 'table-row',
-                    }}
-                    sx={{
-                      '@media print': {
-                        display: 'table-row',
-                      },
-                      gridTemplateColumns: 'minmax(0px, 35%) minmax(0px, 65%)',
-                      gridGap: '10px',
-                    }}
-                  >
-                    <Td
+          {dataContributions.isLoading ? (
+            <>Loading...</>
+          ) : (
+            <Tbody
+              display={{
+                base: 'block',
+                lg: 'table-row-group',
+              }}
+              sx={{
+                '@media print': {
+                  display: 'table-row-group',
+                },
+              }}
+            >
+              {dataContributions &&
+                dataContributions.data &&
+                dataContributions.data.data.content.map((item: IPlaceCountryResponse) => {
+                  return (
+                    <Tr
+                      key={item.id}
                       display={{
-                        base: 'table-cell',
+                        base: 'grid',
+                        md: 'table-row',
                       }}
                       sx={{
                         '@media print': {
-                          display: 'none',
+                          display: 'table-row',
                         },
-                        textTransform: 'uppercase',
-                        color: color1,
-                        fontSize: 'xs',
-                        fontWeight: 'bold',
-                        letterSpacing: 'wider',
+                        gridTemplateColumns: 'minmax(0px, 35%) minmax(0px, 65%)',
+                        gridGap: '10px',
                       }}
                     >
-                      {item.name}
-                    </Td>
-                    <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
-                      {item.category.name}
-                    </Td>
-                    <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
-                      {item.description ? truncate(item.description, 20) : 'No information'}
-                    </Td>
-                    <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
-                      {item.hashTags.map((hashtag: string) => {
-                        return (
-                          <Badge key={`badge-${item.id}`} fontSize='3xs' colorScheme='red' mx='0.5'>
-                            {hashtag}
-                          </Badge>
-                        );
-                      })}
-                    </Td>
-                    <Td color={'gray.500'} fontSize='md' fontWeight='hairline' textTransform='uppercase'>
-                      {item.status}
-                    </Td>
-                    <Td>
-                      <ButtonGroup variant='ghost' size='sm' spacing={1}>
-                        <IconButton
-                          icon={<AiFillEdit />}
-                          aria-label='Edit'
-                          onClick={() => {
-                            setDetailData(item);
-                          }}
-                        />
-                      </ButtonGroup>
-                    </Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
+                      <Td
+                        display={{
+                          base: 'table-cell',
+                        }}
+                        sx={{
+                          '@media print': {
+                            display: 'none',
+                          },
+                          textTransform: 'uppercase',
+                          color: color1,
+                          fontSize: 'xs',
+                          fontWeight: 'bold',
+                          letterSpacing: 'wider',
+                        }}
+                      >
+                        {item.name}
+                      </Td>
+                      <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
+                        {item.category.name}
+                      </Td>
+                      <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
+                        {item.description ? truncate(item.description, 20) : 'No information'}
+                      </Td>
+                      <Td color={'gray.500'} fontSize='md' fontWeight='hairline'>
+                        {item.hashTags.map((hashtag: string) => {
+                          return (
+                            <Badge key={`badge-${item.id}`} fontSize='3xs' colorScheme='red' mx='0.5'>
+                              {hashtag}
+                            </Badge>
+                          );
+                        })}
+                      </Td>
+                      <Td color={'gray.500'} fontSize='md' fontWeight='hairline' textTransform='uppercase'>
+                        {item.status}
+                      </Td>
+                      <Td>
+                        <ButtonGroup variant='ghost' size='sm' spacing={1}>
+                          <IconButton
+                            icon={<AiFillEdit />}
+                            aria-label='Edit'
+                            onClick={() => {
+                              setDetailData(item);
+                            }}
+                          />
+                        </ButtonGroup>
+                      </Td>
+                    </Tr>
+                  );
+                })}
+            </Tbody>
+          )}
         </Table>
       </Flex>
       <Flex mb='8' w='full' color={colorTxt} alignItems='center' justifyContent='center'>

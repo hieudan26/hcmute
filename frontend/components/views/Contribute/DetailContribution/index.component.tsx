@@ -6,7 +6,6 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
-  Highlight,
   IconButton,
   Image,
   Input,
@@ -15,29 +14,45 @@ import {
   Textarea,
   useColorModeValue,
 } from '@chakra-ui/react';
-import useUploadFile from '../../../../hooks/useUploadFile';
-import { useRouter } from 'next/router';
-import { KeyboardEventHandler, useEffect, useRef, useState } from 'react';
-import { IPlaceCountryResponse, IPlaceRequestUpdate } from '../../../../models/place/place.model';
+import { useQueryClient } from '@tanstack/react-query';
+import dynamic from 'next/dynamic';
+import { Dispatch, KeyboardEventHandler, SetStateAction, useEffect, useRef, useState } from 'react';
+import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { IoIosArrowRoundBack } from 'react-icons/io';
 import { TiCancel } from 'react-icons/ti';
 import CreatableSelect from 'react-select/creatable';
-import { AiFillEdit, AiOutlineCloudUpload } from 'react-icons/ai';
-import { Option, components, createOption } from '../../../../pages/admin/places-management/create';
-import dynamic from 'next/dynamic';
-import { formatsQuill, modulesQuill, noImage, scrollToTop } from '../../../../utils';
-import { IoIosArrowRoundBack, IoMdArrowRoundBack } from 'react-icons/io';
-import placeService from '../../../../services/place/place.service';
 import { STATUS_PLACES } from '../../../../constants/global.constant';
-import { useQueryClient } from '@tanstack/react-query';
+import useUploadFile from '../../../../hooks/useUploadFile';
+import { IPlaceCountryResponse, IPlaceRequestUpdate } from '../../../../models/place/place.model';
+import { Option, components, createOption } from '../../../../pages/admin/places-management/create';
+import placeService from '../../../../services/place/place.service';
+import { formatsQuill, modulesQuill, scrollToTop } from '../../../../utils';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false, loading: () => <p>Loading ...</p> });
 
 export interface IDetailContributionProps {
   place: IPlaceCountryResponse | undefined;
   pushBackListPage: () => void;
+  isAdmin?: boolean;
+  isResetDataAdmin?: boolean;
+  setIsResetDataAdmin?: Dispatch<SetStateAction<boolean>>;
+  statusChange?: string;
+  statusDescription?: string;
+  setStatusChange?: Dispatch<SetStateAction<string>>;
+  setIsDisableResetAdmin?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function DetailContribution(props: IDetailContributionProps) {
-  const { place, pushBackListPage } = props;
+  const {
+    place,
+    pushBackListPage,
+    isAdmin = false,
+    isResetDataAdmin = false,
+    setIsResetDataAdmin,
+    statusChange = STATUS_PLACES.PENDING,
+    statusDescription = '',
+    setStatusChange,
+    setIsDisableResetAdmin,
+  } = props;
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const { upload, urlRef } = useUploadFile();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -52,6 +67,30 @@ export default function DetailContribution(props: IDetailContributionProps) {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(true);
   const [isDisableReset, setIsDisableReset] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (isAdmin && setIsDisableResetAdmin) {
+      setIsDisableResetAdmin(isDisableReset);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin, isDisableReset]);
+
+  useEffect(() => {
+    if (isAdmin && isResetDataAdmin && setIsResetDataAdmin) {
+      reset();
+      setIsResetDataAdmin(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isResetDataAdmin, setIsResetDataAdmin, isAdmin]);
+
+  useEffect(() => {
+    if (isAdmin && statusChange && setStatusChange && statusChange !== STATUS_PLACES.PENDING) {
+      change();
+      setStatusChange(STATUS_PLACES.PENDING);
+      pushBackListPage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setStatusChange, statusChange, isAdmin]);
 
   useEffect(() => {
     const hashTagsTemp: Option[] = [];
@@ -181,14 +220,29 @@ export default function DetailContribution(props: IDetailContributionProps) {
         hashTagsTemp.push(item.value);
       });
 
-      const params: IPlaceRequestUpdate = {
-        category: place.category.id,
-        content: valueContent ? valueContent : '',
-        description: valueDescription ? valueDescription : '',
-        hashTags: hashTagsTemp,
-        image: selectedFileAvatar ? urlRef.current : place.image,
-        name: valuePlaceName ? valuePlaceName : '',
-      };
+      let params: IPlaceRequestUpdate;
+
+      if (!isAdmin) {
+        params = {
+          category: place.category.id,
+          content: valueContent ? valueContent : '',
+          description: valueDescription ? valueDescription : '',
+          hashTags: hashTagsTemp,
+          image: selectedFileAvatar ? urlRef.current : place.image,
+          name: valuePlaceName ? valuePlaceName : '',
+        };
+      } else {
+        params = {
+          category: place.category.id,
+          content: valueContent ? valueContent : '',
+          description: valueDescription ? valueDescription : '',
+          hashTags: hashTagsTemp,
+          image: selectedFileAvatar ? urlRef.current : place.image,
+          name: valuePlaceName ? valuePlaceName : '',
+          status: statusChange,
+          statusDescription: statusDescription,
+        };
+      }
 
       const response = await placeService.updatePlace(params, place.url, setSubmitting);
       queryClient.invalidateQueries(['places_specification_pagination']);
@@ -197,16 +251,16 @@ export default function DetailContribution(props: IDetailContributionProps) {
   };
 
   return (
-    <Box mb='10' w='120%' bg={boxBg} shadow='md' rounded='md' p='8'>
+    <Box mb='10' w={isAdmin ? '70%' : '120%'} bg={boxBg} shadow='md' rounded='md' p={isAdmin ? '6' : '8'}>
       <IconButton
         fontSize='3xl'
         variant='ghost'
         icon={<IoIosArrowRoundBack />}
         aria-label='Edit'
         onClick={pushBackListPage}
-        mb='-10'
+        mb={isAdmin ? '1' : '-10'}
       />
-      <SimpleGrid columns={3} spacing='40px'>
+      <SimpleGrid columns={3} spacing={isAdmin ? '15px' : '40px'}>
         <Flex direction='row' gap='2' justify='center' align='center'>
           <input onChange={uploadImage} type='file' accept='image/*' ref={inputRef} style={{ display: 'none' }} />
           <Image
@@ -241,7 +295,7 @@ export default function DetailContribution(props: IDetailContributionProps) {
             />
           </Flex>
         </Flex>
-        <Flex direction='column' justify='flex-start'>
+        <Flex direction='column' justify='flex-start' ml={isAdmin ? '-4' : '0'}>
           <FormControl isRequired>
             <FormLabel fontSize='sm'>Tên địa điểm</FormLabel>
             <Input
@@ -250,7 +304,9 @@ export default function DetailContribution(props: IDetailContributionProps) {
               value={valuePlaceName}
               onChange={changePlaceName}
             />
-            <FormHelperText>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
+            <FormHelperText hidden={isAdmin} fontSize='xs'>
+              Nhận dạng của khu vực địa điểm tương ứng
+            </FormHelperText>
           </FormControl>
         </Flex>
         <Flex direction='column'>
@@ -284,7 +340,9 @@ export default function DetailContribution(props: IDetailContributionProps) {
           placeholder='Description about place'
           size='sm'
         />
-        <FormHelperText fontSize='xs'>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
+        <FormHelperText hidden={isAdmin} fontSize='xs'>
+          Nhận dạng của khu vực địa điểm tương ứng
+        </FormHelperText>
       </FormControl>
       <Divider my='8' />
       <Text fontSize='sm' ml='2' mb='4'>
@@ -298,8 +356,8 @@ export default function DetailContribution(props: IDetailContributionProps) {
         formats={formatsQuill}
         theme='snow'
       />
-      <Divider my='8' />
-      <Flex w='full' justify='center' align='center' direction='column' gap='3'>
+      <Divider hidden={isAdmin} my='8' />
+      <Flex hidden={isAdmin} w='full' justify='center' align='center' direction='column' gap='3'>
         {place?.status === STATUS_PLACES.APPROVED && (
           <Text fontStyle='italic' fontSize='smaller' color='red.500'>
             * Địa điểm đóng góp ĐÃ ĐƯỢC PHÊ DUYỆT nên không thể thay đổi.

@@ -1,45 +1,24 @@
 import {
-  Box,
-  Grid,
-  GridItem,
-  SimpleGrid,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
-  TableContainer,
-  useColorModeValue,
-  Flex,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  Image,
   Button,
-  IconButton,
   Center,
-  Spinner,
-  Text,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  GridItem,
+  IconButton,
+  Image,
+  Input,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { TiCancel } from 'react-icons/ti';
-import { async } from 'rxjs';
 import useValidationSchema from '../../../../../hooks/validation/useValidationSchema';
 import { ICategoryResponse } from '../../../../../models/place/place.model';
-import { defaultAvatar } from '../../../../../utils';
+import { noImage } from '../../../../../utils';
 
 interface IFormValue {
   name: string;
@@ -155,7 +134,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
                 <Image
                   boxSize='140px'
                   objectFit='cover'
-                  src={selectedFileAvatar ? previewAvatar : defaultAvatar}
+                  src={selectedFileAvatar ? previewAvatar : noImage}
                   alt='Image Category'
                   rounded='md'
                   shadow='md'
@@ -172,6 +151,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
               )}
               <Flex direction='row' gap='2'>
                 <IconButton
+                  disabled={selectedFileAvatar ? false : true}
                   title='Cancel'
                   aria-label='Cancel'
                   onClick={() => {
@@ -182,6 +162,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
                   icon={<TiCancel />}
                 />
                 <IconButton
+                  disabled={!selectedFileAvatar ? false : true}
                   title='Upload'
                   onClick={() => {
                     inputRef.current?.click();

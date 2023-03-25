@@ -5,7 +5,6 @@ import { FaUsers, FaUserCheck } from 'react-icons/fa';
 import { BsFileEarmarkPostFill } from 'react-icons/bs';
 import { IRoute } from '../../../../types/navigation';
 import AdminDashboard from '../../../../pages/admin/dashboard';
-import AdminProfile from '../../../../pages/admin/profile';
 import AdminUsersManagementPage from '../../../../pages/admin/users-management';
 import AdminPostsManagementPage from '../../../../pages/admin/posts-management';
 import AdminAccountsManagementPage from '../../../../pages/admin/accounts-management';
@@ -14,6 +13,8 @@ import AdminPlacesManagementPage from '../../../../pages/admin/places-management
 import AdminCategoriesManagementPage from '../../../../pages/admin/categories-management';
 import AdminPlacesManagementCreatePage from '../../../../pages/admin/places-management/create';
 import { IoCreate } from 'react-icons/io5';
+import { ImFileText2 } from 'react-icons/im';
+import AdminContributionsManagementPage from '../../../../pages/admin/contributions-management';
 
 const routes: IRoute[] = [
   {
@@ -38,6 +39,14 @@ const routes: IRoute[] = [
     path: '/admin/places-management',
     icon: <Icon as={TiLocationArrow} fontSize='larger' color='inherit' />,
     component: AdminPlacesManagementPage,
+    section: 'Places Management',
+  },
+  {
+    name: 'All place contributions',
+    layout: '/admin',
+    path: '/admin/contributions-management',
+    icon: <Icon as={ImFileText2} fontSize='lg' color='inherit' />,
+    component: AdminContributionsManagementPage,
     section: 'Places Management',
   },
   {

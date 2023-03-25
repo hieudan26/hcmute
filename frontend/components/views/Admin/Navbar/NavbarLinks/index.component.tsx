@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
-import { MdOutlineScreenShare } from 'react-icons/md';
+import { MdNotificationsNone, MdOutlineScreenShare } from 'react-icons/md';
 import { logout } from '../../../../../app/slices/authSlice';
 import { isConnected } from '../../../../../app/slices/socketSlice';
 import { clearUserNotAuth } from '../../../../../app/slices/userNotAuthSlice';
@@ -65,39 +65,51 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       boxShadow={shadow}
     >
       <SidebarResponsive routes={routes} />
-      {/* <Menu>
+      <Menu>
         <MenuButton p='0px'>
           <Icon as={MdNotificationsNone} color={navbarIcon} w='18px' h='18px' me='10px' />
         </MenuButton>
         <MenuList
-          boxShadow={shadow}
+          boxShadow='2xl'
           p='20px'
           borderRadius='20px'
-          bg={colorMode === 'light' ? 'gray.50' : 'black'}
+          bg={colorMode === 'light' ? 'white' : 'black'}
           border='none'
-          mt='22px'
+          mt='30px'
           me={{ base: '30px', md: 'unset' }}
           minW={{ base: 'unset', md: '400px', xl: '450px' }}
-          maxW={{ base: '360px', md: 'unset' }}
+          maxW={{ base: '360px', md: '360px' }}
         >
           <Flex w='100%' mb='20px'>
             <Text fontSize='md' fontWeight='600' color={textColor}>
               Notifications
             </Text>
-            <Text fontSize='sm' fontWeight='500' color={textColorBrand} ms='auto' cursor='pointer'>
+            <Text fontSize='sm' fontWeight='500' color={textColor} ms='auto' cursor='pointer'>
               Mark all read
             </Text>
           </Flex>
-          <Flex flexDirection='column'>
+          <Flex flexDirection='column' maxH='240px' overflow='auto'>
             <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
               <ItemContent info='Horizon UI Dashboard PRO' />
             </MenuItem>
             <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
               <ItemContent info='Horizon Design System Free' />
             </MenuItem>
+            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
+              <ItemContent info='Horizon Design System Free' />
+            </MenuItem>
+            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
+              <ItemContent info='Horizon Design System Free' />
+            </MenuItem>
+            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
+              <ItemContent info='Horizon Design System Free' />
+            </MenuItem>
+            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
+              <ItemContent info='Horizon Design System Free' />
+            </MenuItem>
           </Flex>
         </MenuList>
-      </Menu> */}
+      </Menu>
 
       <Button variant='no-hover' bg='transparent' p='0px' minW='unset' minH='unset' h='18px' w='max-content' onClick={goToSocial}>
         <Icon me='10px' h='18px' w='18px' color={navbarIcon} as={MdOutlineScreenShare} />
