@@ -6,9 +6,11 @@ import {
   Center,
   Flex,
   Heading,
+  Icon,
   Select,
   SkeletonCircle,
   SkeletonText,
+  Spinner,
   Text,
   Textarea,
   useColorModeValue,
@@ -22,6 +24,7 @@ import { STATUS_PLACES } from '../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../models/place/place.model';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
 import userService from '../../../services/user/user.service';
+import { RiRefreshLine } from 'react-icons/ri';
 
 export interface IAdminContributionsManagementProps {}
 
@@ -35,6 +38,8 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
   const [statusChange, setStatusChange] = useState<string>(STATUS_PLACES.PENDING);
   const [valueStatusDescription, setValueStatusDescription] = useState<string>('');
   const [isDisableReset, setIsDisableReset] = useState<boolean>(true);
+  const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [triggerRefresh, setTriggerRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     if (isDetail && dataDetail !== undefined) {
@@ -70,19 +75,44 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
     event.target && setValueStatusDescription(event.target.value);
   };
 
+  useEffect(() => {
+    if (triggerRefresh) {
+      const timeout = setTimeout(() => {
+        setTriggerRefresh(false);
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [triggerRefresh]);
+
+  const refreshData = () => {
+    setTriggerRefresh(true);
+  };
+
   return (
     <Box mb='10' w='full' position='relative'>
       {!isDetail && (
-        <Box w='35%' px='8'>
-          <Select bg={boxBg} shadow='base' onChange={changeStatusPlace} defaultValue={statusPlace}>
-            <option value='pending'>Đang chờ phê duyệt</option>
-            <option value='rejected'>Không được chấp thuận </option>
-            {/* <option value='approved'>Approved</option> */}
-          </Select>
-        </Box>
+        <Flex justifyContent='space-between' alignContent='center' w='full'>
+          <Box w='35%' px='8'>
+            <Select bg={boxBg} shadow='base' onChange={changeStatusPlace} defaultValue={statusPlace}>
+              <option value='pending'>Đang chờ phê duyệt</option>
+              <option value='rejected'>Không được chấp thuận </option>
+              {/* <option value='approved'>Approved</option> */}
+            </Select>
+          </Box>
+          <Button title='refresh' as='a' size='sm' fontSize='sm' colorScheme='pink' mr='10' onClick={refreshData}>
+            {triggerRefresh ? <Spinner size='sm' /> : <Icon as={RiRefreshLine} fontSize='16' />}
+          </Button>
+        </Flex>
       )}
       {!isDetail ? (
-        <ListContribution isAdmin status={statusPlace} setDetailData={setDetailData} />
+        <ListContribution
+          isAdmin
+          status={statusPlace}
+          setDetailData={setDetailData}
+          triggerRefreshAdmin={triggerRefresh}
+          // setTriggerRefreshAdmin={setTriggerRefresh}
+        />
       ) : (
         <Flex w='full' justify='space-between' align='flex-start' gap={6}>
           <DetailContribution

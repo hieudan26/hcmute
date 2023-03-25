@@ -1,23 +1,26 @@
 import { Badge, ButtonGroup, Flex, IconButton, Table, Tbody, Td, Th, Thead, Tr, useColorModeValue } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { useFetchPlacesSpecification_Pagination } from '../../../../hooks/queries/place';
 import { IPageableResponse, IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { truncate } from '../../../../utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IListContributionProps {
   setDetailData: (item: IPlaceCountryResponse) => void;
   isAdmin?: boolean;
   status?: 'pending' | 'rejected' | 'approved';
+  triggerRefreshAdmin?: boolean;
 }
 
 export default function ListContribution(props: IListContributionProps) {
-  const { setDetailData, isAdmin = false, status = undefined } = props;
+  const { setDetailData, isAdmin = false, status = undefined, triggerRefreshAdmin = false } = props;
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const color1 = useColorModeValue('gray.400', 'gray.400');
   const colorTxt = useColorModeValue('black', 'white');
+  const queryClient = useQueryClient();
   const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
     pageNumber: 0,
     pageSize: 10,
@@ -41,6 +44,20 @@ export default function ListContribution(props: IListContributionProps) {
     },
     true
   );
+
+  useEffect(() => {
+    const interval: NodeJS.Timer = setInterval(() => {
+      queryClient.invalidateQueries(['places_specification_pagination']);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (triggerRefreshAdmin) {
+      queryClient.invalidateQueries(['places_specification_pagination']);
+    }
+  }, [queryClient, triggerRefreshAdmin]);
 
   useEffect(() => {
     if (dataContributions.data) {
