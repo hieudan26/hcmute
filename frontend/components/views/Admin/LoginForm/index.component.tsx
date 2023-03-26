@@ -78,13 +78,13 @@ export default function LoginForm(props: ILoginFormProps) {
               <Flex align='center' my='4'>
                 <Divider />
                 <Text textAlign='center' fontSize='2xl' fontWeight='semibold' mx='2' mb='0' w='full' color={textColor}>
-                  LOGIN
+                  ĐĂNG NHẬP
                 </Text>
                 <Divider />
               </Flex>
 
               <FormControl mb='6' isRequired isInvalid={!!errors?.email?.message}>
-                <FormLabel color={textColor}>Email</FormLabel>
+                <FormLabel color={textColor}>Địa chỉ Email</FormLabel>
                 <Input
                   {...register('email')}
                   type='email'
@@ -98,7 +98,7 @@ export default function LoginForm(props: ILoginFormProps) {
               </FormControl>
 
               <FormControl mb='6' isRequired isInvalid={!!errors?.password?.message}>
-                <FormLabel color={textColor}>Password</FormLabel>
+                <FormLabel color={textColor}>Mật khẩu</FormLabel>
                 <InputGroup>
                   <Input
                     {...register('password')}
@@ -117,7 +117,7 @@ export default function LoginForm(props: ILoginFormProps) {
                         setShow(!show);
                       }}
                     >
-                      {show ? 'Hide' : 'Show'}
+                      {show ? 'Ẩn' : 'Hiện'}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -126,18 +126,18 @@ export default function LoginForm(props: ILoginFormProps) {
 
               <Flex justify='space-between' align='center' mb='4'>
                 <Checkbox colorScheme='pink' defaultChecked color={textColor}>
-                  Remember me
+                  Nhớ tôi
                 </Checkbox>
                 <Link as={NextLink} href='/admin/forgot-password'>
                   <Text color={textColor} _hover={{ color: '#D0637C' }} display='inline' cursor='pointer'>
-                    Forgot password?
+                    Quên mật khẩu
                   </Text>
                 </Link>
               </Flex>
 
               <Center>
-                <Button isLoading={submitting} type='submit' textTransform='uppercase' w='fit-content'>
-                  Login as Administrator
+                <Button isLoading={submitting} type='submit' textTransform='uppercase' w='80%'>
+                  Đăng nhập với tư cách quản trị viên
                 </Button>
                 {/* <Button onClick={toggleColorMode}>a</Button> */}
               </Center>

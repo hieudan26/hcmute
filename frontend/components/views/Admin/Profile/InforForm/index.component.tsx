@@ -161,6 +161,7 @@ export default function InforForm(props: IInforFormProps) {
             <Avatar size='2xl' src={selectedFileAvatar ? previewAvatar : auth?.avatar} name={auth?.fullName} />
             <Flex gap='3'>
               <Button
+                disabled={selectedFileAvatar === undefined}
                 onClick={() => {
                   setSelectedFileAvatar(undefined);
                 }}
@@ -169,13 +170,15 @@ export default function InforForm(props: IInforFormProps) {
               >
                 Cancel
               </Button>
-              <Button onClick={handleClickImage}>Upload</Button>
+              <Button disabled={selectedFileAvatar !== undefined} onClick={handleClickImage}>
+                Upload
+              </Button>
             </Flex>
           </Flex>
           <SimpleGrid columns={1} spacing='4'>
             <FormControl as={GridItem} isRequired isInvalid={!!errors?.firstName?.message}>
               <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                First name
+                Tên
               </FormLabel>
               <InputGroup w='full'>
                 <Input {...register('firstName')} w='full' placeholder='Thang' rounded='md' />
@@ -185,7 +188,7 @@ export default function InforForm(props: IInforFormProps) {
 
             <FormControl as={GridItem} isRequired isInvalid={!!errors?.lastName?.message}>
               <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                Last name
+                Tên họ lót
               </FormLabel>
               <InputGroup w='full'>
                 <Input {...register('lastName')} w='full' placeholder='Thang' rounded='md' />
@@ -207,7 +210,7 @@ export default function InforForm(props: IInforFormProps) {
         <SimpleGrid columns={6} spacing={6}>
           <FormControl as={GridItem} colSpan={[3, 6]} isRequired isInvalid={!!errors?.phoneNumber?.message}>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              Phone number
+              Số điện thoại
             </FormLabel>
             <InputGroup w='full'>
               <InputLeftAddon bg={addonBg} color={colorMode === 'light' ? 'gray.500' : 'black'} rounded='md'>
@@ -231,7 +234,7 @@ export default function InforForm(props: IInforFormProps) {
         <SimpleGrid columns={6} spacing={6}>
           <FormControl as={GridItem} colSpan={[6, 3]} isRequired isInvalid={!!errors?.gender?.message}>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              Gender
+              Giới tính
             </FormLabel>
             <Select {...register('gender')}>
               {GENDER_OPTIONS.map((item, index) => (
@@ -245,7 +248,7 @@ export default function InforForm(props: IInforFormProps) {
 
           <FormControl as={GridItem} colSpan={[6, 3]} isRequired>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              Date of birth
+              Ngày sinh
             </FormLabel>
             <SingleDatepicker
               propsConfigs={propsConfigs}
@@ -278,10 +281,10 @@ export default function InforForm(props: IInforFormProps) {
             setSelectedFileAvatar(undefined);
           }}
         >
-          Cancel
+          Hủy
         </Button>
         <Button isLoading={isSubmitting} type='submit' fontWeight='md'>
-          Save changes
+          Lưu những thay đổi
         </Button>
       </Flex>
     </form>

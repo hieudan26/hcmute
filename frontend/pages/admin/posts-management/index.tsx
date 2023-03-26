@@ -174,7 +174,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
         <Box w='full' borderRadius={8} bg={tableBg} p='8' color='black' shadow='lg'>
           <Flex mb='8' justifyContent='space-between' alignContent='center'>
             <Heading color={colorTxt} size='lg' fontWeight='normal'>
-              Posts
+              Tất cả bài đăng
             </Heading>
 
             <Flex gap='4'>
@@ -187,7 +187,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
           <Flex justify='space-evenly' mb='4'>
             <RadioGroup onChange={changeStatusPost} value={value} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
-                <Text>Type status posts: </Text>
+                <Text>Loại trạng thái bài viết: </Text>
                 <Radio value='true'>Valid</Radio>
                 <Radio value='false'>Invalid</Radio>
               </Stack>
@@ -195,7 +195,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
 
             <RadioGroup onChange={changeTypePost} value={valueType} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
-                <Text>Get by type posts: </Text>
+                <Text>Lọc theo loại bài viết: </Text>
                 <Radio value='1'>All</Radio>
                 <Radio value='2'>Experience</Radio>
                 <Radio value='3'>Faq</Radio>
@@ -220,7 +220,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                         changeSortBy('id');
                       }}
                     >
-                      Post Id
+                      ID
                     </Th>
                     <Th
                       cursor='pointer'
@@ -228,21 +228,21 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                         changeSortBy('type');
                       }}
                     >
-                      Type
+                      Loại
                     </Th>
-                    <Th>Owner</Th>
-                    <Th>React Number</Th>
-                    <Th>Comment Number</Th>
+                    <Th>Người sở hữu</Th>
+                    <Th>Số lượng tương tác</Th>
+                    <Th>Số lượng bình luận</Th>
                     <Th
                       cursor='pointer'
                       onClick={() => {
                         changeSortBy('time');
                       }}
                     >
-                      Created At
+                      Ngày tạo
                     </Th>
-                    <Th>Status</Th>
-                    <Th>Actions</Th>
+                    <Th>Trạng thái</Th>
+                    <Th>Chi tiết</Th>
                   </Tr>
                 </Thead>
                 <Tbody>

@@ -161,11 +161,11 @@ const AdminCategoriesManagementPage: NextPage = (props: IAdminCategoriesManageme
               <>
                 <TableContainer>
                   <Table variant='striped' colorScheme='pink'>
-                    <TableCaption>Categories</TableCaption>
+                    <TableCaption>Loại địa điểm</TableCaption>
                     <Thead>
                       <Tr>
                         <Th>Id</Th>
-                        <Th>Name</Th>
+                        <Th>Tên</Th>
                       </Tr>
                     </Thead>
                     <Tbody>
@@ -226,8 +226,8 @@ const AdminCategoriesManagementPage: NextPage = (props: IAdminCategoriesManageme
         >
           <Tabs colorScheme='pink' isFitted>
             <TabList>
-              <Tab>Create</Tab>
-              <Tab isDisabled={!dataCategory}>Update</Tab>
+              <Tab>Tạo địa điểm</Tab>
+              <Tab isDisabled={!dataCategory}>Cập nhật địa điểm</Tab>
             </TabList>
 
             <TabPanels>

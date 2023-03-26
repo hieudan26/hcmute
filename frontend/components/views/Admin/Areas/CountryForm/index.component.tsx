@@ -40,19 +40,19 @@ export default function CountryForm(props: ICountryFormProps) {
     <form onSubmit={handleSubmit(_onSubmitForm)}>
       <Flex direction='row' justify='space-between' gap='6' align='center' mb='2'>
         <FormControl isRequired isInvalid={!!errors?.vnName?.message}>
-          <FormLabel>Vietnamese name</FormLabel>
+          <FormLabel>Tên Tiếng Việt</FormLabel>
           <Input {...register('vnName')} type='text' />
           <FormErrorMessage>{errors?.vnName?.message}</FormErrorMessage>
         </FormControl>
         <FormControl isRequired isInvalid={!!errors?.enName?.message}>
-          <FormLabel>English name</FormLabel>
+          <FormLabel>Tên Tiếng Anh</FormLabel>
           <Input {...register('enName')} type='text' />
           <FormErrorMessage>{errors?.enName?.message}</FormErrorMessage>
         </FormControl>
       </Flex>
       <Center>
         <Button w='30%' type='submit'>
-          Create
+          Tạo mới
         </Button>
       </Center>
     </form>

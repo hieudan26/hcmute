@@ -129,7 +129,7 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
           <Box position='fixed' right='8' top='7.9rem' width='auto'>
             <Box bg={boxBg} minH='fit-content' shadow='md' rounded='md' py='4' px='6' mb='4'>
               <Center pb='4' textTransform='uppercase' fontWeight='semibold'>
-                Contributor information
+                Thông tin người đóng góp
               </Center>
               {userData ? (
                 <>
@@ -142,9 +142,9 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
                     </Box>
                   </Flex>
                   <Box>
-                    <Text mb='1'>Phone: {userData.phoneNumber}</Text>
+                    <Text mb='1'>SĐT: {userData.phoneNumber}</Text>
                     <Text>
-                      City: {userData.city} - Country: {userData.country}
+                      {userData.city} - {userData.country}
                     </Text>
                   </Box>
                 </>
@@ -157,14 +157,14 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
             </Box>
             <Box bg={boxBg} minH='fit-content' shadow='md' rounded='md' px='6' py='3' mb='4'>
               <Text mb='8px' color='red' fontSize='sm' fontStyle='italic'>
-                * Optional
+                * Không bắt buộc
               </Text>
               <Textarea
                 value={valueStatusDescription}
                 onChange={_onChangeStatusDescription}
                 size='sm'
                 resize='none'
-                placeholder='Reasons for approval or rejection'
+                placeholder='Lý do chấp thuận hoặc từ chối'
               />
             </Box>
             <ButtonGroup w='full' spacing='3'>
@@ -177,7 +177,7 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
                   setStatusChange(STATUS_PLACES.REJECTED);
                 }}
               >
-                Rejected
+                Từ chối
               </Button>
               <Button
                 isDisabled={isDisableReset}
@@ -186,7 +186,7 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
                   setIsResetData(true);
                 }}
               >
-                Reset
+                Cài lại
               </Button>
               <Button
                 isDisabled={dataDetail?.status !== STATUS_PLACES.PENDING}
@@ -195,7 +195,7 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
                   setStatusChange(STATUS_PLACES.APPROVED);
                 }}
               >
-                Approved
+                Chấp thuận
               </Button>
             </ButtonGroup>
           </Box>

@@ -50,6 +50,7 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
   const [valueContent, setValueContent] = useState<string>('');
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(false);
+  const [isDisableReset, setIsDisableReset] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCountry = async () => {
@@ -104,6 +105,37 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
       setIsDisableSubmit(false);
     }
   }, [valueContent, valueDescription, valueHashTags, valuePlaceName]);
+
+  useEffect(() => {
+    if (provinceData) {
+      if (
+        // valueContent?.trim() + '<p><br></p>' === place.content &&
+        valuePlaceName?.trim() === provinceData.name.trim() &&
+        valueDescription?.trim() === provinceData.description.trim() &&
+        selectedFileAvatar === undefined
+      ) {
+        if (provinceData.hashTags.length !== valueHashTags.length) {
+          setIsDisableReset(false);
+        } else {
+          let flag = 1;
+          for (let i = 0; i < provinceData.hashTags.length; i++) {
+            if (provinceData.hashTags[i] !== valueHashTags[i].label) {
+              flag = 2;
+              break;
+            }
+          }
+
+          if (flag === 1) {
+            setIsDisableReset(true);
+          } else {
+            setIsDisableReset(false);
+          }
+        }
+      } else {
+        setIsDisableReset(false);
+      }
+    }
+  }, [provinceData, selectedFileAvatar, valueContent, valueDescription, valueHashTags, valuePlaceName]);
 
   const uploadImage = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) {
@@ -188,6 +220,7 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
           />
           <Flex direction='column' gap='2'>
             <IconButton
+              disabled={selectedFileAvatar === undefined}
               title='Cancel'
               aria-label='Cancel'
               onClick={() => {
@@ -198,6 +231,7 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
               icon={<TiCancel />}
             />
             <IconButton
+              disabled={selectedFileAvatar !== undefined}
               title='Upload'
               onClick={() => {
                 inputRef.current?.click();
@@ -209,14 +243,14 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
         </Flex>
         <Flex direction='column' justify='flex-start'>
           <FormControl isRequired>
-            <FormLabel fontSize='sm'>Name of place</FormLabel>
+            <FormLabel fontSize='sm'>Tên địa điểm</FormLabel>
             <Input type='text' value={valuePlaceName} onChange={changePlaceName} />
-            <FormHelperText>Identifiers of the respective area of place</FormHelperText>
+            <FormHelperText fontSize='xs'>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
           </FormControl>
         </Flex>
         <Flex direction='column'>
           <Text fontSize='sm' mb='2'>
-            Create hashtags for this place
+            Tạo hashtag cho địa điểm này
           </Text>
           <Box w='full'>
             <CreatableSelect
@@ -228,7 +262,7 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
               onChange={(newValue) => setValueHashTags(newValue)}
               onInputChange={(newValue) => setInputValueHashTag(newValue)}
               onKeyDown={handleKeyDown}
-              placeholder='Type something and press enter...'
+              placeholder='Nhập nội dung và nhấn enter...'
               value={valueHashTags}
             />
           </Box>
@@ -236,23 +270,23 @@ const AdminPlacesManagementUpdateProvincePage: NextPage = (props: IAdminPlacesMa
       </SimpleGrid>
       <Divider my='8' />
       <FormControl>
-        <FormLabel fontSize='sm'>Description: </FormLabel>
-        <Textarea value={valueDescription} onChange={changeDescription} placeholder='Description about place' size='sm' />
-        <FormHelperText fontSize='xs'>Identifiers of the respective area of place</FormHelperText>
+        <FormLabel fontSize='sm'>Mô tả: </FormLabel>
+        <Textarea value={valueDescription} onChange={changeDescription} placeholder='Mô tả về địa điểm' size='sm' />
+        <FormHelperText fontSize='xs'>Nhận dạng của khu vực địa điểm tương ứng</FormHelperText>
       </FormControl>
       <Divider my='8' />
       <Text fontSize='sm' ml='2' mb='4'>
-        Content:
+        Nội dung:
       </Text>
       <ReactQuill value={valueContent} onChange={setValueContent} modules={modulesQuill} formats={formatsQuill} theme='snow' />
       <Divider my='8' />
       <Flex w='full' justify='center' align='center' direction='column' gap='3'>
         <Flex w='full' gap='6' justify='center' align='center'>
-          <Button w='20%' bg='gray.600' _hover={{ bg: 'black' }} onClick={reset}>
-            Reset
+          <Button w='20%' disabled={isDisableReset} bg='gray.600' _hover={{ bg: 'black' }} onClick={reset}>
+            Cài lại
           </Button>
           <Button w='20%' disabled={isDisableSubmit} isLoading={submitting} onClick={change}>
-            Save changes
+            Lưu thay đổi
           </Button>
         </Flex>
       </Flex>

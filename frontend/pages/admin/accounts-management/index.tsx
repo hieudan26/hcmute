@@ -172,15 +172,15 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
         >
           <Box px={[4, 0]}>
             <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-              Authentication
+              Xác thực
             </Heading>
             <Text textAlign='justify' mt='1' fontSize='sm' color={textColorSecondary}>
-              Pages are available to anyone, while a private page requires a user login. You can use authentication to manage
-              which users have access to which pages.
+              Các trang có sẵn cho bất kỳ ai, trong khi một trang riêng tư yêu cầu đăng nhập người dùng. Bạn có thể sử dụng xác
+              thực để quản lý người dùng nào có quyền truy cập vào trang nào.
             </Text>
             <Text textAlign='justify' mt='1' fontSize='sm' color={textColorSecondary}>
-              Your React application will need to handle situations where a user tries to access a private page before they are
-              logged in, and you will need to save the login information once they have successfully authenticated.
+              Ứng dụng React của bạn sẽ cần xử lý các tình huống trong đó người dùng cố gắng truy cập một trang riêng trước khi
+              chúng được đăng nhập và bạn sẽ cần lưu thông tin đăng nhập khi chúng đã được xác thực thành công.
             </Text>
           </Box>
         </GridItem>
@@ -210,7 +210,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                 <SimpleGrid columns={6} spacing={6}>
                   <FormControl as={GridItem} colSpan={[3, 6]} isRequired isInvalid={!!errors?.email?.message}>
                     <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                      Email address
+                      Địa chỉ email
                     </FormLabel>
                     <InputGroup w='full'>
                       <InputLeftAddon bg={addonBg} color={colorMode === 'light' ? 'gray.500' : 'black'} rounded='md'>
@@ -234,11 +234,11 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                 <SimpleGrid columns={6} spacing={6}>
                   <FormControl as={GridItem} colSpan={[3, 6]} isRequired isInvalid={!!errors?.password?.message}>
                     <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                      Password
+                      Mật khẩu
                     </FormLabel>
                     <InputGroup w='full'>
                       <InputLeftAddon bg={addonBg} color={colorMode === 'light' ? 'gray.500' : 'black'} rounded='md'>
-                        Password:
+                        Mật khẩu:
                       </InputLeftAddon>
                       <Input
                         {...register('password')}
@@ -276,11 +276,11 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                 <SimpleGrid columns={6} spacing={6}>
                   <FormControl as={GridItem} colSpan={[3, 6]} isRequired isInvalid={!!errors?.confirm_password?.message}>
                     <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                      Retype password
+                      Nhập lại mật khẩu
                     </FormLabel>
                     <InputGroup w='full'>
                       <InputLeftAddon bg={addonBg} color={colorMode === 'light' ? 'gray.500' : 'black'} rounded='md'>
-                        Retype password:
+                        Nhập lại mật khẩu:
                       </InputLeftAddon>
                       <Input
                         {...register('confirm_password')}
@@ -317,7 +317,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                 <SimpleGrid columns={6} spacing={6}>
                   <FormControl as={GridItem} colSpan={[3, 6]} isRequired isInvalid={!!errors?.role?.message}>
                     <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                      Roles
+                      Vai trò
                     </FormLabel>
                     <Select
                       {...register('role')}
@@ -328,7 +328,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                     >
                       {ROLE_OPTIONS.map((item, index) => (
                         <option key={index} value={item.value}>
-                          {item.label}
+                          {item.label === 'User' ? 'Người dùng' : 'Quản trị viên'}
                         </option>
                       ))}
                     </Select>
@@ -350,7 +350,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                     <SimpleGrid columns={6} spacing={6}>
                       <FormControl as={GridItem} colSpan={[6, 3]} isRequired isInvalid={!!errors?.firstName?.message}>
                         <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                          First name
+                          Họ và tên lót
                         </FormLabel>
                         <InputGroup>
                           <Input {...register('firstName')} w='full' type='text' placeholder='Thang14$' rounded='md' />
@@ -360,7 +360,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
 
                       <FormControl as={GridItem} colSpan={[6, 3]} isRequired isInvalid={!!errors?.lastName?.message}>
                         <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                          Last name
+                          Tên
                         </FormLabel>
                         <InputGroup>
                           <Input {...register('lastName')} w='full' type='text' placeholder='Thang14$' rounded='md' />
@@ -381,7 +381,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                     <SimpleGrid columns={6} spacing={6}>
                       <FormControl as={GridItem} colSpan={[6, 3]} isRequired isInvalid={!!errors?.gender?.message}>
                         <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                          Gender
+                          Giới tính
                         </FormLabel>
                         <Select {...register('gender')}>
                           {GENDER_OPTIONS.map((item, index) => (
@@ -395,7 +395,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
 
                       <FormControl as={GridItem} colSpan={[6, 3]} isRequired>
                         <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                          Date of birth
+                          Ngày sinh
                         </FormLabel>
                         <SingleDatepicker
                           propsConfigs={propsConfigs}
@@ -419,7 +419,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                     <SimpleGrid columns={3} spacing={6}>
                       <FormControl as={GridItem} colSpan='3' isRequired isInvalid={!!errors?.phoneNumber?.message}>
                         <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-                          Phone number
+                          Số điện thoại
                         </FormLabel>
                         <InputGroup>
                           <Input {...register('phoneNumber')} w='full' type='phone' placeholder='Thang14$' rounded='md' />
@@ -441,7 +441,7 @@ const AdminAccountsManagementPage: NextPage = (props: IAdminAccountsManagementPa
                 textAlign='right'
               >
                 <Button isLoading={submitting} type='submit' colorScheme='brand' fontWeight='md'>
-                  Create new account
+                  Tạo mới tài khoản
                 </Button>
               </Box>
             </form>

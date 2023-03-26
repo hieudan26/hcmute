@@ -178,14 +178,14 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
     <Box w='full'>
       <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-          Create new country
+          Tạo Quốc Gia
         </Heading>
         <CountryForm />
       </Box>
 
       <Box w='full' bg={tableBg} mb='4' rounded='md' px='4' py='6'>
         <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-          Create new province
+          Tạo Tỉnh - Thành Phố
         </Heading>
         <ProvinceForm dataSelect={dataSelect} />
       </Box>
@@ -215,11 +215,11 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
         >
           <Box px={[4, 0]}>
             <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-              Countries
+              Các Quốc Gia
             </Heading>
             <TableContainer>
               <Table variant='striped' colorScheme='pink'>
-                <TableCaption>All contries in system</TableCaption>
+                <TableCaption>Danh sách đất nước trong hệ thống</TableCaption>
                 <Thead>
                   <Tr>
                     <Th
@@ -236,9 +236,9 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
                         changeSortBy('country', 'enName');
                       }}
                     >
-                      Name & Eng name
+                      Tên
                     </Th>
-                    <Th>Choose</Th>
+                    <Th>Chi tiết</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -274,8 +274,8 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
                 </Tbody>
                 <Tfoot>
                   <Th>Id</Th>
-                  <Th>Name</Th>
-                  <Th>Eng Name</Th>
+                  <Th>Tên</Th>
+                  <Th>Chi tiết</Th>
                 </Tfoot>
               </Table>
             </TableContainer>
@@ -312,11 +312,11 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
         >
           <Box px={[4, 0]}>
             <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-              Provinces
+              Các Tỉnh - Thành Phố
             </Heading>
             <TableContainer>
               <Table variant='striped' colorScheme='pink'>
-                <TableCaption>All provinces in system</TableCaption>
+                <TableCaption>Danh sách tỉnh trong hệ thống</TableCaption>
                 <Thead>
                   <Tr>
                     <Th
@@ -333,7 +333,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
                         changeSortBy('province', 'name');
                       }}
                     >
-                      Name
+                      Tên
                     </Th>
                     <Th
                       cursor='pointer'
@@ -341,7 +341,7 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
                         changeSortBy('province', 'enName');
                       }}
                     >
-                      Eng name
+                      Tên tiếng anh
                     </Th>
                   </Tr>
                 </Thead>
@@ -361,8 +361,8 @@ const AdminAreasManagementPage: NextPage = (props: IAdminAreasManagementPageProp
                 <Tfoot>
                   <Tr>
                     <Th>Id</Th>
-                    <Th>Name</Th>
-                    <Th>Eng name</Th>
+                    <Th>Tên</Th>
+                    <Th>Tên tiếng anh</Th>
                   </Tr>
                 </Tfoot>
               </Table>

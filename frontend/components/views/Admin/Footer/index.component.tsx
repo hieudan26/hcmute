@@ -42,7 +42,7 @@ export default function Footer() {
           }}
         >
           <Link fontWeight='500' color={textColor} href='#'>
-            Support
+            Hỗ trợ
           </Link>
         </ListItem>
         <ListItem
@@ -52,7 +52,7 @@ export default function Footer() {
           }}
         >
           <Link fontWeight='500' color={textColor} href='#'>
-            License
+            Giấy phép
           </Link>
         </ListItem>
         <ListItem
@@ -62,7 +62,7 @@ export default function Footer() {
           }}
         >
           <Link fontWeight='500' color={textColor} href='#'>
-            Terms of Use
+            Điều khoản sử dụng
           </Link>
         </ListItem>
         <ListItem>

@@ -7,13 +7,7 @@ export interface IRoute {
   icon: ReactComponentElement | string;
   secondary?: boolean;
   path: string;
-  section:
-    | 'Statistics'
-    | 'Users Management'
-    | 'Accounts Management'
-    | 'Posts Management'
-    | 'Areas Management'
-    | 'Places Management';
+  section: 'Thống kê' | 'Quản lý người dùng' | 'Quản lý tài khoản' | 'Quản lý bài đăng' | 'Quản lý khu vực' | 'Quản lý địa điểm';
 }
 
 export interface ISection {
