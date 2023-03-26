@@ -104,9 +104,9 @@ export default function ChatBox(props: IChatBoxProps) {
           >
             😊
           </Button>
-          <Input size='lg' value={chat} onChange={handleChange} placeholder='Type Message' onKeyDown={sendMessageEnter} />
+          <Input size='lg' value={chat} onChange={handleChange} placeholder='Nhập tin nhắn' onKeyDown={sendMessageEnter} />
           <Button disabled={chat === ''} size='lg' onClick={sendMessage}>
-            Send
+            Gửi
           </Button>
         </FormControl>
       </Flex>
