@@ -33,7 +33,7 @@ export default function ListContribution(props: IListContributionProps) {
     totalItems: 0,
     totalPages: 0,
   });
-  // const header = ['name', 'category', 'description', 'hashtag', 'status', 'detail'];
+  const [isFocused, setIsFocused] = useState(!document.hidden);
   const header = ['tên', 'loại', 'miêu tả', 'hashtag', 'trạng thái', 'chi tiết'];
   const dataContributions = useFetchPlacesSpecification_Pagination(
     {
@@ -46,12 +46,28 @@ export default function ListContribution(props: IListContributionProps) {
   );
 
   useEffect(() => {
-    const interval: NodeJS.Timer = setInterval(() => {
-      queryClient.invalidateQueries(['places_specification_pagination']);
-    }, 5000);
+    if (typeof window !== 'undefined') {
+      function handleVisibilityChange() {
+        setIsFocused(!document.hidden);
+      }
 
-    return () => clearInterval(interval);
-  }, [queryClient]);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      const interval: NodeJS.Timer = setInterval(() => {
+        queryClient.invalidateQueries(['places_specification_pagination']);
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [queryClient, isFocused]);
 
   useEffect(() => {
     if (triggerRefreshAdmin) {
