@@ -147,7 +147,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
         <Box w='full' borderRadius={8} bg={tableBg} p='8' color='black' shadow='lg'>
           <Flex mb='8' justifyContent='space-between' alignContent='center'>
             <Heading color={colorTxt} size='lg' fontWeight='normal'>
-              Users
+              Tất cả người dùng
             </Heading>
 
             <Flex gap='4'>
@@ -157,7 +157,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
 
               <Link href='/admin/accounts-management' passHref>
                 <Button as='a' size='sm' fontSize='sm' colorScheme='pink' leftIcon={<Icon as={RiAddLine} fontSize='20' />}>
-                  Add new user / account
+                  Tạo mới người dùng / tài khoản
                 </Button>
               </Link>
             </Flex>
@@ -174,7 +174,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
                 bg={bgInput}
                 color={colorTxt}
                 type='search'
-                placeholder='Find by first name or last name'
+                placeholder='Tìm kiếm theo tên hoặc tên họ và tên lót'
                 border='1px'
                 _hover={{
                   borderColor: 'backgroundButton.primary',
@@ -204,7 +204,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
                         changeSortBy('firstName');
                       }}
                     >
-                      Information
+                      Thông tin
                     </Th>
                     <Th
                       cursor='pointer'
@@ -212,7 +212,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
                         changeSortBy('phoneNumber');
                       }}
                     >
-                      Phone number
+                      Số điện thoại
                     </Th>
                     <Th
                       cursor='pointer'
@@ -220,7 +220,7 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
                         changeSortBy('role');
                       }}
                     >
-                      Role
+                      Vai trò
                     </Th>
                     <Th
                       cursor='pointer'
@@ -228,10 +228,10 @@ const AdminUsersManagementPage: NextPage = (props: IAdminUsersManagementPageProp
                         changeSortBy('creationDate');
                       }}
                     >
-                      Creation Date
+                      Ngày tạo
                     </Th>
-                    <Th>Status</Th>
-                    <Th>Actions</Th>
+                    <Th>Trạng thái</Th>
+                    <Th>Chi tiết</Th>
                   </Tr>
                 </Thead>
                 <Tbody>

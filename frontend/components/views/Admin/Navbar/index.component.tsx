@@ -101,7 +101,7 @@ export default function Navbar(props: {
           <Breadcrumb mb='5px'>
             <BreadcrumbItem color={secondaryText} fontSize='sm'>
               <BreadcrumbLink href='#' color={secondaryText}>
-                Pages
+                Trang
               </BreadcrumbLink>
             </BreadcrumbItem>
 

@@ -175,7 +175,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
           </GridItem>
           <GridItem colSpan={2}>
             <FormControl isInvalid={type === 'update' ? undefined : !!errors?.name?.message}>
-              <FormLabel>Name category:</FormLabel>
+              <FormLabel>Tên loại địa điểm:</FormLabel>
               {type === 'update' ? (
                 <Input type='text' value={nameUpdate} onChange={changeName} />
               ) : (
@@ -188,7 +188,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
         <Center>
           {type === 'create' && (
             <Button disabled={isDisableBtn()} isLoading={submitting} w='80%' type='submit'>
-              Create new
+              Tạo mới
             </Button>
           )}
         </Center>
@@ -196,7 +196,7 @@ export default function CreateUpdateForm(props: ICreateUpdateFormProps) {
       <Center>
         {type === 'update' && (
           <Button disabled={isDisableBtn()} isLoading={submitting} w='80%' onClick={_onUpdate}>
-            Save changes
+            Lưu thay đổi
           </Button>
         )}
       </Center>

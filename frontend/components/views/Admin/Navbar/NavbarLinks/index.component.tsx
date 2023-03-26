@@ -82,10 +82,10 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
         >
           <Flex w='100%' mb='20px'>
             <Text fontSize='md' fontWeight='600' color={textColor}>
-              Notifications
+              Thông báo
             </Text>
             <Text fontSize='sm' fontWeight='500' color={textColor} ms='auto' cursor='pointer'>
-              Mark all read
+              Đánh dấu đã đọc
             </Text>
           </Flex>
           <Flex flexDirection='column' maxH='240px' overflow='auto'>
@@ -151,7 +151,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
               fontWeight='700'
               color={textColor}
             >
-              👋&nbsp; Hey, {auth?.fullName}
+              👋&nbsp; Chào, {auth?.fullName}
             </Text>
           </Flex>
           <Flex flexDirection='column' p='10px'>
@@ -164,7 +164,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
               borderRadius='8px'
               px='14px'
             >
-              <Text fontSize='sm'>Profile Settings</Text>
+              <Text fontSize='sm'>Cài đặt hồ sơ</Text>
             </MenuItem>
             <MenuItem
               _hover={{ bg: 'none' }}
@@ -174,7 +174,7 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
               px='14px'
               onClick={handleLogout}
             >
-              <Text fontSize='sm'>Log out</Text>
+              <Text fontSize='sm'>Đăng xuất</Text>
             </MenuItem>
           </Flex>
         </MenuList>

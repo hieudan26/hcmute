@@ -30,7 +30,7 @@ export default function DetailUserModal(props: IDetailUserModalProps) {
   return (
     <ModalContainer isOpen={isOpen} size='xl'>
       <ModalHeader display='flex' flexDirection='column' alignItems='center'>
-        Detail {`${user?.firstName} ${user?.lastName}`}
+        Thông tin: {`${user?.firstName} ${user?.lastName}`}
       </ModalHeader>
       <ModalCloseButton
         onClick={() => {
@@ -47,52 +47,52 @@ export default function DetailUserModal(props: IDetailUserModalProps) {
             <VStack spacing={4} maxW='4xl' p={6} mx='auto'>
               <SimpleGrid columns={2} gap={4} w='full'>
                 <FormControl id='firstname'>
-                  <FormLabel>First name</FormLabel>
+                  <FormLabel>Tên</FormLabel>
                   <Input readOnly type='text' value={user.firstName} />
                 </FormControl>
                 <FormControl id='lastname'>
-                  <FormLabel>Last name</FormLabel>
+                  <FormLabel>Họ tên lót</FormLabel>
                   <Input readOnly type='text' value={user.lastName} />
                 </FormControl>
               </SimpleGrid>
               <SimpleGrid columns={2} gap={4} w='full'>
                 <FormControl id='gender'>
-                  <FormLabel>Gender</FormLabel>
+                  <FormLabel>Giới tính</FormLabel>
                   <Input readOnly type='text' value={user.gender} />
                 </FormControl>
                 <FormControl id='dob'>
-                  <FormLabel>Date of birth</FormLabel>
+                  <FormLabel>Ngày sinh</FormLabel>
                   <Input readOnly type='text' value={user.dob} />
                 </FormControl>
               </SimpleGrid>
               <SimpleGrid columns={1} w='full'>
                 <FormControl id='email'>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel>Địa chỉ email</FormLabel>
                   <Input readOnly type='email' value={user.email} />
                 </FormControl>
               </SimpleGrid>
               <SimpleGrid columns={2} w='full' gap={4}>
                 <FormControl id='phone'>
-                  <FormLabel>Phone number</FormLabel>
+                  <FormLabel>Số điện thoại</FormLabel>
                   <Input readOnly type='text' value={user.phoneNumber} />
                 </FormControl>
                 <FormControl id='country'>
-                  <FormLabel>Country</FormLabel>
-                  <Input readOnly type='text' value={user.country ? user.country : 'No information'} />
+                  <FormLabel>Quốc gia</FormLabel>
+                  <Input readOnly type='text' value={user.country ? user.country : 'Không có'} />
                 </FormControl>
               </SimpleGrid>
               <SimpleGrid columns={3} w='full' gap={1}>
                 <FormControl id='city'>
-                  <FormLabel>City</FormLabel>
-                  <Input readOnly type='text' value={user.city ? user.city : 'No information'} />
+                  <FormLabel>Thành phố</FormLabel>
+                  <Input readOnly type='text' value={user.city ? user.city : 'Không có'} />
                 </FormControl>
                 <FormControl id='phone'>
-                  <FormLabel>District</FormLabel>
-                  <Input readOnly type='text' value={user.district ? user.district : 'No information'} />
+                  <FormLabel>Quận</FormLabel>
+                  <Input readOnly type='text' value={user.district ? user.district : 'Không có'} />
                 </FormControl>
                 <FormControl id='phone'>
-                  <FormLabel>Village</FormLabel>
-                  <Input readOnly type='text' value={user.village ? user.village : 'No information'} />
+                  <FormLabel>Xã - Thị trấn</FormLabel>
+                  <Input readOnly type='text' value={user.village ? user.village : 'Không có'} />
                 </FormControl>
               </SimpleGrid>
             </VStack>

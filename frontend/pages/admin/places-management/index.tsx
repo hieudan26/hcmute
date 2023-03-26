@@ -134,14 +134,14 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
       <Box w='full' bg={tableBg} rounded='md' shadow='md' p='6'>
         <TableContainer>
           <Table variant='simple'>
-            <TableCaption>All countries - places in system</TableCaption>
+            <TableCaption>Tất cả các quốc gia - địa điểm trong hệ thống</TableCaption>
             <Thead>
               <Tr>
-                <Th>Id</Th>
-                <Th>Name</Th>
-                <Th>Category</Th>
-                <Th>Hash Tags</Th>
-                <Th>Actions</Th>
+                <Th>ID</Th>
+                <Th>TÊN</Th>
+                <Th>LOẠI</Th>
+                <Th>Hashtag</Th>
+                <Th>CHI TIẾT</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -180,11 +180,11 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
             </Tbody>
             <Tfoot>
               <Tr>
-                <Th>Id</Th>
-                <Th>Name</Th>
-                <Th>Category</Th>
-                <Th>Hash Tags</Th>
-                <Th>Action</Th>
+                <Th>ID</Th>
+                <Th>TÊN</Th>
+                <Th>LOẠI</Th>
+                <Th>Hashtag</Th>
+                <Th>CHI TIẾT</Th>
               </Tr>
             </Tfoot>
           </Table>
@@ -213,14 +213,14 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
         <Box w='full' bg={tableBg} rounded='md' shadow='md' p='6'>
           <TableContainer>
             <Table variant='simple'>
-              <TableCaption>All provinces - places in system</TableCaption>
+              <TableCaption>Tất cả các tỉnh - địa điểm trong hệ thống</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Id</Th>
-                  <Th>Name</Th>
-                  <Th>Category</Th>
-                  <Th>Hash Tags</Th>
-                  <Th>Actions</Th>
+                  <Th>ID</Th>
+                  <Th>TÊN</Th>
+                  <Th>LOẠI</Th>
+                  <Th>Hashtag</Th>
+                  <Th>CHI TIẾT</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -260,11 +260,11 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
               </Tbody>
               <Tfoot>
                 <Tr>
-                  <Th>Id</Th>
-                  <Th>Name</Th>
-                  <Th>Category</Th>
-                  <Th>Hash Tags</Th>
-                  <Th>Action</Th>
+                  <Th>ID</Th>
+                  <Th>TÊN</Th>
+                  <Th>LOẠI</Th>
+                  <Th>Hashtag</Th>
+                  <Th>CHI TIẾT</Th>
                 </Tr>
               </Tfoot>
             </Table>
@@ -294,14 +294,14 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
         <Box w='full' bg={tableBg} rounded='md' shadow='md' p='6'>
           <TableContainer>
             <Table variant='simple'>
-              <TableCaption>All places - places in system</TableCaption>
+              <TableCaption>Tất cả các địa điểm - địa điểm trong hệ thống</TableCaption>
               <Thead>
                 <Tr>
-                  <Th>Id</Th>
-                  <Th>Name</Th>
-                  <Th>Category</Th>
-                  <Th>Hash Tags</Th>
-                  <Th>Actions</Th>
+                  <Th>ID</Th>
+                  <Th>TÊN</Th>
+                  <Th>LOẠI</Th>
+                  <Th>Hashtag</Th>
+                  <Th>CHI TIẾT</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -335,11 +335,11 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
               </Tbody>
               <Tfoot>
                 <Tr>
-                  <Th>Id</Th>
-                  <Th>Name</Th>
-                  <Th>Category</Th>
-                  <Th>Hash Tags</Th>
-                  <Th>Action</Th>
+                  <Th>ID</Th>
+                  <Th>TÊN</Th>
+                  <Th>LOẠI</Th>
+                  <Th>Hashtag</Th>
+                  <Th>CHI TIẾT</Th>
                 </Tr>
               </Tfoot>
             </Table>

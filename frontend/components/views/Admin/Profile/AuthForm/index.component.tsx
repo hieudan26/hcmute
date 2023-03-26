@@ -80,7 +80,7 @@ export default function AuthForm(props: IAuthFormProps) {
         <SimpleGrid columns={6} spacing={6}>
           <FormControl as={GridItem} colSpan={[6, 6]} isRequired isInvalid={!!errors?.current_password?.message}>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              Current password
+              Mật khẩu hiện tại
             </FormLabel>
             <InputGroup w='full'>
               <Input {...register('current_password')} w='full' placeholder='Thang14$' rounded='md' />
@@ -90,7 +90,7 @@ export default function AuthForm(props: IAuthFormProps) {
 
           <FormControl as={GridItem} colSpan={[6, 6]} isRequired isInvalid={!!errors?.new_password?.message}>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              New password
+              Mật khẩu mới
             </FormLabel>
             <InputGroup w='full'>
               <Input {...register('new_password')} w='full' placeholder='Thang14$' rounded='md' />
@@ -100,7 +100,7 @@ export default function AuthForm(props: IAuthFormProps) {
 
           <FormControl as={GridItem} colSpan={[6, 6]} isRequired isInvalid={!!errors?.new_confirm_password?.message}>
             <FormLabel fontSize='sm' fontWeight='md' color={textColorPrimary}>
-              Retype new password
+              Nhập lại mật khẩu mới
             </FormLabel>
             <InputGroup w='full'>
               <Input {...register('new_confirm_password')} w='full' placeholder='Thang14$' rounded='md' />
@@ -120,7 +120,7 @@ export default function AuthForm(props: IAuthFormProps) {
         textAlign='right'
       >
         <Button type='submit' isLoading={submitting} fontWeight='md'>
-          Change password
+          Cập nhật mật khẩu
         </Button>
       </Box>
     </form>

@@ -83,16 +83,15 @@ const AdminProfile: NextPage = (props: IAdminProfileProps) => {
           >
             <Box px={[4, 0]}>
               <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-                Your information
+                Thông tin của bạn
               </Heading>
               <Text textAlign='justify' mt='1' fontSize='sm' color={textColorSecondary}>
-                A short description of someone&apos;s life, work, character, etc; Information about a person&apos;s life, work,
-                interests, etc. on a social networking website.
+                Một mô tả ngắn về cuộc sống, công việc, tính cách của ai đó, v.v.; Thông tin về cuộc sống của một người, công
+                việc, sở thích, vv trên một trang web mạng xã hội.
               </Text>
               <Text textAlign='justify' mt='1' fontSize='sm' color={textColorSecondary}>
-                Your profile is an overview of general information about yourself, and the skill sets that you possess. Creating a
-                profile allows you to save all program opportunities in which you are interested, and to come back at a later time
-                to actually submit an application.
+                Hồ sơ của bạn là một cái nhìn tổng quan về thông tin chung về bản thân và bộ kỹ năng mà bạn sở hữu. Tạo một hồ sơ
+                cho phép bạn lưu tất cả các cơ hội chương trình mà bạn quan tâm và quay lại sau để thực sự nộp đơn.
               </Text>
             </Box>
           </GridItem>
@@ -148,10 +147,10 @@ const AdminProfile: NextPage = (props: IAdminProfileProps) => {
           >
             <Box px={[4, 0]}>
               <Heading fontSize='lg' fontWeight='md' lineHeight='6' mb='4'>
-                Account settings
+                Cài đặt tài khoản
               </Heading>
               <Text textAlign='justify' mt='1' fontSize='sm' color={textColorSecondary}>
-                Account management ...
+                Quản lý tài khoản ...
               </Text>
             </Box>
           </GridItem>
