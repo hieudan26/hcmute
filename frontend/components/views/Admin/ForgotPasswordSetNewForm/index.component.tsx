@@ -90,7 +90,7 @@ export default function ForgotPasswordSetNewForm(props: IForgotPasswordSetNewFor
               <Flex align='center' my='4'>
                 <Divider w='40%' />
                 <Text textAlign='center' fontSize='2xl' fontWeight='semibold' mb='0' w='full' color={textColor}>
-                  SET NEW PASSWORD
+                  ĐẶT LẠI MẬT KHẨU MỚI
                 </Text>
                 <Divider w='40%' />
               </Flex>
@@ -112,7 +112,7 @@ export default function ForgotPasswordSetNewForm(props: IForgotPasswordSetNewFor
               </FormControl>
 
               <FormControl mb='6' isRequired isInvalid={!!errors?.code?.message}>
-                <FormLabel color={textColor}>Code</FormLabel>
+                <FormLabel color={textColor}>Mã</FormLabel>
                 <Input
                   {...register('code')}
                   type='text'
@@ -126,7 +126,7 @@ export default function ForgotPasswordSetNewForm(props: IForgotPasswordSetNewFor
               </FormControl>
 
               <FormControl mb='6' isRequired isInvalid={!!errors?.password?.message}>
-                <FormLabel color={textColor}>New Password</FormLabel>
+                <FormLabel color={textColor}>Mật khẩu mới</FormLabel>
                 <InputGroup>
                   <Input
                     {...register('password')}
@@ -153,7 +153,7 @@ export default function ForgotPasswordSetNewForm(props: IForgotPasswordSetNewFor
               </FormControl>
 
               <FormControl mb='6' isRequired isInvalid={!!errors?.confirm_password?.message}>
-                <FormLabel color={textColor}>Confirm New Password</FormLabel>
+                <FormLabel color={textColor}>Nhập lại mật khẩu mới</FormLabel>
                 <InputGroup>
                   <Input
                     {...register('confirm_password')}
@@ -181,14 +181,14 @@ export default function ForgotPasswordSetNewForm(props: IForgotPasswordSetNewFor
 
               <Center>
                 <Button isLoading={submitting} type='submit' textTransform='uppercase' w='fit-content'>
-                  Reset password
+                  Đặt lại mật khẩu
                 </Button>
               </Center>
 
               <Center mt='4'>
                 <Link as={NextLink} href='/admin/login'>
                   <Text color={textColor} _hover={{ color: '#D0637C' }} display='inline' cursor='pointer'>
-                    Back to login
+                    Quay lại trang Đăng nhập
                   </Text>
                 </Link>
               </Center>

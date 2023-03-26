@@ -72,7 +72,7 @@ export default function ForgotPasswordForm(props: IForgotPasswordFormProps) {
               <Flex align='center' my='4'>
                 <Divider w='40%' />
                 <Text textAlign='center' fontSize='2xl' fontWeight='semibold' mb='0' w='full' color={textColor}>
-                  RESET PASSWORD
+                  ĐẶT LẠI MẬT KHẨU
                 </Text>
                 <Divider w='40%' />
               </Flex>
@@ -93,14 +93,14 @@ export default function ForgotPasswordForm(props: IForgotPasswordFormProps) {
 
               <Center>
                 <Button type='submit' isLoading={submitting} textTransform='uppercase' w='fit-content'>
-                  Get a code to change your password
+                  Nhận mã để thay đổi mật khẩu của bạn
                 </Button>
               </Center>
 
               <Center mt='4'>
                 <Link as={NextLink} href='/admin/login'>
                   <Text color={textColor} _hover={{ color: '#D0637C' }} display='inline' cursor='pointer'>
-                    Back to login
+                    Quay lại trang Đăng nhập
                   </Text>
                 </Link>
               </Center>
