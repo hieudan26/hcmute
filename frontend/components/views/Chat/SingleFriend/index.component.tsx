@@ -63,19 +63,19 @@ export default function SingleFriend(props: ISingleFriendProps) {
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Create new room chat
+              Tạo phòng trò chuyện mới
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              You have never texted with this person before, do you want to create a new chat room?
+              Bạn chưa bao giờ nhắn tin với người này trước đây, bạn có muốn tạo một phòng trò chuyện mới không?
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                Hủy bỏ
               </Button>
               <Button colorScheme='red' onClick={createNewRoom} ml={3}>
-                Start chat
+                Bắt đầu trò chuyện
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

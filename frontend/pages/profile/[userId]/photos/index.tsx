@@ -77,7 +77,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
     <>
       <ModalContainer isOpen={modal} size='xl'>
         <ModalHeader display='flex' flexDirection='column' alignItems='center'>
-          Detail image
+          Chi tiết hình ảnh
         </ModalHeader>
         <ModalCloseButton
           onClick={() => {
@@ -91,7 +91,7 @@ const ProfilePhotos: NextPage = (props: IProfilePhotosProps) => {
       <Box boxShadow='md' rounded='md' minW='6xl' bg={bgLayout} minH='300px' py='10' px='8'>
         <Flex gap='4' align='center' pb='4'>
           <Heading as='h4' size='md'>
-            Photos
+            Tất cả hình ảnh
           </Heading>
         </Flex>
         <Center mx='28' pb='8' zIndex='1'>

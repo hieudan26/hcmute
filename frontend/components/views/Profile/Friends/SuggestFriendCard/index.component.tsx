@@ -143,7 +143,7 @@ export default function SuggestFriendCard(props: ISuggestFriendCardProps) {
               color: 'gray.300',
             }}
           >
-            Country: {friend.country} - Province: {friend.province}
+            Quốc gia: {friend.country} - Tỉnh/thành phố: {friend.province}
           </chakra.p>
         </Box>
         <Button
@@ -155,7 +155,7 @@ export default function SuggestFriendCard(props: ISuggestFriendCardProps) {
             textDecoration: 'Highlight',
           }}
         >
-          Read more
+          Đi đến trang cá nhân
         </Button>
       </Flex>
     </Box>

@@ -32,7 +32,7 @@ export default function LayoutTab(props: ILayoutTabProps) {
           {title}
         </Heading>
         <Text hidden={!lastModified} fontSize='xx-small' as='i' pt='1'>
-          Last modified at: {datetimeLastModified?.toUTCString()}
+          Sửa đổi lần cuối: {datetimeLastModified?.toUTCString()}
         </Text>
       </Flex>
       <Center mx='28' pb='4' zIndex='1'>

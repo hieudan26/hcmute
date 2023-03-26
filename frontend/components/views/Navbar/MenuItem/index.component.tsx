@@ -4,6 +4,9 @@ import { useRouter } from 'next/router';
 import { darkColor } from '../../../../utils/ColorMode/dark';
 import { lightColor } from '../../../../utils/ColorMode/light';
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { toggleLoading } from '../../Loading/index.component';
+import { scrollToTop } from '../../../../utils';
 
 export interface IMenuItemProps {
   children: any;
@@ -13,10 +16,23 @@ export interface IMenuItemProps {
 export default function MenuItem(props: IMenuItemProps) {
   const { children, to = '/', ...rest } = props;
   const router = useRouter();
+  const queryClient = useQueryClient();
   const currentRoute = router.pathname;
   const navs = useColorModeValue(lightColor.colorTextHeader, darkColor.colorTextHeader);
   const navsbg_hover = useColorModeValue('#fafafa', '#121212');
   const [toRoute, setToRoute] = useState<string>(to);
+  const [refreshData, setRefreshData] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (refreshData) {
+      const timeout = setTimeout(() => {
+        setRefreshData(false);
+        toggleLoading(false);
+      }, 1000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [refreshData]);
 
   useEffect(() => {
     if (currentRoute === '/contribute/list-of-previous-contributions' && to === '/contribute') {
@@ -53,6 +69,15 @@ export default function MenuItem(props: IMenuItemProps) {
     }
   }, [currentRoute, to]);
 
+  const invalidateData = () => {
+    if ((currentRoute === '/experiences' && to === '/experiences') || (currentRoute === '/faq' && to === '/faq')) {
+      setRefreshData(true);
+      toggleLoading(true);
+      queryClient.invalidateQueries(['posts_by_type']);
+      scrollToTop();
+    }
+  };
+
   return (
     <>
       <Link href={to} passHref replace>
@@ -66,6 +91,7 @@ export default function MenuItem(props: IMenuItemProps) {
           paddingY={['3px', '3px', '3px', '3px', '5px']}
         >
           <Text
+            onClick={invalidateData}
             paddingBottom={currentRoute === toRoute ? '5px' : '0px'}
             borderBottom={currentRoute === toRoute ? '2px' : '0px'}
             borderBottomColor={currentRoute === toRoute ? 'textColor.logo' : 'transparent'}
