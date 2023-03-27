@@ -1,6 +1,7 @@
 package backend.services;
 
 import backend.common.FriendStatuses;
+import backend.common.NotificationConstants;
 import backend.data.dto.socketdto.chat.CreateChatRoomRequest;
 import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.global.BaseResponse;
@@ -54,9 +55,11 @@ public class ChatService {
         }
 
         Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
-
+        var notificationResponse = NotificationResponse.builder()
+                .type(NotificationConstants.MESSAGE.toString())
+                .content(mapper.fromMessagesToMessagePayload(messages)).build();
         for (var user : chatRooms.getMembers()){
-            simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),mapper.fromMessagesToMessagePayload(messages));
+            simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),notificationResponse);
         }
 
     }
