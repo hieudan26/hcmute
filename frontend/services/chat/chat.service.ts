@@ -19,7 +19,7 @@ class ChatService {
 
   createRooms = async (params: IRoomRequest): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.CHAT}`;
-    const result = await postAsync(url, params, 'Create room chat successfully!', false, true, true, undefined, undefined);
+    const result = await postAsync(url, params, 'Tạo phòng chat thành công', false, true, true, undefined, undefined);
     return result;
   };
 

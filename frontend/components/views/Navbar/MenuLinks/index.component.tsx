@@ -142,7 +142,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
 
       navigator.clipboard.writeText(currentHost);
       toast({
-        description: 'Copy to clipboard successfully!',
+        description: 'Sao chép vào khay nhớ tạm thành công!',
         status: 'info',
         duration: 1000,
         isClosable: true,
@@ -151,7 +151,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
       });
     } else {
       toast({
-        description: 'Admin can not use this feature',
+        description: 'Quản trị viên không thể sử dụng tính năng này',
         status: 'warning',
         duration: 1000,
         isClosable: true,

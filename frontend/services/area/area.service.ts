@@ -9,12 +9,12 @@ import { getAsync, postAsync } from '../../utils/HttpClient.util';
 class AreaService {
   createProvince = async (model: IProvinceRequest): Promise<AxiosResponseStatus<any>> => {
     var url = `areas/provinces`;
-    return postAsync(url, model, 'Create successfully', false, true, true, undefined, undefined);
+    return postAsync(url, model, 'Tạo mới thành công', false, true, true, undefined, undefined);
   };
 
   createCountry = async (model: ICountryRequest): Promise<AxiosResponseStatus<any>> => {
     var url = `areas/countries`;
-    return postAsync(url, model, 'Create successfully', false, true, true, undefined, undefined);
+    return postAsync(url, model, 'Tạo mới thành công', false, true, true, undefined, undefined);
   };
 
   getCountriesPagination = async (params: IPaginationRequest | undefined): Promise<AxiosResponseStatus<any>> => {

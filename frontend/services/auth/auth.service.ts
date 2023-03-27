@@ -77,7 +77,7 @@ export class AuthService {
       toggleMessage({
         code: uuidv4(),
         type: 'success',
-        message: `Change password for email: ${current_user.attributes.email} successfully`,
+        message: `Đổi mật khẩu: ${current_user.attributes.email} thành công`,
       });
       return result;
     } catch (error: any) {
@@ -122,10 +122,10 @@ export class AuthService {
 
   static logout = async () => {
     toggleMessage({
-      title: 'Too soon too say goodbye 😿',
+      title: 'Quá sớm để nói lời tạm biệt 😿',
       code: uuidv4(),
       type: 'info',
-      message: 'You are logged out, see you next time',
+      message: 'Bạn đã đăng xuất, hẹn gặp lại lần sau',
     });
     try {
       await Auth.signOut();
@@ -164,7 +164,7 @@ export class AuthService {
       toggleMessage({
         code: uuidv4(),
         type: 'success',
-        message: 'Password has been successfully changed, log in with the new password',
+        message: 'Mật khẩu đã được thay đổi thành công, đăng nhập bằng mật khẩu mới',
       });
 
       return result;
@@ -191,7 +191,7 @@ export class AuthService {
       toggleMessage({
         code: uuidv4(),
         type: 'success',
-        message: 'Please check your email to get code',
+        message: 'Vui lòng kiểm tra email của bạn để nhận mã',
       });
 
       return result;
@@ -220,7 +220,7 @@ export class AuthService {
       toggleMessage({
         code: uuidv4(),
         type: 'success',
-        message: 'Email verify was sent, please check your email.',
+        message: 'Email xác minh đã được gửi, vui lòng kiểm tra email của bạn.',
       });
       return result;
     } catch (error: any) {
