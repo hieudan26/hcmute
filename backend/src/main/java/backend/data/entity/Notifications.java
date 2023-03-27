@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "places")
+@Table(name = "notifications")
 @Data
 @Builder
 public class Notifications extends Auditable<String> implements Serializable {
@@ -22,6 +22,6 @@ public class Notifications extends Auditable<String> implements Serializable {
     String fromUser;
     String description;
     Integer contentId;
-    boolean isRead = false;
+    boolean isRead;
 
 }

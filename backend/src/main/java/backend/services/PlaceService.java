@@ -65,7 +65,7 @@ public class PlaceService {
     }
 
     public BaseResponse findPlaceWithKey(PagingRequest pagingRequest, String key){
-        PagingResponse pagingResponse = new PagingResponse(
+        PagingResponse<Places> pagingResponse = new PagingResponse(
                 placeRepository.findByNameIgnoreCaseContainingAndStatusIsAndIsDisableIsFalse(PagingUtils.getPageable(pagingRequest), key, PlaceStatuses.APPROVED.getStatus()));
 
         return BaseResponse.builder().message("find place successful.")
@@ -97,6 +97,7 @@ public class PlaceService {
                 .toUser(ROLE_USER.getRoleName())
                 .contentId(place.getId())
                 .description("New Place has been created")
+                .isRead(false)
                 .build();
 
         notificationService.sendSocketMessage(noti);
@@ -114,7 +115,7 @@ public class PlaceService {
                 throw new NoPermissionException("You can't update other person's information.");
             }
 
-            if(places.getStatus().equals(PlaceStatuses.PENDING.getStatus())) {
+            if(!places.getStatus().equals(PlaceStatuses.PENDING.getStatus())) {
                 throw new NoPermissionException("You can update only pending places.");
             }
             createPlaceRequest.setStatusDescription(null);
