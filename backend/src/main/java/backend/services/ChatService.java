@@ -6,6 +6,7 @@ import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
+import backend.data.dto.socketdto.notification.NotificationResponse;
 import backend.data.entity.ChatRooms;
 import backend.data.entity.Messages;
 import backend.data.entity.Users;
@@ -53,6 +54,7 @@ public class ChatService {
         }
 
         Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
+
         for (var user : chatRooms.getMembers()){
             simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),mapper.fromMessagesToMessagePayload(messages));
         }

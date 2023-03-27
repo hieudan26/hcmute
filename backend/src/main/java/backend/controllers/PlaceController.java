@@ -30,7 +30,7 @@ public class PlaceController {
 
     @PreAuthorize("permitAll()")
     @PostMapping("")
-    public ResponseEntity<BaseResponse> createPlace(@RequestBody CreatePlaceRequest request){
+    public ResponseEntity<BaseResponse> createPlace(@RequestBody CreatePlaceRequest request) throws NoPermissionException {
         return ResponseEntity.ok(placeService.createPlace(request));
     }
 

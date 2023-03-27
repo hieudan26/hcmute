@@ -1,6 +1,7 @@
 package backend.services;
 
 import backend.common.AreaConstant;
+import backend.common.NotificationConstants;
 import backend.common.PlaceStatuses;
 import backend.common.Roles;
 import backend.data.dto.global.BaseResponse;
@@ -12,10 +13,7 @@ import backend.data.dto.place.PlaceRequestParams;
 import backend.data.dto.place.PlaceResponse;
 import backend.data.dto.post.PostResponse;
 import backend.data.dto.user.UserFirstLoginRequest;
-import backend.data.entity.Areas;
-import backend.data.entity.PlaceCategories;
-import backend.data.entity.Places;
-import backend.data.entity.Users;
+import backend.data.entity.*;
 import backend.exception.InvalidRequestException;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.PlaceMapper;
@@ -46,6 +44,8 @@ public class PlaceService {
     private final HashTagService hashTagService;
     private final PlaceMapper placeMapper;
     private final UserService userService;
+    private final NotificationService notificationService;
+
 
 
     public BaseResponse createPlaceCategory(PlaceCategoryPayLoad categoryPayLoad){
@@ -74,7 +74,7 @@ public class PlaceService {
     }
 
 
-    public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest){
+    public BaseResponse createPlace(CreatePlaceRequest createPlaceRequest) throws NoPermissionException {
         Places places = placeMapper.fromCreatePlaceToPlaces(createPlaceRequest);
         CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -89,9 +89,19 @@ public class PlaceService {
 
         places.setHashTags(hashTagService.createNewHashTag(createPlaceRequest.getHashTags(),places));
         places.setOwner(userService.getUser(user.getUsername()));
+        var place = placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places));
 
+        var noti = Notifications.builder()
+                .type(NotificationConstants.PLACESTATUS.getStatus())
+                .fromUser(user.getUsername())
+                .toUser(ROLE_USER.getRoleName())
+                .contentId(place.getId())
+                .description("New Place has been created")
+                .build();
+
+        notificationService.sendSocketMessage(noti);
         return BaseResponse.builder().message("Create place successful.")
-                .data(placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places)))
+                .data(place)
                 .build();
     }
 
