@@ -22,7 +22,7 @@ class PlaceService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `/places/${url}`;
-    return putAsync(url, params, 'Update place successfully', false, true, true, undefined, setSubmitting);
+    return putAsync(url, params, 'Cập nhật thành công', false, true, true, undefined, setSubmitting);
   };
 
   createPlace = async (
@@ -30,7 +30,7 @@ class PlaceService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `/places/`;
-    return postAsync(url, params, 'Create place successfully', false, true, true, undefined, setSubmitting);
+    return postAsync(url, params, 'Tạo mới thành công', false, true, true, undefined, setSubmitting);
   };
 
   updateCategory = async (
@@ -39,7 +39,7 @@ class PlaceService {
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `/places/categories/${params.id}`;
     const mainParams: ICategoryRequest = { image: params.image, name: params.name };
-    return putAsync(url, mainParams, 'Update category successfully', false, true, true, undefined, setSubmitting);
+    return putAsync(url, mainParams, 'Cập nhật thành công', false, true, true, undefined, setSubmitting);
   };
 
   createCategory = async (
@@ -47,7 +47,7 @@ class PlaceService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `/places/categories`;
-    return postAsync(url, params, 'Create category successfully', false, true, true, undefined, setSubmitting);
+    return postAsync(url, params, 'Tạo mới thành công', false, true, true, undefined, setSubmitting);
   };
 
   getPlace = async (urlCountry: string, urlProvince: string, urlPlace: string): Promise<AxiosResponseStatus<any>> => {

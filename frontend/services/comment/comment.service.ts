@@ -10,7 +10,7 @@ class CommentService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.COMMENT}/${commentId}`;
-    const result = await deleteAsync(url, 'Delete comment successfully', false, true, true, undefined, setSubmitting);
+    const result = await deleteAsync(url, 'Xóa thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 
@@ -20,7 +20,7 @@ class CommentService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.COMMENT}/${commentId}`;
-    const result = await putAsync(url, model, 'Update comment successfully', false, true, true, undefined, setSubmitting);
+    const result = await putAsync(url, model, 'Cập nhật thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 
@@ -29,7 +29,7 @@ class CommentService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = API_PATH.COMMENT;
-    const result = await postAsync(url, model, 'Create comment successfully', false, true, true, undefined, setSubmitting);
+    const result = await postAsync(url, model, 'Tạo mới thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 }

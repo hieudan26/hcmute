@@ -41,7 +41,7 @@ class PostService {
 
   deletePost = async (postId: string): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.POST}/${postId}`;
-    const result = await deleteAsync(url, 'Delete post successfully', false, true, true, undefined, undefined);
+    const result = await deleteAsync(url, 'Xóa thành công', false, true, true, undefined, undefined);
     return result;
   };
 
@@ -51,7 +51,7 @@ class PostService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.POST}/${postId}`;
-    const result = await putAsync(url, model, 'Update post successfully', false, true, true, undefined, setSubmitting);
+    const result = await putAsync(url, model, 'Cập nhật thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 
@@ -90,7 +90,7 @@ class PostService {
     setSubmitting: Dispatch<SetStateAction<boolean>> | undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = API_PATH.POST;
-    const result = await postAsync(url, model, 'Create post successfully', false, true, true, undefined, setSubmitting);
+    const result = await postAsync(url, model, 'Tạo mới thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 }

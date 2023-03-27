@@ -17,13 +17,28 @@ export const toggleMessage = (value: ResponseMessage) => {
 export default function Message(props: IMessageProps) {
   const toast = useToast();
 
+  const handleTitleMessage = (type: string) => {
+    switch (type) {
+      case 'success':
+        return 'thành công';
+      case 'warning':
+        return 'cảnh báo';
+      case 'loading':
+        return 'đang tải';
+      case 'info':
+        return 'thông báo';
+      default:
+        return 'lỗi';
+    }
+  };
+
   useEffect(() => {
     const subscribe = handleMessageSubject.subscribe((msg) => {
       if (msg) {
         const id: ToastId = msg.code ? msg.code : uuidv4();
         if (!toast.isActive(id)) {
           toast({
-            title: msg.title ? msg.title : uppercaseFirstLetter(msg.type),
+            title: msg.title ? msg.title : uppercaseFirstLetter(handleTitleMessage(msg.type)),
             description: msg.message,
             id: id,
             duration: msg.type === 'error' ? 4000 : 3000,

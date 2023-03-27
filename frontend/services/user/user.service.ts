@@ -20,7 +20,7 @@ class UserService {
     const params = {
       id: userId,
     };
-    const result = await putAsync(url, params, 'Enable user successfully', false, true, true, undefined, undefined);
+    const result = await putAsync(url, params, 'Kích hoạt người dùng thành công', false, true, true, undefined, undefined);
     return result;
   };
 
@@ -29,7 +29,7 @@ class UserService {
     const params = {
       id: userId,
     };
-    const result = await putAsync(url, params, 'Disable user successfully', false, true, true, undefined, undefined);
+    const result = await putAsync(url, params, 'Vô hiệu hóa người dùng thành công', false, true, true, undefined, undefined);
     return result;
   };
 
@@ -49,7 +49,7 @@ class UserService {
     setSubmitting: Dispatch<SetStateAction<boolean>>
   ): Promise<AxiosResponse<any>> => {
     var url = `${API_PATH.USERS}/admin`;
-    const result = await postAsync(url, model, 'Create new admin successfully', false, true, true, undefined, setSubmitting);
+    const result = await postAsync(url, model, 'Tạo mới thành công', false, true, true, undefined, setSubmitting);
     return result;
   };
 
@@ -88,7 +88,7 @@ class UserService {
     setSubmitting: Dispatch<SetStateAction<boolean>>
   ): Promise<AxiosResponse<any>> => {
     var url = `/users/${id}`;
-    const result = await putAsync(url, model, 'Update information successfully', false, true, false, undefined, setSubmitting);
+    const result = await putAsync(url, model, 'Cập nhật thành công', false, true, false, undefined, setSubmitting);
     return result;
   };
 
@@ -116,16 +116,7 @@ class UserService {
     setSubmitting: Dispatch<SetStateAction<boolean>>
   ): Promise<AxiosResponse<any>> => {
     var url = API_PATH.SIGN_UP;
-    const result = await postAsync(
-      url,
-      model,
-      'Filling in some information success',
-      false,
-      true,
-      true,
-      undefined,
-      setSubmitting
-    );
+    const result = await postAsync(url, model, 'Điền thông tin bổ sung thành công', false, true, true, undefined, setSubmitting);
     await LocalUtils.storeAuthenticationData(true);
     return result;
   };
