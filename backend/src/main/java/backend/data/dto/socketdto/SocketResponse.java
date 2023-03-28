@@ -1,4 +1,4 @@
-package backend.data.dto.socketdto.notification;
+package backend.data.dto.socketdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationResponse<T> {
+public class SocketResponse<T> {
     private String type;
     private T content;
 }

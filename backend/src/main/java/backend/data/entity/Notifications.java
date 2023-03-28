@@ -1,17 +1,17 @@
 package backend.data.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "notifications")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Notifications extends Auditable<String> implements Serializable {
     @Id
@@ -22,6 +22,5 @@ public class Notifications extends Auditable<String> implements Serializable {
     String fromUser;
     String description;
     Integer contentId;
-    boolean isRead;
-
+    boolean status;
 }

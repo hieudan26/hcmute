@@ -1,31 +1,25 @@
 package backend.services;
 
-import backend.common.NotificationConstants;
-import backend.common.PlaceStatuses;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
-import backend.data.dto.post.PostQueryParams;
-import backend.data.dto.post.PostResponse;
-import backend.data.dto.socketdto.chat.MessagePayLoad;
-import backend.data.dto.socketdto.notification.NotificationResponse;
-import backend.data.entity.ChatRooms;
-import backend.data.entity.Messages;
+import backend.data.dto.socketdto.SocketResponse;
+import backend.data.dto.socketdto.notification.NotificationsResponse;
 import backend.data.entity.Notifications;
 import backend.exception.NoRecordFoundException;
+import backend.mapper.NotificationMapper;
 import backend.repositories.NotificationRepository;
 import backend.security.configuration.CustomUserDetail;
 import backend.utils.PagingUtils;
-import backend.utils.SearchSpecificationUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NoPermissionException;
-import javax.swing.text.html.Option;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static backend.common.Roles.*;
@@ -35,10 +29,11 @@ import static backend.common.Roles.*;
 public class NotificationService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final NotificationRepository notificationRepository;
+    private final NotificationMapper notificationMapper;
     public<T> void sendSocketMessage
     (Notifications notification) throws NoPermissionException {
         var noti = notificationRepository.save(notification);
-        var notiResponse = NotificationResponse.builder().type(noti.getType())
+        var notiResponse = SocketResponse.builder().type(noti.getType())
                         .content(noti).build();
         simpMessagingTemplate.convertAndSend("/topic/admin", notiResponse);
     }
@@ -46,7 +41,7 @@ public class NotificationService {
     public<T> void sendSocketMessage
             (Notifications notification,String id) throws NoPermissionException {
         var noti = notificationRepository.save(notification);
-        var notiResponse = NotificationResponse.builder().type(noti.getType())
+        var notiResponse = SocketResponse.builder().type(noti.getType())
                 .content(noti).build();
         simpMessagingTemplate.convertAndSend("/topic/"+id, notiResponse);
     }
@@ -58,18 +53,85 @@ public class NotificationService {
         return  notification.get();
     }
 
-    public BaseResponse listAllNotifications(PagingRequest pagingRequest, String userId){
-        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    public BaseResponse findNotificationById(Integer id) {
+        return BaseResponse.builder().message("Find notification successful.")
+                .data(getNotificationById(id))
+                .build();
+    }
 
+    public BaseResponse readNotificationById(Integer id, Boolean status) {
+        var noti = getNotificationById(id);
+        if (status == null)
+            status = true;
+        noti.setStatus(status);
+        return BaseResponse.builder().message("Find notification successful.")
+                .data(notificationMapper.NotificationToNotificationResponse(notificationRepository.save(noti)))
+                .build();
+    }
+
+    public BaseResponse readNotifications(Boolean status) {
+        if (status == null)
+            status = true;
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String userId = user.getUsername();
         if (user.isHasRole(ROLE_ADMIN.getRoleName())) {
-            userId = ROLE_ADMIN.getRoleName();
+            userId = ADMIN.getRoleName();
         }
 
-        PagingResponse<Notifications> pagingResponse = new PagingResponse(
-                notificationRepository.findAllByToUserOrderByReadAscCreationDateDesc(PagingUtils.getPageable(pagingRequest), userId));
+        List<Notifications> notifications =
+                    notificationRepository.findAllByToUserAndStatusOrderByStatusAscCreationDateDesc(userId, false);
+
+        Boolean finalStatus = status;
+        notifications.stream().forEach(item -> item.setStatus(finalStatus));
+        notificationRepository.saveAll(notifications);
+
+        return BaseResponse.builder().message("All notifications are readed")
+                .data(null)
+                .build();
+    }
+
+    public BaseResponse listAllNotifications(PagingRequest pagingRequest, Boolean status){
+
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String userId = user.getUsername();
+        if (user.isHasRole(ROLE_ADMIN.getRoleName())) {
+            userId = ADMIN.getRoleName();
+        }
+        PagingResponse<NotificationsResponse> pagingResponse;
+        if (status == null) {
+            pagingResponse = new PagingResponse(
+                    notificationRepository.findAllByToUserOrderByStatusAscCreationDateDesc(
+                                    PagingUtils.getPageable(pagingRequest), userId)
+                            .map(notificationMapper::NotificationToNotificationResponse));
+        } else {
+            pagingResponse = new PagingResponse(
+                    notificationRepository.findAllByToUserAndStatusOrderByStatusAscCreationDateDesc(
+                                    PagingUtils.getPageable(pagingRequest), userId, status)
+                            .map(notificationMapper::NotificationToNotificationResponse));
+        }
+
+
 
         return BaseResponse.builder().message("Find notification successful.")
                 .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse countAllNotifications(Boolean status){
+        CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String userId = user.getUsername();
+        if (user.isHasRole(ROLE_ADMIN.getRoleName())) {
+            userId = ADMIN.getRoleName();
+        }
+        Integer count;
+        if (status == null) {
+            count = notificationRepository.countAllByToUserOrderByStatusAscCreationDateDesc(userId);
+        } else {
+            count = notificationRepository.countAllByToUserAndStatusOrderByStatusAscCreationDateDesc(userId, status);
+        }
+
+        return BaseResponse.builder().message("Find notification successful.")
+                .data(Map.of("count", count))
                 .build();
     }
 }

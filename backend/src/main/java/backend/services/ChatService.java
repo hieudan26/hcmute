@@ -7,7 +7,7 @@ import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
-import backend.data.dto.socketdto.notification.NotificationResponse;
+import backend.data.dto.socketdto.SocketResponse;
 import backend.data.entity.ChatRooms;
 import backend.data.entity.Messages;
 import backend.data.entity.Users;
@@ -55,7 +55,7 @@ public class ChatService {
         }
 
         Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
-        var notificationResponse = NotificationResponse.builder()
+        var notificationResponse = SocketResponse.builder()
                 .type(NotificationConstants.MESSAGE.toString())
                 .content(mapper.fromMessagesToMessagePayload(messages)).build();
         for (var user : chatRooms.getMembers()){
