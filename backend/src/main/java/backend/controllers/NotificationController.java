@@ -24,8 +24,28 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse> getNotifications(PagingRequest pagingRequest,@PathVariable String id){
-        return ResponseEntity.ok(notificationService.listAllNotifications(pagingRequest,id));
+    @GetMapping("/")
+    public ResponseEntity<BaseResponse> getNotifications(PagingRequest pagingRequest, @RequestParam(name = "isRead", required = false) Boolean status){
+        return ResponseEntity.ok(notificationService.listAllNotifications(pagingRequest, status));
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @GetMapping("/count")
+    public ResponseEntity<BaseResponse> countNotifications( @RequestParam(name = "isRead", required = false) Boolean status){
+        return ResponseEntity.ok(notificationService.countAllNotifications(status));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse> readNotification(@PathVariable(name = "id") Integer id, @RequestParam(name = "status", required = false) Boolean status){
+        return ResponseEntity.ok(notificationService.readNotificationById(id, status));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PutMapping("/")
+    public ResponseEntity<BaseResponse> readNotifications( @RequestParam(name = "status", required = false) Boolean status){
+        return ResponseEntity.ok(notificationService.readNotifications(status));
+    }
+
+
 }

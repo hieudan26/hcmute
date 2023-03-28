@@ -33,6 +33,7 @@ import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+import static backend.common.Roles.ADMIN;
 import static backend.common.Roles.ROLE_USER;
 
 @Service
@@ -91,16 +92,19 @@ public class PlaceService {
         places.setOwner(userService.getUser(user.getUsername()));
         var place = placeMapper.fromPlaceToPlaceResponse(placeRepository.save(places));
 
-        var noti = Notifications.builder()
-                .type(NotificationConstants.PLACESTATUS.getStatus())
-                .fromUser(user.getUsername())
-                .toUser(ROLE_USER.getRoleName())
-                .contentId(place.getId())
-                .description("New Place has been created")
-                .isRead(false)
-                .build();
+        if (user.isHasRole(ROLE_USER.getRoleName())) {
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.PLACESTATUS.getStatus())
+                    .fromUser(user.getUsername())
+                    .toUser(ADMIN.getRoleName())
+                    .contentId(place.getId())
+                    .description("New Place has been created")
+                    .status(false)
+                    .build();
 
-        notificationService.sendSocketMessage(noti);
+            notificationService.sendSocketMessage(noti);
+        }
+
         return BaseResponse.builder().message("Create place successful.")
                 .data(place)
                 .build();
@@ -241,6 +245,12 @@ public class PlaceService {
         if(places.isEmpty())
             throw new NoRecordFoundException(String.format("Can't find place with Id: %s.",id));
         return places.get();
+    }
+
+    public BaseResponse findPlace(Integer id){
+        return BaseResponse.builder().message("Find place successful.")
+                .data(placeMapper.fromPlaceToPlaceResponse(getPlace(id)))
+                .build();
     }
 
     public PlaceCategories getPlaceCategory(Integer id){

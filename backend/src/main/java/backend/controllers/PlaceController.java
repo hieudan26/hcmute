@@ -65,6 +65,12 @@ public class PlaceController {
     }
 
     @PreAuthorize("permitAll()")
+    @GetMapping("/{id}")
+    public ResponseEntity<BaseResponse> getPlace(Integer id){
+        return ResponseEntity.ok(placeService.findPlace(id));
+    }
+
+    @PreAuthorize("permitAll()")
     @GetMapping("/countries/{url}")
     public ResponseEntity<BaseResponse> getCountry(@PathVariable("url") String url){
         return ResponseEntity.ok(placeService.getCountry(url));
