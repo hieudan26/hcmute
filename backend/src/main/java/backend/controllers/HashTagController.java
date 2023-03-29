@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("hashtags")
 @RequiredArgsConstructor
-public class HashTagController {
+public class    HashTagController {
     private final HashTagService hashTagService;
     @PreAuthorize("permitAll()")
     @GetMapping("/images")

@@ -11,6 +11,7 @@ import backend.mapper.NotificationMapper;
 import backend.repositories.NotificationRepository;
 import backend.security.configuration.CustomUserDetail;
 import backend.utils.PagingUtils;
+import com.amazonaws.util.CollectionUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.NoPermissionException;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +71,7 @@ public class NotificationService {
                 .build();
     }
 
-    public BaseResponse readNotifications(Boolean status) {
+    public BaseResponse readNotifications(List<Integer> list, Boolean status) {
         if (status == null)
             status = true;
         CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -79,9 +81,13 @@ public class NotificationService {
         }
 
         List<Notifications> notifications =
-                    notificationRepository.findAllByToUserAndStatusOrderByStatusAscCreationDateDesc(userId, false);
+                notificationRepository.findAllByToUserAndStatusOrderByStatusAscCreationDateDesc(userId, false);
 
         Boolean finalStatus = status;
+
+        if (!CollectionUtils.isNullOrEmpty(list)){
+            notifications = notifications.stream().filter(item -> list.contains(item.getId())).toList();
+        }
         notifications.stream().forEach(item -> item.setStatus(finalStatus));
         notificationRepository.saveAll(notifications);
 
@@ -89,6 +95,7 @@ public class NotificationService {
                 .data(null)
                 .build();
     }
+
 
     public BaseResponse listAllNotifications(PagingRequest pagingRequest, Boolean status){
 
@@ -109,8 +116,6 @@ public class NotificationService {
                                     PagingUtils.getPageable(pagingRequest), userId, status)
                             .map(notificationMapper::NotificationToNotificationResponse));
         }
-
-
 
         return BaseResponse.builder().message("Find notification successful.")
                 .data(pagingResponse)
