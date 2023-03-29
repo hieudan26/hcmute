@@ -5,6 +5,8 @@ import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.socketdto.SocketResponse;
 import backend.data.dto.socketdto.notification.NotificationsResponse;
+import backend.data.dto.socketdto.notification.ReadListNotificationRequest;
+import backend.data.dto.socketdto.notification.ReadNotificationRequest;
 import backend.data.entity.Notifications;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.NotificationMapper;
@@ -61,19 +63,19 @@ public class NotificationService {
                 .build();
     }
 
-    public BaseResponse readNotificationById(Integer id, Boolean status) {
+    public BaseResponse readNotificationById(Integer id, ReadNotificationRequest request) {
         var noti = getNotificationById(id);
-        if (status == null)
-            status = true;
-        noti.setStatus(status);
+        if (request.getStatus() == null)
+            request.setStatus(true);
+        noti.setStatus(request.getStatus());
         return BaseResponse.builder().message("Find notification successful.")
                 .data(notificationMapper.NotificationToNotificationResponse(notificationRepository.save(noti)))
                 .build();
     }
 
-    public BaseResponse readNotifications(List<Integer> list, Boolean status) {
-        if (status == null)
-            status = true;
+    public BaseResponse readNotifications(ReadListNotificationRequest request) {
+        if (request.getStatus() == null)
+            request.setStatus(true);
         CustomUserDetail user = ((CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         String userId = user.getUsername();
         if (user.isHasRole(ROLE_ADMIN.getRoleName())) {
@@ -83,10 +85,10 @@ public class NotificationService {
         List<Notifications> notifications =
                 notificationRepository.findAllByToUserAndStatusOrderByStatusAscCreationDateDesc(userId, false);
 
-        Boolean finalStatus = status;
+        Boolean finalStatus = request.getStatus();
 
-        if (!CollectionUtils.isNullOrEmpty(list)){
-            notifications = notifications.stream().filter(item -> list.contains(item.getId())).toList();
+        if (!CollectionUtils.isNullOrEmpty(request.getListNotifications())){
+            notifications = notifications.stream().filter(item -> request.getListNotifications().contains(item.getId())).toList();
         }
         notifications.stream().forEach(item -> item.setStatus(finalStatus));
         notificationRepository.saveAll(notifications);
