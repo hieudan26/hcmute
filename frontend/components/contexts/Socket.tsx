@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { isConnected } from '../../app/slices/socketSlice';
 import { useSocketSubscribe } from '../../hooks/socket/useSocketSubcribe';
 import { sendMessage } from '../../app/slices/singleChatsSlice';
+import { RoleConstants } from '../../constants/roles.constant';
+import { useQueryClient } from '@tanstack/react-query';
 
 // export const SocketContext = createContext<{ stompClient: StompJS.CompatClient | null }>({ stompClient: null });
 export const SocketContext = createContext<{ stompClient: StompJS.Client | null }>({ stompClient: null });
@@ -24,6 +26,7 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
   const [stompClient, setStompClient] = useState<null | StompJS.Client>(null);
   const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // console.log(isLoggedIn, stompClient?.connected);
@@ -61,7 +64,11 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
         console.log('SocketIO: Connected and authenticated');
         dispatch(isConnected(true));
         // handle subcribe
-        stompClient.subscribe(`/topic/${auth?.id}`, onMessageReceived);
+        if (auth?.role === RoleConstants.USER) {
+          stompClient.subscribe(`/topic/${auth?.id}`, onMessageReceived);
+        } else {
+          stompClient.subscribe(`/topic/admin`, onMessageReceived);
+        }
         //
         setStompClient(stompClient);
       },
@@ -81,7 +88,12 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
 
   const onMessageReceived = (message: IMessage) => {
     const { body } = message;
-    dispatch(sendMessage(JSON.parse(body)));
+    if (auth?.role === RoleConstants.USER) {
+      dispatch(sendMessage(JSON.parse(body)));
+    } else {
+      queryClient.invalidateQueries(['count_notifications']);
+      queryClient.invalidateQueries(['notifications']);
+    }
   };
 
   const disconnect = () => {

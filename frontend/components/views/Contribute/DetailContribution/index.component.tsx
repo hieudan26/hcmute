@@ -27,6 +27,7 @@ import { IPlaceCountryResponse, IPlaceRequestUpdate } from '../../../../models/p
 import { Option, components, createOption } from '../../../../pages/admin/places-management/create';
 import placeService from '../../../../services/place/place.service';
 import { formatsQuill, modulesQuill, scrollToTop } from '../../../../utils';
+import { useRouter } from 'next/router';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false, loading: () => <p>Loading ...</p> });
 
 export interface IDetailContributionProps {
@@ -39,6 +40,7 @@ export interface IDetailContributionProps {
   statusDescription?: string;
   setStatusChange?: Dispatch<SetStateAction<string>>;
   setIsDisableResetAdmin?: Dispatch<SetStateAction<boolean>>;
+  isDetail?: boolean;
 }
 
 export default function DetailContribution(props: IDetailContributionProps) {
@@ -52,11 +54,13 @@ export default function DetailContribution(props: IDetailContributionProps) {
     statusDescription = '',
     setStatusChange,
     setIsDisableResetAdmin,
+    isDetail = false,
   } = props;
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const { upload, urlRef } = useUploadFile();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [selectedFileAvatar, setSelectedFileAvatar] = useState<File | undefined>(undefined);
   const [previewAvatar, setPreviewAvatar] = useState<string | undefined>(undefined);
   const [valuePlaceName, setValuePlaceName] = useState<string | undefined>(place?.name);
@@ -246,7 +250,11 @@ export default function DetailContribution(props: IDetailContributionProps) {
 
       const response = await placeService.updatePlace(params, place.url, setSubmitting);
       queryClient.invalidateQueries(['places_specification_pagination']);
-      scrollToTop();
+      if (isDetail) {
+        router.push(`/admin/contributions-management`);
+      } else {
+        scrollToTop();
+      }
     }
   };
 

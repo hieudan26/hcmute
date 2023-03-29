@@ -33,6 +33,20 @@ export interface IUrlsGetPlace {
   urlPlace: string;
 }
 
+export const useGetPlaceById = (id: string, isEnable: boolean) => {
+  return useQuery(
+    ['place_by_id'],
+    async () => {
+      const response = await placeService.getPlaceById(id);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+    }
+  );
+};
+
 export const useFetchPlacesSpecification_Pagination = (params: placesSpecification, isEnable: boolean) => {
   return useQuery(
     ['places_specification_pagination', params],

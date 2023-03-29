@@ -1,33 +1,44 @@
 import { Icon, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import { MdUpgrade } from 'react-icons/md';
+import { INotificationResponse } from '../../../../../models/notification/notification.model';
+import { FcAdvertising } from 'react-icons/fc';
+import { GoDash, GoPrimitiveDot } from 'react-icons/go';
 
-export function ItemContent(props: { info: string }) {
-  const textColor = useColorModeValue('#1B254B', 'white');
+export interface IItemContentProps {
+  data: INotificationResponse;
+}
+
+export function ItemContent(props: IItemContentProps) {
+  const { data } = props;
+
+  const generateContent = () => {
+    switch (data.type) {
+      case 'place_status':
+        return 'đã đóng góp một địa điểm du lịch mới cho hệ thống';
+      default:
+        return 'không có ý kiến';
+    }
+  };
+
   return (
     <>
-      <Flex
-        justify='center'
-        align='center'
-        borderRadius='10px'
-        minH={{ base: '40px', md: '50px' }}
-        h={{ base: '40px', md: '50px' }}
-        minW={{ base: '40px', md: '50px' }}
-        w={{ base: '40px', md: '50px' }}
-        me='4'
-        bg='linear-gradient(135deg, #fab1a0 0%, #D0637C 100%)'
-      >
-        <Icon as={MdUpgrade} color='white' w={8} h={14} />
+      <Flex justify='center' align='center' me='2'>
+        <Icon as={GoDash} fontSize='md' color='gray.600' />
       </Flex>
-      <Flex flexDirection='column'>
-        <Text mb='2px' fontWeight='bold' color={textColor} fontSize={{ base: 'md', md: 'md' }}>
-          New Update: {props.info}
+      <Flex flexDirection='column' mt='-1'>
+        <Text mb='1' fontWeight='bold' lineHeight='5' fontSize={{ base: 'small', md: 'small' }}>
+          {data.fullName}{' '}
+          <Text as='span' fontWeight='normal'>
+            {generateContent()}
+          </Text>
         </Text>
         <Flex alignItems='center'>
-          <Text fontSize={{ base: 'sm', md: 'sm' }} lineHeight='100%' color={textColor}>
-            A new update for your downloaded item is available!
+          <Text fontSize={{ base: 'xs', md: 'xs' }} lineHeight='100%' color={data.status === false ? '#D0637C' : 'gray.400'}>
+            {data.creationDate}
           </Text>
         </Flex>
       </Flex>
+      <Icon display={data.status === true ? 'none' : 'block'} as={GoPrimitiveDot} fontSize='md' color='#D0637C' ml='2' mr='1' />
     </>
   );
 }
