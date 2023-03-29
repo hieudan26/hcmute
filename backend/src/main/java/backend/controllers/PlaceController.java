@@ -66,7 +66,7 @@ public class PlaceController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse> getPlace(Integer id){
+    public ResponseEntity<BaseResponse> getPlace(@PathVariable("id")Integer id){
         return ResponseEntity.ok(placeService.findPlace(id));
     }
 

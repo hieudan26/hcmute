@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.NoPermissionException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -43,8 +44,8 @@ public class NotificationController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("")
-    public ResponseEntity<BaseResponse> readNotifications( @RequestParam(name = "status", required = false) Boolean status){
-        return ResponseEntity.ok(notificationService.readNotifications(status));
+    public ResponseEntity<BaseResponse> readNotifications(@RequestParam(name = "listNotifications", required = false) List<Integer> listNotifications, @RequestParam(name = "status", required = false) Boolean status){
+        return ResponseEntity.ok(notificationService.readNotifications(listNotifications, status));
     }
 
 
