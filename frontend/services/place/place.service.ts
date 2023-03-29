@@ -5,6 +5,11 @@ import { ICategoryRequest, ICategoryRequestUpdate, IPlaceRequest, IPlaceRequestU
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class PlaceService {
+  getPlaceById = async (id: string): Promise<AxiosResponseStatus<any>> => {
+    var url = `places/${id}`;
+    return getAsync(url, undefined, false, false, true);
+  };
+
   getPlacesSpecification = async (
     params: IPaginationRequest | undefined,
     status: 'pending' | 'approved' | 'rejected' | undefined,

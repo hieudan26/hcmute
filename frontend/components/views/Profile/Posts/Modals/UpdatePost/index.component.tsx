@@ -139,7 +139,6 @@ export default function UpdatePost(props: IUpdatePostProps) {
 
   useEffect(() => {
     if (filesToUpload.length === 0) {
-      console.log(post.type, imagesUpdate.length);
       if (post.type === 'experience' && imagesUpdate.length === 0) {
         setIsDisabledBtnPost(true);
       } else {

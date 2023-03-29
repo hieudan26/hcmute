@@ -1,0 +1,141 @@
+import {
+  Button,
+  Circle,
+  Flex,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  color,
+  useColorMode,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { BiDotsVerticalRounded } from 'react-icons/bi';
+import { CgScreen } from 'react-icons/cg';
+import { MdNotificationsNone } from 'react-icons/md';
+import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
+import { useCUDNotification, useCountNotifications, useNotifications } from '../../../hooks/queries/notification';
+import { INotificationResponse } from '../../../models/notification/notification.model';
+import { UIEvent, UIEventHandler, useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
+
+export interface INotificationProps {}
+
+export default function Notification(props: INotificationProps) {
+  const navbarIcon = useColorModeValue('gray.400', 'white');
+  const textColor = useColorModeValue('#1B2559', 'white');
+  const { colorMode } = useColorMode();
+  const router = useRouter();
+  const notificationsRef = useRef<HTMLDivElement>(null);
+  const notificationData = useNotifications({ pagination: { pageNumber: 0, pageSize: 5 }, isRead: undefined }, true);
+  const quantityNotificationData = useCountNotifications(false, undefined, true);
+  const { mutationReadAllNotifications } = useCUDNotification();
+
+  const readAllNotifications = () => {
+    mutationReadAllNotifications.mutate({ listNotifications: undefined, status: true });
+  };
+
+  const handleScroll = (event: UIEvent<HTMLElement>) => {
+    const element = notificationsRef.current;
+    if (element && element.scrollHeight - element.scrollTop - element.clientHeight <= 1 && notificationData.hasNextPage) {
+      notificationData.fetchNextPage();
+    }
+  };
+
+  const handleReadNotification = () => {
+    const listId: string[] = [];
+    notificationData.data &&
+      notificationData.data.pages.map((page) =>
+        page.data.content.map((item: INotificationResponse, index: number) => {
+          listId.push(item.id.toString());
+        })
+      );
+    mutationReadAllNotifications.mutate({ listNotifications: listId, status: true });
+  };
+
+  return (
+    <Menu onClose={handleReadNotification}>
+      <MenuButton p='0px' position='relative'>
+        <Icon as={MdNotificationsNone} color={navbarIcon} w='18px' h='18px' me='10px' />
+        {quantityNotificationData.data && quantityNotificationData.data.data.count > 0 && (
+          <Circle position='absolute' top='-1' left='-1.5' bg='red' fontSize='xx-small' size='4'>
+            <Text color='white' lineHeight='none'>
+              {quantityNotificationData.data.data.count}
+            </Text>
+          </Circle>
+        )}
+      </MenuButton>
+      <MenuList
+        boxShadow='2xl'
+        pl='10px'
+        py='15px'
+        bg={colorMode === 'light' ? 'white' : 'black'}
+        border='none'
+        mt='30px'
+        minW={{ base: 'unset', md: '400px' }}
+        maxW={{ base: '300px', md: '400px' }}
+      >
+        <Flex w='100%' mb='20px' justify='space-between'>
+          <Text fontSize='md' fontWeight='600' color={textColor} ml='5px'>
+            Thông báo
+          </Text>
+          <Flex gap='4' align='center' justify='center'>
+            <Button
+              fontWeight='normal'
+              _hover={{ background: 'transparent' }}
+              h='0'
+              fontSize='sm'
+              color={textColor}
+              bg='transparent'
+              onClick={readAllNotifications}
+              variant='ghost'
+              p='0'
+              m='0'
+            >
+              Đánh dấu đã đọc
+            </Button>
+            <Menu>
+              <MenuButton mt='-0.5'>
+                <Icon as={BiDotsVerticalRounded} color={navbarIcon} w='18px' h='18px' me='10px' />
+              </MenuButton>
+              <MenuList>
+                <MenuItem alignItems='center' gap={4}>
+                  <Icon fontSize='xs' as={CgScreen} />
+                  Mở thông báo
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+        </Flex>
+        <Flex flexDirection='column' maxH='360px' overflow='auto' ref={notificationsRef} onScroll={handleScroll}>
+          {notificationData.data &&
+            notificationData.data.pages.map((page) =>
+              page.data.content.map((item: INotificationResponse, index: number) => (
+                <MenuItem
+                  key={item.id}
+                  _hover={{ bg: 'gray.50', color: 'black' }}
+                  _focus={{ bg: 'none' }}
+                  px='1'
+                  borderRadius='8px'
+                  mb='10px'
+                  onClick={() => {
+                    router.push(`/admin/contributions-management/${item.contentId}`);
+                  }}
+                >
+                  <ItemContent data={item} />
+                </MenuItem>
+              ))
+            )}
+          {!notificationData.hasNextPage && (
+            <Text align='center' fontSize='xx-small'>
+              Không có dữ liệu
+            </Text>
+          )}
+        </Flex>
+      </MenuList>
+    </Menu>
+  );
+}

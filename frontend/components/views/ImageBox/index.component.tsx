@@ -9,7 +9,6 @@ export interface IImageBoxProps {
 
 export default function ImageBox(props: IImageBoxProps) {
   const { src, alt, _removeImage, isDelete = true } = props;
-  console.log(isDelete);
 
   const handleRemove = () => {
     _removeImage && _removeImage(src);

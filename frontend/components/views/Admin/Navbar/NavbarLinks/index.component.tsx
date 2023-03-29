@@ -24,6 +24,9 @@ import { SocketContext } from '../../../../contexts/Socket';
 import routes from '../../Routes/Routes';
 import { SidebarResponsive } from '../../Sidebar/index.component';
 import { ItemContent } from '../ItemContent/index.component';
+import { BiDotsVerticalRounded } from 'react-icons/bi';
+import { CgScreen } from 'react-icons/cg';
+import Notification from '../../../Notification/index.component';
 
 export default function NavbarLinks(props: { secondary: boolean | undefined }) {
   const { secondary } = props;
@@ -60,56 +63,12 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       flexDirection='row'
       bg={menuBg}
       flexWrap={secondary ? { base: 'wrap', md: 'nowrap' } : 'unset'}
-      p='10px'
+      p='8px'
       borderRadius='30px'
       boxShadow={shadow}
     >
       <SidebarResponsive routes={routes} />
-      <Menu>
-        <MenuButton p='0px'>
-          <Icon as={MdNotificationsNone} color={navbarIcon} w='18px' h='18px' me='10px' />
-        </MenuButton>
-        <MenuList
-          boxShadow='2xl'
-          p='20px'
-          borderRadius='20px'
-          bg={colorMode === 'light' ? 'white' : 'black'}
-          border='none'
-          mt='30px'
-          me={{ base: '30px', md: 'unset' }}
-          minW={{ base: 'unset', md: '400px', xl: '450px' }}
-          maxW={{ base: '360px', md: '360px' }}
-        >
-          <Flex w='100%' mb='20px'>
-            <Text fontSize='md' fontWeight='600' color={textColor}>
-              Thông báo
-            </Text>
-            <Text fontSize='sm' fontWeight='500' color={textColor} ms='auto' cursor='pointer'>
-              Đánh dấu đã đọc
-            </Text>
-          </Flex>
-          <Flex flexDirection='column' maxH='240px' overflow='auto'>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon UI Dashboard PRO' />
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon Design System Free' />
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon Design System Free' />
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon Design System Free' />
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon Design System Free' />
-            </MenuItem>
-            <MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} px='0' borderRadius='8px' mb='10px'>
-              <ItemContent info='Horizon Design System Free' />
-            </MenuItem>
-          </Flex>
-        </MenuList>
-      </Menu>
+      <Notification />
 
       <Button variant='no-hover' bg='transparent' p='0px' minW='unset' minH='unset' h='18px' w='max-content' onClick={goToSocial}>
         <Icon me='10px' h='18px' w='18px' color={navbarIcon} as={MdOutlineScreenShare} />
