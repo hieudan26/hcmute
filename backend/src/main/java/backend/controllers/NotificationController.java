@@ -3,19 +3,14 @@ package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
-import backend.data.dto.place.CreatePlaceRequest;
-import backend.data.dto.place.PlaceCategoryPayLoad;
-import backend.data.dto.place.PlaceRequestParams;
+import backend.data.dto.socketdto.notification.ReadListNotificationRequest;
+import backend.data.dto.socketdto.notification.ReadNotificationRequest;
 import backend.services.NotificationService;
-import backend.services.PlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.NoPermissionException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,14 +33,14 @@ public class NotificationController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<BaseResponse> readNotification(@PathVariable(name = "id") Integer id, @RequestParam(name = "status", required = false) Boolean status){
-        return ResponseEntity.ok(notificationService.readNotificationById(id, status));
+    public ResponseEntity<BaseResponse> readNotification(@PathVariable(name = "id") Integer id, @RequestBody ReadNotificationRequest request){
+        return ResponseEntity.ok(notificationService.readNotificationById(id, request));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
     @PutMapping("")
-    public ResponseEntity<BaseResponse> readNotifications(@RequestParam(name = "listNotifications", required = false) List<Integer> listNotifications, @RequestParam(name = "status", required = false) Boolean status){
-        return ResponseEntity.ok(notificationService.readNotifications(listNotifications, status));
+    public ResponseEntity<BaseResponse> readNotifications(@RequestBody ReadListNotificationRequest request){
+        return ResponseEntity.ok(notificationService.readNotifications(request));
     }
 
 
