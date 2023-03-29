@@ -24,7 +24,7 @@ public class NotificationController {
 
     private final NotificationService notificationService;
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<BaseResponse> getNotifications(PagingRequest pagingRequest, @RequestParam(name = "isRead", required = false) Boolean status){
         return ResponseEntity.ok(notificationService.listAllNotifications(pagingRequest, status));
     }
@@ -42,7 +42,7 @@ public class NotificationController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<BaseResponse> readNotifications( @RequestParam(name = "status", required = false) Boolean status){
         return ResponseEntity.ok(notificationService.readNotifications(status));
     }
