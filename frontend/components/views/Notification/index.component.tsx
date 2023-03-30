@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Circle,
   Flex,
@@ -8,19 +9,19 @@ import {
   MenuItem,
   MenuList,
   Text,
-  color,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { UIEvent, useRef, useState } from 'react';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { CgScreen } from 'react-icons/cg';
 import { MdNotificationsNone } from 'react-icons/md';
-import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
 import { useCUDNotification, useCountNotifications, useNotifications } from '../../../hooks/queries/notification';
 import { INotificationResponse } from '../../../models/notification/notification.model';
-import { UIEvent, UIEventHandler, useEffect, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
+import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
+import { useAppSelector } from '../../../hooks/redux';
+import { RoleConstants } from '../../../constants/roles.constant';
 
 export interface INotificationProps {}
 
@@ -30,7 +31,12 @@ export default function Notification(props: INotificationProps) {
   const { colorMode } = useColorMode();
   const router = useRouter();
   const notificationsRef = useRef<HTMLDivElement>(null);
-  const notificationData = useNotifications({ pagination: { pageNumber: 0, pageSize: 5 }, isRead: undefined }, true);
+  const auth = useAppSelector((state) => state.auth.value);
+  const [isAll, setIsAll] = useState<boolean>(true);
+  const notificationData = useNotifications(
+    { pagination: { pageNumber: 0, pageSize: 5 }, isRead: isAll ? undefined : false },
+    true
+  );
   const quantityNotificationData = useCountNotifications(false, undefined, true);
   const { mutationReadAllNotifications } = useCUDNotification();
 
@@ -56,10 +62,42 @@ export default function Notification(props: INotificationProps) {
     mutationReadAllNotifications.mutate({ listNotifications: listId, status: true });
   };
 
+  const changeStatusNotificationDisplay = (type: string) => {
+    if (type === 'all') {
+      if (!isAll) {
+        setIsAll(true);
+      }
+    } else {
+      if (isAll) {
+        setIsAll(false);
+      }
+    }
+  };
+
+  const pushToNotifications = () => {
+    if (auth?.role === RoleConstants.ADMIN) {
+      router.push(`/admin/notifications`);
+    }
+  };
+
+  const setCloseMenu = () => {
+    if (router.pathname.includes('notifications')) {
+      return false;
+    } else {
+      return undefined;
+    }
+  };
+
   return (
-    <Menu onClose={handleReadNotification}>
-      <MenuButton p='0px' position='relative'>
-        <Icon as={MdNotificationsNone} color={navbarIcon} w='18px' h='18px' me='10px' />
+    <Menu onClose={handleReadNotification} isOpen={setCloseMenu()}>
+      <MenuButton p='0px' position='relative' cursor={setCloseMenu() === undefined ? 'pointer' : 'default'}>
+        <Icon
+          as={MdNotificationsNone}
+          color={setCloseMenu() === undefined ? navbarIcon : '#D0637C'}
+          w='18px'
+          h='18px'
+          me='10px'
+        />
         {quantityNotificationData.data && quantityNotificationData.data.data.count > 0 && (
           <Circle position='absolute' top='-1' left='-1.5' bg='red' fontSize='xx-small' size='4'>
             <Text color='white' lineHeight='none'>
@@ -78,7 +116,7 @@ export default function Notification(props: INotificationProps) {
         minW={{ base: 'unset', md: '400px' }}
         maxW={{ base: '300px', md: '400px' }}
       >
-        <Flex w='100%' mb='20px' justify='space-between'>
+        <Flex w='100%' justify='space-between'>
           <Text fontSize='md' fontWeight='600' color={textColor} ml='5px'>
             Thông báo
           </Text>
@@ -102,7 +140,7 @@ export default function Notification(props: INotificationProps) {
                 <Icon as={BiDotsVerticalRounded} color={navbarIcon} w='18px' h='18px' me='10px' />
               </MenuButton>
               <MenuList>
-                <MenuItem alignItems='center' gap={4}>
+                <MenuItem alignItems='center' gap={4} onClick={pushToNotifications}>
                   <Icon fontSize='xs' as={CgScreen} />
                   Mở thông báo
                 </MenuItem>
@@ -110,6 +148,31 @@ export default function Notification(props: INotificationProps) {
             </Menu>
           </Flex>
         </Flex>
+        <Box w='100%' mb='1'>
+          <Button
+            fontWeight='normal'
+            fontSize='sm'
+            color={textColor}
+            bg='transparent'
+            onClick={() => changeStatusNotificationDisplay('all')}
+            variant='ghost'
+            background={isAll ? (colorMode === 'light' ? 'gray.100' : 'gray.700') : 'transparent'}
+            mr='2'
+          >
+            Tất cả
+          </Button>
+          <Button
+            fontWeight='normal'
+            fontSize='sm'
+            color={textColor}
+            bg='transparent'
+            onClick={() => changeStatusNotificationDisplay('not-read')}
+            variant='ghost'
+            background={!isAll ? (colorMode === 'light' ? 'gray.100' : 'gray.700') : 'transparent'}
+          >
+            Chưa đọc
+          </Button>
+        </Box>
         <Flex flexDirection='column' maxH='360px' overflow='auto' ref={notificationsRef} onScroll={handleScroll}>
           {notificationData.data &&
             notificationData.data.pages.map((page) =>

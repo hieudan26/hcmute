@@ -34,7 +34,15 @@ export const findCurrentRoute = (routes: IRoute[]): IRoute | undefined => {
  */
 export const getActiveRoute = (routes: IRoute[]): string => {
   const route = findCurrentRoute(routes);
-  return route?.name || 'Cài đặt hồ sơ';
+  if (route?.name) {
+    return route.name;
+  } else {
+    if (window.location.href.includes('profile')) {
+      return 'Cài đặt hồ sơ';
+    } else {
+      return 'Thông báo';
+    }
+  }
 };
 
 /**
