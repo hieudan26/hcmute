@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.common.NotificationConstants;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
@@ -35,17 +36,17 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
     public<T> void sendSocketMessage
-    (Notifications notification) throws NoPermissionException {
+    (Notifications notification){
         var noti = notificationRepository.save(notification);
-        var notiResponse = SocketResponse.builder().type(noti.getType())
+        var notiResponse = SocketResponse.builder().type(NotificationConstants.NOTIFICATION.getStatus())
                         .content(noti).build();
         simpMessagingTemplate.convertAndSend("/topic/admin", notiResponse);
     }
 
     public<T> void sendSocketMessage
-            (Notifications notification,String id) throws NoPermissionException {
+            (Notifications notification,String id){
         var noti = notificationRepository.save(notification);
-        var notiResponse = SocketResponse.builder().type(noti.getType())
+        var notiResponse = SocketResponse.builder().type(NotificationConstants.NOTIFICATION.getStatus())
                 .content(noti).build();
         simpMessagingTemplate.convertAndSend("/topic/"+id, notiResponse);
     }

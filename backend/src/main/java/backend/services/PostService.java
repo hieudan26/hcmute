@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.common.NotificationConstants;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
@@ -8,6 +9,7 @@ import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.post.PostResponse;
 import backend.data.dto.post.UpdatePostRequest;
 import backend.data.entity.HashTags;
+import backend.data.entity.Notifications;
 import backend.data.entity.Posts;
 import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
@@ -28,6 +30,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static backend.common.Roles.ADMIN;
+import static backend.common.Roles.ROLE_USER;
+
 @Service
 @AllArgsConstructor
 @Transactional
@@ -38,6 +43,8 @@ public class PostService {
     private UserService userService;
     private PostMapper postMapper;
     private CommentService commentService;
+    private NotificationService notificationService;
+
 
     private S3Util s3Util;
 
@@ -99,7 +106,7 @@ public class PostService {
                 .build();
     }
 
-    public BaseResponse updateReaction(String postId){
+    public BaseResponse updateReaction(String postId) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Users users = userService.getUser(userId);
         Posts posts = getPostById(Integer.valueOf(postId));
@@ -110,7 +117,20 @@ public class PostService {
 
         else{
             posts.getReaction().add(users);
+
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.REACT.getStatus())
+                    .fromUser(userId)
+                    .toUser(posts.getOwner().getId())
+                    .contentId(posts.getId())
+                    .description(users.getFirstName() + " "+ users.getLastName()+ " react your post")
+                    .status(false)
+                    .build();
+
+            notificationService.sendSocketMessage(noti, posts.getOwner().getId());
+
         }
+
         postRepository.save(posts);
         return BaseResponse.builder().message("Create post successful.")
                 .data(Map.of("isReact",!isReactPost.isPresent()))

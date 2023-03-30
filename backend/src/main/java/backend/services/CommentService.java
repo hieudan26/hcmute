@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.common.NotificationConstants;
 import backend.data.dto.comment.CommentResponse;
 import backend.data.dto.comment.CreateCommentRequest;
 import backend.data.dto.comment.UpdateCommentRequest;
@@ -7,7 +8,9 @@ import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.entity.Comments;
+import backend.data.entity.Notifications;
 import backend.data.entity.Posts;
+import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.CommentMapper;
 import backend.repositories.CommentRepository;
@@ -27,6 +30,9 @@ import java.util.Optional;
 public class CommentService {
     private final CommentMapper commentMapper;
     private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final NotificationService notificationService;
+
 
     public void deleteChilds(List<Comments> parents) {
         parents.stream()
@@ -62,8 +68,38 @@ public class CommentService {
 
     public BaseResponse createComment(CreateCommentRequest createCommentRequest){
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Users users = userService.getUser(userId);
         createCommentRequest.setUserId(userId);
         Comments comments = commentMapper.fromCreateCommentRequestToComments(createCommentRequest);
+
+
+        var noti = Notifications.builder()
+                .type(NotificationConstants.COMMENT.getStatus())
+                .fromUser(userId)
+                .toUser(comments.getPost().getOwner().getId())
+                .contentId(comments.getPost().getId())
+                .description(users.getFirstName() + " "+ users.getLastName()+ " comment your post")
+                .status(false)
+                .build();
+
+        notificationService.sendSocketMessage(noti, comments.getPost().getOwner().getId());
+
+        if(comments.getParentId() != null) {
+            Comments parent = getCommentsByID(comments.getParentId());
+
+            var noti2 = Notifications.builder()
+                    .type(NotificationConstants.COMMENT.getStatus())
+                    .fromUser(userId)
+                    .toUser(parent.getOwner().getId())
+                    .contentId(comments.getPost().getId())
+                    .description(users.getFirstName() + " "+ users.getLastName()+ " reply your comment")
+                    .status(false)
+                    .build();
+
+            notificationService.sendSocketMessage(noti2, parent.getOwner().getId());
+        }
+
+
         return BaseResponse.builder().message("Create comment successful.")
                 .data(commentMapper.fromCommentsToCommentResponse(commentRepository.save(comments)))
                 .build();
