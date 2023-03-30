@@ -118,17 +118,17 @@ public class PostService {
         else{
             posts.getReaction().add(users);
 
-            var noti = Notifications.builder()
-                    .type(NotificationConstants.REACT.getStatus())
-                    .fromUser(userId)
-                    .toUser(posts.getOwner().getId())
-                    .contentId(posts.getId())
-                    .description(users.getFirstName() + " "+ users.getLastName()+ " react your post")
-                    .status(false)
-                    .build();
-
-            notificationService.sendSocketMessage(noti, posts.getOwner().getId());
-
+            if(! userId.equals(posts.getOwner().getId())){
+                var noti = Notifications.builder()
+                        .type(NotificationConstants.REACT.getStatus())
+                        .fromUser(userId)
+                        .toUser(posts.getOwner().getId())
+                        .contentId(posts.getId())
+                        .description(users.getFirstName() + " "+ users.getLastName()+ " react your post")
+                        .status(false)
+                        .build();
+                notificationService.sendSocketMessage(noti, posts.getOwner().getId());
+            }
         }
 
         postRepository.save(posts);
