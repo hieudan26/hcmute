@@ -88,7 +88,7 @@ public class CommentService {
             Comments parent = getCommentsByID(comments.getParentId());
 
             var noti2 = Notifications.builder()
-                    .type(NotificationConstants.COMMENT.getStatus())
+                    .type(NotificationConstants.COMMENT_REPLY.getStatus())
                     .fromUser(userId)
                     .toUser(parent.getOwner().getId())
                     .contentId(comments.getPost().getId())

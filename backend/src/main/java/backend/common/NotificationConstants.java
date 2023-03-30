@@ -6,6 +6,8 @@ public enum NotificationConstants {
     POST("post"),
     REACT("react"),
     COMMENT("comment"),
+    COMMENT_REPLY("comment_reply"),
+
     PLACESTATUS("place_status");
     public String getStatus() {
         return status;
