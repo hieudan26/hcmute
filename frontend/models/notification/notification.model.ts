@@ -9,3 +9,10 @@ export interface INotificationResponse {
   contentId: number | string;
   status: boolean;
 }
+
+/*
+POST("post"),
+REACT("react"),
+COMMENT("comment"),
+PLACESTATUS("place_status");
+*/
