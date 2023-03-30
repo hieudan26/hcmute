@@ -126,6 +126,20 @@ public class PlaceService {
             createPlaceRequest.setStatus(null);
         }
 
+        if( !places.getStatus().equals(createPlaceRequest.getStatus())) {
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.REACT.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(places.getOwner().getId())
+                    .contentId(places.getId())
+                    .description("Your place has been "+createPlaceRequest.getStatus())
+                    .status(false)
+                    .build();
+
+            notificationService.sendSocketMessage(noti, places.getOwner().getId());
+
+        }
+
         placeMapper.update(places,createPlaceRequest);
 
         places.setHashTags(hashTagService.updateHashTag(createPlaceRequest.getHashTags(), places));
