@@ -72,31 +72,35 @@ public class CommentService {
         createCommentRequest.setUserId(userId);
         Comments comments = commentMapper.fromCreateCommentRequestToComments(createCommentRequest);
 
+        if(! userId.equals(comments.getPost().getOwner().getId()))
+        {
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.COMMENT.getStatus())
+                    .fromUser(userId)
+                    .toUser(comments.getPost().getOwner().getId())
+                    .contentId(comments.getPost().getId())
+                    .description(users.getFirstName() + " "+ users.getLastName()+ " comment your post")
+                    .status(false)
+                    .build();
 
-        var noti = Notifications.builder()
-                .type(NotificationConstants.COMMENT.getStatus())
-                .fromUser(userId)
-                .toUser(comments.getPost().getOwner().getId())
-                .contentId(comments.getPost().getId())
-                .description(users.getFirstName() + " "+ users.getLastName()+ " comment your post")
-                .status(false)
-                .build();
-
-        notificationService.sendSocketMessage(noti, comments.getPost().getOwner().getId());
+            notificationService.sendSocketMessage(noti, comments.getPost().getOwner().getId());
+        }
 
         if(comments.getParentId() != null) {
             Comments parent = getCommentsByID(comments.getParentId());
 
-            var noti2 = Notifications.builder()
-                    .type(NotificationConstants.COMMENT_REPLY.getStatus())
-                    .fromUser(userId)
-                    .toUser(parent.getOwner().getId())
-                    .contentId(comments.getPost().getId())
-                    .description(users.getFirstName() + " "+ users.getLastName()+ " reply your comment")
-                    .status(false)
-                    .build();
+            if(! userId.equals(parent.getOwner().getId())) {
+                var noti2 = Notifications.builder()
+                        .type(NotificationConstants.COMMENT_REPLY.getStatus())
+                        .fromUser(userId)
+                        .toUser(parent.getOwner().getId())
+                        .contentId(comments.getPost().getId())
+                        .description(users.getFirstName() + " "+ users.getLastName()+ " reply your comment")
+                        .status(false)
+                        .build();
 
-            notificationService.sendSocketMessage(noti2, parent.getOwner().getId());
+                notificationService.sendSocketMessage(noti2, parent.getOwner().getId());
+            }
         }
 
 
