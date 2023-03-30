@@ -3,6 +3,8 @@ import { MdUpgrade } from 'react-icons/md';
 import { INotificationResponse } from '../../../../../models/notification/notification.model';
 import { FcAdvertising } from 'react-icons/fc';
 import { GoDash, GoPrimitiveDot } from 'react-icons/go';
+import { useAppSelector } from '../../../../../hooks/redux';
+import { RoleConstants } from '../../../../../constants/roles.constant';
 
 export interface IItemContentProps {
   data: INotificationResponse;
@@ -10,13 +12,39 @@ export interface IItemContentProps {
 
 export function ItemContent(props: IItemContentProps) {
   const { data } = props;
+  const auth = useAppSelector((state) => state.auth.value);
 
   const generateContent = () => {
-    switch (data.type) {
-      case 'place_status':
-        return 'đã đóng góp một địa điểm du lịch mới cho hệ thống';
-      default:
-        return 'không có ý kiến';
+    if (auth?.role === RoleConstants.ADMIN) {
+      switch (data.type) {
+        case 'place_status':
+          return 'đã đóng góp một địa điểm du lịch mới cho hệ thống';
+        case 'post':
+          return 'không có ý kiến';
+        case 'react':
+          return 'không có ý kiến';
+        case 'comment':
+          return 'không có ý kiến';
+        case 'comment_reply':
+          return 'không có ý kiến';
+        default:
+          return 'không có ý kiến';
+      }
+    } else {
+      switch (data.type) {
+        case 'place_status':
+          return 'đã phê duyệt một đóng góp địa điểm du lịch của bạn';
+        case 'post':
+          return 'không có ý kiến';
+        case 'react':
+          return 'đã thả cảm xúc cho bài đăng của bạn';
+        case 'comment':
+          return 'đã bình luận bài đăng của bạn';
+        case 'comment_reply':
+          return 'đã phản hồi bình luận của bạn trong một bài đăng';
+        default:
+          return 'không có ý kiến';
+      }
     }
   };
 

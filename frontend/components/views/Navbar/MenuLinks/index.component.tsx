@@ -35,6 +35,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { SocketContext } from '../../../contexts/Socket';
 import MenuItem from '../MenuItem/index.component';
 import { useQueryClient } from '@tanstack/react-query';
+import Notification from '../../Notification/index.component';
 
 export interface IMenuLinksProps {
   isOpen: boolean;
@@ -175,19 +176,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
           <MenuItem to='/discovery'>{t('navbar.navlink04')}</MenuItem>
           {role === RoleConstants.USER && <MenuItem to='/contribute'>Đóng góp</MenuItem>}
-          {role !== RoleConstants.ANONYMOUS && (
-            <Menu closeOnBlur={true}>
-              <MenuButton ml='10px' mr='5px'>
-                <Icon color={iconAccount} fontSize={'20px'} as={MdOutlineNotificationsActive} marginBottom='5px' />
-              </MenuButton>
-
-              <MenuList bg={bgMenu} color={colorMenu} zIndex={10000}>
-                <MenuItm fontFamily='titleFont' fontSize='14px'>
-                  Nothing here
-                </MenuItm>
-              </MenuList>
-            </Menu>
-          )}
+          {role !== RoleConstants.ANONYMOUS && <Notification />}
           {statusMenu ? (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px'>

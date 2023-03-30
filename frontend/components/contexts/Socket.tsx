@@ -11,6 +11,7 @@ import { useSocketSubscribe } from '../../hooks/socket/useSocketSubcribe';
 import { sendMessage } from '../../app/slices/singleChatsSlice';
 import { RoleConstants } from '../../constants/roles.constant';
 import { useQueryClient } from '@tanstack/react-query';
+import { ISocketResponse } from '../../models/socket.model';
 
 // export const SocketContext = createContext<{ stompClient: StompJS.CompatClient | null }>({ stompClient: null });
 export const SocketContext = createContext<{ stompClient: StompJS.Client | null }>({ stompClient: null });
@@ -88,8 +89,15 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
 
   const onMessageReceived = (message: IMessage) => {
     const { body } = message;
+    const response: ISocketResponse = JSON.parse(body);
     if (auth?.role === RoleConstants.USER) {
-      dispatch(sendMessage(JSON.parse(body)));
+      if (response.type === 'message') {
+        dispatch(sendMessage(response.content));
+      } else {
+        //notification
+        queryClient.invalidateQueries(['count_notifications']);
+        queryClient.invalidateQueries(['notifications']);
+      }
     } else {
       queryClient.invalidateQueries(['count_notifications']);
       queryClient.invalidateQueries(['notifications']);

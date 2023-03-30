@@ -16,7 +16,7 @@ import { useRouter } from 'next/router';
 import { UIEvent, useRef, useState } from 'react';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { CgScreen } from 'react-icons/cg';
-import { MdNotificationsNone } from 'react-icons/md';
+import { MdNotificationsNone, MdOutlineNotificationsActive } from 'react-icons/md';
 import { useCUDNotification, useCountNotifications, useNotifications } from '../../../hooks/queries/notification';
 import { INotificationResponse } from '../../../models/notification/notification.model';
 import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
@@ -77,6 +77,8 @@ export default function Notification(props: INotificationProps) {
   const pushToNotifications = () => {
     if (auth?.role === RoleConstants.ADMIN) {
       router.push(`/admin/notifications`);
+    } else {
+      router.push(`/notifications`);
     }
   };
 
@@ -88,11 +90,50 @@ export default function Notification(props: INotificationProps) {
     }
   };
 
+  const handleOnClickNotification = (item: INotificationResponse) => {
+    if (auth?.role === RoleConstants.ADMIN) {
+      switch (item.type) {
+        case 'place_status':
+          router.push(`/admin/contributions-management/${item.contentId}`);
+          break;
+        case 'post':
+          break;
+        case 'react':
+          break;
+        case 'comment':
+          break;
+        case 'comment_reply':
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (item.type) {
+        case 'place_status':
+          router.push(`/contribute/list-of-previous-contributions/${item.contentId}`);
+          break;
+        case 'post':
+          break;
+        case 'react':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'comment':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'comment_reply':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   return (
     <Menu onClose={handleReadNotification} isOpen={setCloseMenu()}>
       <MenuButton p='0px' position='relative' cursor={setCloseMenu() === undefined ? 'pointer' : 'default'}>
         <Icon
-          as={MdNotificationsNone}
+          as={MdOutlineNotificationsActive}
           color={setCloseMenu() === undefined ? navbarIcon : '#D0637C'}
           w='18px'
           h='18px'
@@ -116,7 +157,7 @@ export default function Notification(props: INotificationProps) {
         minW={{ base: 'unset', md: '400px' }}
         maxW={{ base: '300px', md: '400px' }}
       >
-        <Flex w='100%' justify='space-between'>
+        <Flex w='100%' justify='space-between' mb='2'>
           <Text fontSize='md' fontWeight='600' color={textColor} ml='5px'>
             Thông báo
           </Text>
@@ -148,7 +189,7 @@ export default function Notification(props: INotificationProps) {
             </Menu>
           </Flex>
         </Flex>
-        <Box w='100%' mb='1'>
+        <Box w='100%' mb='2'>
           <Button
             fontWeight='normal'
             fontSize='sm'
@@ -184,9 +225,7 @@ export default function Notification(props: INotificationProps) {
                   px='1'
                   borderRadius='8px'
                   mb='10px'
-                  onClick={() => {
-                    router.push(`/admin/contributions-management/${item.contentId}`);
-                  }}
+                  onClick={() => handleOnClickNotification(item)}
                 >
                   <ItemContent data={item} />
                 </MenuItem>
