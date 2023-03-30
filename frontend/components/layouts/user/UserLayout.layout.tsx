@@ -107,9 +107,7 @@ export default function UserLayout(props: IUserLayoutProps) {
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
         {router.pathname === '/discovery' && <HeroDiscovery />}
-        {(router.pathname === '/contribute' || router.pathname === '/contribute/list-of-previous-contributions') && (
-          <HeroContribute />
-        )}
+        {(router.pathname === '/contribute' || router.pathname.includes('list-of-previous-contributions')) && <HeroContribute />}
         {renderContainerLayout()}
       </Box>
       <ScrollToTop />

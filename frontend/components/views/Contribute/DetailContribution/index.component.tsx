@@ -41,6 +41,7 @@ export interface IDetailContributionProps {
   setStatusChange?: Dispatch<SetStateAction<string>>;
   setIsDisableResetAdmin?: Dispatch<SetStateAction<boolean>>;
   isDetail?: boolean;
+  isUser?: boolean;
 }
 
 export default function DetailContribution(props: IDetailContributionProps) {
@@ -55,6 +56,7 @@ export default function DetailContribution(props: IDetailContributionProps) {
     setStatusChange,
     setIsDisableResetAdmin,
     isDetail = false,
+    isUser = false,
   } = props;
   const boxBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const { upload, urlRef } = useUploadFile();
@@ -259,14 +261,14 @@ export default function DetailContribution(props: IDetailContributionProps) {
   };
 
   return (
-    <Box mb='10' w={isAdmin ? '70%' : '120%'} bg={boxBg} shadow='md' rounded='md' p={isAdmin ? '6' : '8'}>
+    <Box mb='10' w={isAdmin ? '70%' : isUser ? '70%' : '120%'} bg={boxBg} shadow='md' rounded='md' p={isAdmin ? '6' : '8'}>
       <IconButton
         fontSize='3xl'
         variant='ghost'
         icon={<IoIosArrowRoundBack />}
         aria-label='Edit'
         onClick={pushBackListPage}
-        mb={isAdmin ? '1' : '-10'}
+        mb={isAdmin ? '1' : isUser ? '1' : '-10'}
       />
       <SimpleGrid columns={3} spacing={isAdmin ? '15px' : '40px'}>
         <Flex direction='row' gap='2' justify='center' align='center'>
