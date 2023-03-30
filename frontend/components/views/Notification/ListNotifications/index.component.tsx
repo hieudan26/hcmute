@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useCUDNotification, useNotifications } from '../../../../hooks/queries/notification';
 import { INotificationResponse } from '../../../../models/notification/notification.model';
 import { ItemContent } from '../../Admin/Navbar/ItemContent/index.component';
+import { RoleConstants } from '../../../../constants/roles.constant';
+import { useAppSelector } from '../../../../hooks/redux';
 
 export interface IListNotificationsProps {}
 
@@ -12,6 +14,7 @@ export default function ListNotifications(props: IListNotificationsProps) {
   const textColor = useColorModeValue('#1B2559', 'white');
   const { colorMode } = useColorMode();
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth.value);
   const [isAll, setIsAll] = useState<boolean>(true);
   const notificationData = useNotifications(
     { pagination: { pageNumber: 0, pageSize: 5 }, isRead: isAll ? undefined : false },
@@ -74,6 +77,45 @@ export default function ListNotifications(props: IListNotificationsProps) {
     mutationReadAllNotifications.mutate({ listNotifications: undefined, status: true });
   };
 
+  const handleOnClickNotification = (item: INotificationResponse) => {
+    if (auth?.role === RoleConstants.ADMIN) {
+      switch (item.type) {
+        case 'place_status':
+          router.push(`/admin/contributions-management/${item.contentId}`);
+          break;
+        case 'post':
+          break;
+        case 'react':
+          break;
+        case 'comment':
+          break;
+        case 'comment_reply':
+          break;
+        default:
+          break;
+      }
+    } else {
+      switch (item.type) {
+        case 'place_status':
+          router.push(`/contribute/list-of-previous-contributions/${item.contentId}`);
+          break;
+        case 'post':
+          break;
+        case 'react':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'comment':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'comment_reply':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   return (
     <Box bg={boxBg} p='8' rounded='md'>
       <Flex w='100%' justify='space-between' ml='5px' mb='4'>
@@ -130,7 +172,7 @@ export default function ListNotifications(props: IListNotificationsProps) {
                 borderRadius='8px'
                 mb='10px'
                 onClick={() => {
-                  router.push(`/admin/contributions-management/${item.contentId}`);
+                  handleOnClickNotification(item);
                 }}
               >
                 <ItemContent data={item} />
