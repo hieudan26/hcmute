@@ -94,7 +94,7 @@ public class PlaceService {
 
         if (user.isHasRole(ROLE_USER.getRoleName())) {
             var noti = Notifications.builder()
-                    .type(NotificationConstants.NOTIFICATION.getStatus())
+                    .type(NotificationConstants.PLACESTATUS.getStatus())
                     .fromUser(user.getUsername())
                     .toUser(ADMIN.getRoleName())
                     .contentId(place.getId())
@@ -128,7 +128,7 @@ public class PlaceService {
 
         if( !places.getStatus().equals(createPlaceRequest.getStatus())) {
             var noti = Notifications.builder()
-                    .type(NotificationConstants.REACT.getStatus())
+                    .type(NotificationConstants.PLACESTATUS.getStatus())
                     .fromUser(ADMIN.getRoleName())
                     .toUser(places.getOwner().getId())
                     .contentId(places.getId())
