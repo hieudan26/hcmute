@@ -94,7 +94,7 @@ public class PlaceService {
 
         if (user.isHasRole(ROLE_USER.getRoleName())) {
             var noti = Notifications.builder()
-                    .type(NotificationConstants.PLACESTATUS.getStatus())
+                    .type(NotificationConstants.NOTIFICATION.getStatus())
                     .fromUser(user.getUsername())
                     .toUser(ADMIN.getRoleName())
                     .contentId(place.getId())

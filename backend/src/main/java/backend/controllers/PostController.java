@@ -58,7 +58,7 @@ public class PostController {
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @PutMapping("/{id}/react")
-    public ResponseEntity<BaseResponse> reactPost(@PathVariable("id") String id){
+    public ResponseEntity<BaseResponse> reactPost(@PathVariable("id") String id) throws NoPermissionException {
         return ResponseEntity.ok(postService.updateReaction(id));
     }
 
