@@ -1,6 +1,7 @@
 package backend.mapper;
 
 import backend.common.NotificationConstants;
+import backend.common.Roles;
 import backend.data.dto.post.CreatePostRequest;
 import backend.data.dto.post.PostResponse;
 import backend.data.dto.post.UpdatePostRequest;
@@ -36,10 +37,16 @@ public abstract class NotificationMapper {
 
     @Named("fromUserIdToFullName")
     protected String fromUserToFullName(String fromUser) {
+
+        if(fromUser.equals(Roles.ADMIN.getRoleName())) {
+            return Roles.ADMIN.getRoleName();
+        }
+
         Optional<Users> optionalUsers = userRepository.findById(fromUser);
         if(optionalUsers.isEmpty()){
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",fromUser));
         }
+
         var users = optionalUsers.get();
         return String.format("%s %s",users.getFirstName(),users.getLastName());
     }
