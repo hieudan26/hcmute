@@ -1,15 +1,14 @@
-import { Box, Button, Center, Flex } from '@chakra-ui/react';
-import { Dispatch, MutableRefObject, SetStateAction, useEffect, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import { IMessage, IMessagesResponse } from '../../../../models/chat/chat.model';
-import { IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
-import ScrollToTop from '../../ScrollToTop/index.component';
+import { Button, Center, Flex } from '@chakra-ui/react';
+import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { RefObject, useEffect, useState } from 'react';
+import { AxiosResponseStatus } from '../../../../constants/global.constant';
+import { IMessage } from '../../../../models/chat/chat.model';
 import Message from '../Message/index.component';
 
 export interface IChatMessagesProps {
-  scrollRef: MutableRefObject<HTMLDivElement | null>;
-  data: IMessagesResponse;
+  scrollRef: RefObject<HTMLDivElement>;
   loadMoreMessage: () => void;
+  data: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
 }
 
 export default function ChatMessages(props: IChatMessagesProps) {
@@ -17,39 +16,26 @@ export default function ChatMessages(props: IChatMessagesProps) {
   const [dataMessages, setDataMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    setDataMessages([...data.content].reverse());
+    const newDataMessages: IMessage[] = [];
+    data?.data?.pages.map((page) => page.data.content.map((item: IMessage, index: number) => newDataMessages.push(item)));
+    setDataMessages(newDataMessages.reverse());
   }, [data]);
 
   return (
     <>
-      {data && data.content.length === 0 && <Center>No conversation</Center>}
-      <Center p='10px' hidden={!data.pageable.hasNext}>
-        <Button bg='transparent' variant='link' onClick={loadMoreMessage}>
-          Load history chats
-        </Button>
-      </Center>
+      {data && data.data?.pages.length === 0 && <Center>No conversation</Center>}
+      {data.hasNextPage && (
+        <Center p='10px'>
+          <Button bg='transparent' variant='link' onClick={loadMoreMessage}>
+            Load history chats
+          </Button>
+        </Center>
+      )}
       <Flex ref={scrollRef} grow='1' align='start' direction='column' overflowY='scroll' p='10px'>
         {dataMessages.map((item: IMessage, index) => (
           <Message message={item.content} userId={item.sender} key={index} />
         ))}
       </Flex>
-      {/* <Flex id='test' grow='1' align='start' direction='column' overflow='auto'>
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={loadMoreMessage}
-          isReverse={true}
-          hasMore={data.pageable.hasNext}
-          loader={<h4>Loading...</h4>}
-          target='test'
-          height='100vh'
-        >
-          <Flex ref={scrollRef} grow='1' align='start' direction='column' overflowY='scroll' p='10px'>
-            {dataMessages.map((item: IMessage, index) => (
-              <Message message={item.content} userId={item.sender} key={index} />
-            ))}
-          </Flex>
-        </InfiniteScroll>
-      </Flex> */}
     </>
   );
 }

@@ -1,18 +1,14 @@
 import { Center, Flex, useColorModeValue } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { resetMessage, setMessages } from '../../app/slices/singleChatsSlice';
+import { useEffect, useRef, useState } from 'react';
 import ChatBox from '../../components/views/Chat/ChatBox/index.component';
 import ChatMessages from '../../components/views/Chat/ChatMessages/index.component';
 import SingleChatHeader from '../../components/views/Chat/SingleChatHeader/index.component';
-import { useRoom } from '../../hooks/queries/chat';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import useChatScroll from '../../hooks/useChatScroll';
-import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
+import { useMessages, useRoom } from '../../hooks/queries/chat';
 import chatService from '../../services/chat/chat.service';
-import { useTranslation } from 'next-i18next';
 
 export interface IChatsProps {}
 
@@ -25,11 +21,12 @@ const Chats: NextPage<IChatsProps> = (props) => {
   const [curUserId, setCurUserId] = useState<string | undefined>(undefined);
   const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const dataChat = useAppSelector((state) => state.singleChats.value);
-  const lastMessage = useChatScroll(dataChat.content);
-  const [pageable, setPageable] = useState<IPaginationRequest>({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' });
+  const ref = useRef<HTMLDivElement>(null);
   const detailInforRoom = useRoom(roomId as string, enableGetRoom);
+  const dataMessages = useMessages(
+    { pagination: { pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' }, roomId: roomId ? roomId : '1' },
+    roomId !== undefined
+  );
 
   useEffect(() => {
     if (detailInforRoom.data) {
@@ -46,28 +43,12 @@ const Chats: NextPage<IChatsProps> = (props) => {
   }, [curUserId, detailInforRoom.data]);
 
   useEffect(() => {
-    if (roomId) {
-      const fetchMessage = async () => {
-        const response = await chatService.getMessages(pageable, roomId);
-        dispatch(setMessages(response.data));
-      };
-      fetchMessage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageable, roomId]);
-
-  useEffect(() => {
     const { id } = router.query;
     if (id) {
       setRoomId(id as string);
       setEnableGetRoom(true);
     }
-
-    if (roomId && id !== roomId) {
-      dispatch(resetMessage());
-      setPageable({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' });
-    }
-  }, [roomId, router.query]);
+  }, [router.query]);
 
   useEffect(() => {
     const { curUser } = router.query;
@@ -77,21 +58,18 @@ const Chats: NextPage<IChatsProps> = (props) => {
   }, [router.query]);
 
   const loadMoreMessage = () => {
-    if (dataChat.pageable.hasNext) {
-      const newPage: IPaginationRequest = { ...pageable };
-      if (newPage.pageNumber !== undefined && newPage.pageNumber >= 0) {
-        newPage.pageNumber = newPage.pageNumber + 1;
-        setPageable(newPage);
-      }
+    if (dataMessages.hasNextPage) {
+      dataMessages.fetchNextPage();
+      ref.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   return (
     <Flex direction='column' grow='1' height='100vh' maxWidth='100%'>
       <SingleChatHeader room={detailInforRoom.data?.data} userId={curUserId} />
-      <ChatMessages loadMoreMessage={loadMoreMessage} data={dataChat} scrollRef={lastMessage} />
+      <ChatMessages loadMoreMessage={loadMoreMessage} data={dataMessages} scrollRef={ref} />
       {isInRoom ? (
-        <ChatBox scrollRef={lastMessage} userId={curUserId} roomId={roomId} />
+        <ChatBox scrollRef={ref} userId={curUserId} roomId={roomId} />
       ) : (
         <Center minH='10' bg={bgCantChat} color={textCantChat}>
           {t('cant_chat')}

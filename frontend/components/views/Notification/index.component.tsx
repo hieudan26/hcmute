@@ -142,7 +142,7 @@ export default function Notification(props: INotificationProps) {
         {quantityNotificationData.data && quantityNotificationData.data.data.count > 0 && (
           <Circle position='absolute' top='-1' left='-1.5' bg='red' fontSize='xx-small' size='4'>
             <Text color='white' lineHeight='none'>
-              {quantityNotificationData.data.data.count}
+              {quantityNotificationData.data.data.count <= 9 ? quantityNotificationData.data.data.count : '9+'}
             </Text>
           </Circle>
         )}
