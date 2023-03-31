@@ -8,6 +8,7 @@ import themeReducer from './themeSlice';
 import userNotAuthReducer from './slices/userNotAuthSlice';
 import singleChatsReducer from './slices/singleChatsSlice';
 import socketReducer from './slices/socketSlice';
+import receivedMessReducer from './slices/receivedMessSlice';
 
 const logger = createLogger({
   //empty options
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
   userNotAuthReducer: userNotAuthReducer,
   singleChats: singleChatsReducer,
   socket: socketReducer,
+  receivedMessage: receivedMessReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

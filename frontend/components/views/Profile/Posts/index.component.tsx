@@ -110,8 +110,8 @@ export default function Posts(props: IPostsProps) {
 
   return (
     <>
-      <Flex gap='5' minW='6xl' minH='300px'>
-        <Box width='40%'>
+      <Flex gap='5' minW='6xl' minH='300px' justify='space-between' align='flex-start'>
+        <Box width='40%' position='sticky' top='32'>
           <AboutPost auth={auth} />
         </Box>
         <Box width='60%'>

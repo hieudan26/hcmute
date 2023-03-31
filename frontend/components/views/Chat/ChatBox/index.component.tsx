@@ -9,9 +9,11 @@ import EmojiPicker, {
   SuggestionMode,
   Theme,
 } from 'emoji-picker-react';
-import { ChangeEvent, RefObject, useRef, useState } from 'react';
+import { ChangeEvent, RefObject, useEffect, useRef, useState } from 'react';
 import { useSocketAction } from '../../../../hooks/socket/useSocketAction';
 import { formatTimePost } from '../../../../utils';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { setValueReceivedMessage } from '../../../../app/slices/receivedMessSlice';
 
 export type EmojiPickerElement = HTMLDivElement;
 
@@ -27,6 +29,8 @@ export default function ChatBox(props: IChatBoxProps) {
   const [isHiddenEmoji, setIsHiddenEmoji] = useState<boolean>(true);
   const EmojiRef = useRef<HTMLDivElement | null>(null);
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
+  const isReceivedNewMessage = useAppSelector((state) => state.receivedMessage.value);
   const { eventSend } = useSocketAction();
   useOutsideClick({
     ref: EmojiRef,
@@ -36,6 +40,13 @@ export default function ChatBox(props: IChatBoxProps) {
       }
     },
   });
+
+  useEffect(() => {
+    if (isReceivedNewMessage) {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+      dispatch(setValueReceivedMessage(false));
+    }
+  }, [dispatch, isReceivedNewMessage, scrollRef]);
 
   const onSendMessage = async () => {
     const currentSession = await Auth.currentAuthenticatedUser({ bypassCache: true });

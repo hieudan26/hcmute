@@ -214,7 +214,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
       const isInRoom = response.data.isInChatRoom;
       if (isInRoom) {
         const idRoom = response.data.roomId;
-        router.push({ pathname: `/chats/${idRoom}`, query: { curUser: user.id } }, `/chats/${idRoom}`);
+        router.push({ pathname: `/chats/${idRoom}`, query: { curUser: auth?.id } }, `/chats/${idRoom}`);
       } else {
         setAlertConfirm(true);
       }

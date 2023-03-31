@@ -12,6 +12,7 @@ import { sendMessage } from '../../app/slices/singleChatsSlice';
 import { RoleConstants } from '../../constants/roles.constant';
 import { useQueryClient } from '@tanstack/react-query';
 import { ISocketResponse } from '../../models/socket.model';
+import { isReceivedNewMessage } from '../../app/slices/receivedMessSlice';
 
 // export const SocketContext = createContext<{ stompClient: StompJS.CompatClient | null }>({ stompClient: null });
 export const SocketContext = createContext<{ stompClient: StompJS.Client | null }>({ stompClient: null });
@@ -94,6 +95,7 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
     if (auth?.role === RoleConstants.USER) {
       if (response.type === 'MESSAGE') {
         // dispatch(sendMessage(response.content));
+        dispatch(isReceivedNewMessage());
         queryClient.invalidateQueries(['messages']);
       } else {
         //notification

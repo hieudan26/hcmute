@@ -176,7 +176,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
           <MenuItem to='/discovery'>{t('navbar.navlink04')}</MenuItem>
           {role === RoleConstants.USER && <MenuItem to='/contribute'>Đóng góp</MenuItem>}
-          {role !== RoleConstants.ANONYMOUS && <Notification />}
+          {role !== RoleConstants.ANONYMOUS && <Notification isUser />}
           {statusMenu ? (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px'>
