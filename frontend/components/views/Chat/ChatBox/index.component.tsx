@@ -1,21 +1,22 @@
 import { Box, Button, Flex, FormControl, Input, useOutsideClick } from '@chakra-ui/react';
-import { ChangeEvent, MutableRefObject, useState, forwardRef, useRef } from 'react';
-import EmojiPicker, {
-  EmojiStyle,
-  SkinTones,
-  Theme,
-  EmojiClickData,
-  SuggestionMode,
-  SkinTonePickerLocation,
-} from 'emoji-picker-react';
-import { useSocketAction } from '../../../../hooks/socket/useSocketAction';
+import { useQueryClient } from '@tanstack/react-query';
 import { Auth } from 'aws-amplify';
+import EmojiPicker, {
+  EmojiClickData,
+  EmojiStyle,
+  SkinTonePickerLocation,
+  SkinTones,
+  SuggestionMode,
+  Theme,
+} from 'emoji-picker-react';
+import { ChangeEvent, RefObject, useRef, useState } from 'react';
+import { useSocketAction } from '../../../../hooks/socket/useSocketAction';
 import { formatTimePost } from '../../../../utils';
 
 export type EmojiPickerElement = HTMLDivElement;
 
 export interface IChatBoxProps {
-  scrollRef: MutableRefObject<HTMLDivElement | null>;
+  scrollRef: RefObject<HTMLDivElement>;
   userId: string | undefined;
   roomId: string | undefined;
 }
@@ -25,6 +26,7 @@ export default function ChatBox(props: IChatBoxProps) {
   const [chat, setChat] = useState<string>('');
   const [isHiddenEmoji, setIsHiddenEmoji] = useState<boolean>(true);
   const EmojiRef = useRef<HTMLDivElement | null>(null);
+  const queryClient = useQueryClient();
   const { eventSend } = useSocketAction();
   useOutsideClick({
     ref: EmojiRef,
@@ -48,6 +50,8 @@ export default function ChatBox(props: IChatBoxProps) {
       JSON.stringify(message)
     );
     setChat('');
+    queryClient.invalidateQueries(['messages']);
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | undefined) => {

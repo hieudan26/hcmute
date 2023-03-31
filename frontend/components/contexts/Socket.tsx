@@ -90,9 +90,11 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
   const onMessageReceived = (message: IMessage) => {
     const { body } = message;
     const response: ISocketResponse = JSON.parse(body);
+    console.log(response);
     if (auth?.role === RoleConstants.USER) {
-      if (response.type === 'message') {
-        dispatch(sendMessage(response.content));
+      if (response.type === 'MESSAGE') {
+        // dispatch(sendMessage(response.content));
+        queryClient.invalidateQueries(['messages']);
       } else {
         //notification
         queryClient.invalidateQueries(['count_notifications']);
