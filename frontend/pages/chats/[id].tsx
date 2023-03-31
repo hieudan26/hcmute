@@ -9,6 +9,7 @@ import ChatMessages from '../../components/views/Chat/ChatMessages/index.compone
 import SingleChatHeader from '../../components/views/Chat/SingleChatHeader/index.component';
 import { useMessages, useRoom } from '../../hooks/queries/chat';
 import chatService from '../../services/chat/chat.service';
+import { useAppSelector } from '../../hooks/redux';
 
 export interface IChatsProps {}
 
@@ -21,6 +22,7 @@ const Chats: NextPage<IChatsProps> = (props) => {
   const [curUserId, setCurUserId] = useState<string | undefined>(undefined);
   const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const router = useRouter();
+  const auth = useAppSelector((state) => state.auth.value);
   const ref = useRef<HTMLDivElement>(null);
   const detailInforRoom = useRoom(roomId as string, enableGetRoom);
   const dataMessages = useMessages(
@@ -35,8 +37,8 @@ const Chats: NextPage<IChatsProps> = (props) => {
           return item.userId !== curUserId;
         })[0];
         const response = await chatService.isInRoom(filtered.userId);
-        const isInRoom = response.data.isInChatRoom;
-        setIsInRoom(isInRoom);
+        const isInRoom_response = response.data.isInChatRoom;
+        setIsInRoom(isInRoom_response);
       };
       fetchStatusInRoom();
     }
@@ -54,8 +56,10 @@ const Chats: NextPage<IChatsProps> = (props) => {
     const { curUser } = router.query;
     if (curUser) {
       setCurUserId(curUser as string);
+    } else {
+      setCurUserId(auth?.id);
     }
-  }, [router.query]);
+  }, [auth?.id, router.query]);
 
   const loadMoreMessage = () => {
     if (dataMessages.hasNextPage) {

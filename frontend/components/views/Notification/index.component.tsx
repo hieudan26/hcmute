@@ -23,9 +23,12 @@ import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
 import { useAppSelector } from '../../../hooks/redux';
 import { RoleConstants } from '../../../constants/roles.constant';
 
-export interface INotificationProps {}
+export interface INotificationProps {
+  isUser?: boolean;
+}
 
 export default function Notification(props: INotificationProps) {
+  const { isUser = false } = props;
   const navbarIcon = useColorModeValue('gray.400', 'white');
   const textColor = useColorModeValue('#1B2559', 'white');
   const { colorMode } = useColorMode();
@@ -152,8 +155,7 @@ export default function Notification(props: INotificationProps) {
         pl='10px'
         py='15px'
         bg={colorMode === 'light' ? 'white' : 'black'}
-        border='none'
-        mt='30px'
+        mt={isUser ? '0' : '30px'}
         minW={{ base: 'unset', md: '400px' }}
         maxW={{ base: '300px', md: '400px' }}
       >

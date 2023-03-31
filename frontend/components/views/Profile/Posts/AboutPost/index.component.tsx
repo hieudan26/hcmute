@@ -65,7 +65,16 @@ export default function AboutPost(props: IAboutPostProps) {
   };
 
   return (
-    <Box maxH='xl' rounded='lg' width='100%' bg={bgLayout} minH={hiddenEditButtion() ? 'md' : 'xl'} py='10' px='8' shadow='md'>
+    <Box
+      maxH='xl'
+      rounded='lg'
+      width='100%'
+      bg={bgLayout}
+      minH={hiddenEditButtion() ? 'fit-content' : 'fit-content'}
+      py='10'
+      px='8'
+      shadow='md'
+    >
       <Flex gap='4' align='center' pb='4'>
         <Heading as='h4' size='md'>
           {t('tabpost.about.heading')}{' '}
@@ -79,7 +88,7 @@ export default function AboutPost(props: IAboutPostProps) {
       </Center>
       <Flex direction='column' px='3' maxW='full'>
         <VStack divider={<StackDivider borderColor='gray.200' />} spacing='4' align='stretch'>
-          <Box h='40px'>
+          <Box h='20px'>
             <Flex align='center' gap='3'>
               <Icon fontSize='lg' as={AiFillHome} />
               <Text fontSize='md'>
@@ -87,7 +96,7 @@ export default function AboutPost(props: IAboutPostProps) {
               </Text>
             </Flex>
           </Box>
-          <Box h='40px'>
+          <Box h='20px'>
             <Flex align='center' gap='3'>
               <Icon fontSize='lg' as={IoLocationSharp} />
               <Text fontSize='md'>
@@ -95,7 +104,7 @@ export default function AboutPost(props: IAboutPostProps) {
               </Text>
             </Flex>
           </Box>
-          <Box h='220px'>
+          <Box h='140px'>
             <Flex align='center' gap='3' mb='3'>
               <Icon fontSize='lg' as={AiFillFileText} />
               <Text fontSize='md'>{user?.firstName}&apos;s summary</Text>
@@ -104,9 +113,9 @@ export default function AboutPost(props: IAboutPostProps) {
               display='inline-block'
               value={user?.summary?.trim() === '' ? 'Không có thông tin' : user?.summary}
               readOnly
-              minH='180px'
-              maxH='180px'
-              h='180px'
+              minH='100px'
+              maxH='100px'
+              h='100px'
             />
           </Box>
           <Box hidden={hiddenEditButtion()}>
