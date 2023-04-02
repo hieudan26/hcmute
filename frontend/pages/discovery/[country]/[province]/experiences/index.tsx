@@ -35,6 +35,8 @@ import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from 
 import { LocalUtils } from '../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../experiences';
 import { useTranslation } from 'next-i18next';
+import { useQueryClient } from '@tanstack/react-query';
+import { timeRefreshDataTenSeconds } from '../../../../../utils';
 
 export interface IProvinceExperiencesProps {}
 
@@ -42,6 +44,7 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
   const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
@@ -62,6 +65,14 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
     isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries(['posts_by_type_hashTag']);
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient]);
 
   useEffect(() => {
     const Tags: { value: string; label: string }[] = [];

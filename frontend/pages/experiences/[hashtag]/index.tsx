@@ -2,7 +2,7 @@ import { Box, Center, Flex, Skeleton, SkeletonCircle, SkeletonText, Spacer, Spin
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
 import { ArrayTenTemp } from '..';
@@ -14,8 +14,9 @@ import { CookieConstants, LocalStorageConstants } from '../../../constants/store
 import { useCUDPost, usePostsByTypeAndHashTag } from '../../../hooks/queries/posts';
 import { useAppSelector } from '../../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../models/post/post.model';
-import { defaultAvatar } from '../../../utils';
+import { defaultAvatar, timeRefreshDataTenSeconds } from '../../../utils';
 import { LocalUtils } from '../../../utils/local.utils';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IExperienceHashtagProps {}
 
@@ -35,6 +36,18 @@ const ExperienceHashtag: NextPage = (props: IExperienceHashtagProps) => {
   });
   const { mutationCreatePost } = useCUDPost();
   const bgCreatePost = useColorModeValue('white', 'backgroundBox.primary_darkMode');
+  const modalRef = useRef(false);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!modalRef.current) {
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
+      }
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient, modalRef]);
 
   useEffect(() => {
     const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_FIRST_LOGIN) ? true : false;
@@ -74,6 +87,7 @@ const ExperienceHashtag: NextPage = (props: IExperienceHashtagProps) => {
               <CreatePost
                 avatar={avatar}
                 onCreate={() => {
+                  modalRef.current = true;
                   setIsCreatePost(true);
                 }}
               />
@@ -96,7 +110,13 @@ const ExperienceHashtag: NextPage = (props: IExperienceHashtagProps) => {
           {posts.data
             ? posts.data.pages.map((page) =>
                 page.data.content.map((item: IPostResponseModel, index: number) => (
-                  <PostRender key={`exphash-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
+                  <PostRender
+                    modalRef={modalRef}
+                    isHashtag
+                    key={`exphash-${uuidv4()}-${item.id}-${index}}`}
+                    post={item}
+                    currentUserId={currentUserId}
+                  />
                 ))
               )
             : ArrayTenTemp.map((item, index) => (

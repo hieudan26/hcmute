@@ -16,7 +16,9 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -32,9 +34,9 @@ import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../hooks/queries/
 import { useAppSelector } from '../../../../hooks/redux';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
+import { timeRefreshDataTenSeconds } from '../../../../utils';
 import { LocalUtils } from '../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../experiences';
-import { useTranslation } from 'next-i18next';
 
 export interface ICountryExperiencesProps {}
 
@@ -42,6 +44,7 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
   const { t } = useTranslation('discovery_detail');
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
@@ -57,6 +60,14 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
     isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      queryClient.invalidateQueries(['posts_by_type_hashTag']);
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient]);
 
   useEffect(() => {
     const Tags: { value: string; label: string }[] = [];

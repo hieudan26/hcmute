@@ -4,6 +4,9 @@ import dynamic from 'next/dynamic';
 import { toggleLoading } from '../../../../components/views/Loading/index.component';
 import LoadingComponent from '../../../../components/views/Loading/LoadingComponent.tsx/index.component';
 import userService from '../../../../services/user/user.service';
+import { useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { timeRefreshDataTenSeconds } from '../../../../utils';
 
 //#region lazy loading component
 const Posts = dynamic(() => import('../../../../components/views/Profile/Posts/index.component'), {
@@ -14,11 +17,22 @@ const Posts = dynamic(() => import('../../../../components/views/Profile/Posts/i
 export interface IProfilePostsProps {}
 
 const ProfilePosts: NextPage<IProfilePostsProps> = (props: IProfilePostsProps) => {
-  // console.log('user nè: ', user);
+  const modalRef = useRef(false);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!modalRef.current) {
+        queryClient.invalidateQueries(['posts_by_type_userId']);
+      }
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient, modalRef]);
 
   return (
     <>
-      <Posts />
+      <Posts modalRef={modalRef} />
     </>
   );
 };

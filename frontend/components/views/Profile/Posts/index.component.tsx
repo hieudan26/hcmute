@@ -1,47 +1,46 @@
-import { useColorModeValue } from '@chakra-ui/react';
 import {
   Box,
   Center,
-  Divider,
   Flex,
-  Heading,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
   Spacer,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
-  Text,
-  Highlight,
-  Spinner,
-  SkeletonCircle,
-  SkeletonText,
-  Skeleton,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import cookie from 'react-cookies';
+import { MutableRefObject, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
 import { CookieConstants, LocalStorageConstants } from '../../../../constants/store.constant';
-import { useCUDPost, usePosts, usePostsByTypeAndUserId } from '../../../../hooks/queries/posts';
+import { useCUDPost, usePostsByTypeAndUserId } from '../../../../hooks/queries/posts';
 import { useAppSelector } from '../../../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../models/post/post.model';
 import { ArrayTenTemp } from '../../../../pages/experiences';
-import postService from '../../../../services/post/post.service';
 import { defaultAvatar } from '../../../../utils';
 import { LocalUtils } from '../../../../utils/local.utils';
 import AboutPost from './AboutPost/index.component';
 import CreatePost from './CreatePost/index.component';
 import CreateNewPost from './Modals/CreateNewPost/index.component';
 import PostRender from './PostRender/index.component';
-import { useTranslation } from 'next-i18next';
-import { v4 as uuidv4 } from 'uuid';
 
-export interface IPostsProps {}
+export interface IPostsProps {
+  modalRef: MutableRefObject<boolean>;
+}
 
 export default function Posts(props: IPostsProps) {
+  const { modalRef } = props;
   const { t } = useTranslation('profile');
+  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
+  const auth = useAppSelector((state) => state.auth.value);
+  const router = useRouter();
   const [typePost, setTypePost] = useState<'experience' | 'faq'>('experience');
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -50,8 +49,7 @@ export default function Posts(props: IPostsProps) {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [userIdQuery, setUserIdQuery] = useState<string>('');
   const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
-  const auth = useAppSelector((state) => state.auth.value);
-  const router = useRouter();
+
   const posts = usePostsByTypeAndUserId({
     type: typePost,
     userId: userIdQuery,
@@ -61,7 +59,6 @@ export default function Posts(props: IPostsProps) {
     pageSize: 10,
   });
   const { mutationCreatePost } = useCUDPost();
-  const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
   useEffect(() => {
     const { userId: userIdq } = router.query;
@@ -157,6 +154,7 @@ export default function Posts(props: IPostsProps) {
                       avatar={avatar}
                       fullname={fullname}
                       onCreate={() => {
+                        modalRef.current = true;
                         setIsCreatePost(true);
                       }}
                     />
@@ -166,6 +164,7 @@ export default function Posts(props: IPostsProps) {
                       avatar={avatar}
                       fullname={fullname}
                       onCreate={() => {
+                        modalRef.current = true;
                         setIsCreatePost(true);
                       }}
                     />
@@ -199,7 +198,13 @@ export default function Posts(props: IPostsProps) {
             {posts.data
               ? posts.data.pages.map((page) =>
                   page.data.content.map((item: IPostResponseModel, index: number) => (
-                    <PostRender key={`profile-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
+                    <PostRender
+                      modalRef={modalRef}
+                      isProfile
+                      key={`profile-${uuidv4()}-${item.id}-${index}}`}
+                      post={item}
+                      currentUserId={currentUserId}
+                    />
                   ))
                 )
               : ArrayTenTemp.map((item, index) => (

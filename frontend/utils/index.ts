@@ -28,6 +28,9 @@ export const publicRouteContain = [
 export const privateRouteContain = ['/settings', '/chats', '/suggest-friends', '/contribute'];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export const timeRefreshDataTenSeconds = 10000; // 10s
+export const timeRefreshDataFiveSeconds = 5000; // 5s
+
 //#region truncate 7
 export const truncate = (str: string, quantity: number) => {
   return str.length > 10 ? str.substring(0, quantity) + '...' : str;

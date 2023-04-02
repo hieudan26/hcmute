@@ -1,7 +1,7 @@
 import { Box, Center, Flex, Skeleton, SkeletonCircle, SkeletonText, Spacer, Spinner, useColorModeValue } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
 import CreatePost from '../../components/views/Profile/Posts/CreatePost/index.component';
@@ -12,9 +12,10 @@ import { CookieConstants, LocalStorageConstants } from '../../constants/store.co
 import { useCUDPost, usePostsByType } from '../../hooks/queries/posts';
 import { useAppSelector } from '../../hooks/redux';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../models/post/post.model';
-import { defaultAvatar } from '../../utils';
+import { defaultAvatar, timeRefreshDataTenSeconds } from '../../utils';
 import { LocalUtils } from '../../utils/local.utils';
 import { ArrayTenTemp } from '../experiences';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IFAQProps {}
 
@@ -33,6 +34,18 @@ const FAQ: NextPage = (props: IFAQProps) => {
   });
   const { mutationCreatePost } = useCUDPost();
   const bgCreatePost = useColorModeValue('white', 'backgroundBox.primary_darkMode');
+  const modalRef = useRef(false);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!modalRef.current) {
+        queryClient.invalidateQueries(['posts_by_type']);
+      }
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient, modalRef]);
 
   useEffect(() => {
     const isLoggedInCookie = LocalUtils.getCookie(CookieConstants.IS_FIRST_LOGIN) ? true : false;
@@ -72,6 +85,7 @@ const FAQ: NextPage = (props: IFAQProps) => {
               <CreatePost
                 avatar={avatar}
                 onCreate={() => {
+                  modalRef.current = true;
                   setIsCreatePost(true);
                 }}
               />
@@ -94,7 +108,12 @@ const FAQ: NextPage = (props: IFAQProps) => {
           {posts.data
             ? posts.data.pages.map((page) =>
                 page.data.content.map((item: IPostResponseModel, index: number) => (
-                  <PostRender key={`faq-${uuidv4()}-${item.id}-${index}}`} post={item} currentUserId={currentUserId} />
+                  <PostRender
+                    modalRef={modalRef}
+                    key={`faq-${uuidv4()}-${item.id}-${index}}`}
+                    post={item}
+                    currentUserId={currentUserId}
+                  />
                 ))
               )
             : ArrayTenTemp.map((item, index) => (

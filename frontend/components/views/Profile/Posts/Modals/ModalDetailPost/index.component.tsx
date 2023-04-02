@@ -44,6 +44,7 @@ import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
 import { useTranslation } from 'next-i18next';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
 import ImageBox from '../../../../ImageBox/index.component';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
@@ -56,6 +57,7 @@ export interface IModalDetailPostProps {
 export default function ModalDetailPost(props: IModalDetailPostProps) {
   const { isOpen, onClose, post, currentUserId, deletePostInDetail } = props;
   const { t } = useTranslation('post');
+  const queryClient = useQueryClient();
   const commentsEndRef = useRef<null | HTMLDivElement>(null);
   const commentInputRef = useRef<null | HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -94,7 +96,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
     }
   };
 
-  const reactPost = () => {
+  const reactPost = async () => {
     if (currentUserId === '') {
       toggleMessage({
         title: 'Authentication/Authorization',
@@ -102,7 +104,8 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         type: 'warning',
       });
     } else {
-      mutationReactPost.mutate(post.id);
+      await mutationReactPost.mutateAsync(post.id);
+      queryClient.invalidateQueries(['post_by_Id']);
     }
   };
 
@@ -135,6 +138,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         isOpen={isOpenDelete}
         onClose={() => {
           setIsOpenDelete(false);
+          queryClient.invalidateQueries(['post_by_Id']);
         }}
         onSubmit={() => {
           mutationDeletePost.mutate(post.id);
@@ -149,6 +153,7 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         isOpen={isOpenEdit}
         onClose={() => {
           setIsOpenEdit(false);
+          queryClient.invalidateQueries(['post_by_Id']);
         }}
         onSubmit={_submitEditPost}
       />

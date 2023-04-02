@@ -20,12 +20,14 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
+import { RoleConstants } from '../../../../../../constants/roles.constant';
 import {
   useFetchCategories,
   useFetchCountry,
@@ -33,11 +35,9 @@ import {
   useFetchProvince,
   usePlacesPlacesByCountryProvince,
 } from '../../../../../../hooks/queries/place';
+import { useAppSelector } from '../../../../../../hooks/redux';
 import { ICategoryResponse, IPlaceCountryResponse } from '../../../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../../../experiences';
-import { useTranslation } from 'next-i18next';
-import { useAppSelector } from '../../../../../../hooks/redux';
-import { RoleConstants } from '../../../../../../constants/roles.constant';
 
 export interface IPlacePlacesProps {}
 

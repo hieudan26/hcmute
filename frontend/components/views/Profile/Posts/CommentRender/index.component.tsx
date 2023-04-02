@@ -44,12 +44,6 @@ export default function CommentRender(props: ICommentRenderProps) {
 
   const onReply = () => {
     if (value !== '') {
-      console.log({
-        content: value,
-        postId: Number(comment.postId),
-        parentId: Number(comment.id),
-        time: formatTimePost(new Date()),
-      });
       mutationCreateComment.mutate({
         content: value,
         postId: Number(comment.postId),

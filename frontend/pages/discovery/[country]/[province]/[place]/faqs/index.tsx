@@ -20,7 +20,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
 import CreatePost from '../../../../../../components/views/Profile/Posts/CreatePost/index.component';
@@ -33,10 +33,11 @@ import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../../../hooks/qu
 import { useAppSelector } from '../../../../../../hooks/redux';
 import { IPlaceCountryResponse } from '../../../../../../models/place/place.model';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../../../models/post/post.model';
-import { defaultAvatar } from '../../../../../../utils';
+import { defaultAvatar, timeRefreshDataTenSeconds } from '../../../../../../utils';
 import { LocalUtils } from '../../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../../experiences';
 import { useTranslation } from 'next-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IPlaceFaqsProps {}
 
@@ -45,6 +46,8 @@ const PlaceFaqs: NextPage = (props: IPlaceFaqsProps) => {
   const bgBox = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const bgHeading = useColorModeValue('gray.50', 'blackAlpha.400');
   const router = useRouter();
+  const modalRef = useRef(false);
+  const queryClient = useQueryClient();
   const [country, setCountry] = useState<string | undefined>(undefined);
   const [province, setProvince] = useState<string | undefined>(undefined);
   const [data, setData] = useState<IPlaceCountryResponse | undefined>(undefined);
@@ -71,6 +74,16 @@ const PlaceFaqs: NextPage = (props: IPlaceFaqsProps) => {
     isDeleted: false,
   });
   const { mutationCreatePost } = useCUDPost();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!modalRef.current) {
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
+      }
+    }, timeRefreshDataTenSeconds);
+
+    return () => clearInterval(interval);
+  }, [queryClient, modalRef]);
 
   useEffect(() => {
     const Tags: { value: string; label: string }[] = [];
@@ -273,7 +286,13 @@ const PlaceFaqs: NextPage = (props: IPlaceFaqsProps) => {
               {dataFaqsQuery.data
                 ? dataFaqsQuery.data.pages.map((page) =>
                     page.data.content.map((item: IPostResponseModel, index: number) => (
-                      <PostRender key={`place-faqs-${item.id}-${index}`} post={item} currentUserId={currentUserId} />
+                      <PostRender
+                        modalRef={modalRef}
+                        isHashtag
+                        key={`place-faqs-${item.id}-${index}`}
+                        post={item}
+                        currentUserId={currentUserId}
+                      />
                     ))
                   )
                 : ArrayTenTemp.map((item, index) => (

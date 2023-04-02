@@ -38,7 +38,6 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
   const [statusChange, setStatusChange] = useState<string>(STATUS_PLACES.PENDING);
   const [valueStatusDescription, setValueStatusDescription] = useState<string>('');
   const [isDisableReset, setIsDisableReset] = useState<boolean>(true);
-  const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const [triggerRefresh, setTriggerRefresh] = useState<boolean>(false);
 
   useEffect(() => {
