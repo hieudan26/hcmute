@@ -5,7 +5,7 @@ import { AiFillEdit } from 'react-icons/ai';
 import { useFetchPlacesSpecification_Pagination } from '../../../../hooks/queries/place';
 import { IPageableResponse, IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
-import { truncate } from '../../../../utils';
+import { timeRefreshDataTenSeconds, truncate } from '../../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
 
 export interface IListContributionProps {
@@ -63,7 +63,7 @@ export default function ListContribution(props: IListContributionProps) {
     if (isFocused) {
       const interval: NodeJS.Timer = setInterval(() => {
         queryClient.invalidateQueries(['places_specification_pagination']);
-      }, 5000);
+      }, timeRefreshDataTenSeconds);
 
       return () => clearInterval(interval);
     }

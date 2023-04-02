@@ -16,43 +16,49 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
 import { BiCommentDetail } from 'react-icons/bi';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
-import { useCUDPost } from '../../../../../hooks/queries/posts';
+import { useCUDPost, usePostsById } from '../../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
 import { timeSincePost, uppercaseFirstLetter } from '../../../../../utils';
 import ImageBox from '../../../ImageBox/index.component';
 import { toggleMessage } from '../../../Message/index.component';
+import ModalContainer from '../../../Modals/ModalContainer/index.component';
 import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
-import ModalContainer from '../../../Modals/ModalContainer/index.component';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
   currentUserId: string;
+  isProfile?: boolean;
+  isHashtag?: boolean;
+  modalRef?: MutableRefObject<boolean>;
 }
 
 export default function PostRender(props: IPostRenderProps) {
-  const { post, currentUserId } = props;
+  const { post, currentUserId, isProfile = false, isHashtag = false, modalRef } = props;
   const { t } = useTranslation('post');
+  const queryClient = useQueryClient();
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
   const [isOpenHashTag, setIsOpenHashTag] = useState<boolean>(false);
   const [queryHashtag, setQueryHashtag] = useState<string>('#vietnam');
   const [modalImage, setModalImage] = useState<boolean>(false);
-  const [srcImage, setSrcImage] = useState<string>('');
+  const [idPostDetail, setIdPostDetail] = useState<string>('');
+  const postFetch = usePostsById(idPostDetail, undefined, idPostDetail !== '');
   const { mutationReactPost, mutationUpdatePost, mutationDeletePost } = useCUDPost();
   const bgColor = useColorModeValue('white', 'backgroundBox.primary_darkMode');
 
-  const reactPost = () => {
+  const reactPost = async () => {
     if (currentUserId === '') {
       toggleMessage({
         title: 'Authentication/Authorization',
@@ -60,14 +66,24 @@ export default function PostRender(props: IPostRenderProps) {
         type: 'warning',
       });
     } else {
-      mutationReactPost.mutate(post.id);
+      await mutationReactPost.mutateAsync(post.id);
+      if (isProfile) {
+        queryClient.invalidateQueries(['posts_by_type_userId']);
+      } else {
+        if (isHashtag) {
+          queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        } else {
+          queryClient.invalidateQueries(['posts_by_type']);
+        }
+      }
     }
   };
 
   const _submitEditPost = async (params: IPostRequestModel) => {
     const paramsPostId: IPostRequestModelPostId = { ...params, postId: post.id };
-    mutationUpdatePost.mutate(paramsPostId);
+    await mutationUpdatePost.mutateAsync(paramsPostId);
     setIsOpenEdit(false);
+    closeModal();
   };
 
   const copyLink = () => {
@@ -90,6 +106,21 @@ export default function PostRender(props: IPostRenderProps) {
     setIsOpenDetail(false);
   };
 
+  const closeModal = () => {
+    if (modalRef) {
+      modalRef.current = false;
+    }
+    if (isProfile) {
+      queryClient.invalidateQueries(['posts_by_type_userId']);
+    } else {
+      if (isHashtag) {
+        queryClient.invalidateQueries(['posts_by_type_hashTag']);
+      } else {
+        queryClient.invalidateQueries(['posts_by_type']);
+      }
+    }
+  };
+
   return (
     <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
       <ModalContainer isOpen={modalImage} size='xl'>
@@ -99,6 +130,7 @@ export default function PostRender(props: IPostRenderProps) {
         <ModalCloseButton
           onClick={() => {
             setModalImage(false);
+            closeModal();
           }}
         />
         <ModalBody>
@@ -114,17 +146,22 @@ export default function PostRender(props: IPostRenderProps) {
         query={queryHashtag}
         onClose={() => {
           setIsOpenHashTag(false);
+          closeModal();
         }}
       />
-      <ModalDetailPost
-        currentUserId={currentUserId}
-        post={post}
-        isOpen={isOpenDetail}
-        onClose={() => {
-          setIsOpenDetail(false);
-        }}
-        deletePostInDetail={deletePostInDetail}
-      />
+      {idPostDetail && postFetch.data && (
+        <ModalDetailPost
+          currentUserId={currentUserId}
+          post={postFetch.data.data as IPostResponseModel}
+          isOpen={isOpenDetail}
+          onClose={() => {
+            setIdPostDetail('');
+            setIsOpenDetail(false);
+            closeModal();
+          }}
+          deletePostInDetail={deletePostInDetail}
+        />
+      )}
       <UpdatePost
         currentUserId={currentUserId}
         post={post}
@@ -132,6 +169,7 @@ export default function PostRender(props: IPostRenderProps) {
         isOpen={isOpenEdit}
         onClose={() => {
           setIsOpenEdit(false);
+          closeModal();
         }}
         onSubmit={_submitEditPost}
       />
@@ -141,6 +179,7 @@ export default function PostRender(props: IPostRenderProps) {
         isOpen={isOpenDelete}
         onClose={() => {
           setIsOpenDelete(false);
+          closeModal();
         }}
         onSubmit={() => {
           mutationDeletePost.mutate(post.id);
@@ -177,12 +216,23 @@ export default function PostRender(props: IPostRenderProps) {
               icon={<Icon as={HiOutlineDotsHorizontal} />}
             />
             <MenuList minW='32'>
-              <MenuItem onClick={() => setIsOpenEdit(true)} hidden={currentUserId !== post.userId}>
+              <MenuItem
+                onClick={() => {
+                  setIsOpenEdit(true);
+                  if (modalRef) {
+                    modalRef.current = true;
+                  }
+                }}
+                hidden={currentUserId !== post.userId}
+              >
                 {t('options.Edit')}
               </MenuItem>
               <MenuItem
                 onClick={() => {
                   setIsOpenDelete(true);
+                  if (modalRef) {
+                    modalRef.current = true;
+                  }
                 }}
                 hidden={currentUserId !== post.userId}
               >
@@ -228,6 +278,9 @@ export default function PostRender(props: IPostRenderProps) {
                 cursor='pointer'
                 onClick={() => {
                   setModalImage(true);
+                  if (modalRef) {
+                    modalRef.current = true;
+                  }
                 }}
               >
                 <ImageBox src={item} alt={item} isDelete={false} />
@@ -283,7 +336,12 @@ export default function PostRender(props: IPostRenderProps) {
               rounded='lg'
               color='gray.500'
               onClick={() => {
+                setIdPostDetail(post.id);
                 setIsOpenDetail(true);
+                queryClient.invalidateQueries(['post_by_Id']);
+                if (modalRef) {
+                  modalRef.current = true;
+                }
               }}
             >
               <Icon color='#D0637C' as={BiCommentDetail} />
