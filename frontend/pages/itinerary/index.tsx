@@ -1,14 +1,27 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Heading, Center, Container } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import WorkInProgress from '../../components/views/WorkInProgress/index.component';
+import Card from '../../components/views/Itinerary/Card/index.component';
 
 export interface IItineraryProps {}
 
 const Itinerary: NextPage = (props: IItineraryProps) => {
+  const array = [1, 2, 3, 4, 5];
+
   return (
     <Box mb='10'>
-      <WorkInProgress />
+      <Heading textAlign='center' mb='10'>
+        Lịch trình nổi bật
+      </Heading>
+      <Container maxW='8xl'>
+        {array.map((item, index) => (
+          <Flex key={item} gap='6' justifyContent='space-between' mb='6'>
+            <Card />
+            <Card />
+            <Card />
+          </Flex>
+        ))}
+      </Container>
     </Box>
   );
 };

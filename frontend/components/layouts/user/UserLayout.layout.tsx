@@ -14,6 +14,7 @@ import Navbar from '../../views/Navbar/index.component';
 import Header from '../../views/Profile/Header/index.component';
 import ScrollToTop from '../../views/ScrollToTop/index.component';
 import Sidebar from '../../views/Settings/Sidebar/index.component';
+import HeroItinerary from '../../views/Itinerary/Hero/index.component';
 
 export interface IUserLayoutProps {
   children: any;
@@ -108,6 +109,7 @@ export default function UserLayout(props: IUserLayoutProps) {
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
         {router.pathname === '/discovery' && <HeroDiscovery />}
         {(router.pathname === '/contribute' || router.pathname.includes('list-of-previous-contributions')) && <HeroContribute />}
+        {router.pathname === '/itinerary' && <HeroItinerary />}
         {renderContainerLayout()}
       </Box>
       <ScrollToTop />
