@@ -11,6 +11,7 @@ import Footer from '../../views/Footer/index.component';
 import Navbar from '../../views/Navbar/index.component';
 import Header from '../../views/Profile/Header/index.component';
 import ScrollToTop from '../../views/ScrollToTop/index.component';
+import HeroItinerary from '../../views/Itinerary/Hero/index.component';
 
 export default function AnonymousLayout({ children }: any) {
   const bgMain = useColorModeValue('backgroundPage.primary_lightMode', 'backgroundPage.primary_darkMode');
@@ -68,6 +69,7 @@ export default function AnonymousLayout({ children }: any) {
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={user} pt='90px' />}
         {router.pathname === '/discovery' && <HeroDiscovery />}
+        {router.pathname === '/itinerary' && <HeroItinerary />}
         <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
           {children}
         </Container>
