@@ -6,6 +6,20 @@ export enum STATUS_PLACES {
   REJECTED = 'rejected',
 }
 
+export const NUMBER_OF_DAYS = [
+  { value: 1, label: '1 Ngày' },
+  { value: 2, label: '2 Ngày' },
+  { value: 3, label: '3 Ngày' },
+  { value: 4, label: '4 Ngày' },
+  { value: 5, label: '5 Ngày' },
+  { value: 6, label: '6 Ngày' },
+  { value: 7, label: '7 Ngày' },
+  { value: 8, label: '8 Ngày' },
+  { value: 9, label: '9 Ngày' },
+  { value: 10, label: '10 Ngày' },
+  { value: 11, label: '> 10 Ngày' },
+];
+
 export const ALL_TYPE_SEARCH = [
   { value: 'faq', label: 'faq' },
   { value: 'experience', label: 'experience' },

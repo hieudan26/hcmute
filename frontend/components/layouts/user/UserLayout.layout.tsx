@@ -15,6 +15,9 @@ import Header from '../../views/Profile/Header/index.component';
 import ScrollToTop from '../../views/ScrollToTop/index.component';
 import Sidebar from '../../views/Settings/Sidebar/index.component';
 import HeroItinerary from '../../views/Itinerary/Hero/index.component';
+import SidebarDays from '../../views/Itinerary/SidebarDays/index.component';
+import NavStep from '../../views/Itinerary/NavStep/index.component';
+import NavbarItinerary from '../../views/Itinerary/Navbar/index.component';
 
 export interface IUserLayoutProps {
   children: any;
@@ -92,6 +95,13 @@ export default function UserLayout(props: IUserLayoutProps) {
   const renderContainerLayout = () => {
     if (isSettingRoute) {
       return <Sidebar>{children}</Sidebar>;
+    } else if (router.pathname === '/itinerary/edit/[id]') {
+      return (
+        <SidebarDays>
+          <FirstLoginModal isOpen={isOpen} />
+          {children}
+        </SidebarDays>
+      );
     } else {
       return (
         <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
@@ -104,7 +114,16 @@ export default function UserLayout(props: IUserLayoutProps) {
 
   return (
     <Box>
-      <Navbar role={curUser ? curUser.role : RoleConstants.USER} />
+      {!(router.pathname === '/itinerary/edit/[id]') ? (
+        <Navbar role={curUser ? curUser.role : RoleConstants.USER} />
+      ) : (
+        <NavbarItinerary />
+      )}
+      {router.pathname === '/itinerary/edit/[id]' && (
+        <Box>
+          <NavStep />
+        </Box>
+      )}
       <Box bg={bgMain} color={colorMain}>
         {router.pathname.includes('/profile') && <Header user={userIdState !== curUser?.id ? user : curUser} pt='90px' />}
         {router.pathname === '/discovery' && <HeroDiscovery />}
@@ -113,7 +132,7 @@ export default function UserLayout(props: IUserLayoutProps) {
         {renderContainerLayout()}
       </Box>
       <ScrollToTop />
-      <Footer />
+      {!(router.pathname === '/itinerary/edit/[id]') && <Footer />}
     </Box>
   );
 }

@@ -25,15 +25,24 @@ export const publicRouteContain = [
   '/register',
   '/forgot-password',
 ];
-export const privateRouteContain = ['/settings', '/chats', '/suggest-friends', '/contribute'];
+export const privateRouteContain = [
+  '/settings',
+  '/chats',
+  '/suggest-friends',
+  '/contribute',
+  '/itinerary/create',
+  '/itinerary/edit',
+];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
 export const timeRefreshDataTenSeconds = 10000; // 10s
 export const timeRefreshDataFiveSeconds = 5000; // 5s
 
+export const Array25Temp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
 //#region truncate 7
 export const truncate = (str: string, quantity: number) => {
-  return str.length > 10 ? str.substring(0, quantity) + '...' : str;
+  return str.length > quantity ? str.substring(0, quantity) + '...' : str;
 };
 //#endregion
 
@@ -166,6 +175,10 @@ export const getMaxDate = () => {
   const after18 = curDate.getUTCFullYear() - 18;
   curDate.setUTCFullYear(after18);
   return curDate;
+};
+
+export const getMinDate = () => {
+  return new Date();
 };
 
 //#region animation drag image

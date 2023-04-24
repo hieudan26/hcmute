@@ -1,9 +1,9 @@
-import { Box, Button, Center, Divider, Flex, Grid, Heading, SimpleGrid, Text } from '@chakra-ui/react';
+import { Box, Center, Divider, Flex, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import { UseInfiniteQueryResult } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { AxiosResponseStatus } from '../../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
-import { useTranslation } from 'next-i18next';
 
 export interface IProvincesListProps {
   place_provinces_vn: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;

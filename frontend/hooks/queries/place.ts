@@ -183,6 +183,20 @@ export const usePlacesProvincesByCountry = (params: paginationUrlName, isEnable:
   );
 };
 
+export const usePlacesCountries_Query = (params: IPaginationRequest | undefined, isEnable: boolean) => {
+  return useQuery(
+    ['places_countries_query'],
+    async () => {
+      const response = await placeService.getCountries(params);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+    }
+  );
+};
+
 export const usePlacesCountries = (params: IPaginationRequest) => {
   return useInfiniteQuery(
     ['places_countries', params],

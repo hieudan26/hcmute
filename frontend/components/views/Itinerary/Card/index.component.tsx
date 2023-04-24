@@ -1,6 +1,4 @@
-import { Avatar, AvatarGroup, Badge, Flex, Button, Icon, Image, Text, DarkMode, useColorModeValue, Box } from '@chakra-ui/react';
-import { MdPeople } from 'react-icons/md';
-import { IoEllipsisHorizontalSharp } from 'react-icons/io5';
+import { Avatar, Flex, Icon, Image, Text, useColorModeValue } from '@chakra-ui/react';
 import { BsCalendarDayFill, BsFillPinMapFill } from 'react-icons/bs';
 
 export interface ICardProps {}
@@ -34,6 +32,10 @@ export default function Card(props: ICardProps) {
         src='https://owa.bestprice.vn/images/destinations/uploads/trung-tam-thanh-pho-ha-noi-603da1f235b38.jpg'
         mb='10px'
         maxH='44'
+        _hover={{
+          filter: 'brightness(70%)',
+          transition: 'filter 0.2s ease-in-out',
+        }}
       />
       <Text px='20px' color={mainText} fontSize='sm' w='100%' noOfLines={1}>
         - D1: Bảo tàng chứng tích chiến tranh - Thảo Cầm
