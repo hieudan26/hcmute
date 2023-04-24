@@ -5,11 +5,16 @@ import { BsCheckLg, BsSunFill } from 'react-icons/bs';
 import { IoMap } from 'react-icons/io5';
 import { RiBellFill } from 'react-icons/ri';
 import Feature from '../Feature/index.component';
+import { useRouter } from 'next/router';
+import cookie from 'react-cookies';
+import { CookieConstants } from '../../../../constants/store.constant';
 
 export interface IHeroProps {}
 
 export default function Hero(props: IHeroProps) {
+  const isLoggedIn = cookie.load(CookieConstants.IS_LOGGED_IN) ? true : false;
   const refSection = useRef<HTMLElement | null>(null);
+  const router = useRouter();
 
   const scorllToBottom = () => {
     window.scrollTo({
@@ -57,9 +62,20 @@ export default function Hero(props: IHeroProps) {
                 </Flex>
               </Flex>
               <Flex gap='8'>
-                <Button leftIcon={<Icon as={IoMap} fontSize='lg' />} py='6' textTransform='uppercase' w='fit-content'>
-                  Tạo lịch trình
-                </Button>
+                {isLoggedIn && (
+                  <Button
+                    leftIcon={<Icon as={IoMap} fontSize='lg' />}
+                    py='6'
+                    textTransform='uppercase'
+                    w='fit-content'
+                    onClick={() => {
+                      router.push('/itinerary/create');
+                    }}
+                  >
+                    Tạo lịch trình
+                  </Button>
+                )}
+
                 <Button
                   leftIcon={<Icon as={AiTwotoneEye} fontSize='lg' />}
                   py='6'

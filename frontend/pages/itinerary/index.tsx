@@ -2,6 +2,7 @@ import { Box, Flex, Heading, Center, Container } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '../../components/views/Itinerary/Card/index.component';
+import MoreInformation from '../../components/views/Itinerary/MoreInformation/index.component';
 
 export interface IItineraryProps {}
 
@@ -22,6 +23,7 @@ const Itinerary: NextPage = (props: IItineraryProps) => {
           </Flex>
         ))}
       </Container>
+      <MoreInformation />
     </Box>
   );
 };

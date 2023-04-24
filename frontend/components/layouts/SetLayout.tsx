@@ -97,8 +97,6 @@ export default function SetLayout({ children }: any) {
     }
   } else {
     if (isLoggedIn) {
-      // if (role === RoleConstants.USER) {
-      // return (
       if (
         (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) &&
         !router.pathname.includes('/discovery')
@@ -115,16 +113,7 @@ export default function SetLayout({ children }: any) {
           </UserLayout>
         );
       }
-      // );
-      // } else {
-      //   if (router.pathname.includes('/admin')) {
-      //     return <AdminLayout>{children}</AdminLayout>;
-      //   } else {
-      //     return <AnonymousLayout>{children}</AnonymousLayout>;
-      //   }
-    }
-    // }
-    else {
+    } else {
       if (
         (router.pathname.includes('/experiences') || router.pathname.includes('/faq')) &&
         !router.pathname.includes('/discovery')

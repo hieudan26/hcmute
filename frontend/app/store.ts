@@ -9,6 +9,7 @@ import userNotAuthReducer from './slices/userNotAuthSlice';
 import singleChatsReducer from './slices/singleChatsSlice';
 import socketReducer from './slices/socketSlice';
 import receivedMessReducer from './slices/receivedMessSlice';
+import itineraryMapReducer from './slices/itineraryMapSlice';
 
 const logger = createLogger({
   //empty options
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   singleChats: singleChatsReducer,
   socket: socketReducer,
   receivedMessage: receivedMessReducer,
+  itineraryMap: itineraryMapReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -4,7 +4,7 @@ const {
 } = require("./next-i18next.config");
 
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false, //turn off for react-beautiful-dnd
   swcMinify: true,
   i18n,
   env: {

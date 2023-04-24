@@ -3,6 +3,12 @@ import { IFriendRequest, IQueryGetFriendByUserAndStatus } from '../../models/use
 import userService from '../../services/user/user.service';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 
+export interface IUsersParams {
+  paging: IPaginationRequest;
+  searchFirstName: string | undefined;
+  searchLastName: string | undefined;
+}
+
 export const useCUDFriends = () => {
   const queryClient = useQueryClient();
 
@@ -22,6 +28,26 @@ export const useCUDFriends = () => {
   );
 
   return { mutationUpdateStatusFriends };
+};
+
+export const useUsers = (params: IUsersParams, isEnable: boolean) => {
+  return useInfiniteQuery(
+    ['users', params],
+    async ({ pageParam = 0 }) => {
+      params.paging.pageNumber = pageParam;
+      const response = await userService.getUsers(params.paging, params.searchFirstName, params.searchLastName);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+      getNextPageParam: (lastPage) => {
+        const maxPages = lastPage.data.pageable.totalPages;
+        const nextPage = lastPage.data.pageable.pageNumber + 1;
+        return nextPage < maxPages ? nextPage : undefined;
+      },
+    }
+  );
 };
 
 export const useAdviceFriends = (params: IPaginationRequest, isEnable: boolean) => {
