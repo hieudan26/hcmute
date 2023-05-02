@@ -104,7 +104,14 @@ export default function UserLayout(props: IUserLayoutProps) {
       );
     } else {
       return (
-        <Container minH='67.8vh' maxW='6xl' centerContent pt={isProfilePage ? '4' : '90px'} pb='20px'>
+        <Container
+          minH='67.8vh'
+          maxW={router.pathname === '/itinerary/detail/[id]' ? 'full' : '6xl'}
+          px={router.pathname === '/itinerary/detail/[id]' ? '8' : undefined}
+          centerContent={router.pathname === '/itinerary/detail/[id]' ? undefined : true}
+          pt={isProfilePage ? '4' : '90px'}
+          pb='20px'
+        >
           <FirstLoginModal isOpen={isOpen} />
           {children}
         </Container>
