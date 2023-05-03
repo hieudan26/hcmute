@@ -330,4 +330,8 @@ public class UserService {
                 .build();
     }
 
+    public Users getUserFromContext(){
+        String id = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        return getUser(id);
+    }
 }
