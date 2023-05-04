@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/trips")
+@RequestMapping("trips")
 @RequiredArgsConstructor
 public class TripController {
 
