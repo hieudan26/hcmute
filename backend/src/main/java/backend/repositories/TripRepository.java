@@ -14,5 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface TripRepository extends PagingAndSortingRepository<Trips, Integer>, JpaSpecificationExecutor<Trips> {
     Page<Trips> findAll(Specification specification, Pageable pageable);
     Page<Trips> findAllByTitleContainingIgnoreCase(String key, Pageable pageable);
+    Page<Trips> findAllByTitleContainingIgnoreCaseAndStatus(String key,  String status, Pageable pageable);
+
 
 }

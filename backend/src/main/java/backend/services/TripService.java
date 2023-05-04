@@ -11,7 +11,9 @@ import backend.exception.NoRecordFoundException;
 import backend.mapper.TripDayMapper;
 import backend.mapper.TripMapper;
 import backend.mapper.TripMemberMapper;
+import backend.mapper.TripReviewMapper;
 import backend.repositories.TripMemberRepository;
+import backend.repositories.TripReviewRepository;
 import backend.utils.PagingUtils;
 import backend.utils.SearchSpecificationUtils;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ import backend.repositories.TripRepository;
 import javax.naming.NoPermissionException;
 import javax.naming.NotContextException;
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +42,7 @@ public class TripService {
 
     private final TripMapper tripMapper;
     private final TripDayMapper tripDayMapper;
+    private final TripReviewMapper tripReviewMapper;
 
     private final TripMemberMapper tripMemberMapper;
 
@@ -47,6 +51,7 @@ public class TripService {
     private final TripPlaceService tripPlaceService;
     private final TripPlaceFeeService tripPlaceFeeService;
     private final TripMemberRepository tripMembersRepository;
+    private final TripReviewRepository tripReviewRepository;
 
 
 
@@ -85,18 +90,20 @@ public class TripService {
                 .build();
     }
 
-    public BaseResponse listAllPosts(PagingRequest pagingRequest,  String searchKey){
+    public BaseResponse listAllPosts(PagingRequest pagingRequest, TripQueryParams params){
         PagingResponse<TripResponse> pagingResponse;
-        if(searchKey == null) {
-           pagingResponse = new PagingResponse(
-                    tripsRepository.findAll(null, PagingUtils.getPageable(pagingRequest))
+        if(params.getKey() == null) {
+            params.setKey("");
+        }
+        if(params.getStatus() == null){
+            pagingResponse = new PagingResponse(
+                    tripsRepository.findAllByTitleContainingIgnoreCase(params.getKey(), PagingUtils.getPageable(pagingRequest))
                             .map(tripMapper::tripToTripDTO));
         } else {
-            pagingResponse = new PagingResponse(
-                    tripsRepository.findAllByTitleContainingIgnoreCase(searchKey, PagingUtils.getPageable(pagingRequest))
-                            .map(tripMapper::tripToTripDTO));
-        }
-
+        pagingResponse = new PagingResponse(
+                tripsRepository.findAllByTitleContainingIgnoreCaseAndStatus(params.getKey(), params.getStatus(),PagingUtils.getPageable(pagingRequest))
+                        .map(tripMapper::tripToTripDTO));
+         }
 
         return BaseResponse.builder().message("Find all trip successful.")
                 .data(pagingResponse)
@@ -174,6 +181,36 @@ public class TripService {
         return BaseResponse.builder()
                 .message("Trip members added successfully.")
                 .data((tripMapper.tripToTripDTO(updatedTrip)))
+                .build();
+    }
+
+
+    @Transactional
+    public BaseResponse reviewTrip(Integer tripId, CreateTripReview createTripReview) throws NotContextException {
+        var trip = getTripId(tripId);
+        var user = userService.getUserFromContext();
+        var newReview = new TripReviews();
+        newReview.setReviewAt(LocalDateTime.now());
+        newReview.setTrip(trip);
+        newReview.setOwner(user);
+        newReview.setContent(createTripReview.getContent());
+        newReview.setRate(createTripReview.getRate());
+
+        return BaseResponse.builder()
+                .message("Trip members added successfully.")
+                .data((tripReviewMapper.tripReviewToTripReviewDTO(tripReviewRepository.save(newReview))))
+                .build();
+    }
+
+    @Transactional
+    public BaseResponse getReviewTrip(Integer tripId, PagingRequest pagingRequest) throws NotContextException {
+        var pagingResponse = new PagingResponse(
+                tripReviewRepository.findAllByTrip_Id(tripId, PagingUtils.getPageable(pagingRequest))
+                        .map(tripReviewMapper::tripReviewToTripReviewDTO));
+
+        return BaseResponse.builder()
+                .message("Trip members added successfully.")
+                .data(pagingResponse)
                 .build();
     }
 }
