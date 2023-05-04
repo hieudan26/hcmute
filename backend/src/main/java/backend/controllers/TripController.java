@@ -2,10 +2,7 @@ package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
-import backend.data.dto.trip.AddTripMemberRequest;
-import backend.data.dto.trip.CreateTripRequest;
-import backend.data.dto.trip.TripResponse;
-import backend.data.dto.trip.UpdateTripDayDTO;
+import backend.data.dto.trip.*;
 import backend.services.TripService;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +31,8 @@ public class TripController {
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse> searchTrip(@RequestParam(required = false) String key, PagingRequest pagingRequest) {
-        var tripResponse = tripService.listAllPosts(pagingRequest, key);
+    public ResponseEntity<BaseResponse> searchTrip(TripQueryParams tripQueryParams, PagingRequest pagingRequest) {
+        var tripResponse = tripService.listAllPosts(pagingRequest, tripQueryParams);
         return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
     }
 
@@ -66,5 +63,16 @@ public class TripController {
         return new ResponseEntity<>(updatedTrip, HttpStatus.OK);
     }
 
+    @PostMapping("/{id}/reviews")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<BaseResponse> reviewTrips(@PathVariable Integer id, @Valid @RequestBody CreateTripReview createTripReview) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = tripService.reviewTrip(id, createTripReview);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
 
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<BaseResponse> getReviewTrips(@PathVariable Integer id, PagingRequest pagingRequest) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = tripService.getReviewTrip(id, pagingRequest);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
 }

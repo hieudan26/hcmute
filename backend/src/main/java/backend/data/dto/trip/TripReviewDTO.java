@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class TripReviewDTO {
     private Integer id;
-    private Long rate;
+    private Float rate;
     private String content;
-    private Long tripId;
-    private Long ownerId;
+    private Integer tripId;
+    private String ownerId;
+    private String reviewAt;
 }

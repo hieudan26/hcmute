@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -19,10 +20,13 @@ public class TripReviews {
     private Integer id;
 
     @Column(nullable = false)
-    private Long rate;
+    private Float rate;
 
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
+
+    @Column(nullable = false)
+    private LocalDateTime reviewAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @EqualsAndHashCode.Exclude
