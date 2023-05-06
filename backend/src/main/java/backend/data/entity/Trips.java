@@ -38,7 +38,7 @@ public class Trips {
     @Column(nullable = false)
     private String type;
 
-    @Column(name = "max_member", nullable = false)
+    @Column(name = "max_member", nullable = true)
     private Long maxMember;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,22 +48,22 @@ public class Trips {
     @JoinColumn(name = "place_starting_id")
     private Places startingPlace;
 
-    @Column(name = "total_price", nullable = false)
+    @Column(name = "total_price", nullable = true)
     private Long totalPrice;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    @Column(nullable = true, columnDefinition = "LONGTEXT")
     private String description;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time", nullable = true)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time", nullable = true)
     private LocalDateTime endTime;
 
     @Column(nullable = false)
     private String status;
 
-    @Column(name = "short_description", nullable = false, columnDefinition = "LONGTEXT")
+    @Column(name = "short_description", nullable = true, columnDefinition = "LONGTEXT")
     private String shortDescription;
 
     @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)

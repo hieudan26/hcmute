@@ -13,5 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateChatRoomRequest {
     String time;
+    String type;
+    String name;
+    String ownerId;
     List<String> friends;
 }

@@ -11,12 +11,13 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends PagingAndSortingRepository<ChatRooms,Integer>, JpaSpecificationExecutor<Areas> {
-    @Query("select rooms from ChatRooms rooms join rooms.members members where :userId = members.id order by rooms.time desc")
+    @Query("select rooms from ChatRooms rooms join rooms.members members where :userId = members.id and rooms.isDeleted = false order by rooms.time desc")
     Page<ChatRooms> findAllChatRoom(Pageable pageable, String userId);
 
     @Query("from ChatRooms rooms join rooms.members members where :userId in members and exists " +
-            "(select rooms from ChatRooms room2 join room2.members member2 where :friendId in member2 and rooms = room2)")
+            "(select rooms from ChatRooms room2 join room2.members member2 where :friendId in member2 and rooms = room2  and rooms.isDeleted = false)")
     Optional<ChatRooms> findChatRoomsByFriend(String userId, String friendId);
-    @Query("select count(rooms) from ChatRooms rooms join rooms.members members where :roomId = rooms.id and :userId = members.id")
+    @Query("select count(rooms) from ChatRooms rooms join rooms.members members where :roomId = rooms.id  and rooms.isDeleted = false and :userId = members.id")
     Integer isUserInRoom(Integer roomId, String userId);
+    Optional<ChatRooms> findChatRoomsByIdAndIsDeletedIsFalse(Integer id);
 }

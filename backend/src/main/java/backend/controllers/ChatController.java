@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.NoPermissionException;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,7 +42,7 @@ public class ChatController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    @PutMapping("/rooms/{roomId}")
+    @PutMapping("/rooms/{roomId}/leave")
     public ResponseEntity<BaseResponse> leaveRooms(@PathVariable Integer roomId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.leaveRoom(roomId));
     }
@@ -50,6 +51,18 @@ public class ChatController {
     @GetMapping("/rooms/{roomId}")
     public ResponseEntity<BaseResponse> getRoom(@PathVariable Integer roomId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.getChatRoomById(roomId));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/rooms/{roomId}")
+    public ResponseEntity<BaseResponse> updateRoom(@PathVariable Integer roomId, @RequestBody @Valid CreateChatRoomRequest request) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.updateRoom(roomId, request));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<BaseResponse> deleteRoom(@PathVariable Integer roomId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.deleteRoom(roomId));
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
