@@ -96,13 +96,26 @@ public class TripService {
             params.setKey("");
         }
         if(params.getStatus() == null){
-            pagingResponse = new PagingResponse(
-                    tripsRepository.findAllByTitleContainingIgnoreCase(params.getKey(), PagingUtils.getPageable(pagingRequest))
-                            .map(tripMapper::tripToTripDTO));
+            if (params.getType() == null) {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByTitleContainingIgnoreCase(params.getKey(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            } else {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByTitleContainingIgnoreCaseAndType(params.getKey(), params.getType(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }
         } else {
-        pagingResponse = new PagingResponse(
-                tripsRepository.findAllByTitleContainingIgnoreCaseAndStatus(params.getKey(), params.getStatus(),PagingUtils.getPageable(pagingRequest))
-                        .map(tripMapper::tripToTripDTO));
+            if (params.getType() == null) {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByTitleContainingIgnoreCaseAndStatus(params.getKey(), params.getStatus(),PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }else {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByTitleContainingIgnoreCaseAndStatusAndType(params.getKey(), params.getStatus(), params.getType(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }
+
          }
 
         return BaseResponse.builder().message("Find all trip successful.")
