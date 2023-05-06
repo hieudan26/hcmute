@@ -15,4 +15,7 @@ public class ChatRoomResponse {
     List<RoomChatUserResponse> members;
     Integer id;
     String time;
+    String type;
+    String name;
+
 }

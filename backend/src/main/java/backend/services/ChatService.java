@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.common.ChatRoomType;
 import backend.common.FriendStatuses;
 import backend.common.NotificationConstants;
 import backend.data.dto.socketdto.chat.CreateChatRoomRequest;
@@ -18,18 +19,22 @@ import backend.repositories.MessageRepository;
 import backend.utils.PagingUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,18 +55,18 @@ public class ChatService {
         String userId = headerAccessor.getUser().getName();
         ChatRooms chatRooms = getUserChatRoom(messagePayLoad.getRoom(),userId);
 
-        if(!getChatRoomFriendStatus(chatRooms)){
-            throw new NoPermissionException("You are not friend");
-        }
+//        if(!getChatRoomFriendStatus(chatRooms)){
+//            throw new NoPermissionException("You are not friend");
+//        }
 
         Messages messages = messageRepository.save(mapper.fromMessagePayloadToMessages(messagePayLoad));
+
         var notificationResponse = SocketResponse.builder()
                 .type(NotificationConstants.MESSAGE.toString())
                 .content(mapper.fromMessagesToMessagePayload(messages)).build();
         for (var user : chatRooms.getMembers()){
             simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),notificationResponse);
         }
-
     }
 
     public BaseResponse getMessages(PagingRequest pagingRequest, Integer roomId) throws NoPermissionException {
@@ -152,13 +157,13 @@ public class ChatService {
     public BaseResponse createChatRoom(CreateChatRoomRequest request) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
-        var noFriend = request.getFriends().stream()
-                .filter(friend -> !userService.getFriendStatusResult(friend)
-                        .equals(FriendStatuses.FRIEND.getStatus())).findAny();
-
-        if(noFriend.isPresent()){
-            throw new NoPermissionException(String.format("Users are not your friend"));
-        }
+//        var noFriend = request.getFriends().stream()
+//                .filter(friend -> !userService.getFriendStatusResult(friend)
+//                        .equals(FriendStatuses.FRIEND.getStatus())).findAny();
+//
+//        if(noFriend.isPresent()){
+//            throw new NoPermissionException(String.format("Users are not your friend"));
+//        }
 
         if(request.getFriends().size() == 1){
             var room = getChatRoomByFriend(userId,request.getFriends().get(0));
@@ -171,12 +176,13 @@ public class ChatService {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
             time =  LocalDateTime.parse(request.getTime(),dateTimeFormatter);
         }
-
         ChatRooms chatRooms = ChatRooms.builder()
                 .time(time)
+                .name(getName(request))
+                .type(ChatRoomType.valueOf(request.getType()))
                 .members(request.getFriends().stream().map(user->userService.getUser(user)).collect(Collectors.toSet()))
+                .owner(userService.getUser(userId))
                 .build();
-
 
         chatRooms.getMembers().add(userService.getUser(userId));
 
@@ -186,9 +192,86 @@ public class ChatService {
                 .build();
     }
 
+    public String getName(CreateChatRoomRequest request) throws NoPermissionException {
+        if (request.getName() != null && !request.getName().isBlank()) {
+            return request.getName();
+        }
+
+        var chatName = new StringBuilder(userService.getUser(request.getFriends().get(0)).getFirstName());
+
+        for (var i = 1;i < request.getFriends().size() && i < 4; i++) {
+            chatName.append(", ");
+            chatName.append(userService.getUser(request.getFriends().get(i)).getFirstName());
+
+        }
+
+        if (request.getFriends().size() > 4){
+            chatName.append(" ...");
+        }
+
+        return chatName.toString();
+    }
+
     public BaseResponse leaveRoom(Integer roomId) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return leaveRoom(roomId,userId);
+    }
+
+    public BaseResponse updateRoom(Integer roomId, CreateChatRoomRequest request) throws NoPermissionException {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        if (!room.getOwner().getId().equals(userId)) {
+            throw new NoPermissionException("you are not admin");
+        }
+
+        if (request.getName() != null) {
+            room.setName(request.getName());
+        }
+
+        if (request.getType() != null) {
+            room.setType(ChatRoomType.valueOf(request.getType()));
+        }
+        if (request.getOwnerId() != null) {
+            var newOwner = userService.getUser(request.getOwnerId());
+            if(!isUserInChatRoom(roomId, newOwner)) {
+                throw new NoPermissionException("new Admin is not in this chat");
+            }
+            room.setOwner(newOwner);
+        }
+
+        if (!CollectionUtils.isEmpty(request.getFriends())) {
+            Set<Users> updatedMembers = new HashSet<>();
+
+            for (String friendId : request.getFriends()) {
+                Users friend = userService.getUser(friendId);
+                updatedMembers.add(friend);
+            }
+
+            room.getMembers().retainAll(updatedMembers);
+            room.getMembers().addAll(updatedMembers);
+
+        }
+
+        return BaseResponse.builder().message("Update rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
+    public BaseResponse deleteRoom(Integer roomId) throws NoPermissionException {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        if (!room.getOwner().getId().equals(userId)) {
+            throw new NoPermissionException("you are not admin");
+        }
+
+        if (room.getType().equals(ChatRoomType.SINGLE)) {
+            throw new NoPermissionException("Can't delete signle chat");
+        }
+
+        room.setDeleted(true);
+        return BaseResponse.builder().message("Delete rooms successful.")
+                .data(Map.of("success", true))
+                .build();
     }
 
     public BaseResponse leaveRoom(Integer roomId, String userId) throws NoPermissionException {
@@ -219,7 +302,7 @@ public class ChatService {
     }
 
     public ChatRooms getChatRoom(Integer roomId) throws NoPermissionException {
-        Optional<ChatRooms> chatRooms = chatRoomRepository.findById(roomId);
+        Optional<ChatRooms> chatRooms = chatRoomRepository.findChatRoomsByIdAndIsDeletedIsFalse(roomId);
         if(chatRooms.isEmpty()){
             throw new NoRecordFoundException("Not found chat room with id: "+roomId);
         }

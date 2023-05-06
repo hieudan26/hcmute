@@ -1,5 +1,6 @@
 package backend.mapper;
 
+import backend.common.ChatRoomType;
 import backend.data.dto.socketdto.chat.ChatRoomResponse;
 import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.socketdto.chat.MessageResponse;
@@ -10,8 +11,11 @@ import backend.data.entity.Users;
 import backend.exception.NoRecordFoundException;
 import backend.repositories.ChatRoomRepository;
 import backend.repositories.UserRepository;
+import com.twilio.rest.chat.v3.Channel;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -40,9 +44,23 @@ public abstract class MessageMapper {
     @Mapping(source = "sender", target = "fullName", qualifiedByName = "fromUserToFullName")
     public abstract MessageResponse fromMessagesToMessagePayload(Messages messages);
 
-    @Mapping(source = "time", target = "time", qualifiedByName = "fromLocalDateTimeToString")
-    @Mapping(source = "members", target = "members", qualifiedByName = "fromListUserToListUserResponse")
-    public abstract ChatRoomResponse fromChatRoomsToChatRoomResponse(ChatRooms rooms);
+    public ChatRoomResponse fromChatRoomsToChatRoomResponse(ChatRooms rooms) {
+        // Your custom logic here
+        ChatRoomResponse response = new ChatRoomResponse();
+        response.setTime(fromLocalDateTimeToString(rooms.getTime()));
+        response.setMembers(fromListUserToListUserResponse(rooms.getMembers()));
+        response.setId(rooms.getId());
+        response.setType(rooms.getType().name());
+        if (rooms.getType().equals(ChatRoomType.GROUP)) {
+            response.setName(rooms.getName());
+        } else {
+            String idUserContext = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            var users = rooms.getMembers().stream().filter(user -> user.getId().equals(idUserContext))
+                    .findAny().orElseThrow(()-> new NoRecordFoundException(" not found other user in this chat"));
+            response.setName(fromUserToFullName(users ));
+        }
+        return response;
+    }
 
     @Named("fromStringToUsers")
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
