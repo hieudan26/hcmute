@@ -12,4 +12,6 @@ import lombok.experimental.SuperBuilder;
 public class TripQueryParams {
     String key;
     String status;
+    String type;
+
 }
