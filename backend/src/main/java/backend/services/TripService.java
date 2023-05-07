@@ -8,10 +8,7 @@ import backend.data.dto.post.PostResponse;
 import backend.data.dto.trip.*;
 import backend.data.entity.*;
 import backend.exception.NoRecordFoundException;
-import backend.mapper.TripDayMapper;
-import backend.mapper.TripMapper;
-import backend.mapper.TripMemberMapper;
-import backend.mapper.TripReviewMapper;
+import backend.mapper.*;
 import backend.repositories.TripMemberRepository;
 import backend.repositories.TripReviewRepository;
 import backend.utils.PagingUtils;
@@ -52,6 +49,8 @@ public class TripService {
     private final TripPlaceFeeService tripPlaceFeeService;
     private final TripMemberRepository tripMembersRepository;
     private final TripReviewRepository tripReviewRepository;
+
+    private final UserMapper userMapper;
 
 
 
@@ -134,22 +133,23 @@ public class TripService {
 
         trip.getTripDays().removeAll(trip.getTripDays());
 
-        var i = 0L;
+        var dayIndex = 0L;
         for (UpdateTripDayDTO updateTripDayDTO : updateTripDays) {
             TripDays tripDay = new TripDays();
             tripDay.setTrip(trip);
             trip.getTripDays().add(tripDay);
-            tripDay.setOrdinal(i);
-            i++;
-
+            tripDay.setOrdinal(dayIndex);
+            dayIndex++;
             tripDay.getTripPlaces().removeAll(tripDay.getTripPlaces());
 
 
             tripDayMapper.updateTripDayFromUpdateTripDayDTO(updateTripDayDTO, tripDay);
-
+            var placeIndex = 0L;
             for (UpdateTripPlaceDTO updateTripPlaceDTO : updateTripDayDTO.getTripPlaces()) {
                 log.error("Before updating trip place: " + tripDay.getTripPlaces().size());
                 TripPlaces tripPlace = tripPlaceService.saveOrUpdateTripPlace(tripDay, updateTripPlaceDTO);
+                tripPlace.setOrdinal(placeIndex);
+                placeIndex++;
                 log.error("After updating trip place: " + tripDay.getTripPlaces().size());
                 tripPlace.setTripDay(tripDay);
 
@@ -228,7 +228,7 @@ public class TripService {
         }
         var pagingResponse = new PagingResponse(
                 tripMembersRepository.findAllByTripWithSearch(tripId, key, PagingUtils.getPageable(pagingRequest))
-                        .map(tripMemberMapper::tripMemberToTripMemberDTO));
+                        .map(TripMembers::getUser));
 
         return BaseResponse.builder()
                 .message("Find Trip members successfully.")
