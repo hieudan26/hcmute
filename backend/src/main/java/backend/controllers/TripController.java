@@ -5,6 +5,7 @@ import backend.data.dto.global.PagingRequest;
 import backend.data.dto.trip.*;
 import backend.services.TripService;
 import io.swagger.models.auth.In;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,12 @@ public class TripController {
     @PutMapping("/{tripId}/members")
     public ResponseEntity<BaseResponse> updateTripMembers(@PathVariable Integer tripId, @RequestBody List<AddTripMemberRequest> updateTripMembers) throws NoPermissionException {
         BaseResponse updatedTrip = tripService.updateTripMembers(tripId, updateTripMembers);
+        return new ResponseEntity<>(updatedTrip, HttpStatus.OK);
+    }
+
+    @GetMapping("/{tripId}/members")
+    public ResponseEntity<BaseResponse> getTripMembers(@PathVariable Integer tripId,@Parameter String key, PagingRequest pagingRequest) throws NoPermissionException, NotContextException {
+        BaseResponse updatedTrip = tripService.getTripMembers(tripId, key, pagingRequest);
         return new ResponseEntity<>(updatedTrip, HttpStatus.OK);
     }
 

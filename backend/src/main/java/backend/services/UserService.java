@@ -132,17 +132,30 @@ public class UserService {
                 .build();
     }
 
-    public BaseResponse getFriends(String userId, String status, PagingRequest pagingRequest){
+    public BaseResponse getFriends(String userId, FriendSearchRequest friendSearchRequest, PagingRequest pagingRequest){
         getUser(userId);
         PagingResponse pagingResponse;
-        if(status == null){
-            pagingResponse= new PagingResponse(
-                    userRepository.getFriends(userId,PagingUtils.getPageable(pagingRequest))
-                            .map(userMapper::FriendsToFriendResponse));
+        if(friendSearchRequest.getStatus() == null){
+            if (friendSearchRequest.getKey() == null) {
+                pagingResponse = new PagingResponse(
+                        userRepository.getFriends(userId, PagingUtils.getPageable(pagingRequest))
+                                .map(userMapper::FriendsToFriendResponse));
+            } else {
+                pagingResponse = new PagingResponse(
+                        userRepository.getFriendsWithSearch(userId, friendSearchRequest.getKey(), PagingUtils.getPageable(pagingRequest))
+                                .map(userMapper::FriendsToFriendResponse));
+            }
         }else{
-            pagingResponse= new PagingResponse(
-                    userRepository.getFriendsByStatus(userId, status, PagingUtils.getPageable(pagingRequest))
-                            .map(userMapper::FriendsToFriendResponse));
+            if (friendSearchRequest.getKey() == null) {
+                pagingResponse= new PagingResponse(
+                        userRepository.getFriendsByStatus(userId, friendSearchRequest.getStatus() , PagingUtils.getPageable(pagingRequest))
+                                .map(userMapper::FriendsToFriendResponse));
+            } else {
+                pagingResponse= new PagingResponse(
+                        userRepository.getFriendsByStatusWithSearch(userId, friendSearchRequest.getStatus(), friendSearchRequest.getKey(), PagingUtils.getPageable(pagingRequest))
+                                .map(userMapper::FriendsToFriendResponse));
+            }
+
         }
         return BaseResponse.builder().message(String.format("Get friends of user %s successful.",userId))
                 .data(pagingResponse)
