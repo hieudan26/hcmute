@@ -226,4 +226,19 @@ public class TripService {
                 .data(pagingResponse)
                 .build();
     }
+
+    @Transactional
+    public BaseResponse getTripMembers(Integer tripId,String key, PagingRequest pagingRequest) throws NotContextException {
+        if(key == null) {
+            key = "";
+        }
+        var pagingResponse = new PagingResponse(
+                tripMembersRepository.findAllByTripWithSearch(tripId, key, PagingUtils.getPageable(pagingRequest))
+                        .map(tripMemberMapper::tripMemberToTripMemberDTO));
+
+        return BaseResponse.builder()
+                .message("Find Trip members successfully.")
+                .data(pagingResponse)
+                .build();
+    }
 }

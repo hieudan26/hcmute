@@ -84,9 +84,9 @@ public class UserController {
     @GetMapping("/{userId}/friends")
     public ResponseEntity<BaseResponse> getUserFriends(PagingRequest pagingRequest,
                                                        @PathVariable String userId,
-                                                       @Parameter String status
+                                                       FriendSearchRequest request
                                                        ){
-        return ResponseEntity.ok(userService.getFriends(userId, status,pagingRequest));
+        return ResponseEntity.ok(userService.getFriends(userId, request, pagingRequest));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
