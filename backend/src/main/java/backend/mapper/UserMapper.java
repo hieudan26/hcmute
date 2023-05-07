@@ -1,9 +1,6 @@
 package backend.mapper;
 
-import backend.data.dto.user.CreateAdminRequest;
-import backend.data.dto.user.FriendResponse;
-import backend.data.dto.user.UpdateUserRequest;
-import backend.data.dto.user.UserFirstLoginRequest;
+import backend.data.dto.user.*;
 import backend.data.entity.Friends;
 import backend.data.entity.Users;
 import org.mapstruct.*;
@@ -13,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 
 @Mapper(componentModel = "spring")
 public abstract class UserMapper {
+    public abstract UserDTO userToUserDTO(Users user);
+
     public abstract Users userFirstLoginRequestToUsers(UserFirstLoginRequest userFirstLoginRequest);
     public abstract Users createAdminMapping(CreateAdminRequest createAdminRequest);
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
