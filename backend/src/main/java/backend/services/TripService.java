@@ -134,19 +134,13 @@ public class TripService {
 
         trip.getTripDays().removeAll(trip.getTripDays());
 
-
+        var i = 0L;
         for (UpdateTripDayDTO updateTripDayDTO : updateTripDays) {
-            TripDays tripDay = null;
-            if (updateTripDayDTO.getId() != null) {
-                tripDay = trip.getTripDays().stream().filter(td -> td.getId().equals(updateTripDayDTO.getId())).findFirst().orElse(null);
-            }
-
-
-            if (tripDay == null) {
-                tripDay = new TripDays();
-                tripDay.setTrip(trip);
-                trip.getTripDays().add(tripDay);
-            }
+            TripDays tripDay = new TripDays();
+            tripDay.setTrip(trip);
+            trip.getTripDays().add(tripDay);
+            tripDay.setOrdinal(i);
+            i++;
 
             tripDay.getTripPlaces().removeAll(tripDay.getTripPlaces());
 

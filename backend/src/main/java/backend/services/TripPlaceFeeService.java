@@ -19,16 +19,8 @@
 
         @Transactional
         public TripPlaceFees saveOrUpdateTripPlaceFees(TripPlaces tripPlace, UpdateTripPlaceFeesDTO updateTripPlaceFeesDTO) {
-            TripPlaceFees tripPlaceFees = null;
-
-            if (updateTripPlaceFeesDTO.getId() != null) {
-                tripPlaceFees = tripPlace.getTripPlaceFees().stream().filter(tpf -> tpf.getId().equals(updateTripPlaceFeesDTO.getId())).findFirst().orElse(null);
-            }
-
-            if (tripPlaceFees == null) {
-                tripPlaceFees = new TripPlaceFees();
-                tripPlace.getTripPlaceFees().add(tripPlaceFees);
-            }
+            TripPlaceFees tripPlaceFees =  new TripPlaceFees();
+            tripPlace.getTripPlaceFees().add(tripPlaceFees);
 
             tripDayMapper.updateTripPlaceFeesFromUpdateTripPlaceFeesDTO(updateTripPlaceFeesDTO, tripPlaceFees);
             tripPlaceFees.setTripPlace(tripPlace); // Add this line

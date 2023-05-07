@@ -20,20 +20,9 @@ public class TripPlaceService {
 
     @Transactional
     public TripPlaces saveOrUpdateTripPlace(TripDays tripDay, UpdateTripPlaceDTO updateTripPlaceDTO) {
-        TripPlaces tripPlace = null;
-        if (updateTripPlaceDTO.getId() != null) {
-            tripPlace = tripDay.getTripPlaces().stream().filter(tp -> tp.getId().equals(updateTripPlaceDTO.getId())).findFirst().orElse(null);
-        }
-
-        if (tripPlace == null) {
-            tripPlace = new TripPlaces();
-            tripPlace.setTripDay(tripDay); // Add this line
-            tripDay.getTripPlaces().add(tripPlace);
-        } else {
-            tripPlace.getTripPlaceFees().removeAll(tripPlace.getTripPlaceFees());
-
-        }
-
+        TripPlaces tripPlace = new TripPlaces();
+        tripPlace.setTripDay(tripDay); // Add this line
+        tripDay.getTripPlaces().add(tripPlace);
         tripDayMapper.updateTripPlaceFromUpdateTripPlaceDTO(updateTripPlaceDTO, tripPlace);
         return tripPlace;
     }
