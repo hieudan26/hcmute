@@ -228,7 +228,7 @@ public class TripService {
         }
         var pagingResponse = new PagingResponse(
                 tripMembersRepository.findAllByTripWithSearch(tripId, key, PagingUtils.getPageable(pagingRequest))
-                        .map(TripMembers::getUser));
+                        .map(item -> userMapper.userToUserDTO(item.getUser())));
 
         return BaseResponse.builder()
                 .message("Find Trip members successfully.")
