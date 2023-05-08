@@ -64,7 +64,7 @@ public abstract class MessageMapper {
 
     @Named("fromStringToUsers")
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
-        Optional<Users> optionalUsers = userRepository.findById(userId);
+        Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(userId);
         if(optionalUsers.isEmpty()){
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
         }

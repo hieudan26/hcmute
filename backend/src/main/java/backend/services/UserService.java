@@ -292,7 +292,7 @@ public class UserService {
     }
 
     public Users getUser(String id){
-        Optional<Users> users = userRepository.findById(id);
+        Optional<Users> users = userRepository.findByIdAndIsDisableIsFalse(id);
         if(users.isEmpty())
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",id));
         return  users.get();

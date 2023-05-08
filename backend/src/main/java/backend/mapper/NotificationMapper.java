@@ -42,7 +42,7 @@ public abstract class NotificationMapper {
             return Roles.ADMIN.getRoleName();
         }
 
-        Optional<Users> optionalUsers = userRepository.findById(fromUser);
+        Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(fromUser);
         if(optionalUsers.isEmpty()){
             throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",fromUser));
         }
