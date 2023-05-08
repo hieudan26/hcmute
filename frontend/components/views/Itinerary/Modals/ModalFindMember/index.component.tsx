@@ -1,10 +1,12 @@
+import { AddIcon, DeleteIcon, MinusIcon, SearchIcon } from '@chakra-ui/icons';
 import {
+  Avatar,
   Button,
   Checkbox,
   Flex,
-  Grid,
-  GridItem,
-  Heading,
+  FormControl,
+  FormLabel,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -13,27 +15,21 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
-  Textarea,
-  Tabs,
-  TabList,
-  TabPanels,
   Tab,
+  TabList,
   TabPanel,
-  Avatar,
-  FormControl,
-  FormLabel,
-  IconButton,
+  TabPanels,
+  Tabs,
+  Text,
 } from '@chakra-ui/react';
-import { useFriends, useUsers } from '../../../../../hooks/queries/friend';
+import { useEffect, useRef, useState } from 'react';
 import { FriendStatus } from '../../../../../constants/global.constant';
-import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
-import { IFriendResponse, IUserFirstLoginRequest } from '../../../../../models/user/user.model';
-import { UIEventHandler, useEffect, useRef, useState } from 'react';
-import { AddIcon, DeleteIcon, MinusIcon, SearchIcon } from '@chakra-ui/icons';
+import { RoleConstants } from '../../../../../constants/roles.constant';
+import { useFriends, useUsers } from '../../../../../hooks/queries/friend';
 import { useCUDTrip, useTripMembers } from '../../../../../hooks/queries/trip';
+import { useAppSelector } from '../../../../../hooks/redux';
 import { ITripUpdateMemberModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
-import UserBox from '../../UserBox/index.component';
+import { IFriendResponse, IUserFirstLoginRequest } from '../../../../../models/user/user.model';
 
 export interface IModalFindMemberProps {
   isOpen: boolean;
@@ -321,46 +317,51 @@ export default function ModalFindMember(props: IModalFindMemberProps) {
                     <Text py='2'>Không có dữ liệu</Text>
                   ) : (
                     users.data?.pages.map((page) =>
-                      page.data.content.map((item: IUserFirstLoginRequest, index: number) => (
-                        <Flex
-                          key={index}
-                          rounded='md'
-                          border='1px'
-                          borderColor='gray.400'
-                          p='4'
-                          my='2'
-                          mx='4'
-                          align='center'
-                          justify='space-between'
-                        >
-                          <Flex align='center'>
-                            <Checkbox colorScheme='pink' isChecked={idsMember.includes(item.id)} />
-                            <Avatar ml='6' size='sm' name={`${item.firstName} ${item.lastName}`} src={item.avatar} />
-                            <Text ml='2' fontSize='sm'>
-                              {item.firstName + ' ' + item.lastName}
-                            </Text>
-                          </Flex>
-                          <Flex mr='4'>
-                            {idsMember.includes(item.id) ? (
-                              <MinusIcon
-                                _hover={{ color: '#D0637C' }}
-                                cursor='pointer'
-                                onClick={() => {
-                                  updateArrayMembers(item.id);
-                                }}
-                              />
-                            ) : (
-                              <AddIcon
-                                _hover={{ color: '#D0637C' }}
-                                cursor='pointer'
-                                onClick={() => {
-                                  updateArrayMembers(item.id);
-                                }}
-                              />
-                            )}
-                          </Flex>
-                        </Flex>
-                      ))
+                      page.data.content.map(
+                        (item: IUserFirstLoginRequest, index: number) =>
+                          item.role !== RoleConstants.ADMIN &&
+                          !item.disable &&
+                          item.id !== auth?.id && (
+                            <Flex
+                              key={index}
+                              rounded='md'
+                              border='1px'
+                              borderColor='gray.400'
+                              p='4'
+                              my='2'
+                              mx='4'
+                              align='center'
+                              justify='space-between'
+                            >
+                              <Flex align='center'>
+                                <Checkbox colorScheme='pink' isChecked={idsMember.includes(item.id)} />
+                                <Avatar ml='6' size='sm' name={`${item.firstName} ${item.lastName}`} src={item.avatar} />
+                                <Text ml='2' fontSize='sm'>
+                                  {item.firstName + ' ' + item.lastName}
+                                </Text>
+                              </Flex>
+                              <Flex mr='4'>
+                                {idsMember.includes(item.id) ? (
+                                  <MinusIcon
+                                    _hover={{ color: '#D0637C' }}
+                                    cursor='pointer'
+                                    onClick={() => {
+                                      updateArrayMembers(item.id);
+                                    }}
+                                  />
+                                ) : (
+                                  <AddIcon
+                                    _hover={{ color: '#D0637C' }}
+                                    cursor='pointer'
+                                    onClick={() => {
+                                      updateArrayMembers(item.id);
+                                    }}
+                                  />
+                                )}
+                              </Flex>
+                            </Flex>
+                          )
+                      )
                     )
                   )}
                 </Flex>
