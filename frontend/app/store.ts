@@ -10,6 +10,7 @@ import singleChatsReducer from './slices/singleChatsSlice';
 import socketReducer from './slices/socketSlice';
 import receivedMessReducer from './slices/receivedMessSlice';
 import itineraryMapReducer from './slices/itineraryMapSlice';
+import statusItinararyReducer from './slices/statusItinararySlice';
 
 const logger = createLogger({
   //empty options
@@ -22,7 +23,7 @@ const persistConfig = {
   version: 1,
   storage,
   whitelist: ['auth'],
-  blacklist: ['socket'],
+  blacklist: ['socket', 'statusItinerary'],
 };
 
 const rootReducer = combineReducers({
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   socket: socketReducer,
   receivedMessage: receivedMessReducer,
   itineraryMap: itineraryMapReducer,
+  statusItinarary: statusItinararyReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

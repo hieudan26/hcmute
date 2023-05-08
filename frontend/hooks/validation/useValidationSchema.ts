@@ -3,6 +3,16 @@ import { emailRegex, passwordRegex } from '../../utils';
 
 export default function useValidationSchema() {
   return {
+    //#region create trip
+    createItinerarySchema: yup.object().shape({
+      title: yup.string().required('Title is required'),
+      maxDay: yup.number().required('Max day is required'),
+      maxMember: yup.number().required('Max member is required'),
+      totalPrice: yup.number().required('Total price is required'),
+      description: yup.string(),
+    }),
+    //#endregion
+
     //#region create country&province
     createProvinceSchema: yup.object().shape({
       country: yup.number().required('Country is required'),

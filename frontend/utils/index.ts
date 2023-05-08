@@ -35,6 +35,23 @@ export const privateRouteContain = [
 ];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export function addDaysToDate(date: Date, days: number): string {
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const result = new Date(date.getTime() + days * millisecondsPerDay);
+  const formattedDate = formatDate(result);
+  return formattedDate;
+}
+
+export const formatCurrency = (value: number): string => {
+  const formatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0,
+  });
+
+  return formatter.format(value);
+};
+
 export const timeRefreshDataTenSeconds = 10000; // 10s
 export const timeRefreshDataFiveSeconds = 5000; // 5s
 

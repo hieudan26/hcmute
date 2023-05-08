@@ -71,7 +71,7 @@ export default function Header(props: IHeaderProps & BoxProps) {
   useEffect(() => {
     if (user) {
       const fetchFriendNumber = async () => {
-        const response = await userService.getUserFriends(user.id, 'friend', undefined);
+        const response = await userService.getUserFriends(undefined, user.id, 'friend', undefined);
         setFriendNumber(response.data.pageable.totalItems as number);
       };
 

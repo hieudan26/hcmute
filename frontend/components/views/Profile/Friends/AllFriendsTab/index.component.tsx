@@ -18,6 +18,7 @@ export default function AllFriendsTab(props: IAllFriendsTabProps) {
   const [noItemText, setNoItemText] = useState<string>('Không có bạn bè nào.');
   const friends = useFriends(
     {
+      key: undefined,
       status: friendStatus,
       userId: user ? user.id : '86ce8572-3c92-4cca-89e3-060c35e613be',
       pageNumber: 0,
