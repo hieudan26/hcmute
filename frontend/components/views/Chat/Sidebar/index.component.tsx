@@ -39,6 +39,7 @@ export default function Sidebar(props: ISidebarProps) {
   const router = useRouter();
   const friends = useFriends(
     {
+      key: undefined,
       status: FriendStatus.FRIEND,
       userId: user ? user.id : '86ce8572-3c92-4cca-89e3-060c35e613be',
       pageNumber: 0,

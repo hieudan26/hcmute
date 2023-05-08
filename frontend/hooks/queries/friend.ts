@@ -1,5 +1,9 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { IFriendRequest, IQueryGetFriendByUserAndStatus } from '../../models/user/user.model';
+import {
+  IFriendRequest,
+  IQueryGetFriendByUserAndStatus,
+  IQueryGetFriendByUserAndStatusAndSearch,
+} from '../../models/user/user.model';
 import userService from '../../services/user/user.service';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 
@@ -70,13 +74,13 @@ export const useAdviceFriends = (params: IPaginationRequest, isEnable: boolean) 
   );
 };
 
-export const useFriends = (params: IQueryGetFriendByUserAndStatus, isEnable: boolean) => {
+export const useFriends = (params: IQueryGetFriendByUserAndStatusAndSearch, isEnable: boolean) => {
   return useInfiniteQuery(
     ['friends', params],
     async ({ pageParam = 0 }) => {
-      const { userId, status, ...paramsNormal } = params;
+      const { userId, status, key, ...paramsNormal } = params;
       paramsNormal.pageNumber = pageParam;
-      const response = await userService.getUserFriends(userId, status, paramsNormal);
+      const response = await userService.getUserFriends(key, userId, status, paramsNormal);
       return response;
     },
     {

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Icon, IconButton, Text, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon, IconButton, Square, Text, useDisclosure } from '@chakra-ui/react';
 import { useState } from 'react';
 import { BsDashSquareDotted } from 'react-icons/bs';
 import { HiTrash } from 'react-icons/hi';
@@ -6,8 +6,11 @@ import { IoMdMenu } from 'react-icons/io';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import ModalDetailChooseBox from '../Modals/ModalDetailChooseBox/index.component';
 import ModalDeleteChooseBox from '../Modals/ModalDeleteChooseBox/index.component';
+import { ITripsResponseModel } from '../../../../models/trip/trip.model';
 
-export interface IChooseBoxProps {}
+export interface IChooseBoxProps {
+  trip: ITripsResponseModel | undefined;
+}
 
 type Item = {
   id: string;
@@ -16,6 +19,7 @@ type Item = {
 };
 
 export default function ChooseBox(props: IChooseBoxProps) {
+  const { trip } = props;
   const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure();
   const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
 
@@ -70,9 +74,9 @@ export default function ChooseBox(props: IChooseBoxProps) {
                             <Flex align='center' justify='space-between'>
                               <Flex gap='4' align='center'>
                                 <Icon as={BsDashSquareDotted} />
-                                <Button w='fit-content' size='sm'>
+                                <Square size='8' bg='#D0637C' color='white' rounded='md'>
                                   {item.index}
-                                </Button>
+                                </Square>
                                 <Text>{item.label}</Text>
                               </Flex>
                               <Flex gap='4' align='center'>

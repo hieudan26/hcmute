@@ -72,12 +72,13 @@ class UserService {
   };
 
   getUserFriends = async (
+    key: string | undefined,
     userId: string,
     status: string | undefined,
     params: IPaginationRequest | undefined
   ): Promise<AxiosResponse<any>> => {
     var url = `/users/${userId}/friends`;
-    const renewParams = { ...params, status: status };
+    const renewParams = { ...params, status: status, key: key };
     const result = await getAsync(url, renewParams, false, false, true);
     return result;
   };

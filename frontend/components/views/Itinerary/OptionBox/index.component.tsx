@@ -6,22 +6,30 @@ import { IoImages } from 'react-icons/io5';
 import { RiUserAddFill } from 'react-icons/ri';
 import ModalCoverItinerary from '../Modals/ModalCoverItinerary/index.component';
 import ModalFindMember from '../Modals/ModalFindMember/index.component';
+import { BiDetail } from 'react-icons/bi';
+import ModalUpdateDetail from '../Modals/ModalUpdateDetail/index.component';
+import { ITripsResponseModel } from '../../../../models/trip/trip.model';
 
-export interface IOptionBoxProps {}
+export interface IOptionBoxProps {
+  trip: ITripsResponseModel | undefined;
+}
 
 export default function OptionBox(props: IOptionBoxProps) {
+  const { trip } = props;
   const { isOpen: isOpenCover, onOpen: onOpenCover, onClose: onCloseCover } = useDisclosure();
   const { isOpen: isOpenMember, onOpen: onOpenMember, onClose: onCloseMember } = useDisclosure();
+  const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure();
   const router = useRouter();
 
   const goBack = () => {
-    router.back();
+    router.push('/itinerary');
   };
 
   return (
     <>
-      <ModalFindMember isOpen={isOpenMember} onClose={onCloseMember} onOpen={onOpenMember} />
+      <ModalFindMember trip={trip} isOpen={isOpenMember} onClose={onCloseMember} onOpen={onOpenMember} />
       <ModalCoverItinerary isOpen={isOpenCover} onClose={onCloseCover} onOpen={onOpenCover} />
+      <ModalUpdateDetail trip={trip} isOpen={isOpenDetail} onClose={onCloseDetail} onOpen={onOpenDetail} />
       <Flex
         shadow='md'
         ml='2'
@@ -34,6 +42,13 @@ export default function OptionBox(props: IOptionBoxProps) {
         justify='space-between'
       >
         <Flex direction='column' gap='3'>
+          <IconButton
+            fontSize='md'
+            title='Chỉnh sửa chi tiết'
+            aria-label='Cover Image'
+            icon={<BiDetail />}
+            onClick={onOpenDetail}
+          />
           <IconButton fontSize='md' title='Thêm ảnh nền' aria-label='Cover Image' icon={<IoImages />} onClick={onOpenCover} />
           <IconButton
             fontSize='md'

@@ -48,6 +48,10 @@ export interface IUserFirstLoginRequest {
   creationDate?: number;
 }
 
+export interface IQueryGetFriendByUserAndStatusAndSearch extends IQueryGetFriendByUserAndStatus {
+  key: string | undefined;
+}
+
 export interface IQueryGetFriendByUserAndStatus extends IPaginationRequest {
   userId: string;
   status?: string | undefined;

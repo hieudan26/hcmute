@@ -1,16 +1,23 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Flex, Icon, Text, useColorModeValue } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { IconType } from 'react-icons';
 import { HiTrash } from 'react-icons/hi';
+import { addDaysToDate, formatDateddMMYYYYtoDate } from '../../../../../utils';
 
 export interface INavItemProps {
-  children: React.ReactNode;
+  stt: number;
+  day: Date;
 }
 
 export default function NavItem(props: INavItemProps) {
-  const { children, ...rest } = props;
+  const { stt, day, ...rest } = props;
+  const [dayFormat, setDayFormat] = useState<string>('06/05/2023');
   const items = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6'];
+
+  useEffect(() => {
+    setDayFormat(addDaysToDate(day, stt - 1));
+  }, [stt, day]);
 
   return (
     <Flex
@@ -33,10 +40,10 @@ export default function NavItem(props: INavItemProps) {
       <Flex my='2' align='center' justify='space-between'>
         <Flex w='fit-content' gap='2'>
           <Text fontWeight='semibold' borderBottom='2px' borderColor='#D0637C'>
-            Ngày {children}
+            Ngày {stt}
           </Text>
           <Text>-</Text>
-          <Text>16/04/2023</Text>
+          <Text>{dayFormat}</Text>
         </Flex>
         <Icon
           borderBottom='2px'
