@@ -20,6 +20,7 @@ export default function Navbar(props: INavbarProps) {
   const [idTrip, setIdTrip] = useState<number>(0);
   const [totalMembers, setTotalMembers] = useState<number>(0);
   const [totalMembersGet, setTotalMembersGet] = useState<number>(0);
+  const [isHover, setIsHover] = useState<boolean>(false);
   const members = useTripMembers(
     {
       params: {
@@ -87,18 +88,20 @@ export default function Navbar(props: INavbarProps) {
       <Flex align='center' gap='2'>
         <Avatar size='sm' name='Dan Abrahmov' src={auth?.avatar} />
         <Text fontSize='sm'>Thangg Duongg /</Text>
-        <AvatarGroup size='sm' spacing='-2'>
+        <AvatarGroup size='sm' spacing='-2' onMouseOver={() => setIsHover(true)} onMouseOut={() => setIsHover(false)}>
           {members.data?.pages[0].data.content.map((item: IUserFirstLoginRequest, index: number) => (
             <Avatar
-              border='1px'
+              cursor='default'
               title={`${item.firstName} ${item.lastName}`}
               key={item.id}
-              name={item.firstName}
-              src={item.avatar}
+              name={`${item.firstName} ${item.lastName}`}
+              bg='gray.200'
+              color='black'
+              src={isHover ? undefined : item.avatar}
             />
           ))}
           {totalMembers - totalMembersGet > 0 && (
-            <Avatar border='1px' bg='gray.200' fontWeight='bold' name={`${totalMembers - totalMembersGet} +`}></Avatar>
+            <Avatar bg='gray.200' fontWeight='bold' name={`${totalMembers - totalMembersGet} +`}></Avatar>
           )}
         </AvatarGroup>
       </Flex>

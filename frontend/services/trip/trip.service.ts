@@ -6,7 +6,7 @@ import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 class TripService {
   updateTripMembers = async (tripId: number, params: ITripUpdateMemberModel[]): Promise<AxiosResponseStatus<any>> => {
     var url = `trips/${tripId}/members`;
-    return await putAsync(url, params, 'Thêm thành viên thành công', false, true, true, undefined);
+    return await putAsync(url, params, 'Cập nhật thành viên thành công', false, true, true, undefined);
   };
 
   getTripMembers = async (
