@@ -51,6 +51,8 @@ public class TripService {
     private final TripReviewRepository tripReviewRepository;
 
     private final UserMapper userMapper;
+    private final TripPlaceMapper tripPlaceMapper;
+
 
 
 
@@ -141,9 +143,11 @@ public class TripService {
             tripDay.setOrdinal(dayIndex);
             dayIndex++;
             tripDay.getTripPlaces().removeAll(tripDay.getTripPlaces());
+            tripDay.getProvinces().removeAll(tripDay.getProvinces());
 
 
             tripDayMapper.updateTripDayFromUpdateTripDayDTO(updateTripDayDTO, tripDay);
+            tripDay.setProvinces(tripPlaceMapper.mapProvinces(updateTripDayDTO.getProvinces()));
             var placeIndex = 0L;
             for (UpdateTripPlaceDTO updateTripPlaceDTO : updateTripDayDTO.getTripPlaces()) {
                 log.error("Before updating trip place: " + tripDay.getTripPlaces().size());

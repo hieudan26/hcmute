@@ -17,11 +17,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {DateTimeMapper.class, TripPlaceMapper.class})
+@Mapper(componentModel = "spring", uses = {DateTimeMapper.class, TripPlaceMapper.class, PlaceMapper.class})
 public abstract class TripDayMapper {
 
     @Mapping(source = "trip.id", target = "tripId")
     @Mapping(source = "date", target = "date", qualifiedByName = "fromLocalDateToString")
+    @Mapping(source = "provinces", target = "provinces")
     public abstract TripDayDTO tripDayToTripDayDTO(TripDays tripDay);
 
 
@@ -36,6 +37,7 @@ public abstract class TripDayMapper {
 
     @Mapping(source = "date", target = "date", qualifiedByName = "fromStringToLocalDate")
     @Mapping(target = "tripPlaces", ignore = true)
+    @Mapping(target = "provinces", ignore = true)
     public abstract void updateTripDayFromUpdateTripDayDTO(UpdateTripDayDTO updateTripDayDTO, @MappingTarget TripDays tripDay);
     @Mapping(source = "startTime", target = "startTime", qualifiedByName = "fromStringToLocalDateTime")
     @Mapping(source = "endTime", target = "endTime  ", qualifiedByName = "fromStringToLocalDateTime")

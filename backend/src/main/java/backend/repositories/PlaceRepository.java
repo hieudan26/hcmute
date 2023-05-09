@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PlaceRepository extends PagingAndSortingRepository<Places,Integer>, JpaSpecificationExecutor<Places> {
+public interface  PlaceRepository extends PagingAndSortingRepository<Places,Integer>, JpaSpecificationExecutor<Places> {
     Page<Places> findAll(Specification specification, Pageable pageable);
 
     Page<Places> findByPlaceCategories_Name(Pageable pageable, String name);
