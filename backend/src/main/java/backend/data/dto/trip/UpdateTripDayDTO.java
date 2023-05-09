@@ -12,4 +12,6 @@ public class UpdateTripDayDTO {
     private String description;
     private String date;
     private List<UpdateTripPlaceDTO> tripPlaces;
+    private List<Integer> provinces;
+
 }

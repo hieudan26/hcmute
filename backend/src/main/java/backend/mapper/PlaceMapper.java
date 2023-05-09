@@ -3,6 +3,7 @@ package backend.mapper;
 import backend.data.dto.place.CreatePlaceRequest;
 import backend.data.dto.place.PlaceCategoryPayLoad;
 import backend.data.dto.place.PlaceResponse;
+import backend.data.dto.trip.TripResponse;
 import backend.data.dto.user.UpdateUserRequest;
 import backend.data.entity.*;
 import backend.exception.NoRecordFoundException;
@@ -18,6 +19,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public abstract class PlaceMapper {
@@ -33,6 +35,16 @@ public abstract class PlaceMapper {
     @Mapping(source = "hashTags", target = "hashTags", qualifiedByName = "mapHashTagsToString")
     @Mapping(source = "owner.id", target = "userId")
     public abstract PlaceResponse fromPlaceToPlaceResponse(Places places);
+
+    @Named("PlacesToPlaceResponses")
+    public List<PlaceResponse> tripsToTripDTOs(Set<Places> trips) {
+        if(trips == null) {
+            return List.of();
+        }
+        return trips.stream()
+                .map(this::fromPlaceToPlaceResponse)
+                .collect(Collectors.toList());
+    }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     @Mapping(target = "hashTags", ignore = true)
