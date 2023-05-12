@@ -25,15 +25,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {DateTimeMapper.class,TripPlaceFeeMapper.class})
+@Mapper(componentModel = "spring", uses = {DateTimeMapper.class,TripPlaceFeeMapper.class, PlaceMapper.class})
 public  abstract class TripPlaceMapper {
     @Autowired
     private PlaceRepository placeRepository;
 
-    @Mapping(source = "places.id", target = "placeId")
     @Mapping(source = "tripDay.id", target = "dayId")
     @Mapping(source = "startTime", target = "startTime", qualifiedByName = "fromLocalDateTimeToString")
     @Mapping(source = "endTime", target = "endTime", qualifiedByName = "fromLocalDateTimeToString")
+    @Mapping(source = "places", target = "place")
     public abstract TripPlaceDTO tripPlaceToTripPlaceDTO(TripPlaces tripPlace);
 
     @Mapping(source = "startTime", target = "startTime", qualifiedByName = "fromStringToLocalDateTime")

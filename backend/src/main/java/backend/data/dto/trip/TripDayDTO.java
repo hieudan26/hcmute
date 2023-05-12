@@ -15,6 +15,4 @@ public class TripDayDTO {
     private String date;
     private List<TripPlaceDTO> tripPlaces;
     private List<PlaceResponse> provinces;
-
-
 }
