@@ -31,19 +31,18 @@ public class TripPlaces {
     @Column(nullable = false)
     private Long ordinal;
 
-    @Column(nullable = false)
     private String transport;
 
-    @Column(name = "travel_time", nullable = false)
+    @Column(name = "travel_time")
     private String travelTime;
 
-    @Column(name = "travel_price", nullable = false)
+    @Column(name = "travel_price")
     private String travelPrice;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private LocalDateTime startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

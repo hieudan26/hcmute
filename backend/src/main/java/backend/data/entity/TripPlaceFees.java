@@ -31,7 +31,7 @@ public class TripPlaceFees {
     @Column(nullable = false)
     private Long value;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    @Column( columnDefinition = "LONGTEXT")
     private String description;
 
     @Column(nullable = false)
