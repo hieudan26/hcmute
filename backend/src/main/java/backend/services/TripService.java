@@ -147,6 +147,7 @@ public class TripService {
 
 
             tripDayMapper.updateTripDayFromUpdateTripDayDTO(updateTripDayDTO, tripDay);
+            tripDay.setId(null);
             tripDay.setProvinces(tripPlaceMapper.mapProvinces(updateTripDayDTO.getProvinces()));
             var placeIndex = 0L;
             for (UpdateTripPlaceDTO updateTripPlaceDTO : updateTripDayDTO.getTripPlaces()) {
