@@ -23,6 +23,7 @@
             tripPlace.getTripPlaceFees().add(tripPlaceFees);
 
             tripDayMapper.updateTripPlaceFeesFromUpdateTripPlaceFeesDTO(updateTripPlaceFeesDTO, tripPlaceFees);
+            tripPlaceFees.setId(null);
             tripPlaceFees.setTripPlace(tripPlace); // Add this line
             return tripPlaceFees;
         }

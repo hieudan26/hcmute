@@ -1,5 +1,7 @@
 package backend.data.dto.trip;
 
+import backend.data.dto.user.UserDTO;
+import backend.data.entity.Users;
 import lombok.Data;
 
 @Data
@@ -8,6 +10,6 @@ public class TripReviewDTO {
     private Float rate;
     private String content;
     private Integer tripId;
-    private String ownerId;
+    private UserDTO owner;
     private String reviewAt;
 }

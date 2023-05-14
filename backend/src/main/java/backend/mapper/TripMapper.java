@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = {DateTimeMapper.class, TripDayMapper.class, TripMemberMapper.class, TripReviewMapper.class, TripPlaceMapper.class})
+@Mapper(componentModel = "spring", uses = {DateTimeMapper.class, TripDayMapper.class, TripMemberMapper.class, TripReviewMapper.class, TripPlaceMapper.class, UserMapper.class, PlaceMapper.class})
 public abstract class TripMapper {
     @Autowired
     private UserRepository userRepository;
@@ -33,7 +33,9 @@ public abstract class TripMapper {
     private PlaceRepository placeRepository;
 
     @Mapping(source = "owner.id", target = "ownerId")
+    @Mapping(source = "owner", target = "ownerInfo")
     @Mapping(source = "startingPlace.id", target = "startingPlace")
+    @Mapping(source = "startingPlace", target = "startingPlaceInfo")
     @Mapping(source = "tripDays", target = "tripDays")
     @Mapping(source = "tripMembers", target = "tripMembers")
     @Mapping(source = "startTime", target = "startTime", qualifiedByName = "fromLocalDateTimeToString")

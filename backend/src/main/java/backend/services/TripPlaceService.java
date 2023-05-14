@@ -24,6 +24,7 @@ public class TripPlaceService {
         tripPlace.setTripDay(tripDay); // Add this line
         tripDay.getTripPlaces().add(tripPlace);
         tripDayMapper.updateTripPlaceFromUpdateTripPlaceDTO(updateTripPlaceDTO, tripPlace);
+        tripPlace.setId(null);
         return tripPlace;
     }
 }

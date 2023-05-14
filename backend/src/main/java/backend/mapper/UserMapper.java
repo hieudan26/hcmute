@@ -8,7 +8,7 @@ import org.mapstruct.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {DateTimeMapper.class})
 public abstract class UserMapper {
     public abstract UserDTO userToUserDTO(Users user);
 
@@ -23,22 +23,6 @@ public abstract class UserMapper {
     @Mapping(source = "friend", target = "fullName", qualifiedByName = "fromUserToFullName")
     @BeanMapping(qualifiedByName = "setNumberForResponse")
     public abstract FriendResponse FriendsToFriendResponse(Friends friend);
-
-    @Named("fromLocalDateTimeToString")
-    protected String fromLocalDateTimeToString(LocalDateTime time) {
-        if(time == null)
-            return null;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        return time.format(dateTimeFormatter);
-    }
-
-    @Named("fromStringToLocalDateTime")
-    protected LocalDateTime fromStringToLocalDateTime(String time) {
-        if(time == null)
-            return null;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        return LocalDateTime.parse(time,dateTimeFormatter);
-    }
 
     @Named("fromUserToFullName")
     protected String fromUserToFullName(Users users) {
