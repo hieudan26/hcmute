@@ -25,7 +25,7 @@ public class TripDays{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column()
     private Long ordinal;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,11 +35,11 @@ public class TripDays{
     @JoinColumn(name = "trip_id")
     private Trips trip;
 
-    @Column(nullable = false)
+    @Column()
     @Lob
     private String description;
 
-    @Column(nullable = false)
+    @Column()
     private LocalDate date;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
