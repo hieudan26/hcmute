@@ -35,6 +35,69 @@ export const privateRouteContain = [
 ];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export const distanceTime = (time1: string, time2: string) => {
+  const date1 = new Date(`1970-01-01T${time1}`);
+  const date2 = new Date(`1970-01-01T${time2}`);
+
+  // Lấy thời gian (tính bằng mili giây) từ đối tượng Date
+  const timeInMillis1 = date1.getTime();
+  const timeInMillis2 = date2.getTime();
+
+  // Tính khoảng cách thời gian
+  const timeDiff = Math.abs(timeInMillis1 - timeInMillis2);
+
+  // Chuyển đổi khoảng cách thời gian thành đối tượng Date
+  const timeDistance = new Date(timeDiff);
+
+  // Lấy giá trị giờ, phút, giây từ đối tượng Date khoảng cách thời gian
+  const hours = timeDistance.getUTCHours();
+  const minutes = timeDistance.getUTCMinutes();
+  const seconds = timeDistance.getUTCSeconds();
+
+  if (hours === 0 && minutes !== 0) {
+    return `${minutes} minutes`;
+  }
+
+  if (hours !== 0 && minutes === 0) {
+    return `${hours} hours`;
+  }
+
+  if (hours !== 0 && minutes !== 0) {
+    return `${hours} hours - ${minutes} minutes`;
+  }
+  return `${seconds} seconds`;
+};
+
+export function isEquivalent(a: any, b: any) {
+  // Kiểm tra nếu a và b không phải là object hoặc null hoặc undefined
+  if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) {
+    return a === b;
+  }
+
+  // Lặp qua tất cả các thuộc tính của object a
+  for (const prop in a) {
+    // Kiểm tra nếu object a chứa một object khác hoặc một array
+    if (typeof a[prop] === 'object' && a[prop] !== null) {
+      if (!isEquivalent(a[prop], b[prop])) {
+        return false;
+      }
+    } else if (a[prop] !== b[prop]) {
+      return false;
+    }
+  }
+
+  // Lặp qua tất cả các thuộc tính của object b để kiểm tra nếu object b chứa một object khác hoặc một array
+  for (const prop in b) {
+    if (typeof b[prop] === 'object' && b[prop] !== null) {
+      if (!isEquivalent(b[prop], a[prop])) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 export function addDaysToDate(date: Date, days: number): string {
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
   const result = new Date(date.getTime() + days * millisecondsPerDay);
@@ -142,7 +205,7 @@ export const timeSincePost = (createdAt: string) => {
   if ((timeSincePost = Math.floor(timeDiffms / year)) > 0) {
     timeSincePoststr = timeSincePost.toString() + 'y';
   } else if ((timeSincePost = Math.floor(timeDiffms / month)) > 0) {
-    timeSincePoststr = timeSincePost.toString() + 'm';
+    timeSincePoststr = timeSincePost.toString() + 'mon';
   } else if ((timeSincePost = Math.floor(timeDiffms / week)) > 0) {
     timeSincePoststr = timeSincePost.toString() + 'w';
   } else if ((timeSincePost = Math.floor(timeDiffms / day)) > 0) {
@@ -150,7 +213,7 @@ export const timeSincePost = (createdAt: string) => {
   } else if ((timeSincePost = Math.floor(timeDiffms / hour)) > 0) {
     timeSincePoststr = timeSincePost.toString() + 'h';
   } else if ((timeSincePost = Math.floor(timeDiffms / minute)) > 0) {
-    timeSincePoststr = timeSincePost.toString() + 'm';
+    timeSincePoststr = timeSincePost.toString() + 'min';
   } else if ((timeSincePost = Math.floor(timeDiffms / second)) > 3) {
     timeSincePoststr = timeSincePost.toString() + 's';
   } else {

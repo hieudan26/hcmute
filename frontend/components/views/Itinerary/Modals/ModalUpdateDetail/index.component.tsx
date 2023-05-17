@@ -20,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { ITripUpdate, useCUDTrip } from '../../../../../hooks/queries/trip';
 import { ITripRequestModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
 import { formatDate, formatDateddMMYYYYtoDate, getMaxDate, getMinDate } from '../../../../../utils';
+import { useAppSelector } from '../../../../../hooks/redux';
 
 export interface IModalUpdateDetailProps {
   isOpen: boolean;
@@ -30,13 +31,14 @@ export interface IModalUpdateDetailProps {
 
 export default function ModalUpdateDetail(props: IModalUpdateDetailProps) {
   const { isOpen, onOpen, onClose, trip } = props;
+  const currentTrip = useAppSelector((state) => state.currentTrip.value);
   const noColorProps = useColorModeValue('black', 'white');
-  const [name, setName] = useState<string>(trip ? trip.title : '');
-  const [quantityMember, setQuantityMember] = useState<number>(trip ? trip.maxMember : 0);
-  const [totalPrice, setTotalPrice] = useState<number>(trip ? trip.totalPrice : 0);
-  const [description, setDescription] = useState<string>(trip ? trip.description : '');
+  const [name, setName] = useState<string>(currentTrip ? currentTrip.title : '');
+  const [quantityMember, setQuantityMember] = useState<number>(currentTrip ? currentTrip.maxMember : 0);
+  const [totalPrice, setTotalPrice] = useState<number>(currentTrip ? currentTrip.totalPrice : 0);
+  const [description, setDescription] = useState<string>(currentTrip ? currentTrip.description : '');
   const [date, setDate] = useState<Date>(getMaxDate());
-  const [type, setType] = useState<string>(trip ? trip.type : 'Plan');
+  const [type, setType] = useState<string>(currentTrip ? currentTrip.type : 'Plan');
   const { mutationUpdateTrip } = useCUDTrip();
 
   const propsConfigs: PropsConfigs = {
@@ -55,30 +57,30 @@ export default function ModalUpdateDetail(props: IModalUpdateDetailProps) {
   };
 
   useEffect(() => {
-    if (trip) {
-      let tempDate = trip.startTime.split(' ')[0];
+    if (currentTrip) {
+      let tempDate = currentTrip.startTime.split(' ')[0];
       var dateObject = formatDateddMMYYYYtoDate(tempDate);
       setDate(dateObject);
     }
-  }, [trip]);
+  }, [currentTrip]);
 
   const onUpdateTrip = async () => {
-    if (trip) {
+    if (currentTrip) {
       let _update: ITripRequestModel = {
         title: name,
-        maxDay: trip.maxDay,
+        maxDay: currentTrip.maxDay,
         maxMember: quantityMember,
         totalPrice: totalPrice,
         description: description,
         startTime: `${formatDate(date)} 00:00:00`,
-        startingPlace: trip.startingPlace,
-        status: trip.status as 'Public' | 'Private',
+        startingPlace: currentTrip.startingPlace,
+        status: currentTrip.status as 'Public' | 'Private',
         type: type as 'Plan' | 'Adventure',
-        endTime: trip.endTime,
-        shortDescription: trip.shortDescription,
+        endTime: currentTrip.endTime,
+        shortDescription: currentTrip.shortDescription,
       };
       let params: ITripUpdate = {
-        id: trip.id,
+        id: currentTrip.id,
         params: _update,
       };
 
@@ -139,8 +141,8 @@ export default function ModalUpdateDetail(props: IModalUpdateDetailProps) {
                   propsConfigs={propsConfigs}
                   name='date-input'
                   date={date}
-                  minDate={trip && trip.type === 'Plan' ? getMinDate() : undefined}
-                  maxDate={trip && trip.type === 'Plan' ? undefined : new Date()}
+                  minDate={currentTrip && currentTrip.type === 'Plan' ? getMinDate() : undefined}
+                  maxDate={currentTrip && currentTrip.type === 'Plan' ? undefined : new Date()}
                   onDateChange={setDate}
                 />
               </Flex>

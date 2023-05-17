@@ -1,7 +1,13 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ITripRequestModel, ITripUpdateMemberModel } from '../../models/trip/trip.model';
+import { ITripRequestModel, ITripUpdateMemberModel, ITripDayUpdateRequestModel } from '../../models/trip/trip.model';
 import tripService from '../../services/trip/trip.service';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
+import utilService from '../../services/util/util.service';
+
+export interface IUpdateTripDays {
+  tripId: number;
+  params: ITripDayUpdateRequestModel[];
+}
 
 export interface ITrips {
   key: string | undefined;
@@ -29,8 +35,25 @@ export interface ITripUpdateMembers {
   members: ITripUpdateMemberModel[];
 }
 
+export interface ITripReview {
+  idTrip: number;
+  paramsPagination: IPaginationRequest;
+}
+
 export const useCUDTrip = () => {
   const queryClient = useQueryClient();
+
+  const mutationUpdateTripDays = useMutation(
+    async (params: IUpdateTripDays) => {
+      return await tripService.updateTripDays(params.tripId, params.params);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(['trip_by_id']);
+      },
+    }
+  );
 
   const mutatuionUpdateTripMembers = useMutation(
     async (params: ITripUpdateMembers) => {
@@ -67,7 +90,40 @@ export const useCUDTrip = () => {
     }
   );
 
-  return { mutationCreateTrip, mutationUpdateTrip, mutatuionUpdateTripMembers };
+  return { mutationCreateTrip, mutationUpdateTrip, mutatuionUpdateTripMembers, mutationUpdateTripDays };
+};
+
+export const useGetLatLon = (key: string, isEnable: boolean) => {
+  return useQuery(
+    ['lat_lon'],
+    async () => {
+      const response = await utilService.getLatLon(key);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+    }
+  );
+};
+
+export const useTripReviews = (params: ITripReview, isEnable: boolean) => {
+  return useInfiniteQuery(
+    ['trip_reviews', params],
+    async ({ pageParam = 0 }) => {
+      params.paramsPagination.pageNumber = pageParam;
+      const response = await tripService.getReviewsTrip(params.idTrip, params.paramsPagination);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      getNextPageParam: (lastPage) => {
+        const maxPages = lastPage.data.pageable.totalPages;
+        const nextPage = lastPage.data.pageable.pageNumber + 1;
+        return nextPage < maxPages ? nextPage : undefined;
+      },
+    }
+  );
 };
 
 export const useTripMembers = (params: ITripMembers, isEnable: boolean) => {

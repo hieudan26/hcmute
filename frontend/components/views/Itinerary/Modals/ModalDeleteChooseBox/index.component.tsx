@@ -4,10 +4,12 @@ export interface IModalDeleteChooseBoxProps {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
+  idPlace: number;
+  deleteSelectedPlace: (id: number) => void;
 }
 
 export default function ModalDeleteChooseBox(props: IModalDeleteChooseBoxProps) {
-  const { isOpen, onOpen, onClose } = props;
+  const { isOpen, onOpen, onClose, idPlace, deleteSelectedPlace } = props;
 
   return (
     <Modal motionPreset='slideInRight' isCentered isOpen={isOpen} onClose={onClose} size='sm'>
@@ -20,7 +22,15 @@ export default function ModalDeleteChooseBox(props: IModalDeleteChooseBoxProps) 
             <Button w='full' background='gray.600' _hover={{ bg: 'black' }} mr={3} onClick={onClose}>
               Hủy
             </Button>
-            <Button w='full'>Lưu</Button>
+            <Button
+              w='full'
+              onClick={() => {
+                deleteSelectedPlace(idPlace);
+                onClose();
+              }}
+            >
+              Lưu
+            </Button>
           </Flex>
         </ModalBody>
       </ModalContent>

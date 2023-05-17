@@ -26,7 +26,7 @@ export default function NavStep(props: INavStepProps) {
           <Text color='black' fontWeight='semibold'>
             Bước 2:
           </Text>
-          <Text color='black'>Chọn Tỉnh – Tp bạn muốn khám phá</Text>
+          <Text color='black'>Chọn Tỉnh – Tp hoặc địa điểm bạn muốn khám phá</Text>
         </Flex>
       </GridItem>
       <GridItem colSpan={5}>
