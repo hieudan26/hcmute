@@ -77,6 +77,7 @@ export default function Navbar(props: INavbarProps) {
           Địa điểm
         </Button>
         <Button
+          disabled
           onClick={() => {
             dispatch(setValueItineraryMap(true));
           }}

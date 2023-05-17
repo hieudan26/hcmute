@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import placeService from '../../../../services/place/place.service';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import userService from '../../../../services/user/user.service';
+import { useRouter } from 'next/router';
 
 export interface ICardProps {
   data: ITripsResponseModel;
@@ -12,6 +13,7 @@ export interface ICardProps {
 
 export default function Card(props: ICardProps) {
   const { data } = props;
+  const router = useRouter();
   const [totalDay, setTotalDay] = useState<number>(0);
   const [totalPlaces, setTotalPlaces] = useState<number>(0);
   const [shortItinerary, setShortItinerary] = useState<string[]>([]);
@@ -32,43 +34,32 @@ export default function Card(props: ICardProps) {
 
   useEffect(() => {
     let shortIti: string[] = [];
-    let id: number[] = [];
-    let flag = false;
-    for (let i = 0; i < data.tripDays.length; i++) {
-      for (let j = 0; j < data.tripDays[i].tripPlaces.length; j++) {
-        id.push(data.tripDays[i].tripPlaces[j].placeId);
-        if (id.length === 3) {
-          flag = true;
-          break;
-        }
-      }
-      if (flag === true) {
-        break;
+    let i = 0;
+    if (data.tripDays.length <= 0) {
+      shortIti.push('...');
+      shortIti.push('...');
+      shortIti.push('...');
+    } else {
+      if (data.tripDays[0].tripPlaces.length <= 0) {
+        shortIti.push('...');
+        shortIti.push('...');
+        shortIti.push('...');
+      } else if (data.tripDays[0].tripPlaces.length === 1) {
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
+        shortIti.push('...');
+        shortIti.push('...');
+      } else if (data.tripDays[0].tripPlaces.length === 2) {
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[1].place.name}`);
+        shortIti.push('...');
+      } else {
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[1].place.name}`);
+        shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[2].place.name}`);
       }
     }
 
-    const fnFetchPlace = async () => {
-      let valuePlace;
-      for (let i = 0; i < id.length; i++) {
-        const resp = await placeService.getPlaceById(id[i].toString());
-        if (i === 0) {
-          valuePlace = resp;
-        }
-        let temp = `- D${i++}: ${resp.data.name}`;
-        shortIti.push(temp);
-      }
-      if (id.length < 3) {
-        for (let i = 0; i < 3 - id.length; i++) {
-          shortIti.push('. . .');
-        }
-      }
-      if (valuePlace && valuePlace.data.image) {
-        setBg(valuePlace.data.image);
-      }
-      setShortItinerary(shortIti);
-    };
-
-    fnFetchPlace();
+    setShortItinerary(shortIti);
   }, [data]);
 
   useEffect(() => {
@@ -103,6 +94,9 @@ export default function Card(props: ICardProps) {
         </Flex>
       </Flex>
       <Image
+        onClick={() => {
+          router.push(`/itinerary/edit/${data.id}`);
+        }}
         cursor='pointer'
         w='120%'
         alt='test'

@@ -24,7 +24,7 @@ export interface paginationGetPlaces {
   pagination: IPaginationRequest | undefined;
   urlCountry: string;
   urlProvince: string;
-  type: string;
+  type: string | undefined;
 }
 
 export interface IUrlsGetPlace {
@@ -152,6 +152,20 @@ export const useFetchCountry = (urlName: string, isEnable: boolean) => {
     ['places_country', urlName],
     async () => {
       const response = await placeService.getCountry(urlName);
+      return response;
+    },
+    {
+      keepPreviousData: true,
+      enabled: isEnable,
+    }
+  );
+};
+
+export const usePlacesProvincesByCountry_GetAll = (urlName: string, isEnable: boolean) => {
+  return useQuery(
+    ['places_provinces_by_country_getall'],
+    async () => {
+      const response = await placeService.getProvincesByCountry(undefined, urlName);
       return response;
     },
     {

@@ -2,23 +2,30 @@ import { Box, BoxProps, Button, Flex, Text, useColorModeValue } from '@chakra-ui
 import NavItem from '../NavItem/index.component';
 import { MdHome } from 'react-icons/md';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { formatDateddMMYYYYtoDate, getMaxDate, getMinDate, addDaysToDate } from '../../../../../utils';
+import { formatDateddMMYYYYtoDate, getMaxDate, getMinDate, addDaysToDate, formatDate } from '../../../../../utils';
 import { SingleDatepicker } from 'chakra-dayzed-datepicker';
 import GroupButtonControl from '../../../Profile/About/GroupButtonControl/index.component';
 import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
 import { SmallAddIcon } from '@chakra-ui/icons';
 import { ITripDayResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { setCurrentTrip, setTripDays } from '../../../../../app/slices/currentTripSlice';
+import { defaultValueTripDayChoose } from '../index.component';
 
 export interface ISidebarContentProps extends BoxProps {
   trip: ITripsResponseModel | undefined;
+  setTripDateChoose: React.Dispatch<React.SetStateAction<ITripDayResponseModel>>;
+  tripDateChoose: ITripDayResponseModel;
 }
 
 export default function SidebarContent(props: ISidebarContentProps) {
-  const { trip, ...rest } = props;
+  const { trip, setTripDateChoose, tripDateChoose, ...rest } = props;
   const refScroll = useRef<HTMLDivElement | null>(null);
   const noColorProps = useColorModeValue('black', 'white');
+  const dispatch = useAppDispatch();
   const [date, setDate] = useState<Date>(getMaxDate());
-  const [tripDays, setTripDays] = useState<ITripDayResponseModel[]>([]);
+  // const [tripDays, setTripDays] = useState<ITripDayResponseModel[]>([]);
+  const currentTrip = useAppSelector((state) => state.currentTrip.value);
 
   const propsConfigs: PropsConfigs = {
     dateNavBtnProps: {
@@ -36,28 +43,58 @@ export default function SidebarContent(props: ISidebarContentProps) {
   };
 
   useEffect(() => {
-    if (trip) {
-      setTripDays(trip.tripDays);
-      let tempDate = trip.startTime.split(' ')[0];
-      var dateObject = formatDateddMMYYYYtoDate(tempDate);
+    if (currentTrip) {
+      let tempDate = currentTrip.startTime.split(' ')[0];
+      let dateObject = formatDateddMMYYYYtoDate(tempDate);
       setDate(dateObject);
     }
-  }, [trip]);
+  }, [currentTrip]);
+
+  const deleteDay = (id: number) => {
+    if (currentTrip) {
+      let arrTemp = [...currentTrip.tripDays];
+      arrTemp = arrTemp.filter((x) => x.id !== id);
+
+      let clone = { ...currentTrip };
+      // clone.tripDays = arrTemp;
+      clone.tripDays = arrTemp.map((x, index) => {
+        let tempTripDay = { ...x };
+        tempTripDay.date = `${addDaysToDate(date, index)}`;
+        tempTripDay.tripPlaces = tempTripDay.tripPlaces.map((place, index) => {
+          let tempTripPlace = { ...place };
+          tempTripPlace.startTime = `${addDaysToDate(date, index)} 00:00:00`;
+          tempTripPlace.endTime = `${addDaysToDate(date, index)} 00:00:00`;
+          return tempTripPlace;
+        });
+        return tempTripDay;
+      });
+      clone.startTime = `${formatDate(date)} 00:00:00`;
+      clone.endTime = `${addDaysToDate(date, clone.tripDays.length - 1)} 00:00:00`;
+      dispatch(setCurrentTrip(clone));
+      if (clone.tripDays.length === 0) {
+        setTripDateChoose(defaultValueTripDayChoose);
+      }
+    }
+  };
 
   const addMoreDays = () => {
-    if (trip) {
-      let lastOrdinal = tripDays[tripDays.length - 1].ordinal;
-      let arrTemp = [...tripDays];
+    if (currentTrip) {
+      let lastOrdinal = currentTrip.tripDays.length ? currentTrip.tripDays[currentTrip.tripDays.length - 1].ordinal : 0;
+      let tempId = currentTrip.tripDays.length ? currentTrip.tripDays[currentTrip.tripDays.length - 1].id : 0;
+      let arrTemp = [...currentTrip.tripDays];
       let temp: ITripDayResponseModel = {
         date: '',
         description: '',
-        id: 2,
+        id: tempId + 1,
         ordinal: lastOrdinal + 1,
-        tripId: trip.id,
+        tripId: currentTrip.id,
         tripPlaces: [],
+        provinces: [],
       };
       arrTemp.push(temp);
-      setTripDays(arrTemp);
+      let clone = { ...currentTrip };
+      clone.tripDays = arrTemp;
+      dispatch(setCurrentTrip(clone));
       const timer = setTimeout(() => {
         if (refScroll.current) {
           const scrollHeight = refScroll.current.scrollHeight;
@@ -69,6 +106,28 @@ export default function SidebarContent(props: ISidebarContentProps) {
           });
         }
       }, 200);
+    }
+  };
+
+  const changeStartDate = (date: Date) => {
+    if (currentTrip) {
+      setDate(date);
+
+      let currentTripUpdate = { ...currentTrip };
+      currentTripUpdate.tripDays = currentTripUpdate.tripDays.map((x, index) => {
+        let tempTripDay = { ...x };
+        tempTripDay.date = `${addDaysToDate(date, index)}`;
+        tempTripDay.tripPlaces = tempTripDay.tripPlaces.map((place, index) => {
+          let tempTripPlace = { ...place };
+          tempTripPlace.startTime = `${addDaysToDate(date, index)} 00:00:00`;
+          tempTripPlace.endTime = `${addDaysToDate(date, index)} 00:00:00`;
+          return tempTripPlace;
+        });
+        return tempTripDay;
+      });
+      currentTripUpdate.startTime = `${formatDate(date)} 00:00:00`;
+      currentTripUpdate.endTime = `${addDaysToDate(date, currentTripUpdate.tripDays.length - 1)} 00:00:00`;
+      dispatch(setCurrentTrip(currentTripUpdate));
     }
   };
 
@@ -93,13 +152,22 @@ export default function SidebarContent(props: ISidebarContentProps) {
           date={date}
           minDate={trip && trip.type === 'Plan' ? getMinDate() : undefined}
           maxDate={trip && trip.type === 'Plan' ? undefined : new Date()}
-          onDateChange={setDate}
+          onDateChange={changeStartDate}
         />
       </Box>
       <Flex direction='column' fontSize='sm' color='gray.600' overflowY='auto' h='md' ref={refScroll}>
-        {tripDays.map((item, index) => (
-          <NavItem key={index} stt={index + 1} day={date} />
-        ))}
+        {currentTrip &&
+          currentTrip.tripDays.map((item: ITripDayResponseModel, index) => (
+            <NavItem
+              key={index}
+              stt={index + 1}
+              day={date}
+              tripDay={item}
+              setTripDateChoose={setTripDateChoose}
+              tripDateChoose={tripDateChoose}
+              deleteDay={deleteDay}
+            />
+          ))}
       </Flex>
       <Box px='6' pt='4'>
         <Button leftIcon={<SmallAddIcon />} width='full' onClick={addMoreDays}>

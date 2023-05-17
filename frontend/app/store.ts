@@ -11,6 +11,7 @@ import socketReducer from './slices/socketSlice';
 import receivedMessReducer from './slices/receivedMessSlice';
 import itineraryMapReducer from './slices/itineraryMapSlice';
 import statusItinararyReducer from './slices/statusItinararySlice';
+import currentTripReducer from './slices/currentTripSlice';
 
 const logger = createLogger({
   //empty options
@@ -23,7 +24,7 @@ const persistConfig = {
   version: 1,
   storage,
   whitelist: ['auth'],
-  blacklist: ['socket', 'statusItinerary'],
+  blacklist: ['socket', 'statusItinerary', 'currentTrip'],
 };
 
 const rootReducer = combineReducers({
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   receivedMessage: receivedMessReducer,
   itineraryMap: itineraryMapReducer,
   statusItinarary: statusItinararyReducer,
+  currentTrip: currentTripReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

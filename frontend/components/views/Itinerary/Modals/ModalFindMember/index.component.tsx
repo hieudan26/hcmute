@@ -30,6 +30,7 @@ import { useCUDTrip, useTripMembers } from '../../../../../hooks/queries/trip';
 import { useAppSelector } from '../../../../../hooks/redux';
 import { ITripUpdateMemberModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
 import { IFriendResponse, IUserFirstLoginRequest } from '../../../../../models/user/user.model';
+import { toggleMessage } from '../../../Message/index.component';
 
 export interface IModalFindMemberProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export default function ModalFindMember(props: IModalFindMemberProps) {
   const [key, setKey] = useState<string>('');
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [idsMember, setIdsMember] = useState<string[]>([]);
+  const currentTrip = useAppSelector((state) => state.currentTrip.value);
   const { mutatuionUpdateTripMembers } = useCUDTrip();
   const friends = useFriends(
     {
@@ -131,8 +133,17 @@ export default function ModalFindMember(props: IModalFindMemberProps) {
       setIdsMember(filteredId);
     } else {
       let arr = [...idsMember];
-      arr.push(id);
-      setIdsMember(arr);
+      if (currentTrip) {
+        if (currentTrip.maxMember > arr.length) {
+          arr.push(id);
+          setIdsMember(arr);
+        } else {
+          toggleMessage({
+            type: 'warning',
+            message: `Số lượng thành viên vượt quá giới hạn: ${currentTrip.maxMember}`,
+          });
+        }
+      }
     }
   };
 
@@ -146,7 +157,6 @@ export default function ModalFindMember(props: IModalFindMemberProps) {
   };
 
   const updateMembers = async () => {
-    console.log(idsMember);
     if (trip) {
       let arr: ITripUpdateMemberModel[] = [];
       idsMember.map((item) => {
