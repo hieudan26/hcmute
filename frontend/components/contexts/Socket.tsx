@@ -57,8 +57,8 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
     var stompConfig: StompConfig = {
       // brokerURL: 'wss://api.hcmute.me/v1/ws',
       webSocketFactory: () => {
-        // return new SockJS('https://api.hcmute.me/v1/ws');
-        return new SockJS('http://localhost:8080/v1/ws');
+        return new SockJS('https://api.hcmute.me/v1/ws');
+        // return new SockJS('http://localhost:8080/v1/ws');
       },
       connectHeaders: {
         Authorization: `Bearer ${accessToken}`,
