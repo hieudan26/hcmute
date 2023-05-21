@@ -1,15 +1,13 @@
-import { Box, BoxProps, Button, Flex, Text, useColorModeValue } from '@chakra-ui/react';
-import NavItem from '../NavItem/index.component';
-import { MdHome } from 'react-icons/md';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { formatDateddMMYYYYtoDate, getMaxDate, getMinDate, addDaysToDate, formatDate } from '../../../../../utils';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
-import GroupButtonControl from '../../../Profile/About/GroupButtonControl/index.component';
-import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
 import { SmallAddIcon } from '@chakra-ui/icons';
-import { ITripDayResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
+import { Box, BoxProps, Button, Flex, useColorModeValue } from '@chakra-ui/react';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
+import React, { useEffect, useRef, useState } from 'react';
+import { setCurrentTrip } from '../../../../../app/slices/currentTripSlice';
 import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
-import { setCurrentTrip, setTripDays } from '../../../../../app/slices/currentTripSlice';
+import { ITripDayResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
+import { addDaysToDate, formatDate, formatDateddMMYYYYtoDate, getMaxDate, getMinDate } from '../../../../../utils';
+import NavItem from '../NavItem/index.component';
 import { defaultValueTripDayChoose } from '../index.component';
 
 export interface ISidebarContentProps extends BoxProps {
@@ -24,7 +22,6 @@ export default function SidebarContent(props: ISidebarContentProps) {
   const noColorProps = useColorModeValue('black', 'white');
   const dispatch = useAppDispatch();
   const [date, setDate] = useState<Date>(getMaxDate());
-  // const [tripDays, setTripDays] = useState<ITripDayResponseModel[]>([]);
   const currentTrip = useAppSelector((state) => state.currentTrip.value);
 
   const propsConfigs: PropsConfigs = {

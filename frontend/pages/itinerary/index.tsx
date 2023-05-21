@@ -1,30 +1,18 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Grid,
-  Container,
-  Center,
-  Spinner,
-  SkeletonCircle,
-  SkeletonText,
-  Skeleton,
-  Button,
-} from '@chakra-ui/react';
+import { Box, Button, Center, Container, Grid, Heading, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '../../components/views/Itinerary/Card/index.component';
 import MoreInformation from '../../components/views/Itinerary/MoreInformation/index.component';
 import { useTrips } from '../../hooks/queries/trip';
-import { useEffect } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
 import { ITripsResponseModel } from '../../models/trip/trip.model';
 import { ArrayTenTemp } from '../experiences';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 export interface IItineraryProps {}
 
 const Itinerary: NextPage = (props: IItineraryProps) => {
-  const array = [1, 2, 3, 4, 5];
+  const queryClient = useQueryClient();
   const trips = useTrips({
     key: undefined,
     pageNumber: 0,
@@ -35,9 +23,9 @@ const Itinerary: NextPage = (props: IItineraryProps) => {
     type: undefined,
   });
 
-  // useEffect(() => {
-  //   console.log(trips.data?.pages[0].data);
-  // }, [trips]);
+  useEffect(() => {
+    queryClient.invalidateQueries(['trips']);
+  }, [queryClient]);
 
   return (
     <Box mb='10'>

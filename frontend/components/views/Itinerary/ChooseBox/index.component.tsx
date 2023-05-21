@@ -18,7 +18,15 @@ import { IoMdMenu } from 'react-icons/io';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import ModalDetailChooseBox from '../Modals/ModalDetailChooseBox/index.component';
 import ModalDeleteChooseBox from '../Modals/ModalDeleteChooseBox/index.component';
-import { ITripDayResponseModel, ITripPlaceResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
+import {
+  ITripDayResponseModel,
+  ITripDayUpdateRequestModel,
+  ITripPlaceFeesResponseModel,
+  ITripPlaceResponseModel,
+  ITripRequestModel,
+  ITripsResponseModel,
+  responseToUpdateTripDay,
+} from '../../../../models/trip/trip.model';
 import Select, { ActionMeta, InputActionMeta, MultiValue, OnChangeValue } from 'react-select';
 import {
   useFetchProvince,
@@ -31,6 +39,8 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { setCurrentTrip, setTripDays } from '../../../../app/slices/currentTripSlice';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import ModalTripFees from '../Modals/ModalTripFees/index.component';
+import { ITripUpdate, useCUDTrip } from '../../../../hooks/queries/trip';
+import { toggleMessage } from '../../Message/index.component';
 
 export interface IChooseBoxProps {
   trip: ITripsResponseModel | undefined;
@@ -61,6 +71,7 @@ export default function ChooseBox(props: IChooseBoxProps) {
   const [tripPlaceSelected, setTripPlaceSelected] = useState<ITripPlaceResponseModel | undefined>(undefined);
   const provinces = usePlacesProvincesByCountry_GetAll(urlCountry, urlCountry !== '');
   const dispatch = useAppDispatch();
+  const { mutationUpdateTripDays, mutationUpdateTrip } = useCUDTrip();
 
   useEffect(() => {
     if (currentTrip) {
@@ -222,9 +233,164 @@ export default function ChooseBox(props: IChooseBoxProps) {
     }
   };
 
+  const onChangeValue = (item: ITripPlaceFeesResponseModel) => {
+    if (currentTrip) {
+      let tempTrip = { ...currentTrip };
+      tempTrip.tripDays = tempTrip.tripDays.map((x) => {
+        if (x.id === tripDayChoose.id) {
+          let day = { ...x };
+          day.tripPlaces = day.tripPlaces.map((place) => {
+            if (place.id === item.tripPlaceId) {
+              let placeTemp = { ...place };
+              placeTemp.tripPlaceFees = placeTemp.tripPlaceFees.map((fee) => {
+                if (fee.id === item.id) {
+                  let feeTemp = { ...item };
+                  feeTemp.name = item.name;
+                  feeTemp.description = item.description;
+                  feeTemp.value = item.value;
+                  return feeTemp;
+                }
+                return fee;
+              });
+              return placeTemp;
+            }
+            return place;
+          });
+          return day;
+        }
+        return x;
+      });
+      dispatch(setTripDays(tempTrip.tripDays));
+    }
+  };
+
+  const onDeleteFee = (item: ITripPlaceFeesResponseModel) => {
+    if (currentTrip) {
+      let tempTrip = { ...currentTrip };
+      tempTrip.tripDays = tempTrip.tripDays.map((x) => {
+        if (x.id === tripDayChoose.id) {
+          let tempPlaces = { ...x };
+          tempPlaces.tripPlaces = tempPlaces.tripPlaces.map((place) => {
+            if (place.id === item.tripPlaceId) {
+              let tempPlace = { ...place };
+              let tempPlaceFeesFilter = tempPlace.tripPlaceFees.filter((fee) => fee.id !== item.id);
+              tempPlace.tripPlaceFees = tempPlaceFeesFilter;
+              setTripPlaceSelected(tempPlace);
+              return tempPlace;
+            } else {
+              return place;
+            }
+          });
+          return tempPlaces;
+        } else {
+          return x;
+        }
+      });
+
+      dispatch(setTripDays(tempTrip.tripDays));
+    }
+  };
+
+  const selectTripPlaceRedux = (item: ITripPlaceResponseModel) => {
+    if (currentTrip) {
+      currentTrip.tripDays.map((x) => {
+        if (x.id === item.dayId) {
+          x.tripPlaces.map((place) => {
+            if (place.id === item.id) {
+              setTripPlaceSelected(place);
+            }
+          });
+        }
+      });
+    }
+  };
+
+  const save = async () => {
+    if (currentTrip) {
+      let data: ITripDayUpdateRequestModel[] = [];
+
+      currentTrip.tripDays.map((x) => {
+        data.push(responseToUpdateTripDay(x));
+      });
+      console.log(data);
+      await mutationUpdateTripDays.mutateAsync({ tripId: currentTrip.id, params: data });
+      let _update: ITripRequestModel = {
+        title: currentTrip.title,
+        maxDay: currentTrip.maxDay,
+        maxMember: currentTrip.maxMember,
+        totalPrice: currentTrip.totalPrice,
+        description: currentTrip.description,
+        startTime: currentTrip.startTime,
+        startingPlace: currentTrip.startingPlace,
+        status: currentTrip.tripDays.length ? 'Public' : (currentTrip.status as 'Public' | 'Private'),
+        type: currentTrip.type as 'Plan' | 'Adventure',
+        endTime: currentTrip.endTime,
+        shortDescription: currentTrip.shortDescription,
+      };
+      let params: ITripUpdate = {
+        id: currentTrip.id,
+        params: _update,
+      };
+
+      await mutationUpdateTrip.mutateAsync(params);
+
+      toggleMessage({
+        type: 'success',
+        message: 'Cập nhật thành công',
+      });
+    }
+  };
+
+  const resetTrip = () => {
+    trip && dispatch(setCurrentTrip(trip));
+  };
+
+  const addTripPlaceFee = (item: ITripPlaceResponseModel) => {
+    if (currentTrip) {
+      let tempTrip = { ...currentTrip };
+      tempTrip.tripDays = tempTrip.tripDays.map((x) => {
+        if (x.id === tripDayChoose.id) {
+          let tempPlaces = { ...x };
+          tempPlaces.tripPlaces = tempPlaces.tripPlaces.map((place) => {
+            if (place.id === item.id) {
+              let tempFee: ITripPlaceFeesResponseModel = {
+                id: place.tripPlaceFees.length + 1,
+                description: '',
+                isRequired: true,
+                name: '',
+                tripPlaceId: place.id,
+                value: 0,
+              };
+              let tempPlace = { ...place, tripPlaceFees: [...item.tripPlaceFees, tempFee] };
+              setTripPlaceSelected(tempPlace);
+              return tempPlace;
+            } else {
+              return place;
+            }
+          });
+          return tempPlaces;
+        } else {
+          return x;
+        }
+      });
+
+      dispatch(setTripDays(tempTrip.tripDays));
+    }
+  };
+
   return (
     <>
-      <ModalTripFees isOpen={isOpenFee} onClose={onCloseFee} onOpen={onOpenFee} />
+      <ModalTripFees
+        addTripPlaceFee={addTripPlaceFee}
+        resetTrip={resetTrip}
+        onEdit={onChangeValue}
+        tripPlace={tripPlaceSelected}
+        isOpen={isOpenFee}
+        onClose={onCloseFee}
+        onOpen={onOpenFee}
+        saveChanges={save}
+        onDeleteFee={onDeleteFee}
+      />
       <ModalDetailChooseBox
         saveDetailBox={saveDetailBox}
         tripPlace={tripPlaceSelected}
@@ -297,6 +463,7 @@ export default function ChooseBox(props: IChooseBoxProps) {
                                       as={MdOutlineAttachMoney}
                                       cursor='pointer'
                                       onClick={() => {
+                                        selectTripPlaceRedux(item);
                                         onOpenFee();
                                       }}
                                     />
@@ -306,7 +473,7 @@ export default function ChooseBox(props: IChooseBoxProps) {
                                       as={IoMdMenu}
                                       cursor='pointer'
                                       onClick={() => {
-                                        setTripPlaceSelected(item);
+                                        selectTripPlaceRedux(item);
                                         onOpenDetail();
                                       }}
                                     />
