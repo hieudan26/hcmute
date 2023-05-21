@@ -48,14 +48,17 @@ export default function Card(props: ICardProps) {
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
         shortIti.push('...');
         shortIti.push('...');
+        setBg(data.tripDays[0].tripPlaces[0].place.image);
       } else if (data.tripDays[0].tripPlaces.length === 2) {
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[1].place.name}`);
         shortIti.push('...');
+        setBg(data.tripDays[0].tripPlaces[0].place.image);
       } else {
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[0].place.name}`);
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[1].place.name}`);
         shortIti.push(`- D${i++}: ${data.tripDays[0].tripPlaces[2].place.name}`);
+        setBg(data.tripDays[0].tripPlaces[0].place.image);
       }
     }
 
@@ -73,12 +76,17 @@ export default function Card(props: ICardProps) {
 
   return (
     <Flex shadow='lg' rounded='md' bg={boxBg} h='370px' w='345px' alignItems='center' direction='column'>
-      <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
-        {data.status}
-      </Text>
-      <Divider />
       <Flex px='20px' py='6px' w='100%'>
-        <Text fontWeight='600' fontSize='xl' noOfLines={1} my='auto' me='auto' color={mainText}>
+        <Text
+          title={data.title}
+          cursor='default'
+          fontWeight='600'
+          fontSize='xl'
+          noOfLines={1}
+          my='auto'
+          me='auto'
+          color={mainText}
+        >
           {data.title}
         </Text>
         <Flex gap='3'>
@@ -93,9 +101,27 @@ export default function Card(props: ICardProps) {
           </Flex>
         </Flex>
       </Flex>
+      <Divider />
+      <Flex px='20px' w='100%' justify='space-between' align='center'>
+        <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
+          {data.type.trim() === 'Adventure' ? 'Hành trình đã đi' : 'Hành trình tìm kiếm đồng đội'}
+        </Text>
+        <Flex gap='1'>
+          <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
+            {data.startTime.split(' ')[0]}
+          </Text>
+          <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
+            -
+          </Text>
+          <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
+            {data.endTime.split(' ')[0]}
+          </Text>
+        </Flex>
+      </Flex>
+
       <Image
         onClick={() => {
-          router.push(`/itinerary/edit/${data.id}`);
+          router.push(`/itinerary/detail/${data.id}`);
         }}
         cursor='pointer'
         w='120%'

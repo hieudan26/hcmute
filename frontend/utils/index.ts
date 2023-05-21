@@ -35,6 +35,24 @@ export const privateRouteContain = [
 ];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export function formatCurrencyVND(value: string): string {
+  let numberValue = parseInt(value, 10);
+
+  if (isNaN(numberValue)) {
+    numberValue = parseInt('0', 10);
+  }
+
+  if (!isNaN(numberValue)) {
+    const formattedValue = numberValue.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+    return formattedValue;
+  }
+
+  return value;
+}
+
 export const distanceTime = (time1: string, time2: string) => {
   const date1 = new Date(`1970-01-01T${time1}`);
   const date2 = new Date(`1970-01-01T${time2}`);
