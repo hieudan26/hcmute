@@ -101,7 +101,7 @@ export default function PlacesList(props: IPlacesListProps) {
             startTime: startTime,
             ordinal: x.tripPlaces.length === 0 ? 1 : x.tripPlaces[x.tripPlaces.length - 1].ordinal + 1,
             place: item,
-            transport: 'temp',
+            transport: 'Xe buýt',
             travelPrice: '100000',
             travelTime: '5 hour',
             tripPlaceFees: [],

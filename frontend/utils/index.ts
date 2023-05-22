@@ -35,6 +35,35 @@ export const privateRouteContain = [
 ];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export function addAMPM(timeString: string) {
+  const [hours, minutes, seconds] = timeString.split(':');
+
+  let formattedHours = parseInt(hours, 10);
+  let ampm = '';
+
+  if (formattedHours >= 12) {
+    ampm = 'PM';
+    if (formattedHours > 12) {
+      formattedHours -= 12;
+    }
+  } else {
+    ampm = 'AM';
+    if (formattedHours === 0) {
+      formattedHours = 12;
+    }
+  }
+
+  return `${formattedHours}:${minutes}:${seconds} ${ampm}`;
+}
+
+export function formatNumberToTwoDigits(number: number): string {
+  if (number < 10) {
+    return number.toString().padStart(2, '0');
+  }
+
+  return number.toString();
+}
+
 export function formatCurrencyVND(value: string): string {
   let numberValue = parseInt(value, 10);
 

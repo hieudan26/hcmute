@@ -116,8 +116,8 @@ export default function SidebarContent(props: ISidebarContentProps) {
         tempTripDay.date = `${addDaysToDate(date, index)}`;
         tempTripDay.tripPlaces = tempTripDay.tripPlaces.map((place, index) => {
           let tempTripPlace = { ...place };
-          tempTripPlace.startTime = `${addDaysToDate(date, index)} 00:00:00`;
-          tempTripPlace.endTime = `${addDaysToDate(date, index)} 00:00:00`;
+          tempTripPlace.startTime = `${tempTripDay.date} ${tempTripPlace.startTime.split(' ')[1]}`;
+          tempTripPlace.endTime = `${tempTripDay.date} ${tempTripPlace.endTime.split(' ')[1]}`;
           return tempTripPlace;
         });
         return tempTripDay;
