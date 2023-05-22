@@ -14,6 +14,7 @@ import { useGetPlaceById } from '../../../../hooks/queries/place';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { isEquivalent } from '../../../../utils';
 import { useBeforeUnload } from 'react-use';
+import { toggleMessage } from '../../../../components/views/Message/index.component';
 const CreateMap = dynamic(() => import('../../../../components/views/Itinerary/Maps/CreateMap/index.component'), {
   ssr: false,
 });
@@ -26,32 +27,49 @@ export interface IItineraryEditPageProps {
 const ItineraryEditPage: NextPage<IItineraryEditPageProps> = (props: IItineraryEditPageProps) => {
   const { trip, tripDayChoose } = props;
   const router = useRouter();
+  const bg = useColorModeValue('gray.100', 'header.primary_darkMode');
   const isItineraryMap = useAppSelector((state) => state.itineraryMap.value);
   const currentTrip = useAppSelector((state) => state.currentTrip.value);
+  const auth = useAppSelector((state) => state.auth.value);
   const [countryData, setCountryData] = useState<IPlaceCountryResponse | undefined>(undefined);
   const country = useGetPlaceById(trip ? trip.startingPlace.toString() : '1', trip !== undefined);
+
+  useEffect(() => {
+    if (auth && currentTrip && auth.id !== currentTrip.ownerId) {
+      router.push('/itinerary');
+      toggleMessage({
+        type: 'warning',
+        message: 'Bạn không có quyền này',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [auth, currentTrip]);
 
   useEffect(() => {
     country.data && setCountryData(country.data.data);
   }, [country.data]);
 
-  return (
-    <Flex direction='row' w='full' bg={useColorModeValue('gray.100', 'header.primary_darkMode')} minH='86.6vh'>
-      <Box w='40%'>
-        <ChooseBox trip={trip} tripDayChoose={tripDayChoose} countryData={countryData} />
-      </Box>
-      <Box w='54%'>
-        {isItineraryMap ? (
-          <CreateMap trip={trip} tripDayChoose={tripDayChoose} />
-        ) : (
-          <PlacesList tripDayChoose={tripDayChoose} trip={trip} countryData={countryData} />
-        )}
-      </Box>
-      <Box w='6%'>
-        <OptionBox trip={trip} />
-      </Box>
-    </Flex>
-  );
+  if (auth && currentTrip && auth.id === currentTrip.ownerId) {
+    return (
+      <Flex direction='row' w='full' bg={bg} minH='86.6vh'>
+        <Box w='40%'>
+          <ChooseBox trip={trip} tripDayChoose={tripDayChoose} countryData={countryData} />
+        </Box>
+        <Box w='54%'>
+          {isItineraryMap ? (
+            <CreateMap trip={trip} tripDayChoose={tripDayChoose} />
+          ) : (
+            <PlacesList tripDayChoose={tripDayChoose} trip={trip} countryData={countryData} />
+          )}
+        </Box>
+        <Box w='6%'>
+          <OptionBox trip={trip} />
+        </Box>
+      </Flex>
+    );
+  } else {
+    return <></>;
+  }
 };
 
 export default ItineraryEditPage;

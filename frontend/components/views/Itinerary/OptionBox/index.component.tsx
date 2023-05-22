@@ -39,7 +39,8 @@ export default function OptionBox(props: IOptionBoxProps) {
   const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
 
   const goBack = () => {
-    router.push('/itinerary');
+    // router.push('/itinerary');
+    router.back();
   };
 
   const resetTrip = () => {

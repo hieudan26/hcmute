@@ -25,6 +25,7 @@ import { ITripDayResponseModel, ITripsResponseModel } from '../../../../models/t
 import { useAppDispatch } from '../../../../hooks/redux';
 import { setValueStatusItinerary } from '../../../../app/slices/statusItinararySlice';
 import { setCurrentTrip } from '../../../../app/slices/currentTripSlice';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface ISidebarDaysProps {
   children: React.ReactNode;
@@ -45,10 +46,16 @@ export default function SidebarDays(props: ISidebarDaysProps) {
   const sidebar = useDisclosure();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const [idTrip, setIdTrip] = useState<string>('');
   const [data, setData] = useState<ITripsResponseModel | undefined>(undefined);
   const [tripDayChoose, setTripDateChoose] = useState<ITripDayResponseModel>(defaultValueTripDayChoose);
   const trip = useTripById(idTrip, undefined, idTrip !== '');
+
+  useEffect(() => {
+    queryClient.invalidateQueries(['trip_by_id']);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (trip.data) {
