@@ -39,7 +39,7 @@ export default function MainContentDetail(props: IMainContentDetailProps) {
 
   return (
     <Flex px='28' align='flex-start' gap={16} w='full'>
-      <Box position='sticky' top={36} left={0} zIndex={10}>
+      <Box position='sticky' top={36} left={0} zIndex={4}>
         <VStack spacing={2} align='flex-start' bg='gray.200' p={4}>
           {trip &&
             trip.tripDays.map((day, index) => (
