@@ -75,7 +75,7 @@ export default function Card(props: ICardProps) {
   }, [data]);
 
   return (
-    <Flex shadow='lg' rounded='md' bg={boxBg} h='370px' w='345px' alignItems='center' direction='column'>
+    <Flex shadow='lg' rounded='md' bg={boxBg} h='400px' w='345px' direction='column'>
       <Flex px='20px' py='6px' w='100%'>
         <Text
           title={data.title}
@@ -140,6 +140,12 @@ export default function Card(props: ICardProps) {
             {item}
           </Text>
         ))}
+      <Box textAlign='left' fontSize='sm' mx='2' minH='8' mt='1'>
+        <Text noOfLines={2}>
+          <span className='font-bold'>Mô tả ngắn: </span>
+          {data.description}
+        </Text>
+      </Box>
       <Flex w='100%' px='20px' py='8px' gap='4'>
         <Avatar size='sm' src={user?.avatar} name={`${user?.firstName} ${user?.lastName}`} />
         <Text my='auto' fontWeight='600' color={mainText} textAlign='center' fontSize='sm' me='auto' noOfLines={1}>
