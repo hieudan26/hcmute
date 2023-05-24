@@ -38,7 +38,7 @@ export default function MainContentDetail(props: IMainContentDetailProps) {
   }, [trip]);
 
   return (
-    <Flex px='28' align='flex-start' gap={16} w='full'>
+    <Flex px='28' align='flex-start' gap={16} w='full' mb='10'>
       <Box position='sticky' top={36} left={0} zIndex={4}>
         <VStack spacing={2} align='flex-start' bg='gray.200' p={4}>
           {trip &&

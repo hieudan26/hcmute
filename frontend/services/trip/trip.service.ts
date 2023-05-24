@@ -5,10 +5,16 @@ import {
   ITripUpdateMemberModel,
   ITripDayUpdateRequestModel,
   ITripsRequestModel,
+  IReviewTripRequestModel,
 } from '../../models/trip/trip.model';
 import { getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class TripService {
+  createReviewTrip = async (tripId: number, params: IReviewTripRequestModel): Promise<AxiosResponseStatus<any>> => {
+    var url = `trips/${tripId}/reviews`;
+    return await postAsync(url, params, 'Tạo thành công', false, true, true, undefined, undefined);
+  };
+
   getReviewsTrip = async (tripId: number, params: IPaginationRequest | undefined): Promise<AxiosResponseStatus<any>> => {
     var url = `trips/${tripId}/reviews`;
     return await getAsync(url, params, false, false, true);

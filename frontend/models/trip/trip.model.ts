@@ -54,6 +54,11 @@ export const responseToUpdatePlaceFee = (params: ITripPlaceFeesResponseModel): I
   return result;
 };
 
+export interface IReviewTripRequestModel {
+  content: string;
+  rate: number;
+}
+
 export interface ITripReviewResponseModel {
   id: number;
   rate: number;
