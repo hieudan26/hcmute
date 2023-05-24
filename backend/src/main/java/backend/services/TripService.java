@@ -124,6 +124,40 @@ public class TripService {
                 .build();
     }
 
+    public BaseResponse listAllPostsByUserId(PagingRequest pagingRequest, TripQueryParams params, String userId){
+        PagingResponse<TripResponse> pagingResponse;
+        if(params.getKey() == null) {
+            params.setKey("");
+        }
+        if(params.getStatus() == null){
+            if (params.getType() == null) {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByOwner_IdAndTitleContainingIgnoreCase(userId, params.getKey(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            } else {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByOwner_IdAndTitleContainingIgnoreCaseAndType(userId, params.getKey(), params.getType(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }
+        } else {
+            if (params.getType() == null) {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByOwner_IdAndTitleContainingIgnoreCaseAndStatus(userId, params.getKey(), params.getStatus(),PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }else {
+                pagingResponse = new PagingResponse(
+                        tripsRepository.findAllByOwner_IdAndTitleContainingIgnoreCaseAndStatusAndType(userId, params.getKey(), params.getStatus(), params.getType(), PagingUtils.getPageable(pagingRequest))
+                                .map(tripMapper::tripToTripDTO));
+            }
+
+        }
+
+        return BaseResponse.builder().message("Find all trip successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+
     @Transactional
     public BaseResponse updateTripDays(Integer tripId, List<UpdateTripDayDTO> updateTripDays) throws NoPermissionException {
         Users user = userService.getUserFromContext();
