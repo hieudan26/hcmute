@@ -37,8 +37,8 @@ public class TripController {
         return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
     }
     @GetMapping("/user/{id}")
-    public ResponseEntity<BaseResponse> searchTrip(PagingRequest pagingRequest, @PathVariable("id") String id) {
-        var tripResponse = tripService.listAllByUserId(pagingRequest, id);
+    public ResponseEntity<BaseResponse> searchTrip(TripQueryParams tripQueryParams, PagingRequest pagingRequest, @PathVariable("id") String id) {
+        var tripResponse = tripService.listAllPostsByUserId(pagingRequest, tripQueryParams, id);
         return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
     }
 
