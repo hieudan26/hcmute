@@ -36,6 +36,11 @@ public class TripController {
         var tripResponse = tripService.listAllPosts(pagingRequest, tripQueryParams);
         return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
     }
+    @GetMapping("/user/{id}")
+    public ResponseEntity<BaseResponse> searchTrip(PagingRequest pagingRequest, @PathVariable("id") String id) {
+        var tripResponse = tripService.listAllByUserId(pagingRequest, id);
+        return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
+    }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")

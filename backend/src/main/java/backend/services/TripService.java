@@ -124,6 +124,16 @@ public class TripService {
                 .build();
     }
 
+    public BaseResponse listAllByUserId(PagingRequest pagingRequest,String userId){
+        PagingResponse pagingResponse = new PagingResponse(
+                tripsRepository.findAllByOwner_Id(userId, PagingUtils.getPageable(pagingRequest))
+                        .map(tripMapper::tripToTripDTO));
+        return BaseResponse.builder().message("Find all trip successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+
     @Transactional
     public BaseResponse updateTripDays(Integer tripId, List<UpdateTripDayDTO> updateTripDays) throws NoPermissionException {
         Users user = userService.getUserFromContext();
