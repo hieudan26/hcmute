@@ -1,5 +1,10 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ITripRequestModel, ITripUpdateMemberModel, ITripDayUpdateRequestModel } from '../../models/trip/trip.model';
+import {
+  ITripRequestModel,
+  ITripUpdateMemberModel,
+  ITripDayUpdateRequestModel,
+  IReviewTripRequestModel,
+} from '../../models/trip/trip.model';
 import tripService from '../../services/trip/trip.service';
 import { IPaginationRequest } from '../../models/common/ResponseMessage.model';
 import utilService from '../../services/util/util.service';
@@ -40,8 +45,25 @@ export interface ITripReview {
   paramsPagination: IPaginationRequest;
 }
 
+export interface ITripReviewCreate {
+  idTrip: number;
+  params: IReviewTripRequestModel;
+}
+
 export const useCUDTrip = () => {
   const queryClient = useQueryClient();
+
+  const mutationCreateReviewTrip = useMutation(
+    async (params: ITripReviewCreate) => {
+      return await tripService.createReviewTrip(params.idTrip, params.params);
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(['trip_reviews']);
+      },
+    }
+  );
 
   const mutationUpdateTripDays = useMutation(
     async (params: IUpdateTripDays) => {
@@ -90,7 +112,7 @@ export const useCUDTrip = () => {
     }
   );
 
-  return { mutationCreateTrip, mutationUpdateTrip, mutatuionUpdateTripMembers, mutationUpdateTripDays };
+  return { mutationCreateTrip, mutationUpdateTrip, mutatuionUpdateTripMembers, mutationUpdateTripDays, mutationCreateReviewTrip };
 };
 
 export const useGetLatLon = (key: string, isEnable: boolean) => {

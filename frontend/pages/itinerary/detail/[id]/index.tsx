@@ -34,6 +34,7 @@ import MainContentDetail from '../../../../components/views/Itinerary/MainConten
 import { useAppSelector } from '../../../../hooks/redux';
 import Card from '../../../../components/views/Itinerary/Card/index.component';
 import { ArrayTenTemp } from '../../../experiences';
+import Review from '../../../../components/views/Itinerary/Review/index.component';
 
 export interface IItineraryDetailProps {}
 
@@ -82,18 +83,23 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
     }
   }, [members]);
 
-  useEffect(() => {
-    if (idTrip !== '') {
-      queryClient.invalidateQueries(['trip_by_id']);
-      queryClient.invalidateQueries(['trip_members']);
-      queryClient.invalidateQueries(['trips']);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idTrip]);
+  // useEffect(() => {
+  //   if (idTrip !== '') {
+  //     queryClient.invalidateQueries(['trip_by_id']);
+  //     queryClient.invalidateQueries(['trip_members']);
+  //     queryClient.invalidateQueries(['trips']);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [idTrip]);
 
   useEffect(() => {
     const { id } = router.query;
     setIdTrip(id as string);
+    queryClient.invalidateQueries(['trip_by_id']);
+    queryClient.invalidateQueries(['trip_members']);
+    queryClient.invalidateQueries(['trips']);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   return (
@@ -179,18 +185,20 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
           )}
         </Flex>
         <MainContentDetail tripData={trip.data} />
+        <Review tripData={trip.data} />
       </Box>
       <Box mb='10'>
-        {!trips.data ||
-        (trips.data && trips.data.pages.length === 0) ||
-        (trips.data &&
-          trips.data.pages.length === 1 &&
-          trips.data.pages[0].data.content.length === 1 &&
-          (trips.data.pages[0].data.content[0] as ITripsResponseModel).id.toString() !== idTrip) ? (
-          <Heading textAlign='center' mb='10'>
-            Danh sách các địa điểm liên quan
-          </Heading>
-        ) : (
+        <Heading textAlign='center' mb='10'>
+          Danh sách các địa điểm liên quan
+        </Heading>
+        {!(
+          !trips.data ||
+          (trips.data && trips.data.pages.length === 0) ||
+          (trips.data &&
+            trips.data.pages.length === 1 &&
+            trips.data.pages[0].data.content.length === 1 &&
+            (trips.data.pages[0].data.content[0] as ITripsResponseModel).id.toString() !== idTrip)
+        ) && (
           <Flex justify='center'>
             <Text>Không có dữ liệu về danh sách các địa điểm liên quan</Text>
           </Flex>
