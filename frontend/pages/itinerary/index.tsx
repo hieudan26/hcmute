@@ -1,4 +1,18 @@
-import { Box, Button, Center, Container, Grid, Heading, Skeleton, SkeletonCircle, SkeletonText } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  IconButton,
+  Input,
+  Select,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+} from '@chakra-ui/react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Card from '../../components/views/Itinerary/Card/index.component';
@@ -7,31 +21,59 @@ import { useTrips } from '../../hooks/queries/trip';
 import { ITripsResponseModel } from '../../models/trip/trip.model';
 import { ArrayTenTemp } from '../experiences';
 import { useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { SearchIcon } from '@chakra-ui/icons';
 
 export interface IItineraryProps {}
 
 const Itinerary: NextPage = (props: IItineraryProps) => {
+  const [search, setSearch] = useState<string>('');
+  const [key, setKey] = useState<string>('');
+  const [filterType, setFilterType] = useState<string>('');
   const queryClient = useQueryClient();
   const trips = useTrips({
-    key: undefined,
+    key: key === '' ? undefined : key,
     pageNumber: 0,
     pageSize: 10,
     sortBy: 'id',
     sortType: 'ASC',
     status: 'Public',
-    type: undefined,
+    type: filterType === '' ? undefined : (filterType as 'Plan' | 'Adventure'),
   });
 
   useEffect(() => {
     queryClient.invalidateQueries(['trips']);
   }, [queryClient]);
 
+  const onChangeSearch = (event: any) => {
+    setSearch(event.target.value);
+  };
+
+  const filter = (event: any) => {
+    setFilterType(event.target.value);
+  };
+
   return (
     <Box mb='10'>
       <Heading textAlign='center' mb='10'>
         Lịch trình nổi bật
       </Heading>
+      <Flex w='full' gap='4' mb='6' px='8'>
+        <Input type='search' bg='white' placeholder='Tìm kiếm hành trình theo tên' value={search} onChange={onChangeSearch} />
+        <IconButton
+          colorScheme='blue'
+          aria-label='Search database'
+          icon={<SearchIcon />}
+          onClick={() => {
+            setKey(search);
+          }}
+        />
+        <Select w='50%' onChange={filter} bg='white'>
+          <option value=''>Mặc định</option>
+          <option value='Adventure'>Hành trình đã trải nghiệm</option>
+          <option value='Plan'>Hành trình chưa trải nghiệm</option>
+        </Select>
+      </Flex>
       <Container maxW='8xl'>
         <Grid gap='6' templateColumns='repeat(3, 1fr)' mb='6'>
           {trips.data

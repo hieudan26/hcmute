@@ -80,6 +80,20 @@ export default function TopNav(props: ITopNavProps) {
           </Button>
         </NextLink>
       )}
+      {auth && auth.id === userId && (
+        <NextLink href={`../${userId}/itinerary`} scroll={false}>
+          <Button
+            borderBottom={mainCurrentRoute === 'itinerary' ? '2px' : '0px'}
+            borderBottomColor={mainCurrentRoute === 'itinerary' ? 'textColor.logo' : 'transparent'}
+            bg='none'
+            color={colorText}
+            borderRadius='none'
+            onClick={() => pushRoute('itinerary')}
+          >
+            Hành trình
+          </Button>
+        </NextLink>
+      )}
     </>
   );
 }

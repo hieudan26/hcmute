@@ -17,7 +17,7 @@ export default function Friends(props: IFriendsProps) {
   const [friendStatus, setFriendStatus] = useState(FriendStatus.FRIEND);
 
   return (
-    <LayoutTab title='Friends'>
+    <LayoutTab title='Bạn bè'>
       <Tabs zIndex='auto' isManual colorScheme='pink' variant='unstyled'>
         <TabList>
           <Tab

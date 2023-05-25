@@ -8,10 +8,11 @@ export interface ILayoutTabProps {
   children: ReactNode;
   title: string;
   lastModified?: number;
+  isItinerary?: boolean;
 }
 
 export default function LayoutTab(props: ILayoutTabProps) {
-  const { children, title, lastModified } = props;
+  const { children, title, lastModified, isItinerary = false } = props;
   const datetimeLastModified = lastModified ? new Date(lastModified) : undefined;
   const [clientWindowHeight, setClientWindowHeight] = useState<number>(0);
   const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
@@ -38,7 +39,7 @@ export default function LayoutTab(props: ILayoutTabProps) {
       <Center mx='28' pb='4' zIndex='1'>
         <Divider hidden={clientWindowHeight >= 650} variant='dashed' orientation='horizontal' zIndex='1' />
       </Center>
-      <Box pl='14' maxW='full'>
+      <Box pl={isItinerary ? undefined : '14'} maxW='full'>
         {children}
       </Box>
     </Box>

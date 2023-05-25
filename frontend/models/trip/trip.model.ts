@@ -155,6 +155,10 @@ export interface ITripPlaceFeesResponseModel {
   isRequired: true;
 }
 
+export interface ITripsByUserIdRequestModel extends ITripsRequestModel {
+  id: string | undefined;
+}
+
 export interface ITripsRequestModel {
   key: string | undefined;
   pageNumber: number | undefined;

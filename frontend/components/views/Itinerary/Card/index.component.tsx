@@ -9,10 +9,11 @@ import { useRouter } from 'next/router';
 
 export interface ICardProps {
   data: ITripsResponseModel;
+  isItinerary?: boolean;
 }
 
 export default function Card(props: ICardProps) {
-  const { data } = props;
+  const { data, isItinerary = false } = props;
   const router = useRouter();
   const [totalDay, setTotalDay] = useState<number>(0);
   const [totalPlaces, setTotalPlaces] = useState<number>(0);
@@ -75,7 +76,7 @@ export default function Card(props: ICardProps) {
   }, [data]);
 
   return (
-    <Flex shadow='lg' rounded='md' bg={boxBg} h='400px' w='345px' direction='column'>
+    <Flex shadow='lg' rounded='md' bg={isItinerary ? 'gray.200' : boxBg} h='400px' w='345px' direction='column'>
       <Flex px='20px' py='6px' w='100%'>
         <Text
           title={data.title}
