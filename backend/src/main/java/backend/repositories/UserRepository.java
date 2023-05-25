@@ -27,8 +27,7 @@ public interface UserRepository extends PagingAndSortingRepository<Users, String
     Page<Friends> getFriendsByStatus(String userId, String status, Pageable pageable);
     @Query("select friends from Friends friends inner join  Users user on user = friends.owner where user.id = :userId and friends.status = :status and friends.status <> 'no_friend' and user.isDisable = false and friends.friend.isDisable = false and (friends.friend.firstName LIKE CONCAT('%', :key, '%') OR friends.friend.lastName LIKE CONCAT('%',:key, '%'))  order by friends.time desc ")
     Page<Friends> getFriendsByStatusWithSearch(String userId, String status, String key, Pageable pageable);
-
-    @Query("select user1 from Users user1 where user1.country = :country and user1.isDisable = false and user1 not in (select friend.friend from Users user inner join Friends friend on user = friend.owner and friend.friend.isDisable = false where (user.id = :userId and friend.status = 'friend')) and user1.role <> 'ADMIN' and user1.id <> :userId order by case when user1.country = :country then 0 else 1 end,case when user1.city = :city then 0 else 1 end,case when user1.district = :district then 0 else 1 end,case when user1.village = :village then 0 else 1 end")
+    @Query("SELECT user1 FROM Users user1 WHERE user1.country = :country AND user1.isDisable = false AND user1 NOT IN (SELECT friend.friend FROM Users user INNER JOIN user.friends friend WHERE user.id = :userId AND friend.status = 'friend' AND friend.friend.isDisable = false) AND user1.role <> 'ADMIN' AND user1.id <> :userId ORDER BY CASE WHEN user1.country = :country THEN 0 ELSE 1 END, CASE WHEN user1.city = :city THEN 0 ELSE 1 END, CASE WHEN user1.district = :district THEN 0 ELSE 1 END, CASE WHEN user1.village = :village THEN 0 ELSE 1 END")
     Page<Users> getAdviceFriends(String userId, String village, String district, String city, String country, Pageable pageable);
 
 }
