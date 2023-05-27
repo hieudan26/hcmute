@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends PagingAndSortingRepository<ChatRooms,Integer>, JpaSpecificationExecutor<Areas> {
@@ -16,7 +17,7 @@ public interface ChatRoomRepository extends PagingAndSortingRepository<ChatRooms
 
     @Query("from ChatRooms rooms join rooms.members members where :userId in members and exists " +
             "(select rooms from ChatRooms room2 join room2.members member2 where :friendId in member2 and rooms = room2  and rooms.isDeleted = false)")
-    Optional<ChatRooms> findChatRoomsByFriend(String userId, String friendId);
+    List<ChatRooms> findChatRoomsByFriend(String userId, String friendId);
     @Query("select count(rooms) from ChatRooms rooms join rooms.members members where :roomId = rooms.id  and rooms.isDeleted = false and :userId = members.id")
     Integer isUserInRoom(Integer roomId, String userId);
     Optional<ChatRooms> findChatRoomsByIdAndIsDeletedIsFalse(Integer id);

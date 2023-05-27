@@ -60,6 +60,12 @@ public class ChatController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/rooms/{roomId}/members/{userId}")
+    public ResponseEntity<BaseResponse> updateRoom(@PathVariable Integer roomId, @PathVariable String userId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.deleteUser(roomId, userId));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @DeleteMapping("/rooms/{roomId}")
     public ResponseEntity<BaseResponse> deleteRoom(@PathVariable Integer roomId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.deleteRoom(roomId));
@@ -75,5 +81,10 @@ public class ChatController {
     @GetMapping("/rooms/friends/{friendId}")
     public ResponseEntity<BaseResponse> isInRoom(@PathVariable String friendId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.isInChatRoom(friendId));
+    }
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/rooms/{roomId}/users/{userId}")
+    public ResponseEntity<BaseResponse> isUserInRoom(@PathVariable Integer roomId, @PathVariable String userId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.IsUserInChatRoom(roomId, userId));
     }
 }

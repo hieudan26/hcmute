@@ -48,6 +48,13 @@ public class Trips {
     @JoinColumn(name = "place_starting_id")
     private Places startingPlace;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
+    @JoinColumn(name = "chat_room_id")
+    private ChatRooms chatRoom;
+
     @Column(name = "total_price", nullable = true)
     private Long totalPrice;
 

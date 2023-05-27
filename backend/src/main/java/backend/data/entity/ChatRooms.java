@@ -45,5 +45,5 @@ public class ChatRooms extends Auditable<String> implements Serializable {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     Set<Users> members = new HashSet<>();
-    LocalDateTime time;
+    LocalDateTime time = LocalDateTime.now();
 }
