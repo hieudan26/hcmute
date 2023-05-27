@@ -5,6 +5,7 @@ import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.services.ChatService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class ChatController {
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/rooms")
-    public ResponseEntity<BaseResponse> getRooms(PagingRequest pagingRequest) throws NoPermissionException {
-        return ResponseEntity.ok(chatService.getAllChatRooms(pagingRequest));
+    public ResponseEntity<BaseResponse> getRooms(@Parameter String type, PagingRequest pagingRequest) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.getAllChatRooms(type, pagingRequest));
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
