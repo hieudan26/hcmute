@@ -20,6 +20,7 @@ import chatService from '../../../../services/chat/chat.service';
 import { useRef, useState } from 'react';
 import { formatTimePost } from '../../../../utils';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAppSelector } from '../../../../hooks/redux';
 
 export interface ISingleFriendProps {
   data: IFriendResponse;
@@ -29,6 +30,7 @@ export interface ISingleFriendProps {
 export default function SingleFriend(props: ISingleFriendProps) {
   const { data, curUser } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const auth = useAppSelector((state) => state.auth.value);
   const [alertConfirm, setAlertConfirm] = useState<boolean>(false);
   const cancelRef = useRef<any>(null);
   const { colorMode } = useColorMode();
@@ -47,14 +49,18 @@ export default function SingleFriend(props: ISingleFriendProps) {
   };
 
   const createNewRoom = async () => {
-    const response = await chatService.createRooms({
-      friends: [data.userId],
-      time: formatTimePost(new Date()),
-    });
-    onClose();
-    queryClient.invalidateQueries(['chats']);
-    const idRoom = response.data.id;
-    router.push({ pathname: `/chats/${idRoom}`, query: { curUser: curUser?.id } }, `/chats/${idRoom}`);
+    if (auth) {
+      const response = await chatService.createRooms({
+        friends: [data.userId],
+        time: formatTimePost(new Date()),
+        ownerId: auth.id,
+        type: 'SINGLE',
+      });
+      onClose();
+      queryClient.invalidateQueries(['chats']);
+      const idRoom = response.data.id;
+      router.push({ pathname: `/chats/${idRoom}`, query: { curUser: curUser?.id } }, `/chats/${idRoom}`);
+    }
   };
 
   return (

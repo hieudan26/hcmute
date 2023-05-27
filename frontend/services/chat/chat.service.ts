@@ -46,10 +46,11 @@ class ChatService {
   };
 
   //type: string
-  getRooms = async (params: IPaginationRequest | undefined): Promise<AxiosResponseStatus<any>> => {
+  getRooms = async (params: IPaginationRequest | undefined, type: string): Promise<AxiosResponseStatus<any>> => {
     var url = `${API_PATH.CHAT}`;
     try {
-      const result = await getAsync(url, params, false, false, true);
+      const newParams = { ...params, type: type };
+      const result = await getAsync(url, newParams, false, false, true);
       result.isSuccess = true;
       return result;
     } catch (error: any) {

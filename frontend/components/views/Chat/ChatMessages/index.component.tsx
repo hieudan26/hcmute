@@ -9,10 +9,11 @@ export interface IChatMessagesProps {
   scrollRef: RefObject<HTMLDivElement>;
   loadMoreMessage: () => void;
   data: UseInfiniteQueryResult<AxiosResponseStatus<any, any>, unknown>;
+  room: any;
 }
 
 export default function ChatMessages(props: IChatMessagesProps) {
-  const { scrollRef, data, loadMoreMessage } = props;
+  const { scrollRef, data, loadMoreMessage, room } = props;
   const [dataMessages, setDataMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function ChatMessages(props: IChatMessagesProps) {
       )}
       <Flex ref={scrollRef} grow='1' align='start' direction='column' overflowY='scroll' p='10px'>
         {dataMessages.map((item: IMessage, index) => (
-          <Message message={item.content} userId={item.sender} key={index} />
+          <Message type={room.type} data={item} message={item.content} userId={item.sender} key={index} />
         ))}
       </Flex>
     </>

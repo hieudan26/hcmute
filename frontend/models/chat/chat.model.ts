@@ -2,7 +2,10 @@ import { IPageableResponse } from '../common/ResponseMessage.model';
 
 export interface IRoomRequest {
   friends: string[];
+  name?: string;
+  ownerId: string;
   time: string;
+  type: 'SINGLE' | 'GROUP';
 }
 
 export interface IMessage {

@@ -16,6 +16,7 @@ import {
   Tabs,
   Text,
   useColorMode,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { IoHome, IoMoon, IoNotifications, IoSearchSharp, IoSunny } from 'react-icons/io5';
@@ -26,6 +27,8 @@ import { IFriendResponse, IUserFirstLoginRequest } from '../../../../models/user
 import SingleChat from '../SingleChat/index.component';
 import SingleFriend from '../SingleFriend/index.component';
 import { useTranslation } from 'next-i18next';
+import CreateChatModal from '../Modals/CreateChatModal/index.component';
+import { useState } from 'react';
 
 export interface ISidebarProps {
   user: IUserFirstLoginRequest | null;
@@ -35,6 +38,8 @@ export interface ISidebarProps {
 export default function Sidebar(props: ISidebarProps) {
   const { fullWidth, user } = props;
   const { t } = useTranslation('chat');
+  const [tabIndex, setTabIndex] = useState<number>(0);
+  const { isOpen: isOpenCreateChat, onOpen: onOpenCreateChat, onClose: onCloseCreateChat } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const router = useRouter();
   const friends = useFriends(
@@ -49,7 +54,25 @@ export default function Sidebar(props: ISidebarProps) {
     },
     true
   );
-  const singleChats = useChats({ pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' }, true);
+  const singleChats = useChats(
+    {
+      params: { pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' },
+      type: 'SINGLE',
+    },
+    tabIndex === 1 ? true : false
+  );
+
+  const groupChats = useChats(
+    {
+      params: { pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' },
+      type: 'GROUP',
+    },
+    tabIndex === 2 ? true : false
+  );
+
+  const handleTabsChange = (index: number) => {
+    setTabIndex(index);
+  };
 
   return (
     <Flex
@@ -62,6 +85,7 @@ export default function Sidebar(props: ISidebarProps) {
       borderRight='1px solid'
       borderColor={colorMode === 'light' ? 'gray.200' : 'gray.700'}
     >
+      <CreateChatModal isOpen={isOpenCreateChat} onOpen={onOpenCreateChat} onClose={onCloseCreateChat} />
       <Flex w='full' flexWrap='wrap' direction='column' position='sticky' top='0'>
         <Flex w='full' justify='space-between' height='71px' align='center' p='10px'>
           <Avatar
@@ -91,7 +115,9 @@ export default function Sidebar(props: ISidebarProps) {
           </Stack>
         </Flex>
         <Stack direction='row' align='center' p='10px'>
-          <Button w='full'>{t('create_group')}</Button>
+          <Button w='full' onClick={onOpenCreateChat}>
+            {t('create_group')}
+          </Button>
         </Stack>
         <Stack direction='row' align='center' p='10px'>
           <Flex w='full'>
@@ -101,7 +127,7 @@ export default function Sidebar(props: ISidebarProps) {
         </Stack>
       </Flex>
       <Stack w='full' p='10px' direction='column' overflow='scroll'>
-        <Tabs isFitted colorScheme='pink' height='100vh'>
+        <Tabs isFitted colorScheme='pink' height='100vh' index={tabIndex} onChange={handleTabsChange}>
           <TabList>
             <Tab fontSize='xs'>{t('all_friends')}</Tab>
             <Tab fontSize='xs'>
@@ -174,7 +200,28 @@ export default function Sidebar(props: ISidebarProps) {
               </Center>
             </TabPanel>
             <TabPanel>
-              <p>{t('function')}</p>
+              <Box>
+                {groupChats.data?.pages[0].data.content.length === 0 ? (
+                  <Text py='2'>{t('nodata')}</Text>
+                ) : (
+                  groupChats.data?.pages.map((page) =>
+                    page.data.content.map((item: any, index: number) => (
+                      <SingleChat curUser={user} data={item} key={index} isGroup />
+                    ))
+                  )
+                )}
+              </Box>
+              <Center mt='10' hidden={!groupChats.hasNextPage}>
+                <Button
+                  bg='transparent'
+                  variant='link'
+                  onClick={() => {
+                    groupChats.fetchNextPage();
+                  }}
+                >
+                  {t('loadmore')}
+                </Button>
+              </Center>
             </TabPanel>
           </TabPanels>
         </Tabs>

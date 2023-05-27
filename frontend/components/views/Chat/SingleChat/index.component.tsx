@@ -6,23 +6,32 @@ import { IFriendResponse, IUserFirstLoginRequest } from '../../../../models/user
 export interface ISingleChatProps {
   data: any;
   curUser: IUserFirstLoginRequest | null;
+  isGroup?: boolean;
 }
 
 export default function SingleChat(props: ISingleChatProps) {
-  const { data, curUser } = props;
+  const { data, curUser, isGroup = false } = props;
   const [userChat, setUserChat] = useState<any>(null);
   const [roomIdQuery, setRoomIdQuery] = useState<string | null>(null);
   const { colorMode } = useColorMode();
   const router = useRouter();
 
   useEffect(() => {
-    const members = data.members;
-    members.forEach((member: any) => {
-      if (curUser?.id !== member.userId) {
-        setUserChat(member);
-      }
-    });
-  }, [curUser, data]);
+    if (isGroup) {
+      const user = {
+        fullName: data.name,
+        avatar: '',
+      };
+      setUserChat(user);
+    } else {
+      const members = data.members;
+      members.forEach((member: any) => {
+        if (curUser?.id !== member.userId) {
+          setUserChat(member);
+        }
+      });
+    }
+  }, [curUser, data, isGroup]);
 
   useEffect(() => {
     const { id } = router.query;

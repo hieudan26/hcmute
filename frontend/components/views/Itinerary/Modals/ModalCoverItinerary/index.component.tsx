@@ -1,11 +1,7 @@
 import {
-  Button,
   Box,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Input,
+  Button,
+  Center,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,9 +9,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
-  Textarea,
-  Center,
+  Text
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 

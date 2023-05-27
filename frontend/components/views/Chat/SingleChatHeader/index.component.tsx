@@ -14,15 +14,21 @@ export default function SingleChatHeader(props: ISingleChatHeaderProps) {
   const { t } = useTranslation('chat');
   const { room, userId } = props;
   const [friend, setFriend] = useState<any>(undefined);
+  const [type, setType] = useState<string>('SINGLE');
   const { colorMode } = useColorMode();
   const router = useRouter();
 
   useEffect(() => {
     if (room) {
-      const filtered = room.members.filter((item: any) => {
-        return item.userId !== userId;
-      })[0];
-      setFriend(filtered);
+      if (room.type === 'SINGLE') {
+        setType('SINGLE');
+        const filtered = room.members.filter((item: any) => {
+          return item.userId !== userId;
+        })[0];
+        setFriend(filtered);
+      } else {
+        setType('GROUP');
+      }
     }
   }, [room, userId]);
 
@@ -45,23 +51,26 @@ export default function SingleChatHeader(props: ISingleChatHeaderProps) {
         onClick={() => router.push('/chats')}
         isRound
       />
-      {friend ? (
-        <Avatar
-          onClick={() => {
-            router.push(`/profile/${friend.userId}/about`);
-          }}
-          title='Go to profile'
-          cursor='pointer'
-          mr={4}
-          src={friend.avatar}
-          bg={colorMode === 'light' ? 'teal.600' : 'teal.500'}
-        />
-      ) : (
-        <Avatar mr={4} name={friend ? friend.fullName : 'Loading'} bg={colorMode === 'light' ? 'teal.600' : 'teal.500'} />
-      )}
+      {type === 'SINGLE' &&
+        (friend ? (
+          <Avatar
+            onClick={() => {
+              router.push(`/profile/${friend.userId}/about`);
+            }}
+            title='Go to profile'
+            cursor='pointer'
+            mr={4}
+            src={friend.avatar}
+            bg={colorMode === 'light' ? 'teal.600' : 'teal.500'}
+          />
+        ) : (
+          <Avatar mr={4} name={friend ? friend.fullName : 'Loading'} bg={colorMode === 'light' ? 'teal.600' : 'teal.500'} />
+        ))}
+
+      {type === 'GROUP' && <Avatar mr={4} name={room.name} bg={colorMode === 'light' ? 'teal.600' : 'teal.500'} />}
       <Box maxWidth='70%'>
         <Heading size='md' noOfLines={1}>
-          {friend && friend.fullName}
+          {type === 'SINGLE' ? friend && friend.fullName : room.name}
         </Heading>
         <Text>{t('singlechat.activeStatus')} 2h</Text>
       </Box>

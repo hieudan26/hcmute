@@ -41,15 +41,18 @@ export const useRoom = (roomId: string, isEnable: boolean) => {
   );
 };
 
-export const useChats = (params: IPaginationRequest | undefined, isEnable: boolean) => {
+interface useChats {
+  params: IPaginationRequest;
+  type: string;
+}
+
+export const useChats = (params: useChats, isEnable: boolean) => {
   return useInfiniteQuery(
     ['chats', params],
     async ({ pageParam = 0 }) => {
-      let paramsTemp = { ...pageParam };
-      if (params && params.pageNumber) {
-        paramsTemp.pageNumber = pageParam;
-      }
-      const response = await chatService.getRooms(paramsTemp);
+      let paramsTemp = { ...params };
+      paramsTemp.params.pageNumber = pageParam;
+      const response = await chatService.getRooms(paramsTemp.params, paramsTemp.type);
       return response;
     },
     {
