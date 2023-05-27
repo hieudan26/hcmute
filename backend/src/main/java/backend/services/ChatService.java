@@ -76,15 +76,23 @@ public class ChatService {
                 .build();
     }
 
-    public BaseResponse getAllChatRooms (PagingRequest pagingRequest) throws NoPermissionException {
+    public BaseResponse getAllChatRooms (String type, PagingRequest pagingRequest) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Users users = userService.getUser(userId);
+        if(type == null) {
+            return BaseResponse.builder().message("Get rooms successful.")
+                    .data(new PagingResponse(chatRoomRepository
+                            .findAllChatRoom(PagingUtils.getPageable(pagingRequest),users.getId())
+                            .map(mapper::fromChatRoomsToChatRoomResponse)))
+                    .build();
+        }
 
         return BaseResponse.builder().message("Get rooms successful.")
                 .data(new PagingResponse(chatRoomRepository
-                        .findAllChatRoom(PagingUtils.getPageable(pagingRequest),users.getId())
+                        .findAllChatRoomByType(PagingUtils.getPageable(pagingRequest),users.getId(), ChatRoomType.valueOf(type))
                         .map(mapper::fromChatRoomsToChatRoomResponse)))
                 .build();
+
     }
 
     public BaseResponse getChatRoomById (Integer roomId) throws NoPermissionException {
