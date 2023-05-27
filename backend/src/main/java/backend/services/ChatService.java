@@ -31,10 +31,7 @@ import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,20 +115,16 @@ public class ChatService {
     }
 
     public Optional<ChatRooms> getChatRoomByFriend(String userId, String friendId) throws NoPermissionException {
-        Optional<ChatRooms> chatRoom = chatRoomRepository.findChatRoomsByFriend(userId,friendId);
-        return chatRoom;
+        List<ChatRooms> chatRoom = chatRoomRepository.findChatRoomsByFriend(userId,friendId);
+        if(chatRoom.size() <= 0) {
+            return Optional.empty();
+        }
+        return chatRoom.stream().filter(item -> (item.getMembers().size() == 2 && item.getType().equals(ChatRoomType.SINGLE))).findFirst();
     }
+
     public BaseResponse isInChatRoom(String friendId) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        var noFriend =  userService.getFriendStatusResult(friendId)
-                .equals(FriendStatuses.FRIEND.getStatus());
-
-        if(!noFriend){
-            return BaseResponse.builder().message("get status room successful.")
-                    .data(Map.of("isInChatRoom",false,
-                            "roomId",-1))
-                    .build();
-        }
+//
 
         var room = getChatRoomByFriend(userId,friendId);
 
@@ -145,6 +138,23 @@ public class ChatService {
         return BaseResponse.builder().message("get status room successful.")
                 .data(Map.of("isInChatRoom",true,
                         "roomId",room.get().getId()))
+                .build();
+    }
+
+    public BaseResponse IsUserInChatRoom(Integer roomId, String userId) throws NoPermissionException {
+        var user = userService.getUser(userId);
+        var room = isUserInChatRoom(roomId, user);
+
+        if(!room){
+            return BaseResponse.builder().message("get status room successful.")
+                    .data(Map.of("isInChatRoom",false,
+                            "roomId",-1))
+                    .build();
+        }
+
+        return BaseResponse.builder().message("get status room successful.")
+                .data(Map.of("isInChatRoom",true,
+                        "roomId",roomId))
                 .build();
     }
 //
@@ -169,6 +179,8 @@ public class ChatService {
             var room = getChatRoomByFriend(userId,request.getFriends().get(0));
             if(room.isPresent())
                 throw new NoPermissionException(String.format("You are in room chat"));
+        } else {
+            request.setType(ChatRoomType.GROUP.name());
         }
 
         LocalDateTime time = LocalDateTime.now();
@@ -176,19 +188,19 @@ public class ChatService {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
             time =  LocalDateTime.parse(request.getTime(),dateTimeFormatter);
         }
+
         ChatRooms chatRooms = ChatRooms.builder()
                 .time(time)
                 .name(getName(request))
                 .type(ChatRoomType.valueOf(request.getType()))
-                .members(request.getFriends().stream().map(user->userService.getUser(user)).collect(Collectors.toSet()))
+                .members(request.getFriends().stream().map(user -> userService.getUser(user)).collect(Collectors.toSet()))
                 .owner(userService.getUser(userId))
                 .build();
 
         chatRooms.getMembers().add(userService.getUser(userId));
 
         return BaseResponse.builder().message("Create room successful.")
-                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository
-                        .save(chatRooms)))
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(chatRooms)))
                 .build();
     }
 
@@ -206,7 +218,7 @@ public class ChatService {
         }
 
         if (request.getFriends().size() > 4){
-            chatName.append(" ...");
+            chatName.append("...");
         }
 
         return chatName.toString();
@@ -252,6 +264,21 @@ public class ChatService {
 
         }
 
+        return BaseResponse.builder().message("Update rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
+    public BaseResponse deleteUser(Integer roomId, String userId) throws NoPermissionException {
+        String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        if (!room.getOwner().getId().equals(userContextId)) {
+            throw new NoPermissionException("you are not admin");
+        }
+        var user = userService.getUser(userId);
+        if (isUserInChatRoom(roomId, user)){
+            room.getMembers().remove(user);
+        }
         return BaseResponse.builder().message("Update rooms successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
                 .build();

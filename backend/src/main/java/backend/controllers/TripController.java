@@ -26,7 +26,7 @@ public class TripController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<BaseResponse> createTrip(@Valid @RequestBody CreateTripRequest createTripRequest) {
+    public ResponseEntity<BaseResponse> createTrip(@Valid @RequestBody CreateTripRequest createTripRequest) throws NoPermissionException {
         BaseResponse tripResponse = tripService.createTrip(createTripRequest);
         return new ResponseEntity<>(tripResponse, HttpStatus.CREATED);
     }

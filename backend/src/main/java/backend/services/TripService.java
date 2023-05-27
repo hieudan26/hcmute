@@ -1,10 +1,12 @@
 package backend.services;
 
+import backend.common.ChatRoomType;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.post.PostResponse;
+import backend.data.dto.socketdto.chat.CreateChatRoomRequest;
 import backend.data.dto.trip.*;
 import backend.data.entity.*;
 import backend.exception.NoRecordFoundException;
@@ -52,16 +54,26 @@ public class TripService {
 
     private final UserMapper userMapper;
     private final TripPlaceMapper tripPlaceMapper;
-
+    private final ChatService chatService;
 
 
 
     @Transactional
-    public BaseResponse createTrip(CreateTripRequest createTripRequest) {
+    public BaseResponse createTrip(CreateTripRequest createTripRequest) throws NoPermissionException {
         var user = userService.getUserFromContext();
         Trips trip = tripMapper.createTripRequestToTrip(createTripRequest);
         trip.setOwner(user);
         Trips savedTrip = tripsRepository.save(trip);
+
+        var chatRoomRequest = CreateChatRoomRequest.builder()
+                .friends(List.of())
+                .ownerId(user.getId())
+                .type(ChatRoomType.GROUP.name())
+                .name(createTripRequest.getTitle())
+                .build();
+
+        chatService.createChatRoom(chatRoomRequest);
+
         return BaseResponse.builder().message("Find all trip successful.")
                 .data(tripMapper.tripToTripDTO(savedTrip))
                 .build();
@@ -214,7 +226,7 @@ public class TripService {
     }
 
     @Transactional
-    public BaseResponse updateTripMembers(Integer tripId, List<AddTripMemberRequest> addTripMemberRequests) {
+    public BaseResponse updateTripMembers(Integer tripId, List<AddTripMemberRequest> addTripMemberRequests) throws NoPermissionException {
         var trip = getTripId(tripId);
         trip.getTripMembers().removeAll(trip.getTripMembers());
         for (AddTripMemberRequest request : addTripMemberRequests) {
@@ -223,6 +235,12 @@ public class TripService {
             trip.getTripMembers().add(member);
 
         }
+
+        var updateMember = CreateChatRoomRequest.builder()
+                .friends(addTripMemberRequests.stream().map(item -> item.getUserId()).toList())
+                .build();
+
+        chatService.updateRoom(trip.getChatRoom().getId(), updateMember);
         var updatedTrip = tripsRepository.save(trip);
         return BaseResponse.builder()
                 .message("Trip members added successfully.")
