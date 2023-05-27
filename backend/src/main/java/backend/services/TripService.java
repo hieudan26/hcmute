@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -235,9 +236,10 @@ public class TripService {
             trip.getTripMembers().add(member);
 
         }
-
+        var listMembersId = addTripMemberRequests.stream().map(item -> item.getUserId()).collect(Collectors.toSet());
+        listMembersId.add(trip.getOwner().getId());
         var updateMember = CreateChatRoomRequest.builder()
-                .friends(addTripMemberRequests.stream().map(item -> item.getUserId()).toList())
+                .friends(listMembersId.stream().toList())
                 .build();
 
         chatService.updateRoom(trip.getChatRoom().getId(), updateMember);
