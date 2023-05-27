@@ -20,7 +20,7 @@ const Chats: NextPage<IChatsProps> = (props) => {
   const [roomId, setRoomId] = useState<string | undefined>(undefined);
   const [enableGetRoom, setEnableGetRoom] = useState<boolean>(false);
   const [curUserId, setCurUserId] = useState<string | undefined>(undefined);
-  const [isInRoom, setIsInRoom] = useState<boolean>(false);
+  // const [isInRoom, setIsInRoom] = useState<boolean>(false);
   const router = useRouter();
   const auth = useAppSelector((state) => state.auth.value);
   const ref = useRef<HTMLDivElement>(null);
@@ -29,20 +29,6 @@ const Chats: NextPage<IChatsProps> = (props) => {
     { pagination: { pageNumber: 0, pageSize: 20, sortBy: 'time', sortType: 'DESC' }, roomId: roomId ? roomId : '1' },
     roomId !== undefined
   );
-
-  useEffect(() => {
-    if (detailInforRoom.data) {
-      const fetchStatusInRoom = async () => {
-        const filtered = detailInforRoom.data.data.members.filter((item: any) => {
-          return item.userId !== curUserId;
-        })[0];
-        const response = await chatService.isInRoom(filtered.userId);
-        const isInRoom_response = response.data.isInChatRoom;
-        setIsInRoom(isInRoom_response);
-      };
-      fetchStatusInRoom();
-    }
-  }, [curUserId, detailInforRoom.data]);
 
   useEffect(() => {
     const { id } = router.query;
@@ -71,14 +57,8 @@ const Chats: NextPage<IChatsProps> = (props) => {
   return (
     <Flex direction='column' grow='1' height='100vh' maxWidth='100%'>
       <SingleChatHeader room={detailInforRoom.data?.data} userId={curUserId} />
-      <ChatMessages loadMoreMessage={loadMoreMessage} data={dataMessages} scrollRef={ref} />
-      {isInRoom ? (
-        <ChatBox scrollRef={ref} userId={curUserId} roomId={roomId} />
-      ) : (
-        <Center minH='10' bg={bgCantChat} color={textCantChat}>
-          {t('cant_chat')}
-        </Center>
-      )}
+      <ChatMessages room={detailInforRoom.data?.data} loadMoreMessage={loadMoreMessage} data={dataMessages} scrollRef={ref} />
+      <ChatBox scrollRef={ref} userId={curUserId} roomId={roomId} />
     </Flex>
   );
 };

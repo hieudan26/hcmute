@@ -222,10 +222,13 @@ export default function Header(props: IHeaderProps & BoxProps) {
   };
 
   const createNewRoom = async () => {
-    if (user) {
+    if (user && auth) {
       const response = await chatService.createRooms({
         friends: [user.id],
         time: formatTimePost(new Date()),
+        name: undefined,
+        ownerId: auth.id,
+        type: 'SINGLE',
       });
       setAlertConfirm(false);
       queryClient.invalidateQueries(['chats']);
