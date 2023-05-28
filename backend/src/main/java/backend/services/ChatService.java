@@ -173,6 +173,12 @@ public class ChatService {
 //    }
 
     public BaseResponse createChatRoom(CreateChatRoomRequest request) throws NoPermissionException {
+        return BaseResponse.builder().message("Create room successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(createChatRoomEntities(request)))
+                .build();
+    }
+
+    public ChatRooms createChatRoomEntities(CreateChatRoomRequest request) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
 //        var noFriend = request.getFriends().stream()
@@ -207,10 +213,9 @@ public class ChatService {
 
         chatRooms.getMembers().add(userService.getUser(userId));
 
-        return BaseResponse.builder().message("Create room successful.")
-                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(chatRooms)))
-                .build();
+        return chatRoomRepository.save(chatRooms);
     }
+
 
     public String getName(CreateChatRoomRequest request) throws NoPermissionException {
         if (request.getName() != null && !request.getName().isBlank()) {

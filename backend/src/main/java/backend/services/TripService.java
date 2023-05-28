@@ -73,8 +73,8 @@ public class TripService {
                 .name(createTripRequest.getTitle())
                 .build();
 
-        chatService.createChatRoom(chatRoomRequest);
 
+        savedTrip.setChatRoom(chatService.createChatRoomEntities(chatRoomRequest));
         return BaseResponse.builder().message("Find all trip successful.")
                 .data(tripMapper.tripToTripDTO(savedTrip))
                 .build();
