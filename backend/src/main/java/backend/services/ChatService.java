@@ -282,6 +282,27 @@ public class ChatService {
                 .build();
     }
 
+
+    public BaseResponse updateOwner(Integer roomId, String newOwnerId) throws NoPermissionException {
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+
+        if (!room.getOwner().getId().equals(userId)) {
+            throw new NoPermissionException("you are not admin");
+        }
+        var newOwner = userService.getUser(newOwnerId);
+
+        if(!isUserInChatRoom(roomId, newOwner)) {
+            throw new NoPermissionException("new Admin is not in this chat");
+        }
+        room.setOwner(newOwner);
+
+
+        return BaseResponse.builder().message("Update rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
     public BaseResponse deleteUser(Integer roomId, String userId) throws NoPermissionException {
         String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var room = getChatRoom(roomId);
