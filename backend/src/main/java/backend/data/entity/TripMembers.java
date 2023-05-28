@@ -7,12 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "trip_members")
-public class TripMembers {
+public class TripMembers extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
