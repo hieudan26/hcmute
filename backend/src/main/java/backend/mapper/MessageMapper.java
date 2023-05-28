@@ -48,7 +48,13 @@ public abstract class MessageMapper {
         // Your custom logic here
         ChatRoomResponse response = new ChatRoomResponse();
         response.setTime(fromLocalDateTimeToString(rooms.getTime()));
-        response.setMembers(fromListUserToListUserResponse(rooms.getMembers()));
+        var list = fromListUserToListUserResponse(rooms.getMembers());
+        for(var item : list) {
+            if(item.getUserId().equals(rooms.getOwner().getId())) {
+                item.setIsAdmin(true);
+            }
+        }
+        response.setMembers(list);
         response.setId(rooms.getId());
         response.setType(rooms.getType().name());
         if (rooms.getType().equals(ChatRoomType.GROUP)) {
@@ -108,6 +114,7 @@ public abstract class MessageMapper {
                         .userId(user.getId())
                         .avatar(user.getAvatar())
                         .fullName(fromUserToFullName(user))
+                        .isAdmin(false)
                         .build()
         ).toList();
     }

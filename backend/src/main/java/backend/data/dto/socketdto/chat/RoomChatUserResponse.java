@@ -12,4 +12,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class RoomChatUserResponse extends BaseUserResponse {
     String userId;
+    Boolean isAdmin;
 }
