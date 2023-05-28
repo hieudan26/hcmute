@@ -17,5 +17,6 @@ public class ChatRoomResponse {
     String time;
     String type;
     String name;
+    RoomChatUserResponse owner;
 
 }

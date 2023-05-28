@@ -55,6 +55,7 @@ public abstract class MessageMapper {
             }
         }
         response.setMembers(list);
+        response.setOwner(userToUserResponse(rooms.getOwner()));
         response.setId(rooms.getId());
         response.setType(rooms.getType().name());
         if (rooms.getType().equals(ChatRoomType.GROUP)) {
@@ -109,13 +110,17 @@ public abstract class MessageMapper {
 
     @Named("fromListUserToListUserResponse")
     protected List<RoomChatUserResponse> fromListUserToListUserResponse(Set<Users> users) {
-        return (List<RoomChatUserResponse>) users.stream().map(
-                user -> RoomChatUserResponse.builder()
-                        .userId(user.getId())
-                        .avatar(user.getAvatar())
-                        .fullName(fromUserToFullName(user))
-                        .isAdmin(false)
-                        .build()
+        return users.stream().map(
+                this::userToUserResponse
         ).toList();
+    }
+
+    public  RoomChatUserResponse userToUserResponse(Users user) {
+        return RoomChatUserResponse.builder()
+                .userId(user.getId())
+                .avatar(user.getAvatar())
+                .fullName(fromUserToFullName(user))
+                .isAdmin(false)
+                .build();
     }
 }
