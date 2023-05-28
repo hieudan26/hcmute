@@ -61,6 +61,12 @@ public class ChatController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/rooms/{roomId}/owner")
+    public ResponseEntity<BaseResponse> updateOwner(@PathVariable Integer roomId, @RequestParam String ownerId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.updateOwner(roomId, ownerId));
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @DeleteMapping("/rooms/{roomId}/members/{userId}")
     public ResponseEntity<BaseResponse> removeUseđdd(@PathVariable Integer roomId, @PathVariable String userId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.deleteUser(roomId, userId));
