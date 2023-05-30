@@ -13,4 +13,5 @@ import lombok.experimental.SuperBuilder;
 public class RoomChatUserResponse extends BaseUserResponse {
     String userId;
     Boolean isAdmin;
+    String status;
 }

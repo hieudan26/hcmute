@@ -9,6 +9,7 @@ import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
 import backend.data.dto.socketdto.SocketResponse;
+import backend.data.entity.ChatRoomMember;
 import backend.data.entity.ChatRooms;
 import backend.data.entity.Messages;
 import backend.data.entity.Users;
@@ -51,6 +52,15 @@ public class ChatService {
 
         String userId = headerAccessor.getUser().getName();
         ChatRooms chatRooms = getUserChatRoom(messagePayLoad.getRoom(),userId);
+        if(chatRooms.getType().equals(ChatRoomType.SINGLE)){
+            for(var member : chatRooms.getMembers()) {
+                if(member.getUser().getId().equals(userId)) {
+                    if(!member.getStatus().equals("none")) {
+                        throw new NoPermissionException("You can't send message to user block you or blocked");
+                    }
+                }
+            }
+        }
 
 //        if(!getChatRoomFriendStatus(chatRooms)){
 //            throw new NoPermissionException("You are not friend");
@@ -61,8 +71,12 @@ public class ChatService {
         var notificationResponse = SocketResponse.builder()
                 .type(NotificationConstants.MESSAGE.toString())
                 .content(mapper.fromMessagesToMessagePayload(messages)).build();
-        for (var user : chatRooms.getMembers()){
-            simpMessagingTemplate.convertAndSend("/topic/" + user.getId(),notificationResponse);
+        for (ChatRoomMember member : chatRooms.getMembers()) {
+            if (member.getStatus().equals("block")) {
+                // Skip blocked members
+                continue;
+            }
+            simpMessagingTemplate.convertAndSend("/topic/" + member.getUser().getId(), notificationResponse);
         }
     }
 
@@ -105,10 +119,10 @@ public class ChatService {
     }
 
     public Boolean getChatRoomFriendStatus(ChatRooms rooms) throws NoPermissionException {
-        var listUser = rooms.getMembers().stream().toList();
-        var status = userService.checkCoupleStatus(listUser.get(0).getId(), listUser.get(1).getId());
-
-        return status.equals(FriendStatuses.FRIEND.getStatus());
+        List<ChatRoomMember> members = rooms.getMembers().stream().toList();
+        // Check if any member is blocked
+        boolean anyBlocked = members.stream().anyMatch(member -> member.getStatus().equals("blocked"));
+        return !anyBlocked;
     }
 
     public ChatRooms getUserChatRoom (Integer roomId, String userId) throws NoPermissionException {
@@ -191,7 +205,7 @@ public class ChatService {
 
         if(request.getFriends().size() == 1){
             var room = getChatRoomByFriend(userId,request.getFriends().get(0));
-            if(room.isPresent())
+            if(room.isPresent() && room.get().getType().equals(ChatRoomType.SINGLE))
                 throw new NoPermissionException(String.format("You are in room chat"));
         } else {
             request.setType(ChatRoomType.GROUP.name());
@@ -207,13 +221,27 @@ public class ChatService {
                 .time(time)
                 .name(getName(request))
                 .type(ChatRoomType.valueOf(request.getType()))
-                .members(request.getFriends().stream().map(user -> userService.getUser(user)).collect(Collectors.toSet()))
                 .owner(userService.getUser(userId))
                 .build();
 
-        chatRooms.getMembers().add(userService.getUser(userId));
+        Set<ChatRoomMember> members = request.getFriends().stream()
+                .map(userId2 -> ChatRoomMember.builder()
+                        .user(userService.getUser(userId2))
+                        .status("none")
+                        .chatRoom(chatRooms)
+                        .build())
+                .collect(Collectors.toSet());
+
+        members.add(ChatRoomMember.builder()
+                .user(userService.getUser(userId))
+                        .chatRoom(chatRooms)
+                .status("none")
+                .build());
+
+        chatRooms.setMembers(members);
 
         return chatRoomRepository.save(chatRooms);
+
     }
 
 
@@ -245,7 +273,7 @@ public class ChatService {
     public BaseResponse updateRoom(Integer roomId, CreateChatRoomRequest request) throws NoPermissionException {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var room = getChatRoom(roomId);
-        if (!room.getOwner().getId().equals(userId)) {
+        if (!room.getOwner().getId().equals(userId) && room.getType().equals(ChatRoomType.GROUP)) {
             throw new NoPermissionException("you are not admin");
         }
 
@@ -256,7 +284,8 @@ public class ChatService {
         if (request.getType() != null) {
             room.setType(ChatRoomType.valueOf(request.getType()));
         }
-        if (request.getOwnerId() != null) {
+
+        if (request.getOwnerId() != null && !room.getType().equals(ChatRoomType.SINGLE)) {
             var newOwner = userService.getUser(request.getOwnerId());
             if(!isUserInChatRoom(roomId, newOwner)) {
                 throw new NoPermissionException("new Admin is not in this chat");
@@ -264,18 +293,30 @@ public class ChatService {
             room.setOwner(newOwner);
         }
 
-        if (!CollectionUtils.isEmpty(request.getFriends())) {
-            Set<Users> updatedMembers = new HashSet<>();
-
+        if (!CollectionUtils.isEmpty(request.getFriends()) && !room.getType().equals(ChatRoomType.SINGLE)) {
+            Set<ChatRoomMember> updatedMembers = new HashSet<>();
+            if(request.getFriends().stream().filter(item -> item.equals(room.getOwner().getId())).findAny().isEmpty()) {
+                request.getFriends().add(room.getOwner().getId());
+            }
             for (String friendId : request.getFriends()) {
                 Users friend = userService.getUser(friendId);
-                updatedMembers.add(friend);
+                ChatRoomMember member = room.getMembers().stream()
+                        .filter(m -> m.getUser().equals(friend))
+                        .findFirst()
+                        .orElseGet(() -> ChatRoomMember.builder()
+                                .user(friend)
+                                .status("none")
+                                .chatRoom(room)
+                                .build());
+
+                updatedMembers.add(member);
             }
+
 
             room.getMembers().retainAll(updatedMembers);
             room.getMembers().addAll(updatedMembers);
-
         }
+
 
         return BaseResponse.builder().message("Update rooms successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
@@ -315,6 +356,78 @@ public class ChatService {
         }
         return BaseResponse.builder().message("Update rooms successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
+    public BaseResponse blockUser(Integer roomId) throws NoPermissionException {
+        String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        var user = userService.getUser(userContextId);
+        if (!isUserInChatRoom(roomId, user)){
+            throw new NoPermissionException("You is not in this chat");
+        }
+
+        if (!room.getType().equals(ChatRoomType.SINGLE)){
+            throw new NoPermissionException("You mustn't in single chat");
+        }
+        for(var member : room.getMembers()) {
+            if(member.getUser().equals(user)) {
+                member.setStatus("block");
+            } else {
+                member.setStatus("blocked");
+            }
+        }
+        return BaseResponse.builder().message("Update rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
+    public BaseResponse unlockUser(Integer roomId) throws NoPermissionException {
+        String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        var user = userService.getUser(userContextId);
+        if (!isUserInChatRoom(roomId, user)){
+            throw new NoPermissionException("You is not in this chat");
+        }
+
+        if (!room.getType().equals(ChatRoomType.SINGLE)){
+            throw new NoPermissionException("You mustn't in single chat");
+        }
+        for(var member : room.getMembers()) {
+            if(member.getUser().equals(user)) {
+                if(!member.getStatus().equals("block")) {
+                    throw new NoPermissionException("You can't unlock user block you or not blocked");
+                }
+            }
+        }
+        for(var member : room.getMembers()) {
+            if(member.getUser().equals(user)) {
+                member.setStatus("none");
+            } else {
+                member.setStatus("none");
+            }
+        }
+        return BaseResponse.builder().message("Update rooms successful.")
+                .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
+                .build();
+    }
+
+    public BaseResponse getStatus(Integer roomId) throws NoPermissionException {
+        String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        var room = getChatRoom(roomId);
+        var user = userService.getUser(userContextId);
+        if (!isUserInChatRoom(roomId, user)){
+            throw new NoPermissionException("You is not in this chat");
+        }
+        String status = "none";
+        for(var member : room.getMembers()) {
+            if(member.getUser().equals(user)) {
+                status = member.getStatus();
+            }
+        }
+
+        return BaseResponse.builder().message("get room status successful.")
+                .data(Map.of("status", status))
                 .build();
     }
 

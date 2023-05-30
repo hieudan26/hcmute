@@ -94,4 +94,20 @@ public class ChatController {
     public ResponseEntity<BaseResponse> isUserInRoom(@PathVariable Integer roomId, @PathVariable String userId) throws NoPermissionException {
         return ResponseEntity.ok(chatService.IsUserInChatRoom(roomId, userId));
     }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/rooms/{roomId}/block")
+    public ResponseEntity<BaseResponse> blockRoom(@PathVariable Integer roomId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.blockUser(roomId));
+    }
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PutMapping("/rooms/{roomId}/unlock")
+    public ResponseEntity<BaseResponse> unlockRoom(@PathVariable Integer roomId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.unlockUser(roomId));
+    }
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @GetMapping("/rooms/{roomId}/status")
+    public ResponseEntity<BaseResponse> getStatusRoom(@PathVariable Integer roomId) throws NoPermissionException {
+        return ResponseEntity.ok(chatService.getStatus(roomId));
+    }
 }
