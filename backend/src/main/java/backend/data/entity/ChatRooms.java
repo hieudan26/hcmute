@@ -36,14 +36,10 @@ public class ChatRooms extends Auditable<String> implements Serializable {
 
     boolean isDeleted;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "chat_room_members",
-            joinColumns = @JoinColumn(name = "chat_room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    Set<Users> members = new HashSet<>();
+    Set<ChatRoomMember> members = new HashSet<>();
     LocalDateTime time = LocalDateTime.now();
 }

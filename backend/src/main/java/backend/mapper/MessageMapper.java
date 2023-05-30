@@ -5,6 +5,7 @@ import backend.data.dto.socketdto.chat.ChatRoomResponse;
 import backend.data.dto.socketdto.chat.MessagePayLoad;
 import backend.data.dto.socketdto.chat.MessageResponse;
 import backend.data.dto.socketdto.chat.RoomChatUserResponse;
+import backend.data.entity.ChatRoomMember;
 import backend.data.entity.ChatRooms;
 import backend.data.entity.Messages;
 import backend.data.entity.Users;
@@ -62,9 +63,9 @@ public abstract class MessageMapper {
             response.setName(rooms.getName());
         } else {
             String idUserContext = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-            var users = rooms.getMembers().stream().filter(user -> user.getId().equals(idUserContext))
+            var users = rooms.getMembers().stream().filter(user -> user.getUser().getId().equals(idUserContext))
                     .findAny().orElseThrow(()-> new NoRecordFoundException(" not found other user in this chat"));
-            response.setName(fromUserToFullName(users ));
+            response.setName(fromUserToFullName(users.getUser()));
         }
         return response;
     }
@@ -109,10 +110,20 @@ public abstract class MessageMapper {
     }
 
     @Named("fromListUserToListUserResponse")
-    protected List<RoomChatUserResponse> fromListUserToListUserResponse(Set<Users> users) {
+    protected List<RoomChatUserResponse> fromListUserToListUserResponse(Set<ChatRoomMember> users) {
         return users.stream().map(
-                this::userToUserResponse
+                this::ChatRoomMemberToUserResponse
         ).toList();
+    }
+
+    public  RoomChatUserResponse ChatRoomMemberToUserResponse(ChatRoomMember user) {
+        return RoomChatUserResponse.builder()
+                .userId(user.getUser().getId())
+                .avatar(user.getUser().getAvatar())
+                .fullName(fromUserToFullName(user.getUser()))
+                .status(user.getStatus())
+                .isAdmin(false)
+                .build();
     }
 
     public  RoomChatUserResponse userToUserResponse(Users user) {
@@ -120,6 +131,7 @@ public abstract class MessageMapper {
                 .userId(user.getId())
                 .avatar(user.getAvatar())
                 .fullName(fromUserToFullName(user))
+                .status("none")
                 .isAdmin(false)
                 .build();
     }
