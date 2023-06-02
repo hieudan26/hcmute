@@ -458,10 +458,20 @@ public class ChatService {
         }
         ChatRooms chatRooms = getChatRoom(roomId);
 
-        if(chatRooms.getMembers().size() == 2){
+        if( chatRooms.getType().equals(ChatRoomType.SINGLE)){
             throw new NoPermissionException(String.format("You cannot leave pair chat"));
         }
-        chatRooms.getMembers().remove(users);
+
+        if (chatRooms.getOwner().equals(users)) {
+            if(chatRooms.getMembers().size() > 1) {
+                var newOwner = chatRooms.getMembers().stream().filter(item -> !item.getUser().equals(users))
+                        .findAny();
+                newOwner.ifPresent(chatRoomMember -> chatRooms.setOwner(chatRoomMember.getUser()));
+            }
+        }
+
+        chatRooms.getMembers().remove(chatRooms.getMembers().stream().filter(item -> !item.getUser().equals(users))
+                .findFirst().orElseThrow(() -> new NoRecordFoundException("Not found chat room with id: "+roomId)));
 
         return BaseResponse.builder().message("Leave room successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository
