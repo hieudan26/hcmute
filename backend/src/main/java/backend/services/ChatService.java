@@ -352,7 +352,9 @@ public class ChatService {
         }
         var user = userService.getUser(userId);
         if (isUserInChatRoom(roomId, user)){
-            room.getMembers().remove(user);
+            room.getMembers().remove(
+                    room.getMembers().stream().filter(member -> member.getUser().getId().equals(userId)).findFirst().orElseThrow(()-> new NoRecordFoundException("Not found user in this chat"))
+            );
         }
         return BaseResponse.builder().message("Update rooms successful.")
                 .data(mapper.fromChatRoomsToChatRoomResponse(chatRoomRepository.save(room)))
