@@ -83,6 +83,8 @@ export default function ListNotifications(props: IListNotificationsProps) {
         case 'place_status':
           router.push(`/admin/contributions-management/${item.contentId}`);
           break;
+        case 'message':
+          break;
         case 'post':
           break;
         case 'react':
@@ -109,6 +111,8 @@ export default function ListNotifications(props: IListNotificationsProps) {
           break;
         case 'comment_reply':
           router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'message':
           break;
         default:
           break;

@@ -58,6 +58,7 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
       // brokerURL: 'wss://api.hcmute.me/v1/ws',
       webSocketFactory: () => {
         return new SockJS('https://api.hcmute.me/v1/ws');
+        // return new SockJS('https://b5e3-2405-4802-9192-9010-cd4b-9224-4667-4461.ngrok-free.app/v1/ws');
         // return new SockJS('http://localhost:8080/v1/ws');
       },
       connectHeaders: {
@@ -92,7 +93,6 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
   const onMessageReceived = (message: IMessage) => {
     const { body } = message;
     const response: ISocketResponse = JSON.parse(body);
-    console.log(response);
     if (auth?.role === RoleConstants.USER) {
       if (response.type === 'MESSAGE') {
         // dispatch(sendMessage(response.content));

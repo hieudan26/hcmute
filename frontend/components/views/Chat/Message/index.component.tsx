@@ -35,6 +35,11 @@ export default function Message(props: IMessageProps) {
             {data.fullName}, {addAMPM(data.time.split(' ')[1])}
           </Text>
         )}
+        {type === 'SINGLE' && (
+          <Text as='sub' color='black' mb='3' mx='1'>
+            {addAMPM(data.time.split(' ')[1])}
+          </Text>
+        )}
         <Box bg={auth?.id === userId ? '#D0637C' : bgColor[colorMode]} rounded='xl' w='fit-content' py={1} px={3}>
           <Text>{message}</Text>
         </Box>

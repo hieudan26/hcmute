@@ -62,7 +62,9 @@ export default function ChatBox(props: IChatBoxProps) {
     );
     setChat('');
     queryClient.invalidateQueries(['messages']);
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
+    }, 600);
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | undefined) => {

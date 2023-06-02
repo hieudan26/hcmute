@@ -23,6 +23,8 @@ import {
   Avatar,
   Spinner,
   FormControl,
+  FormLabel,
+  Switch,
 } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
 import CardPerson from './CardPerson/index.component';
@@ -33,6 +35,7 @@ import chatService from '../../../../../services/chat/chat.service';
 import { formatTimePost } from '../../../../../utils';
 import { useAppSelector } from '../../../../../hooks/redux';
 import { useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 export interface ICreateChatModalProps {
   isOpen: boolean;
@@ -42,6 +45,7 @@ export interface ICreateChatModalProps {
 
 export default function CreateChatModal(props: ICreateChatModalProps) {
   const { isOpen, onOpen, onClose } = props;
+  const router = useRouter();
   const queryClient = useQueryClient();
   const auth = useAppSelector((state) => state.auth.value);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -60,12 +64,20 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
   );
 
   useEffect(() => {
-    if (name === undefined || name === '' || selected.length < 2) {
-      setIsDisable(true);
+    if (value === 'GROUP') {
+      if (name === undefined || name === '' || selected.length < 2) {
+        setIsDisable(true);
+      } else {
+        setIsDisable(false);
+      }
     } else {
-      setIsDisable(false);
+      if (selected.length > 1) {
+        setIsDisable(true);
+      } else {
+        setIsDisable(false);
+      }
     }
-  }, [name, selected]);
+  }, [name, selected, value]);
 
   useEffect(() => {
     setSelected([]);
@@ -96,6 +108,13 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
     };
   }, [users]);
 
+  const clear = () => {
+    setSearch('');
+    setName(undefined);
+    setSelected([]);
+    setIsDisable(false);
+  };
+
   const add = (user: IUserFirstLoginRequest) => {
     if (selected.length >= 1 && value === 'SINGLE') {
       toggleMessage({
@@ -122,8 +141,8 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
     setName(event.target.value);
   };
 
-  const createNewRoom = async () => {
-    if (name && name !== '' && selected.length > 1 && auth) {
+  const create = async () => {
+    if (auth) {
       const listId = selected.map((x) => {
         return x.id;
       });
@@ -136,6 +155,20 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
       });
       queryClient.invalidateQueries(['chats']);
       onClose();
+      clear();
+      router.push(`/chats/${response.data.id}`);
+    }
+  };
+
+  const createNewRoom = async () => {
+    if (value === 'GROUP') {
+      if (name && name !== '' && selected.length > 1) {
+        create();
+      }
+    } else {
+      if (selected.length === 1) {
+        create();
+      }
     }
   };
 
@@ -146,6 +179,22 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
         <ModalHeader>Tạo phòng chat nhóm ngay thoaiii 😗</ModalHeader>
         <ModalCloseButton />
         <ModalBody mb='4'>
+          <FormControl display='flex' alignItems='center'>
+            <FormLabel htmlFor='email-alerts' mb='0'>
+              Loại phòng trò chuyện: {value === 'SINGLE' ? 'phòng đơn' : 'phòng nhiều thành viên'}
+            </FormLabel>
+            <Switch
+              size='md'
+              colorScheme='pink'
+              onChange={() => {
+                if (value === 'SINGLE') {
+                  setValue('GROUP');
+                } else {
+                  setValue('SINGLE');
+                }
+              }}
+            />
+          </FormControl>
           {value === 'GROUP' && (
             <FormControl isRequired isInvalid={name === ''}>
               <Input value={name} onChange={changeName} my='2' placeholder='Tên nhóm chat' />
@@ -187,7 +236,15 @@ export default function CreateChatModal(props: ICreateChatModalProps) {
         </ModalBody>
 
         <ModalFooter>
-          <Button background='gray.600' _hover={{ bg: 'black' }} mr={3} onClick={onClose}>
+          <Button
+            background='gray.600'
+            _hover={{ bg: 'black' }}
+            mr={3}
+            onClick={() => {
+              clear();
+              onClose();
+            }}
+          >
             Hủy
           </Button>
           <Button disabled={isDisable} onClick={createNewRoom}>

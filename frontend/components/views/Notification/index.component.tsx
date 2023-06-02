@@ -99,6 +99,8 @@ export default function Notification(props: INotificationProps) {
         case 'place_status':
           router.push(`/admin/contributions-management/${item.contentId}`);
           break;
+        case 'message':
+          break;
         case 'post':
           break;
         case 'react':
@@ -114,6 +116,8 @@ export default function Notification(props: INotificationProps) {
       switch (item.type) {
         case 'place_status':
           router.push(`/contribute/list-of-previous-contributions/${item.contentId}`);
+          break;
+        case 'message':
           break;
         case 'post':
           break;
