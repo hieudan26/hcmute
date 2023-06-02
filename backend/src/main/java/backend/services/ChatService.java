@@ -470,7 +470,7 @@ public class ChatService {
             }
         }
 
-        chatRooms.getMembers().remove(chatRooms.getMembers().stream().filter(item -> !item.getUser().equals(users))
+        chatRooms.getMembers().remove(chatRooms.getMembers().stream().filter(item -> item.getUser().equals(users))
                 .findFirst().orElseThrow(() -> new NoRecordFoundException("Not found chat room with id: "+roomId)));
 
         return BaseResponse.builder().message("Leave room successful.")
