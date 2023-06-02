@@ -116,7 +116,7 @@ export default function Sidebar(props: ISidebarProps) {
         </Flex>
         <Stack direction='row' align='center' p='10px'>
           <Button w='full' onClick={onOpenCreateChat}>
-            {t('create_group')}
+            Tạo phòng trò chuyện
           </Button>
         </Stack>
         <Stack direction='row' align='center' p='10px'>

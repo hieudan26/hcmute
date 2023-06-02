@@ -19,6 +19,8 @@ export function ItemContent(props: IItemContentProps) {
       switch (data.type) {
         case 'place_status':
           return 'đã đóng góp một địa điểm du lịch mới cho hệ thống';
+        case 'message':
+          return 'Không có ý kiến';
         case 'post':
           return 'không có ý kiến';
         case 'react':
@@ -34,6 +36,8 @@ export function ItemContent(props: IItemContentProps) {
       switch (data.type) {
         case 'place_status':
           return 'đã phê duyệt một đóng góp địa điểm du lịch của bạn';
+        case 'message':
+          return 'abc';
         case 'post':
           return 'không có ý kiến';
         case 'react':

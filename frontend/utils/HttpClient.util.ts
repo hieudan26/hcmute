@@ -101,6 +101,7 @@ export const getAsync = (
 
 const getHeaders = (contentType: string, accessToken: string) => {
   return {
+    'ngrok-skip-browser-warning': true,
     'Content-Type': contentType,
     Authorization: `Bearer ${accessToken}`,
   };
