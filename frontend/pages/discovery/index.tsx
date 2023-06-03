@@ -12,7 +12,7 @@ export interface IDiscoveryProps {}
 const Discovery: NextPage = (props: IDiscoveryProps) => {
   const [paramsPagination, setParamsPagination] = useState<IPaginationRequest>({
     pageNumber: 0,
-    pageSize: 10,
+    pageSize: 20,
     sortBy: 'name',
     sortType: 'ASC',
   });

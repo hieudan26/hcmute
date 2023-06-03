@@ -48,7 +48,7 @@ export default function CountriesList(props: ICountriesListProps) {
             ))
           )}
         {!places_countries.data &&
-          ArrayTenTemp.map((item, index) => (
+          [...ArrayTenTemp, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map((item, index) => (
             <Skeleton key={index}>
               <Button textTransform='uppercase' variant='outline' color='gray.500'>
                 item

@@ -185,15 +185,6 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex
-            cursor='pointer'
-            justify='space-between'
-            align='center'
-            mb={!auth || auth.role !== RoleConstants.USER ? '0' : '4'}
-          >
-            <Text>{t('breadcrumb.itinerary')}</Text>
-            <ChevronRightIcon />
-          </Flex>
           {auth && auth.role === RoleConstants.USER && (
             <Link href={`/discovery/${data?.url}/contribute`}>
               <Flex cursor='pointer' justify='space-between' align='center'>

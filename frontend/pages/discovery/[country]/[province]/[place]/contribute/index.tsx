@@ -134,10 +134,6 @@ const CountryProvincePlaceContribute: NextPage = (props: ICountryProvincePlaceCo
               <ChevronRightIcon />
             </Flex>
           </Link>
-          <Flex cursor='pointer' justify='space-between' align='center' mb='4'>
-            <Text>{t('breadcrumb.itinerary')}</Text>
-            <ChevronRightIcon />
-          </Flex>
           <Link href={`/discovery/${country}/${province}/${data?.url}/contribute`}>
             <Flex
               cursor='pointer'

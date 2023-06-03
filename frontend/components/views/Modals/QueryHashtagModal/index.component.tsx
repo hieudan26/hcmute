@@ -63,20 +63,20 @@ export default function QueryHashtagModal(props: IQueryHashtagModalProps) {
       <ModalContent bg={bgModalContent}>
         <ModalCloseButton />
         <ModalBody mt='4'>
-          <Text fontSize='xl'>Filter post with hashtag. Choose type:</Text>
+          <Text fontSize='xl'>Lọc bài viết bằng hashtag. Chọn loại:</Text>
           <RadioGroup mt='4' colorScheme='pink' onChange={changeRadioButton} value={value}>
             <Stack direction='column'>
-              <Radio value='experience'>Experience</Radio>
-              <Radio value='faq'>Faq</Radio>
+              <Radio value='experience'>Trải nghiệm</Radio>
+              <Radio value='faq'>Hỏi đáp</Radio>
             </Stack>
           </RadioGroup>
         </ModalBody>
 
         <ModalFooter>
           <Button background='gray.600' _hover={{ bg: 'black' }} onClick={onClose} mr={3}>
-            Cancel
+            Hủy
           </Button>
-          <Button onClick={filter}>Filter</Button>
+          <Button onClick={filter}>Lọc</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
