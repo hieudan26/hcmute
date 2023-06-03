@@ -53,9 +53,9 @@ export default function ImageUpload(props: IImageUploadProps) {
               </Box>
               <Stack p='8' textAlign='center' spacing='1'>
                 <Heading fontSize='lg' color='gray.700' fontWeight='bold'>
-                  Drop avatar here
+                  Thả avatar ở đây
                 </Heading>
-                <Text fontWeight='light'>or click to upload</Text>
+                <Text fontWeight='light'>hoặc nhấp để tải lên</Text>
               </Stack>
             </Stack>
           </Box>

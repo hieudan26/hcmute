@@ -125,7 +125,7 @@ export default function PostRender(props: IPostRenderProps) {
     <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
       <ModalContainer isOpen={modalImage} size='xl'>
         <ModalHeader display='flex' flexDirection='column' alignItems='center'>
-          Detail image
+          Chi tiết hình ảnh
         </ModalHeader>
         <ModalCloseButton
           onClick={() => {

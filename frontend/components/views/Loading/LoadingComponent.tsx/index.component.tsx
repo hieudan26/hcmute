@@ -37,10 +37,10 @@ export default function LoadingComponent(props: ILoadingComponentProps) {
       />
       <Flex direction='row' justify='center' align='center' mb='5px'>
         <Spinner thickness='3px' speed='0.65s' emptyColor='gray.200' color='#D0637C' size='sm' />
-        <Text as='samp'>&nbsp;Loading...</Text>
+        <Text as='samp'>&nbsp;Đang tải...</Text>
       </Flex>
       <Text as='i' textAlign='center'>
-        This may take a few seconds, please don&apos;t close this page.
+      Quá trình này có thể mất vài giây, vui lòng không đóng trang này.
       </Text>
     </Flex>
   );

@@ -73,10 +73,10 @@ export default function Loading(props: ILoadingProps) {
               width={300}
             />
             <Text as='samp' mb='5px'>
-              Loading...
+              Đang tải...
             </Text>
             <Text as='i' textAlign='center'>
-              This may take a few seconds, please don&apos;t close this page.
+              Quá trình này có thể mất vài giây, vui lòng không đóng trang này.
             </Text>
           </Flex>
         </ModalBody>
