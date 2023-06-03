@@ -18,8 +18,9 @@ export default function ImageBox(props: IImageBoxProps) {
     <Flex bg='transparent' px={isDelete ? '6' : '3'} w='full' alignItems='center' justifyContent='center'>
       <Box position='relative'>
         {isDelete && (
-          <Flex right='0%' top='0%' position='absolute' onClick={handleRemove}>
+          <Flex right='0%' top='0%' position='absolute'>
             <CloseButton
+              onClick={handleRemove}
               title='Xóa'
               size='sm'
               bg='gray.300'
