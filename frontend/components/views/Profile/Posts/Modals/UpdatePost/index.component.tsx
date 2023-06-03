@@ -279,10 +279,9 @@ export default function UpdatePost(props: IUpdatePostProps) {
     if (isNew) {
       const index = selectedFiles.indexOf(url);
       if (index !== -1) {
-        const filesTemp = [...filesToUpload];
         const newSelected = selectedFiles.filter((item) => item !== url);
         setSelectedFiles(newSelected);
-        filesTemp.splice(index, 1);
+        const filesTemp = filesToUpload.splice(index, 1);
         setFilesToUpload(filesTemp);
         URL.revokeObjectURL(url);
       }
@@ -368,10 +367,10 @@ export default function UpdatePost(props: IUpdatePostProps) {
           </Button>
         </Flex>
 
-        {(imagesUpdate.length > 0 || selectedFiles.length > 0) && (
-          <Carousel infiniteLoop showThumbs={false} showStatus={false} emulateTouch>
+        {imagesUpdate.concat(selectedFiles).length > 0 && (
+          <Carousel infiniteLoop showThumbs={false} showStatus={false}>
             {imagesUpdate.concat(selectedFiles).map((item, index) => (
-              <ImageBox key={index} src={item} alt={item} _removeImage={removeImage} />
+              <ImageBox key={`${item}-${index}`} src={item} alt={item} _removeImage={removeImage} />
             ))}
           </Carousel>
         )}

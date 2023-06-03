@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Flex,
@@ -180,7 +181,11 @@ export default function MenuLinks(props: IMenuLinksProps) {
           {statusMenu ? (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px'>
-                <Icon color={iconAccount} fontSize={'30px'} as={FaUserCircle} marginBottom='5px' />
+                {userInfor && userInfor.avatar ? (
+                  <Avatar size='sm' name={`${userInfor.firstName} ${userInfor.lastName}`} src={userInfor.avatar} />
+                ) : (
+                  <Icon color={iconAccount} fontSize={'30px'} as={FaUserCircle} marginBottom='5px' />
+                )}
               </MenuButton>
               <MenuList bg={bgMenu} color={colorMenu} zIndex={10000}>
                 {role !== RoleConstants.ANONYMOUS ? (
@@ -271,7 +276,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                     </MenuItm>
                   </Link>
                 )}
-                <MenuDivider />
+                {/* <MenuDivider />
                 <MenuItm
                   onClick={changeLanguage}
                   fontFamily='titleFont'
@@ -290,7 +295,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
                   fontSize='14px'
                 >
                   {currentTheme.currentTheme === ThemeConstants.DARK ? t('menuBase.theme.light') : t('menuBase.theme.dark')}
-                </MenuItm>
+                </MenuItm> */}
               </MenuList>
             </Menu>
           ) : (
