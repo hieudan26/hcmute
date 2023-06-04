@@ -57,11 +57,7 @@ public class PostService {
     }
 
     public BaseResponse listAllPosts(PagingRequest pagingRequest, PostQueryParams params){
-        var isAdmin  = false;
-        var isLogin = !SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(String.class);
-        if(isLogin && userService.getUserFromContext().getRole().equals(ROLE_ADMIN.name())) {
-            isAdmin = true;
-        }
+        boolean isAdmin = isAdmin();
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
                  postRepository.findAll(SearchSpecificationUtils.searchBuilder(params,isAdmin), PagingUtils.getPageable(pagingRequest))
                         .map(postMapper::PostsToPostsResponse));
@@ -69,6 +65,15 @@ public class PostService {
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
                 .build();
+    }
+
+    private boolean isAdmin() {
+        var isAdmin  = false;
+        var isLogin = !SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(String.class);
+        if(isLogin && userService.getUserFromContext().getRole().equals(ROLE_ADMIN.name())) {
+            isAdmin = true;
+        }
+        return isAdmin;
     }
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String type, String key){
@@ -107,6 +112,8 @@ public class PostService {
         post.setHashTags(createPostRequest.getHashTags().stream().map(
                 name -> hashTagService.getHashTag(name)
         ).collect(Collectors.toSet()));
+
+        post.setStatus(PostStatus.ACTIVE.name());
 
         return BaseResponse.builder().message("Create post successful.")
                 .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
@@ -196,7 +203,8 @@ public class PostService {
 
     public Posts getPostById(Integer id){
         Optional<Posts> posts = postRepository.findById(id);
-        if(posts.isEmpty())
+
+        if(posts.isEmpty() || (!isAdmin() && (posts.get().getIsDeleted() || posts.get().getStatus().equals(PostStatus.BANNED.name()))))
             throw new NoRecordFoundException(String.format("Can't find post with Id: %s.",id));
         return  posts.get();
     }
