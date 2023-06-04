@@ -237,7 +237,18 @@ public class PostService {
         post.setReportCount(post.getReportCount()+1);
 
         if(post.getReportCount() >= 10) {
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.REPORT.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(post.getOwner().getId())
+                    .contentId(post.getId())
+                    .description("Too many people report your post. It will be hidden on community.")
+                    .status(false)
+                    .build();
+            notificationService.sendSocketMessage(noti, post.getOwner().getId());
+
             post.setStatus(PostStatus.OBSERVE.name());
+
         }
         return BaseResponse.builder().message("Report post successful.")
                 .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
@@ -251,11 +262,29 @@ public class PostService {
             post.setStatus(PostStatus.BANNED.name());
             post.setReportCount(0);
             postReportRepository.deleteAllByPost_Id(post.getId());
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.REPORT.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(post.getOwner().getId())
+                    .contentId(post.getId())
+                    .description("Your post has been banned.")
+                    .status(false)
+                    .build();
+            notificationService.sendSocketMessage(noti, post.getOwner().getId());
         }
         else if(updatePostReportRequest.getStatus().equals(PostStatus.ACTIVE.name())) {
             post.setStatus(PostStatus.ACTIVE.name());
             post.setReportCount(0);
             postReportRepository.deleteAllByPost_Id(post.getId());
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.REPORT.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(post.getOwner().getId())
+                    .contentId(post.getId())
+                    .description("Your post has been active.")
+                    .status(false)
+                    .build();
+            notificationService.sendSocketMessage(noti, post.getOwner().getId());
         } else {
             post.setStatus(PostStatus.OBSERVE.name());
         }
