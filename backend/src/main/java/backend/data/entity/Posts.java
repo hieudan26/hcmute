@@ -1,5 +1,6 @@
 package backend.data.entity;
 
+import backend.common.PostStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -91,4 +92,7 @@ public class Posts extends Auditable<String> implements Serializable {
     public void removeAllImages() {
         this.images.removeAll(this.images);
     }
+
+    int reportCount = 0;
+    String status = PostStatus.ACTIVE.name();
 }

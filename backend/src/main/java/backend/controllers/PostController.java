@@ -2,9 +2,7 @@ package backend.controllers;
 
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
-import backend.data.dto.post.CreatePostRequest;
-import backend.data.dto.post.PostQueryParams;
-import backend.data.dto.post.UpdatePostRequest;
+import backend.data.dto.post.*;
 import backend.data.dto.user.UserFirstLoginRequest;
 import backend.services.AreaService;
 import backend.services.PostService;
@@ -66,5 +64,35 @@ public class PostController {
     @GetMapping("/{id}/comments")
     public ResponseEntity<BaseResponse> getCommentsPost(@PathVariable("id") String id, PagingRequest pagingRequest){
         return ResponseEntity.ok(postService.getCommentsByPost(id,pagingRequest));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @GetMapping("/{id}/reports")
+    public ResponseEntity<BaseResponse> getReports(@PathVariable("id") Integer id, PagingRequest pagingRequest){
+        return ResponseEntity.ok(postService.listAllPostReportByPostId(pagingRequest,id));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @GetMapping("/user/{id}/reports")
+    public ResponseEntity<BaseResponse> getReportsFromUsers(@PathVariable("id") String id, PagingRequest pagingRequest){
+        return ResponseEntity.ok(postService.getPostReportByUserId(pagingRequest,id));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @GetMapping("/user/{userId}/reports/{postId}")
+    public ResponseEntity<BaseResponse> getReportsFromUsers(@PathVariable("userId") String userId, @PathVariable("postId") Integer postId, PagingRequest pagingRequest){
+        return ResponseEntity.ok(postService.getPostReportByPostIdAndUserId(pagingRequest,postId, userId));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
+    @PostMapping("/{postId}/reports/")
+    public ResponseEntity<BaseResponse> reportPost(@PathVariable("postId") String postId, CreatePostReportRequest createPostReportRequest) throws NoPermissionException {
+        return ResponseEntity.ok(postService.reportPost(postId, createPostReportRequest));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @PutMapping("/{postId}/reports/")
+    public ResponseEntity<BaseResponse> updateReportPost(@PathVariable("postId") String postId, UpdatePostReportRequest updatePostReportRequest) throws NoPermissionException {
+        return ResponseEntity.ok(postService.updatePostReport(postId, updatePostReportRequest));
     }
 }
