@@ -85,13 +85,13 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
-    @PostMapping("/{postId}/reports/")
+    @PostMapping("/{postId}/reports")
     public ResponseEntity<BaseResponse> reportPost(@PathVariable("postId") String postId, CreatePostReportRequest createPostReportRequest) throws NoPermissionException {
         return ResponseEntity.ok(postService.reportPost(postId, createPostReportRequest));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
-    @PutMapping("/{postId}/reports/")
+    @PutMapping("/{postId}/reports")
     public ResponseEntity<BaseResponse> updateReportPost(@PathVariable("postId") String postId, UpdatePostReportRequest updatePostReportRequest) throws NoPermissionException {
         return ResponseEntity.ok(postService.updatePostReport(postId, updatePostReportRequest));
     }
