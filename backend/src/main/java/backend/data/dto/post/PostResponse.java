@@ -25,5 +25,7 @@ public class PostResponse {
     List<String> images;
     Boolean isReacted;
     Boolean isDeleted;
+    Integer reportCount;
+    String status;
     List<String> hashTags;
 }

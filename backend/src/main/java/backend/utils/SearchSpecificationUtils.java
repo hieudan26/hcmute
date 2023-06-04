@@ -1,5 +1,6 @@
 package backend.utils;
 
+import backend.common.PostStatus;
 import backend.data.dto.place.PlaceRequestParams;
 import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.user.UserQueryParams;
@@ -35,7 +36,7 @@ public class SearchSpecificationUtils {
         return builder.buildOr();
     }
 
-    public static Specification searchBuilder(PostQueryParams query){
+    public static Specification searchBuilder(PostQueryParams query, boolean isAdmin){
         SpecificationsBuilder<Posts> builder = new SpecificationsBuilder();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.valueToTree(query);
@@ -61,7 +62,9 @@ public class SearchSpecificationUtils {
             for (final JsonNode objNode : jsonNode.get("hashTags"))
                 builder2.with("hashTags", "hashTags", objNode.asText());
         }
-
+        if (!isAdmin) {
+            builder.with("status", "=", PostStatus.ACTIVE.name());
+        }
         return builder.buildAnd().and(builder2.buildOr());
     }
 

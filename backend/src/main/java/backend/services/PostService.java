@@ -1,20 +1,18 @@
 package backend.services;
 
 import backend.common.NotificationConstants;
+import backend.common.PostStatus;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.global.PagingResponse;
-import backend.data.dto.post.CreatePostRequest;
-import backend.data.dto.post.PostQueryParams;
-import backend.data.dto.post.PostResponse;
-import backend.data.dto.post.UpdatePostRequest;
-import backend.data.entity.HashTags;
-import backend.data.entity.Notifications;
-import backend.data.entity.Posts;
-import backend.data.entity.Users;
+import backend.data.dto.post.*;
+import backend.data.entity.*;
+import backend.exception.InvalidRequestException;
 import backend.exception.NoRecordFoundException;
 import backend.mapper.PostMapper;
+import backend.mapper.PostReportMapper;
 import backend.repositories.CommentRepository;
+import backend.repositories.PostReportRepository;
 import backend.repositories.PostRepository;
 import backend.utils.PagingUtils;
 import backend.utils.S3Util;
@@ -26,12 +24,12 @@ import org.springframework.stereotype.Service;
 
 import javax.naming.NoPermissionException;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static backend.common.Roles.ADMIN;
-import static backend.common.Roles.ROLE_USER;
+import static backend.common.Roles.*;
 
 @Service
 @AllArgsConstructor
@@ -40,8 +38,12 @@ public class PostService {
     private PostRepository postRepository;
     private CommentRepository commentRepository;
     private HashTagService hashTagService;
+    private PostReportRepository postReportRepository;
+
     private UserService userService;
     private PostMapper postMapper;
+    private PostReportMapper postReportMapper;
+
     private CommentService commentService;
     private NotificationService notificationService;
 
@@ -55,8 +57,13 @@ public class PostService {
     }
 
     public BaseResponse listAllPosts(PagingRequest pagingRequest, PostQueryParams params){
+        var isAdmin  = false;
+        var isLogin = !SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(String.class);
+        if(isLogin && userService.getUserFromContext().getRole().equals(ROLE_ADMIN.name())) {
+            isAdmin = true;
+        }
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                 postRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
+                 postRepository.findAll(SearchSpecificationUtils.searchBuilder(params,isAdmin), PagingUtils.getPageable(pagingRequest))
                         .map(postMapper::PostsToPostsResponse));
 
         return BaseResponse.builder().message("Find all posts successful.")
@@ -66,7 +73,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String type, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByTypeAndTitleIgnoreCaseContainingAndIsDisableIsFalse(PagingUtils.getPageable(pagingRequest),type,key));
+                postRepository.findByTypeAndTitleIgnoreCaseContainingAndIsDisableIsFalseAndStatus(PagingUtils.getPageable(pagingRequest),type,key,PostStatus.ACTIVE.name()));
 
         return BaseResponse.builder().message("Find all posts successful.")
                 .data(pagingResponse)
@@ -75,7 +82,7 @@ public class PostService {
 
     public BaseResponse findPosts(PagingRequest pagingRequest, String key){
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
-                postRepository.findByTitleIgnoreCaseContainingAndIsDisableIsFalse(PagingUtils.getPageable(pagingRequest),key)
+                postRepository.findByTitleIgnoreCaseContainingAndIsDisableIsFalseAndStatus(PagingUtils.getPageable(pagingRequest),key, PostStatus.ACTIVE.name())
                         .map(postMapper::PostsToPostsResponse));
 
         return BaseResponse.builder().message("Find all posts successful.")
@@ -175,6 +182,8 @@ public class PostService {
                 .build();
     }
 
+
+
     public BaseResponse getCommentsByPost(String id, PagingRequest pagingRequest){
         return commentService.getCommentsByPost(pagingRequest,id);
     }
@@ -198,4 +207,76 @@ public class PostService {
                 .build();
     }
 
+    public BaseResponse reportPost(String id, CreatePostReportRequest createPostReportRequest) throws NoPermissionException {
+        Posts post = getPostById(Integer.valueOf(id));
+        String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+
+        if(userId.equals(post.getOwner().getId()))
+            throw new NoPermissionException("You can't report your post.");
+
+        if(postReportRepository.findPostReportByPost_IdAndOwner_Id(post.getId(), userId).isPresent()) {
+            throw new InvalidRequestException("You already report this post.");
+        }
+
+        var repostReport = PostReport.builder()
+                .owner(userService.getUserFromContext())
+                .post(post)
+                .content(createPostReportRequest.getContent())
+                .time(LocalDateTime.now())
+                .build();
+
+        postReportRepository.save(repostReport);
+        post.setReportCount(post.getReportCount()+1);
+
+        if(post.getReportCount() >= 10) {
+            post.setStatus(PostStatus.OBSERVE.name());
+        }
+        return BaseResponse.builder().message("Report post successful.")
+                .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
+                .build();
+    }
+
+    public BaseResponse updatePostReport(String id, UpdatePostReportRequest updatePostReportRequest) throws NoPermissionException {
+        Posts post = getPostById(Integer.valueOf(id));
+
+        if(updatePostReportRequest.getStatus().equals(PostStatus.BANNED.name())) {
+            post.setStatus(PostStatus.BANNED.name());
+            post.setReportCount(0);
+            postReportRepository.deleteAllByPost_Id(post.getId());
+        }
+        else if(updatePostReportRequest.getStatus().equals(PostStatus.ACTIVE.name())) {
+            post.setStatus(PostStatus.ACTIVE.name());
+            post.setReportCount(0);
+            postReportRepository.deleteAllByPost_Id(post.getId());
+        } else {
+            post.setStatus(PostStatus.OBSERVE.name());
+        }
+
+        return BaseResponse.builder().message("Report post successful.")
+                .data(postMapper.PostsToPostsResponse(postRepository.save(post)))
+                .build();
+    }
+
+    public BaseResponse listAllPostReportByPostId(PagingRequest pagingRequest,Integer postId){
+        PagingResponse pagingResponse = new PagingResponse(
+                postReportRepository.findPostReportByPost_Id(PagingUtils.getPageable(pagingRequest), postId).map(postReportMapper::fromPostReportToPostReportResponse));
+        return BaseResponse.builder().message("Find all posts successful.")
+                .data(pagingResponse)
+                .build();
+    }
+
+    public BaseResponse getPostReportByPostIdAndUserId(PagingRequest pagingRequest,Integer postId, String userId){
+        var pagingResponse = postReportRepository.findPostReportByPost_IdAndOwner_Id(postId, userId);
+        return BaseResponse.builder().message("Find all posts successful.")
+                .data(postReportMapper.fromPostReportToPostReportResponse(pagingResponse.orElseThrow(()-> new NoRecordFoundException("Not found report"))))
+                .build();
+    }
+
+    public BaseResponse getPostReportByUserId(PagingRequest pagingRequest, String userId){
+        PagingResponse pagingResponse = new PagingResponse(
+                postReportRepository.findPostReportByOwner_Id(PagingUtils.getPageable(pagingRequest), userId).map(postReportMapper::fromPostReportToPostReportResponse));
+        return BaseResponse.builder().message("Find all posts successful.")
+                .data(pagingResponse)
+                .build();
+    }
 }
