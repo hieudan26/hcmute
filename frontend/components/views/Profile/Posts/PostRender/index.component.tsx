@@ -14,6 +14,7 @@ import {
   ModalHeader,
   Text,
   useColorModeValue,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
 import { useQueryClient } from '@tanstack/react-query';
@@ -34,6 +35,8 @@ import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
 import UpdatePost from '../Modals/UpdatePost/index.component';
+import ReportPost from '../Modals/ReportPost/index.component';
+import { STATUS_POST } from '../../../../../constants/global.constant';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -47,6 +50,7 @@ export default function PostRender(props: IPostRenderProps) {
   const { post, currentUserId, isProfile = false, isHashtag = false, modalRef } = props;
   const { t } = useTranslation('post');
   const queryClient = useQueryClient();
+  const [isOpenReport, setIsOpenReport] = useState<boolean>(false);
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
   const [isOpenEdit, setIsOpenEdit] = useState<boolean>(false);
   const [isOpenDelete, setIsOpenDelete] = useState<boolean>(false);
@@ -123,6 +127,14 @@ export default function PostRender(props: IPostRenderProps) {
 
   return (
     <Box bg={bgColor} rounded='lg' mb='5' px='4' py='2' shadow='md'>
+      <ReportPost
+        post={post}
+        isOpen={isOpenReport}
+        onClose={() => {
+          setIsOpenReport(false);
+          closeModal();
+        }}
+      />
       <ModalContainer isOpen={modalImage} size='xl'>
         <ModalHeader display='flex' flexDirection='column' alignItems='center'>
           Chi tiết hình ảnh
@@ -216,6 +228,18 @@ export default function PostRender(props: IPostRenderProps) {
               icon={<Icon as={HiOutlineDotsHorizontal} />}
             />
             <MenuList minW='32'>
+              {currentUserId !== post.userId && post.status === STATUS_POST.ACTIVE && (
+                <MenuItem
+                  onClick={() => {
+                    setIsOpenReport(true);
+                    if (modalRef) {
+                      modalRef.current = true;
+                    }
+                  }}
+                >
+                  Báo cáo bài viết
+                </MenuItem>
+              )}
               <MenuItem
                 onClick={() => {
                   setIsOpenEdit(true);

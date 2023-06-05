@@ -6,6 +6,21 @@ import { IPostPaginationByType, IPostPaginationByTypeAndUserId, IPostRequestMode
 import { deleteAsync, getAsync, postAsync, putAsync } from '../../utils/HttpClient.util';
 
 class PostService {
+  updateReportPost = async (postId: string, status: string): Promise<AxiosResponseStatus<any>> => {
+    var url = `${API_PATH.POST}/${postId}/reports`;
+    return putAsync(url, { status: status }, 'Cập nhật thành công', false, true, true, undefined, undefined);
+  };
+
+  getReportsByPost = async (params: IPaginationRequest | undefined, postId: string): Promise<AxiosResponseStatus<any>> => {
+    var url = `${API_PATH.POST}/${postId}/reports`;
+    return getAsync(url, params, false, false, true);
+  };
+
+  reportPost = async (postId: string, content: string): Promise<AxiosResponseStatus<any>> => {
+    var url = `${API_PATH.POST}/${postId}/reports`;
+    return postAsync(url, { content: content }, 'Báo cáo bài đăng thành công', false, true, true, undefined, undefined);
+  };
+
   getAllPostsByTypeAndHashTag = async (
     params: IPaginationRequest | undefined,
     type: string,
@@ -20,10 +35,11 @@ class PostService {
   getAllPostsDeleted = async (
     params: IPaginationRequest | undefined,
     isDeleted: boolean | undefined,
-    type: string | undefined
+    type: string | undefined,
+    status: string | undefined = undefined
   ): Promise<AxiosResponseStatus<any>> => {
     var url = API_PATH.POST;
-    const mainParams = { ...params, isDeleted, type };
+    const mainParams = { ...params, isDeleted, type, status };
     const result = await getAsync(url, mainParams, false, false, true);
     return result;
   };
