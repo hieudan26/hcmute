@@ -103,6 +103,14 @@ export default function ListNotifications(props: IListNotificationsProps) {
           break;
         case 'post':
           break;
+        case 'report_observe':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'report_active':
+          router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'report_banned':
+          break;
         case 'react':
           router.push(`/detail-post/${item.contentId}`);
           break;

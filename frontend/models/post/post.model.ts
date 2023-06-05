@@ -1,6 +1,16 @@
 import { Dispatch, SetStateAction } from 'react';
 import { IPaginationRequest } from '../common/ResponseMessage.model';
 
+export interface IPostReportResponseModel {
+  avatar: string,
+  content: string,
+  fullName: string,
+  id: string,
+  postId: number,
+  time: string,
+  userId: string,
+}
+
 export interface IPostRequestModel {
   title: string;
   content: string;
@@ -26,6 +36,8 @@ export interface IPostResponseModel {
   commentNumber: number;
   reactNumber: number;
   images: string[];
+  status: string;
+  reportCount: number;
   isReacted: boolean;
   isDeleted?: boolean;
   hashTags: string[];

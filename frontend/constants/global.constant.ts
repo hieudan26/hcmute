@@ -1,5 +1,11 @@
 import { AxiosResponse } from 'axios';
 
+export enum STATUS_POST {
+  ACTIVE = 'ACTIVE',
+  OBSERVE = 'OBSERVE',
+  BANNED = 'BANNED',
+}
+
 export enum STATUS_PLACES {
   PENDING = 'pending',
   APPROVED = 'approved',

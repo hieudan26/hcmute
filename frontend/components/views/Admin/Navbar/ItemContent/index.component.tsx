@@ -40,6 +40,12 @@ export function ItemContent(props: IItemContentProps) {
           return 'abc';
         case 'post':
           return 'không có ý kiến';
+        case 'report_observe':
+          return 'Bài đăng của bạn được tạm ẩn không công khai để xem xét, bạn vẫn có thể truy cập tại đây để chỉnh sửa';
+        case 'report_active':
+          return 'Bài đăng của bạn được Admin phê duyệt';
+        case 'report_banned':
+          return 'Bài đăng của bạn vi phạm yếu tố cộng đồng và bị khóa vĩnh viễn';
         case 'react':
           return 'đã thả cảm xúc cho bài đăng của bạn';
         case 'comment':

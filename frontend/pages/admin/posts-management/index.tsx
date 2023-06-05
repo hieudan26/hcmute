@@ -22,9 +22,11 @@ import {
   RadioGroup,
   Stack,
   useColorModeValue,
+  Checkbox,
+  useDisclosure,
 } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
-import { RiAddLine, RiCheckFill, RiDeleteBin5Fill, RiPencilLine, RiRefreshLine } from 'react-icons/ri';
+import { RiAddLine, RiCheckFill, RiDeleteBin5Fill, RiPencilLine, RiRefreshLine, RiSettings6Fill } from 'react-icons/ri';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
@@ -34,10 +36,14 @@ import postService from '../../../services/post/post.service';
 import { formatDate } from '../../../utils';
 import ModalDetailPost from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/index.component';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { STATUS_POST } from '../../../constants/global.constant';
+import { FaBan } from 'react-icons/fa';
+import ModalObservePostAdmin from '../../../components/views/Profile/Posts/Modals/ModalObservePostAdmin/index.component';
 
 export interface IAdminPostsManagementPageProps {}
 
 const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProps) => {
+  const { isOpen: isOpenObserve, onOpen: onOpenObserve, onClose: onCloseObserve } = useDisclosure();
   const [paramsPagination, setParamsPagination] = useState<IPaginationRequest | undefined>({
     pageNumber: 0,
     pageSize: 10,
@@ -72,23 +78,25 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
     isReacted: false,
     isDeleted: false,
     hashTags: [''],
+    reportCount: 0,
+    status: STATUS_POST.ACTIVE,
   });
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const [isOpenDetail, setIsOpenDetail] = useState<boolean>(false);
+  const [valueStatusPost, setValueStatusPost] = useState<string>(STATUS_POST.ACTIVE);
   const tableBg = useColorModeValue('backgroundBox.primary_lightMode', 'backgroundBox.primary_darkMode');
   const colorTxt = useColorModeValue('black', 'white');
   const bgInput = useColorModeValue('white', '#4b4b4b');
 
   const fetchPosts = useCallback(async () => {
     try {
-      const response = await postService.getAllPostsDeleted(paramsPagination, isDeleted, type);
-      console.log(response.data.content);
+      const response = await postService.getAllPostsDeleted(paramsPagination, isDeleted, type, valueStatusPost);
       setData(response.data.content);
       setPageable(response.data.pageable);
     } catch (error) {
       console.log(error);
     }
-  }, [paramsPagination, isDeleted, type]);
+  }, [paramsPagination, isDeleted, type, valueStatusPost]);
 
   useEffect(() => {
     fetchPosts();
@@ -160,8 +168,25 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
     const response = await postService.deletePost(postId);
   };
 
+  const onChangeStatusPost = async (postId: string, type: string) => {
+    if (type === 'ACTIVE') {
+      await postService.updateReportPost(postId, STATUS_POST.ACTIVE);
+    } else {
+      await postService.updateReportPost(postId, STATUS_POST.BANNED);
+    }
+    onCloseObserve();
+    refreshData();
+  };
+
   return (
     <>
+      <ModalObservePostAdmin
+        onChangeStatusPost={onChangeStatusPost}
+        post={postValue}
+        isOpen={isOpenObserve}
+        onClose={onCloseObserve}
+        onOpen={onOpenObserve}
+      />
       <ModalDetailPost
         currentUserId=''
         post={postValue}
@@ -173,9 +198,24 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
       <Box w='full'>
         <Box w='full' borderRadius={8} bg={tableBg} p='8' color='black' shadow='lg'>
           <Flex mb='8' justifyContent='space-between' alignContent='center'>
-            <Heading color={colorTxt} size='lg' fontWeight='normal'>
-              Tất cả bài đăng
-            </Heading>
+            <Flex align='end' gap='4'>
+              <Heading color={colorTxt} size='lg' fontWeight='normal'>
+                Tất cả bài đăng
+              </Heading>
+              <RadioGroup colorScheme='pink' onChange={setValueStatusPost} value={valueStatusPost}>
+                <Stack direction='row' gap='4'>
+                  <Radio size='sm' value={STATUS_POST.ACTIVE}>
+                    Bình thường
+                  </Radio>
+                  <Radio size='sm' value={STATUS_POST.OBSERVE}>
+                    Cần xem xét
+                  </Radio>
+                  <Radio size='sm' value={STATUS_POST.BANNED}>
+                    Đã chặn
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            </Flex>
 
             <Flex gap='4'>
               <Button title='refresh' as='a' size='sm' fontSize='sm' colorScheme='pink' onClick={refreshData}>
@@ -187,18 +227,28 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
           <Flex justify='space-evenly' mb='4'>
             <RadioGroup onChange={changeStatusPost} value={value} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
-                <Text>Loại trạng thái bài viết: </Text>
-                <Radio value='true'>Valid</Radio>
-                <Radio value='false'>Invalid</Radio>
+                <Text fontSize='sm'>Loại trạng thái bài viết: </Text>
+                <Radio size='sm' value='true'>
+                  Đang hiển thị
+                </Radio>
+                <Radio size='sm' value='false'>
+                  Đã bị xóa
+                </Radio>
               </Stack>
             </RadioGroup>
 
             <RadioGroup onChange={changeTypePost} value={valueType} colorScheme='pink' color={colorTxt}>
               <Stack direction='row'>
-                <Text>Lọc theo loại bài viết: </Text>
-                <Radio value='1'>All</Radio>
-                <Radio value='2'>Experience</Radio>
-                <Radio value='3'>Faq</Radio>
+                <Text fontSize='sm'>Lọc theo loại bài viết: </Text>
+                <Radio size='sm' value='1'>
+                  Tất cả
+                </Radio>
+                <Radio size='sm' value='2'>
+                  Trải nghiệm
+                </Radio>
+                <Radio size='sm' value='3'>
+                  Hỏi đáp
+                </Radio>
               </Stack>
             </RadioGroup>
           </Flex>
@@ -208,10 +258,12 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
               <Spinner />
             </Flex>
           ) : data.length === 0 ? (
-            <Flex justify='center'>Không có post nào trong hệ thống</Flex>
+            <Flex justify='center' fontSize='sm'>
+              Không có post nào trong hệ thống
+            </Flex>
           ) : (
             <>
-              <Table color={colorTxt}>
+              <Table color={colorTxt} fontSize='sm'>
                 <Thead>
                   <Tr>
                     <Th
@@ -231,8 +283,8 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                       Loại
                     </Th>
                     <Th>Người sở hữu</Th>
-                    <Th>Số lượng tương tác</Th>
-                    <Th>Số lượng bình luận</Th>
+                    <Th>Lượt tương tác</Th>
+                    <Th>Lượt bình luận</Th>
                     <Th
                       cursor='pointer'
                       onClick={() => {
@@ -241,7 +293,7 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                     >
                       Ngày tạo
                     </Th>
-                    <Th>Trạng thái</Th>
+                    {/* <Th>Trạng thái</Th> */}
                     <Th>Chi tiết</Th>
                   </Tr>
                 </Thead>
@@ -264,43 +316,33 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                         <Td>{post.reactNumber}</Td>
                         <Td>{post.commentNumber}</Td>
                         <Td>{post.time.split(' ').shift()}</Td>
-                        <Td>{renderStatus(post.isDeleted)}</Td>
+                        {/* <Td>{renderStatus(post.isDeleted)}</Td> */}
                         <Td>
                           <Flex gap={3}>
                             <Button
                               onClick={() => {
                                 setPostValue(post);
-                                console.log(postValue);
                                 setIsOpenDetail(true);
                               }}
                               title='Detail'
-                              size='sm'
-                              fontSize='sm'
+                              size='xs'
+                              fontSize='xs'
                             >
                               <Icon as={RiPencilLine} fontSize='16' />
                             </Button>
-                            {/* <Button
-                              hidden={post.isDeleted !== undefined && post.isDeleted}
-                              onClick={() => {
-                                // deletePost(post.id);
-                              }}
-                              title='Delete'
-                              size='sm'
-                              fontSize='sm'
-                            >
-                              <Icon as={RiDeleteBin5Fill} fontSize='16' />
-                            </Button> */}
-                            <Button
-                              hidden={post.isDeleted !== undefined && !post.isDeleted}
-                              onClick={() => {
-                                // changeStatusUser(user);
-                              }}
-                              title='Active'
-                              size='sm'
-                              fontSize='sm'
-                            >
-                              <Icon as={RiCheckFill} fontSize='16' />
-                            </Button>
+                            {post.status === STATUS_POST.OBSERVE && (
+                              <Button
+                                onClick={() => {
+                                  setPostValue(post);
+                                  onOpenObserve();
+                                }}
+                                title='Xem xét báo cáo bài viết'
+                                size='xs'
+                                fontSize='xs'
+                              >
+                                <Icon as={RiSettings6Fill} fontSize='16' />
+                              </Button>
+                            )}
                           </Flex>
                         </Td>
                       </Tr>
