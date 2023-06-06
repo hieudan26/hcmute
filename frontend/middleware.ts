@@ -123,7 +123,12 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   if (url.pathname === '/') {
     if (!role) {
-      return NextResponse.redirect(new URL('/experiences', request.url));
+      const host = request.headers?.get('host');
+      if (host?.includes('admin')) {
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+      } else {
+        return NextResponse.redirect(new URL('/experiences', request.url));
+      }
     } else if (role === RoleConstants.ADMIN) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
     } else {
