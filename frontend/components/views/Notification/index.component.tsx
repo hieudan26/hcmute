@@ -228,7 +228,7 @@ export default function Notification(props: INotificationProps) {
             Chưa đọc
           </Button>
         </Box>
-        <Flex flexDirection='column' maxH='360px' overflow='auto' ref={notificationsRef} onScroll={handleScroll}>
+        <Flex flexDirection='column' maxH='300px' overflowY='scroll' ref={notificationsRef} onScroll={handleScroll}>
           {notificationData.data &&
             notificationData.data.pages.map((page) =>
               page.data.content.map((item: INotificationResponse, index: number) => (
