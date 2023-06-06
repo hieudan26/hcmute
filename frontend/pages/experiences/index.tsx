@@ -67,7 +67,10 @@ const Experiences: NextPage = (props: IExperiencesProps) => {
 
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
-    mutationCreatePost.mutate(paramsLoading);
+    await mutationCreatePost.mutateAsync(paramsLoading);
+    if (!modalRef.current) {
+      queryClient.invalidateQueries(['posts_by_type']);
+    }
   };
 
   return (
