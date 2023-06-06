@@ -5,7 +5,9 @@ public enum NotificationConstants {
     NOTIFICATION("notification"),
     POST("post"),
     REACT("react"),
-    REPORT("report"),
+    REPORT_OBSERVE("report_observe"),
+    REPORT_ACTIVE("report_active"),
+    REPORT_BANNED("report_banned"),
     COMMENT("comment"),
     COMMENT_REPLY("comment_reply"),
 
