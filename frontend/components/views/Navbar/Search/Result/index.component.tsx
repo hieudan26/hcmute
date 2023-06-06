@@ -150,7 +150,7 @@ const Result = (props: ResultProps) => {
             </Box>
             <Box textTransform='capitalize' color={resultsTextColor} _groupHover={{ color: 'black' }}>
               {props.category === 'user' && !props.component ? (
-                <Text noOfLines={1}>No description</Text>
+                <Text noOfLines={1}>Không có mô tả</Text>
               ) : props.category === 'experience' || props.category === 'faq' ? (
                 <Text noOfLines={1}>
                   <Prose dangerouslySetInnerHTML={{ __html: props.component }} />
