@@ -30,6 +30,7 @@ import AboutPost from './AboutPost/index.component';
 import CreatePost from './CreatePost/index.component';
 import CreateNewPost from './Modals/CreateNewPost/index.component';
 import PostRender from './PostRender/index.component';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface IPostsProps {
   modalRef: MutableRefObject<boolean>;
@@ -41,6 +42,7 @@ export default function Posts(props: IPostsProps) {
   const bgLayout = useColorModeValue('white', 'backgroundBox.primary_darkMode');
   const auth = useAppSelector((state) => state.auth.value);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [typePost, setTypePost] = useState<'experience' | 'faq'>('experience');
   const [isCreatePost, setIsCreatePost] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -102,7 +104,10 @@ export default function Posts(props: IPostsProps) {
 
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
-    mutationCreatePost.mutate(paramsLoading);
+    await mutationCreatePost.mutateAsync(paramsLoading);
+    if (!modalRef.current) {
+      queryClient.invalidateQueries(['posts_by_type_userId']);
+    }
   };
 
   return (
