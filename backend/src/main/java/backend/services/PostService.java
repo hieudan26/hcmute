@@ -238,7 +238,7 @@ public class PostService {
 
         if(post.getReportCount() >= 10) {
             var noti = Notifications.builder()
-                    .type(NotificationConstants.REPORT.getStatus())
+                    .type(NotificationConstants.REPORT_OBSERVE.getStatus())
                     .fromUser(ADMIN.getRoleName())
                     .toUser(post.getOwner().getId())
                     .contentId(post.getId())
@@ -263,7 +263,7 @@ public class PostService {
             post.setReportCount(0);
             postReportRepository.deleteAllByPost_Id(post.getId());
             var noti = Notifications.builder()
-                    .type(NotificationConstants.REPORT.getStatus())
+                    .type(NotificationConstants.REPORT_BANNED.getStatus())
                     .fromUser(ADMIN.getRoleName())
                     .toUser(post.getOwner().getId())
                     .contentId(post.getId())
@@ -277,7 +277,7 @@ public class PostService {
             post.setReportCount(0);
             postReportRepository.deleteAllByPost_Id(post.getId());
             var noti = Notifications.builder()
-                    .type(NotificationConstants.REPORT.getStatus())
+                    .type(NotificationConstants.REPORT_ACTIVE.getStatus())
                     .fromUser(ADMIN.getRoleName())
                     .toUser(post.getOwner().getId())
                     .contentId(post.getId())
