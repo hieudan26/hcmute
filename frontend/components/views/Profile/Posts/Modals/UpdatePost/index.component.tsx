@@ -1,4 +1,6 @@
 import {
+  Box,
+  Button,
   Divider,
   Flex,
   IconButton,
@@ -6,28 +8,9 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalHeader,
-  Button,
-  Image,
-  Center,
-  Box,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
-import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import { AiFillTags } from 'react-icons/ai';
-import { BiImageAdd } from 'react-icons/bi';
-import { IoLocation } from 'react-icons/io5';
-import { Carousel } from 'react-responsive-carousel';
-import { IPostRequestModel, IPostResponseModel } from '../../../../../../models/post/post.model';
-import useUploadFile from '../../../../../../hooks/useUploadFile';
-import { capitalized, formatTimePost } from '../../../../../../utils';
-import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
-import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
-import useDebounce from '../../../../../../hooks/useDebounce';
-import Select, { ActionMeta, InputActionMeta, MultiValue, PropsValue } from 'react-select';
-import { useTranslation } from 'next-i18next';
 import BulletList from '@tiptap/extension-bullet-list';
 import Document from '@tiptap/extension-document';
 import ListItem from '@tiptap/extension-list-item';
@@ -38,8 +21,23 @@ import Text from '@tiptap/extension-text';
 import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { useTranslation } from 'next-i18next';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { AiFillTags } from 'react-icons/ai';
+import { BiImageAdd } from 'react-icons/bi';
+import { IoLocation } from 'react-icons/io5';
+import { Carousel } from 'react-responsive-carousel';
+import Select, { ActionMeta, InputActionMeta, MultiValue } from 'react-select';
+import { useFindHashTag } from '../../../../../../hooks/queries/hashtag';
+import useDebounce from '../../../../../../hooks/useDebounce';
+import useUploadFile from '../../../../../../hooks/useUploadFile';
+import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
+import { IPostRequestModel, IPostResponseModel } from '../../../../../../models/post/post.model';
+import { capitalized } from '../../../../../../utils';
+import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
 import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
 import ImageBox from '../../../../ImageBox/index.component';
+import ModalContainer from '../../../../Modals/ModalContainer/index.component';
 
 export interface IUpdatePostProps {
   type: 'experience' | 'faq';
@@ -70,6 +68,8 @@ export default function UpdatePost(props: IUpdatePostProps) {
   const [isDisableResetTags, setIsDisableResetTags] = useState<boolean>(true);
   const [valueTitle, setValueTitle] = useState<string>(post.title);
   const [imagesUpdate, setImagesUpdate] = useState<string[]>([]);
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(false);
+  const [isDisableRecover, setIsDisableRecover] = useState<boolean>(false);
   const testRef = useRef<any>(null);
   const dataHashTagQuery = useFindHashTag(
     {
@@ -81,7 +81,6 @@ export default function UpdatePost(props: IUpdatePostProps) {
     },
     isOpen
   );
-
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -106,6 +105,32 @@ export default function UpdatePost(props: IUpdatePostProps) {
     autofocus: true,
     injectCSS: false,
   });
+
+  useEffect(() => {
+    if (
+      valueTitle.trim() !== post.title ||
+      editor?.getHTML() !== post.content ||
+      !compareArrays(post.hashTags, tags) ||
+      !compareArrays(imagesUpdate.concat(selectedFiles), post.images)
+    ) {
+      setIsDisableSubmit(false);
+    } else {
+      setIsDisableSubmit(true);
+    }
+  }, [editor, imagesUpdate, post, selectedFiles, tags, valueTitle]);
+
+  useEffect(() => {
+    if (
+      valueTitle.trim() === post.title &&
+      editor?.getHTML() === post.content &&
+      compareArrays(post.hashTags, tags) &&
+      compareArrays(imagesUpdate.concat(selectedFiles), post.images)
+    ) {
+      setIsDisableRecover(true);
+    } else {
+      setIsDisableRecover(false);
+    }
+  }, [editor, imagesUpdate, post, selectedFiles, tags, valueTitle]);
 
   useEffect(() => {
     setImagesUpdate(post.images);
@@ -178,6 +203,19 @@ export default function UpdatePost(props: IUpdatePostProps) {
     400
   );
 
+  const compareArrays = (arrayA: string[], arrayB: string[]): boolean => {
+    if (arrayA.length !== arrayB.length) {
+      return false;
+    }
+
+    for (const elementA of arrayA) {
+      if (!arrayB.includes(elementA)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleClick = () => {
     inputRef.current?.click();
   };
@@ -199,7 +237,7 @@ export default function UpdatePost(props: IUpdatePostProps) {
         setTags(tgs);
         setDefaultValueTag(tempValueTags);
       }
-      editor?.commands.clearContent();
+      editor?.commands.setContent(post.content);
       setImagesUpdate(post.images);
       Array.from(selectedFiles).map(
         (file) => URL.revokeObjectURL(file) // avoid memory leak
@@ -410,14 +448,14 @@ export default function UpdatePost(props: IUpdatePostProps) {
             background='gray.600'
             _hover={{ bg: 'black' }}
             w={'100%'}
-            disabled={!isDisabledBtnPost}
+            disabled={isDisableRecover}
             onClick={() => {
               handleClose(true);
             }}
           >
             Khôi phục
           </Button>
-          <Button w={'100%'} isLoading={isSubmitting} disabled={isDisabledBtnPost} onClick={submit}>
+          <Button w={'100%'} isLoading={isSubmitting} disabled={isDisableSubmit} onClick={submit}>
             {t('update_save')}
           </Button>
         </Flex>

@@ -232,7 +232,9 @@ const Search: NextPage = (props: ISearchProps) => {
       <Center>
         <Tabs isFitted defaultIndex={1} bg={bgBox} w='full' shadow='lg' rounded='md' px='8' py='6' colorScheme='pink'>
           <TabList>
-            <Tab isDisabled>{t('tab_all')}</Tab>
+            <Tab isDisabled hidden>
+              {t('tab_all')}
+            </Tab>
             <Tab
               onClick={() => {
                 setIndexTab(1);

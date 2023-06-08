@@ -42,27 +42,28 @@ const ContributionDetail: NextPage = (props: IContributionDetailProps) => {
 
   return (
     <>
-      {dataPlace.data && dataPlace.data.data.status !== STATUS_PLACES.APPROVED ? (
-        <DetailContribution place={dataPlace.data.data} pushBackListPage={pushBackListPage} />
-      ) : (
-        <Flex w='120%' justify='space-between' align='flex-start' gap={6}>
-          <DetailContribution isUser place={dataPlace.data?.data} pushBackListPage={pushBackListPage} />
-          <Box position='sticky' top='20' width='30%' minH='xs'>
-            <Box bg={boxBg} shadow='md' rounded='md' px='6' py='3' mb='4' minH='xs'>
-              <Text ml='2' mb='6' fontStyle='italic' fontWeight='semibold'>
-                Lý do duyệt
-              </Text>
-              <Textarea
-                value={dataPlace.data?.data.statusDescription}
-                size='sm'
-                minH='xs'
-                resize='none'
-                placeholder='Lý do chấp thuận hoặc từ chối'
-              />
+      {dataPlace.data &&
+        (dataPlace.data.data.status === STATUS_PLACES.PENDING ? (
+          <DetailContribution place={dataPlace.data.data} pushBackListPage={pushBackListPage} />
+        ) : (
+          <Flex w='120%' justify='space-between' align='flex-start' gap={6}>
+            <DetailContribution isUser place={dataPlace.data?.data} pushBackListPage={pushBackListPage} />
+            <Box position='sticky' top='20' width='30%' minH='xs'>
+              <Box bg={boxBg} shadow='md' rounded='md' px='6' py='3' mb='4' minH='xs'>
+                <Text ml='2' mb='6' fontStyle='italic' fontWeight='semibold'>
+                  Lý do duyệt
+                </Text>
+                <Textarea
+                  value={dataPlace.data?.data.statusDescription}
+                  size='sm'
+                  minH='xs'
+                  resize='none'
+                  placeholder='Lý do chấp thuận hoặc từ chối'
+                />
+              </Box>
             </Box>
-          </Box>
-        </Flex>
-      )}
+          </Flex>
+        ))}
     </>
   );
 };

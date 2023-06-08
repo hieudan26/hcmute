@@ -42,7 +42,7 @@ const ListOfPreviousContributions: NextPage = (props: IListOfPreviousContributio
       </chakra.h1>
       {!isDetail ? (
         <ListContribution setDetailData={setDetailData} />
-      ) : dataDetail?.status !== STATUS_PLACES.APPROVED ? (
+      ) : dataDetail?.status !== STATUS_PLACES.APPROVED && dataDetail?.status !== STATUS_PLACES.REJECTED ? (
         <DetailContribution place={dataDetail} pushBackListPage={pushBackListPage} />
       ) : (
         <Flex w='120%' justify='space-between' align='flex-start' gap={6}>
