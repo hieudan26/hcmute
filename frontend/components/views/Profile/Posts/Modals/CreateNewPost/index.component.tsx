@@ -1,11 +1,9 @@
 import {
   Box,
   Button,
-  CloseButton,
   Divider,
   Flex,
   IconButton,
-  Image,
   Input,
   ModalBody,
   ModalCloseButton,
@@ -38,12 +36,12 @@ import useUploadFile from '../../../../../../hooks/useUploadFile';
 import { IPaginationRequest } from '../../../../../../models/common/ResponseMessage.model';
 import { IHashTagResponse } from '../../../../../../models/hashtag/hashtag.model';
 import { IPostRequestModel } from '../../../../../../models/post/post.model';
-import { capitalized, formatTimePost, uppercaseFirstLetter } from '../../../../../../utils';
+import { capitalized, formatTimePost } from '../../../../../../utils';
+import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
 import BubbleEditor from '../../../../Editor/BubbleEditor/index.component';
+import ImageBox from '../../../../ImageBox/index.component';
 import { toggleMessage } from '../../../../Message/index.component';
 import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import AutoResizeTextarea from '../../../../AutoResizeTextarea/index.component';
-import ImageBox from '../../../../ImageBox/index.component';
 
 export interface ICreateNewPostProps {
   type: 'experience' | 'faq';
@@ -77,7 +75,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
   const dataHashTagQuery = useFindHashTag({ pagination: paramsPagination, hashTag: textSearchHashTag }, isOpenTags);
   const [dataHashtag, setDataHashtag] = useState<IHashTagResponse[]>([]);
   const [valueTitle, setValueTitle] = useState<string>('');
-
+  const [isDisableSubmit, setIsDisableSubmit] = useState<boolean>(false);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -102,6 +100,23 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
     autofocus: true,
     injectCSS: false,
   });
+
+  useEffect(() => {
+    console.log(editor?.getHTML(), valueTitle.trim());
+    if (editor?.getHTML() === '<p></p>' || valueTitle.trim() === '') {
+      setIsDisableSubmit(true);
+    } else {
+      if (type === 'experience') {
+        if (selectedFiles.length > 0) {
+          setIsDisableSubmit(false);
+        } else {
+          setIsDisableSubmit(true);
+        }
+      } else {
+        setIsDisableSubmit(false);
+      }
+    }
+  }, [editor, selectedFiles.length, type, valueTitle]);
 
   useEffect(() => {
     if (defaultValueTag && defaultValueTag.length > 0) {
@@ -153,6 +168,8 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
       onClose();
       editor?.commands.clearContent();
     } else {
+      setValueTitle('');
+      editor?.commands.clearContent();
       setTags([]);
       setSelectedFiles([]);
       setFilesToUpload([]);
@@ -376,12 +393,7 @@ export default function CreateNewPost(props: ICreateNewPostProps) {
           >
             {t('clear_images')}
           </Button>
-          <Button
-            w={'100%'}
-            isLoading={isSubmitting}
-            disabled={editor?.getHTML() === '<p></p>' || valueTitle.trim() === ''}
-            onClick={submit}
-          >
+          <Button w={'100%'} isLoading={isSubmitting} disabled={isDisableSubmit} onClick={submit}>
             {t('post')}
           </Button>
         </Flex>

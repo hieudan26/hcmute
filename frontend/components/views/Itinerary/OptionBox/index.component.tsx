@@ -1,26 +1,26 @@
-import { Button, Flex, IconButton, useDisclosure } from '@chakra-ui/react';
+import { RepeatIcon } from '@chakra-ui/icons';
+import { Flex, IconButton, useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { AiOutlineRollback } from 'react-icons/ai';
+import { BiCommentDetail, BiDetail } from 'react-icons/bi';
 import { IoIosSave } from 'react-icons/io';
 import { IoImages } from 'react-icons/io5';
 import { RiUserAddFill } from 'react-icons/ri';
-import ModalCoverItinerary from '../Modals/ModalCoverItinerary/index.component';
-import ModalFindMember from '../Modals/ModalFindMember/index.component';
-import { BiCommentDetail, BiDetail } from 'react-icons/bi';
-import ModalUpdateDetail from '../Modals/ModalUpdateDetail/index.component';
+import { setCurrentTrip } from '../../../../app/slices/currentTripSlice';
+import { ITripUpdate, useCUDTrip } from '../../../../hooks/queries/trip';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import {
   ITripDayUpdateRequestModel,
   ITripRequestModel,
   ITripsResponseModel,
   responseToUpdateTripDay,
 } from '../../../../models/trip/trip.model';
-import { RepeatIcon } from '@chakra-ui/icons';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { setCurrentTrip } from '../../../../app/slices/currentTripSlice';
-import { ITripUpdate, useCUDTrip } from '../../../../hooks/queries/trip';
-import { useState } from 'react';
-import DrawerReviewTrip from '../Modals/DrawerReviewTrip/index.component';
 import { toggleMessage } from '../../Message/index.component';
+import DrawerReviewTrip from '../Modals/DrawerReviewTrip/index.component';
+import ModalCoverItinerary from '../Modals/ModalCoverItinerary/index.component';
+import ModalFindMember from '../Modals/ModalFindMember/index.component';
+import ModalUpdateDetail from '../Modals/ModalUpdateDetail/index.component';
 
 export interface IOptionBoxProps {
   trip: ITripsResponseModel | undefined;
@@ -85,6 +85,17 @@ export default function OptionBox(props: IOptionBoxProps) {
     }
   };
 
+  const handleAddMember = () => {
+    if (currentTrip?.type === 'Adventure') {
+      toggleMessage({
+        type: 'warning',
+        message: 'Chuyến đi đã hoàn thành không thể thêm thành viên',
+      });
+    } else {
+      onOpenMember();
+    }
+  };
+
   return (
     <>
       <ModalFindMember trip={trip} isOpen={isOpenMember} onClose={onCloseMember} onOpen={onOpenMember} />
@@ -112,11 +123,12 @@ export default function OptionBox(props: IOptionBoxProps) {
           />
           <IconButton fontSize='md' title='Thêm ảnh nền' aria-label='Cover Image' icon={<IoImages />} onClick={onOpenCover} />
           <IconButton
+            disabled={currentTrip?.type === 'Adventure'}
             fontSize='md'
             title='Thêm bạn đồng hành'
             aria-label='Add Member'
             icon={<RiUserAddFill />}
-            onClick={onOpenMember}
+            onClick={handleAddMember}
           />
           <IconButton fontSize='md' title='Xem đánh giá' aria-label='Review' icon={<BiCommentDetail />} onClick={onOpenReview} />
           <IconButton

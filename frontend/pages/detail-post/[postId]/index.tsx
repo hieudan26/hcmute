@@ -142,6 +142,7 @@ const DetailPost: NextPage<IDetailPostProps> = (props) => {
       if (id) {
         mutationReactPost.mutate(id);
       }
+      queryClient.invalidateQueries(['post_by_Id']);
     }
   };
 

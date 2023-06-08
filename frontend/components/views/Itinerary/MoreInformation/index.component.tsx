@@ -86,7 +86,7 @@ export default function MoreInformation(props: IMoreInformationProps) {
       )}
       <Flex justify='flex-end'>
         <Button variant='ghost' rightIcon={isReadMore ? <ChevronUpIcon /> : <ChevronDownIcon />} onClick={changeStatusShow}>
-          {isReadMore ? 'Show less' : 'Show more'}
+          {isReadMore ? 'Hiển thị ngắn' : 'Hiển thị thêm'}
         </Button>
       </Flex>
     </Box>
