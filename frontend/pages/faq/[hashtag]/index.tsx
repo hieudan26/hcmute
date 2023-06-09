@@ -66,6 +66,7 @@ const FaqHashtag: NextPage = (props: IFaqHashtagProps) => {
   const _submitPost = async (params: IPostRequestModel) => {
     const paramsLoading: IPostRequestModelLoading = { ...params, setSubmitting: undefined };
     await mutationCreatePost.mutateAsync(paramsLoading);
+    await queryClient.invalidateQueries(['posts_by_type_hashTag']);
   };
 
   return (
