@@ -35,10 +35,10 @@ export default function ConfirmDeletePost(props: IConfirmDeletePostProps) {
         <ModalBody>{content}</ModalBody>
         <ModalFooter>
           <Button onClick={onClose} mr='3' background='gray.600' _hover={{ bg: 'black' }}>
-            Cancel
+            Hủy
           </Button>
           <Button onClick={onSubmit} colorScheme='blue' mr={3}>
-            Confirm
+            Xác nhận
           </Button>
         </ModalFooter>
       </ModalContent>

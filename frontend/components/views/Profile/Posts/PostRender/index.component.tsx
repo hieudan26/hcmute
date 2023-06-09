@@ -72,12 +72,12 @@ export default function PostRender(props: IPostRenderProps) {
     } else {
       await mutationReactPost.mutateAsync(post.id);
       if (isProfile) {
-        queryClient.invalidateQueries(['posts_by_type_userId']);
+        await queryClient.invalidateQueries(['posts_by_type_userId']);
       } else {
         if (isHashtag) {
-          queryClient.invalidateQueries(['posts_by_type_hashTag']);
+          await queryClient.invalidateQueries(['posts_by_type_hashTag']);
         } else {
-          queryClient.invalidateQueries(['posts_by_type']);
+          await queryClient.invalidateQueries(['posts_by_type']);
         }
       }
     }
@@ -110,17 +110,17 @@ export default function PostRender(props: IPostRenderProps) {
     setIsOpenDetail(false);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     if (modalRef) {
       modalRef.current = false;
     }
     if (isProfile) {
-      queryClient.invalidateQueries(['posts_by_type_userId']);
+      await queryClient.invalidateQueries(['posts_by_type_userId']);
     } else {
       if (isHashtag) {
-        queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        await queryClient.invalidateQueries(['posts_by_type_hashTag']);
       } else {
-        queryClient.invalidateQueries(['posts_by_type']);
+        await queryClient.invalidateQueries(['posts_by_type']);
       }
     }
   };
@@ -193,9 +193,9 @@ export default function PostRender(props: IPostRenderProps) {
           setIsOpenDelete(false);
           closeModal();
         }}
-        onSubmit={() => {
-          mutationDeletePost.mutate(post.id);
-          setIsOpenDelete(false);
+        onSubmit={async () => {
+          await mutationDeletePost.mutateAsync(post.id);
+          closeModal();
         }}
       />
       <Heading as='h4' size='md' px='4' py='2'>

@@ -50,11 +50,11 @@ export const useCUDPost = () => {
     {
       onSuccess: () => {
         // Invalidate and refetch
-        queryClient.invalidateQueries(['posts_by_type']);
-        queryClient.invalidateQueries(['posts_by_type_userId']);
-        queryClient.invalidateQueries(['comments_post']);
-        queryClient.invalidateQueries(['posts_by_type_hashTag']);
-        queryClient.invalidateQueries(['post_by_Id']);
+        // queryClient.invalidateQueries(['posts_by_type']);
+        // queryClient.invalidateQueries(['posts_by_type_userId']);
+        // queryClient.invalidateQueries(['comments_post']);
+        // queryClient.invalidateQueries(['posts_by_type_hashTag']);
+        // queryClient.invalidateQueries(['post_by_Id']);
       },
     }
   );
