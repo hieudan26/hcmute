@@ -3,6 +3,7 @@ package backend.controllers;
 import backend.data.dto.global.BaseResponse;
 import backend.data.dto.global.PagingRequest;
 import backend.data.dto.trip.*;
+import backend.services.RequestJoinTripService;
 import backend.services.TripService;
 import io.swagger.models.auth.In;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +24,7 @@ import java.util.List;
 public class TripController {
 
     private final TripService tripService;
+    private final RequestJoinTripService requestJoinTripService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_USER')")
@@ -85,6 +87,36 @@ public class TripController {
     @GetMapping("/{id}/reviews")
     public ResponseEntity<BaseResponse> getReviewTrips(@PathVariable Integer id, PagingRequest pagingRequest) throws NoPermissionException, NotContextException {
         BaseResponse tripResponse = tripService.getReviewTrip(id, pagingRequest);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/request")
+    public ResponseEntity<BaseResponse> getRequests(@PathVariable Integer id,@RequestParam(required = false) String status, PagingRequest pagingRequest) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.findByTripIdAndStatus(id, status, pagingRequest);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/request")
+    public ResponseEntity<BaseResponse> createRequest(@PathVariable Integer id) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.createRequest(id);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{tripId}/request/user/{userId}")
+    public ResponseEntity<BaseResponse> getRequest(@PathVariable Integer tripId, @PathVariable String userId) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.findRequest(tripId, userId);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/{tripId}/request")
+    public ResponseEntity<BaseResponse> updateRequest(@PathVariable Integer tripId, @RequestBody UpdateRequestJoinTrip updateRequestJoinTrip) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.updateRequest(tripId, updateRequestJoinTrip);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{tripId}/request/status")
+    public ResponseEntity<BaseResponse> getStatus(@PathVariable Integer tripId) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.getStatus(tripId);
         return new ResponseEntity<>(tripResponse, HttpStatus.OK);
     }
 }
