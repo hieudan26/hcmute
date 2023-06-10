@@ -1,5 +1,6 @@
 package backend.services;
 
+import backend.common.NotificationConstants;
 import backend.common.RequestJoinTripStatus;
 import backend.common.TripStatus;
 import backend.data.dto.global.BaseResponse;
@@ -9,6 +10,8 @@ import backend.data.dto.post.PostQueryParams;
 import backend.data.dto.post.PostResponse;
 import backend.data.dto.trip.RequestJoinTripQuery;
 import backend.data.dto.trip.UpdateRequestJoinTrip;
+import backend.data.entity.ChatRoomMember;
+import backend.data.entity.Notifications;
 import backend.data.entity.RequestJoinTrip;
 import backend.data.entity.TripMembers;
 import backend.exception.NoRecordFoundException;
@@ -38,6 +41,8 @@ public class RequestJoinTripService {
     private final UserService userService;
     private final TripService tripService;
     private final TripRepository tripsRepository;
+    private final ChatService chatService;
+    private final NotificationService notificationService;
 
     public BaseResponse listAllRequest(PagingRequest pagingRequest, RequestJoinTripQuery params) throws NoPermissionException {
         if(!isAdmin()) {
@@ -122,6 +127,17 @@ public class RequestJoinTripService {
                 .date(LocalDateTime.now())
                 .status(RequestJoinTripStatus.PENDING.name()).build();
 
+        var noti = Notifications.builder()
+                .type(NotificationConstants.REQUEST_JOIN_TRIP.getStatus())
+                .fromUser(ADMIN.getRoleName())
+                .toUser(trip.getOwner().getId())
+                .contentId(trip.getId())
+                .description("Your trip has new request to join.")
+                .status(false)
+                .build();
+
+        notificationService.sendSocketMessage(noti, trip.getOwner().getId());
+
         return BaseResponse.builder().message("request successful.")
                 .data(requestJoinTripMapper
                         .requestJoinTripToRequestJoinTripResponse(requestJoinTripRepository.save(request)))
@@ -142,6 +158,7 @@ public class RequestJoinTripService {
         }
 
         request.setStatus(RequestJoinTripStatus.valueOf(updateRequestJoinTrip.getStatus()).name());
+
         if(RequestJoinTripStatus.APPROVED.name().equals(request.getStatus())) {
             var newMember = TripMembers.builder()
                     .role("member")
@@ -149,8 +166,28 @@ public class RequestJoinTripService {
                     .user(user)
                     .build();
             trip.getTripMembers().add(newMember);
+            var newChatRoomMember = ChatRoomMember.builder().chatRoom(trip.getChatRoom())
+                            .user(user)
+                            .status("none").build();
+
+            trip.getChatRoom().getMembers().add(newChatRoomMember);
             tripsRepository.save(trip);
+            requestJoinTripRepository.delete(request);
+            return BaseResponse.builder().message("update request successful.")
+                    .data(Map.of("status","APPROVED"))
+                    .build();
         }
+
+        var noti = Notifications.builder()
+                .type(NotificationConstants.REQUEST_JOIN_TRIP.getStatus())
+                .fromUser(ADMIN.getRoleName())
+                .toUser(updateRequestJoinTrip.getUserId())
+                .contentId(trip.getId())
+                .description("Your request join trip has bean "+request.getStatus().toLowerCase())
+                .status(false)
+                .build();
+
+        notificationService.sendSocketMessage(noti, updateRequestJoinTrip.getUserId());
 
         return BaseResponse.builder().message("update request successful.")
                 .data(requestJoinTripMapper
@@ -164,7 +201,7 @@ public class RequestJoinTripService {
         var request = requestJoinTripRepository.getByTrips_IdAndUser_IdAndStatus(tripId, user.getId(), null);
 
         request.ifPresent(requestJoinTrip -> BaseResponse.builder().message("get status success")
-                .data(Map.of("status", requestJoinTrip))
+                .data(Map.of("status", requestJoinTrip.getStatus()))
                 .build());
 
         if(trip.getTripMembers().stream().anyMatch(item -> item.getUser().equals(user)) || trip.getOwner().equals(user)) {
