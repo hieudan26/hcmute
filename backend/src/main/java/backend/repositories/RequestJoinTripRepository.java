@@ -16,6 +16,8 @@ import java.util.Optional;
 
 public interface RequestJoinTripRepository extends PagingAndSortingRepository<RequestJoinTrip, Integer>, JpaSpecificationExecutor<RequestJoinTrip> {
     Optional<RequestJoinTrip> getByTrips_IdAndUser_IdAndStatus(Integer tripId, String userId,String status);
+    Optional<RequestJoinTrip> getByTrips_IdAndUser_Id(Integer tripId, String userId);
+
     Page<RequestJoinTrip> findAll(Specification specification, Pageable pageable);
     Optional<RequestJoinTrip> findAllByTrips_IdAndUser_Id(Integer tripId, String userId);
 
