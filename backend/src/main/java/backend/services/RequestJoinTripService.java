@@ -215,4 +215,13 @@ public class RequestJoinTripService {
                 .build();
     }
 
+    public BaseResponse cancelRequest(Integer tripId) throws NoPermissionException {
+        var user = userService.getUserFromContext();
+        var request = findByTripIdAndUserId(tripId, user.getId());
+        requestJoinTripRepository.delete(request);
+        return BaseResponse.builder().message("get status success")
+                .data(Map.of("status", "NONE"))
+                .build();
+    }
+
 }

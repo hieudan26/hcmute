@@ -119,4 +119,10 @@ public class TripController {
         BaseResponse tripResponse = requestJoinTripService.getStatus(tripId);
         return new ResponseEntity<>(tripResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{tripId}/request")
+    public ResponseEntity<BaseResponse> cancelRequest(@PathVariable Integer tripId) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.cancelRequest(tripId);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
 }
