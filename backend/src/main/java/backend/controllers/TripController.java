@@ -95,7 +95,7 @@ public class TripController {
         BaseResponse tripResponse = requestJoinTripService.findByTripIdAndStatus(id, status, pagingRequest);
         return new ResponseEntity<>(tripResponse, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @PostMapping("/{id}/request")
     public ResponseEntity<BaseResponse> createRequest(@PathVariable Integer id) throws NoPermissionException, NotContextException {
         BaseResponse tripResponse = requestJoinTripService.createRequest(id);
@@ -113,10 +113,17 @@ public class TripController {
         BaseResponse tripResponse = requestJoinTripService.updateRequest(tripId, updateRequestJoinTrip);
         return new ResponseEntity<>(tripResponse, HttpStatus.OK);
     }
-
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     @GetMapping("/{tripId}/request/status")
     public ResponseEntity<BaseResponse> getStatus(@PathVariable Integer tripId) throws NoPermissionException, NotContextException {
         BaseResponse tripResponse = requestJoinTripService.getStatus(tripId);
+        return new ResponseEntity<>(tripResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @DeleteMapping("/{tripId}/request")
+    public ResponseEntity<BaseResponse> cancelRequest(@PathVariable Integer tripId) throws NoPermissionException, NotContextException {
+        BaseResponse tripResponse = requestJoinTripService.cancelRequest(tripId);
         return new ResponseEntity<>(tripResponse, HttpStatus.OK);
     }
 }
