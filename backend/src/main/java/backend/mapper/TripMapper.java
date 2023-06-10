@@ -85,7 +85,7 @@ public abstract class TripMapper {
         if (updateTripRequest.getStartingPlace() != null) {
             var place = placeRepository.findById(Math.toIntExact(updateTripRequest.getStartingPlace()));
             if(place.isEmpty()){
-                throw new NotContextException("Not found starting place!");
+                throw new NotContextException("Không tìm thấy địa điểm xuất phát!");
             }
             trip.setStartingPlace(place.get());
         }

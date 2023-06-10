@@ -48,21 +48,21 @@ public class AwsCognitoIdTokenProcessor {
 
     public String getUserNameFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getUserNameField()) == null){
-            throw new MalformedJwtException("JWT Token is not valid");
+            throw new MalformedJwtException("JWT Token không hợp lệ");
         }
         return claims.getClaims().get(this.jwtConfiguration.getUserNameField()).toString();
     }
 
     public String getEmailFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getEmail()) == null){
-            throw new MalformedJwtException("JWT Token is not valid");
+            throw new MalformedJwtException("JWT Token không hợp lệ");
         }
         return claims.getClaims().get(this.jwtConfiguration.getEmail()).toString();
     }
 
     public boolean getEmailVerifyFrom(JWTClaimsSet claims)throws Exception {
         if(claims.getClaims().get(this.jwtConfiguration.getEmail_verified()) == null){
-            throw new MalformedJwtException("JWT Token is not valid");
+            throw new MalformedJwtException("JWT Token không hợp lệ");
         }
         String rs = claims.getClaims().get(this.jwtConfiguration.getEmail_verified()).toString();
         return  rs.equals("true") ? true : false;
@@ -77,13 +77,13 @@ public class AwsCognitoIdTokenProcessor {
 
     public void verifyIfIdToken(JWTClaimsSet claims) throws Exception {
         if (!claims.getIssuer().equals(this.jwtConfiguration.getCognitoIdentityPoolUrl())) {
-            throw new UnsupportedJwtException("JWT Token is not an ID Token");
+            throw new UnsupportedJwtException("JWT Token không phải là ID Token");
         }
     }
 
     public void validateIssuer(JWTClaimsSet claims) throws Exception {
         if (!claims.getIssuer().equals(this.jwtConfiguration.getCognitoIdentityPoolUrl())) {
-            throw new UnsupportedJwtException(String.format("Issuer %s does not match cognito idp %s", claims.getIssuer(), this.jwtConfiguration.getCognitoIdentityPoolUrl()));
+            throw new UnsupportedJwtException(String.format("Người phát hành (Issuer) %s không khớp với Cognito IDP %s", claims.getIssuer(), this.jwtConfiguration.getCognitoIdentityPoolUrl()));
         }
     }
 
@@ -95,7 +95,7 @@ public class AwsCognitoIdTokenProcessor {
         try{
            return this.configurableJWTProcessor.process(this.getBearerToken(idToken),null);
         }catch (Exception ex){
-            throw new MalformedJwtException("Invalid JWT token");
+            throw new MalformedJwtException("JWT token không hợp lệ");
         }
     }
 }

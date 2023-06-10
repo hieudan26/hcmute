@@ -113,7 +113,7 @@ public class UserService {
     public BaseResponse updateUser(String id,UpdateUserRequest updateUserRequest) throws NoPermissionException {
         String userId = ((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         if(!userId.equals(id))
-            throw new NoPermissionException("You can't update other person's information.");
+           throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
 
         Users users = getUser(id);
 
@@ -294,7 +294,7 @@ public class UserService {
     public Users getUser(String id){
         Optional<Users> users = userRepository.findByIdAndIsDisableIsFalse(id);
         if(users.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", id));
         return  users.get();
     }
 

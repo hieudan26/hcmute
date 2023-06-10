@@ -88,6 +88,6 @@ public class FindService {
             return result;
         }
 
-        throw new NoRecordFoundException(String.format("Can't find  with key: %s.", params.getKey()));
+        throw new NoRecordFoundException(String.format("Không tìm thấy với khóa: %s.", params.getKey()));
     }
 }

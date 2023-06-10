@@ -54,7 +54,7 @@ public class NotificationService {
     public Notifications getNotificationById(Integer id) {
         Optional<Notifications> notification = notificationRepository.findById(id);
         if(notification.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find Notification with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không thể tìm thấy thông báo với Id: %s.", id));
         return  notification.get();
     }
 

@@ -114,7 +114,7 @@ public class CommentService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
         if(!userId.equals(comments.getOwner().getId()))
-            throw new NoPermissionException("You can't update other person's information.");
+           throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
 
         comments.setIsDeleted(true);
         comments.setDisable(true);
@@ -137,7 +137,7 @@ public class CommentService {
         Comments comments= getCommentsByID(Integer.valueOf(commentId));
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         if(!userId.equals(comments.getOwner().getId()))
-            throw new NoPermissionException("You can't update other person's information.");
+           throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
 
         comments.setContent(updateCommentRequest.getContent());
 
@@ -149,7 +149,7 @@ public class CommentService {
     private Comments getCommentsByID(Integer commentId){
         Optional<Comments> comments = commentRepository.findById(Integer.valueOf(commentId));
         if(comments.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find comment with Id: %s.",commentId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy bình luận với Id: %s.", commentId));
         return  comments.get();
     }
 

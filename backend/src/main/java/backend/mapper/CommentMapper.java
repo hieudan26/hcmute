@@ -48,7 +48,7 @@ public abstract class CommentMapper {
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
         Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(userId);
         if(optionalUsers.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
+            throw new NoRecordFoundException(String.format("Không thể tìm thấy người dùng với Id: %s.", userId));
         }
         return optionalUsers.get();
     }
@@ -58,7 +58,7 @@ public abstract class CommentMapper {
         if (commentId != null) {
             Optional<Comments> commentsOptional = commentRepository.findById(commentId);
             if (commentsOptional.isEmpty()) {
-                throw new NoRecordFoundException(String.format("Can't find comment with Id: %s.", commentId));
+                throw new NoRecordFoundException(String.format("Không thể tìm thấy bình luận với Id: %s.", commentId));
             }
         }
         return commentId;
@@ -68,7 +68,7 @@ public abstract class CommentMapper {
     protected Posts fromIdToPost(Integer postId) throws EntityNotFoundException {
         Optional<Posts> commentsOptional = postRepository.findById(postId);
         if(commentsOptional.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find post with Id: %s.",postId));
+            throw new NoRecordFoundException(String.format("Không thể tìm thấy bài viết với Id: %s.", postId));
         }
         return commentsOptional.get();
     }

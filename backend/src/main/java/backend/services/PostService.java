@@ -156,7 +156,7 @@ public class PostService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
         if(!userId.equals(post.getOwner().getId()))
-            throw new NoPermissionException("You can't update other person's information.");
+           throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
 
         for (var image : post.getImages()){
             if(updatePostRequest.getImages().indexOf(image.getLink()) < 0){
@@ -180,7 +180,7 @@ public class PostService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
         if(!userId.equals(post.getOwner().getId()))
-            throw new NoPermissionException("You can't update other person's information.");
+           throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
 
         post.setIsDeleted(true);
         post.setDisable(true);
@@ -205,7 +205,7 @@ public class PostService {
         Optional<Posts> posts = postRepository.findById(id);
 
         if(posts.isEmpty() || (!isAdmin() && (posts.get().getIsDeleted() || posts.get().getStatus().equals(PostStatus.BANNED.name()))))
-            throw new NoRecordFoundException(String.format("Can't find post with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy bài đăng với Id: %s.", id));
         return  posts.get();
     }
 
@@ -220,10 +220,10 @@ public class PostService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
 
         if(userId.equals(post.getOwner().getId()))
-            throw new NoPermissionException("You can't report your post.");
+            throw new NoPermissionException("Bạn không thể báo cáo bài đăng của chính mình.");
 
         if(postReportRepository.findPostReportByPost_IdAndOwner_Id(post.getId(), userId).isPresent()) {
-            throw new InvalidRequestException("You already report this post.");
+            throw new InvalidRequestException("Bạn đã báo cáo bài đăng này rồi.");
         }
 
         var repostReport = PostReport.builder()

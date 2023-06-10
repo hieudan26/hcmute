@@ -55,7 +55,7 @@ public  abstract class TripPlaceMapper {
     protected Places mapPlace(Integer id) throws EntityNotFoundException {
         Optional<Places> optionalPlace = placeRepository.findById(id);
         if (optionalPlace.isEmpty()) {
-            throw new NoRecordFoundException(String.format("Can't find place with Id: %s.", id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với Id: %s.", id));
         }
         return optionalPlace.get();
     }
@@ -66,7 +66,7 @@ public  abstract class TripPlaceMapper {
         for(var id: ids) {
             Optional<Places> optionalPlace = placeRepository.findById(id);
             if (optionalPlace.isEmpty() || !optionalPlace.get().getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())) {
-                throw new NoRecordFoundException(String.format("Can't find province with Id: %s.", id));
+                throw new NoRecordFoundException(String.format("Không tìm thấy tỉnh/thành phố với Id: %s.", id));
             }
            places.add(optionalPlace.get());
         }

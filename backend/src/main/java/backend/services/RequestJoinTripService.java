@@ -46,7 +46,7 @@ public class RequestJoinTripService {
 
     public BaseResponse listAllRequest(PagingRequest pagingRequest, RequestJoinTripQuery params) throws NoPermissionException {
         if(!isAdmin()) {
-            throw new NoPermissionException("You don't have permission");
+            throw new NoPermissionException("Bạn không có quyền truy cập");
         }
         PagingResponse<PostResponse> pagingResponse = new PagingResponse(
                 requestJoinTripRepository.findAll(SearchSpecificationUtils.searchBuilder(params), PagingUtils.getPageable(pagingRequest))
@@ -112,15 +112,15 @@ public class RequestJoinTripService {
         var trip = tripService.getTripId(tripId);
         var user = userService.getUserFromContext();
         if(requestJoinTripRepository.getByTrips_IdAndUser_IdAndStatus(tripId, user.getId(), null).isPresent()) {
-            throw new NoPermissionException("You are already request join.");
+            throw new NoPermissionException("Bạn đã gửi yêu cầu tham gia rồi.");
         }
 
         if(trip.getStatus().equals(TripStatus.END.name())) {
-            throw new NoPermissionException("You cannot join the end trip.");
+            throw new NoPermissionException("Bạn không thể tham gia chuyến đi đã kết thúc.");
         }
 
         if(trip.getTripMembers().stream().anyMatch(item -> item.getUser().equals(user)) || trip.getOwner().equals(user)) {
-            throw new NoPermissionException("you are already in trip.");
+            throw new NoPermissionException("Bạn đã ở trong chuyến đi.");
         }
 
         var request = RequestJoinTrip.builder().trips(trip).user(user)
@@ -150,11 +150,11 @@ public class RequestJoinTripService {
         var trip = tripService.getTripId(tripId);
 
         if(!trip.getOwner().equals(user)) {
-            throw new NoPermissionException("You don't have permission to do it.");
+            throw new NoPermissionException("Bạn không có quyền thực hiện điều này.");
         }
 
         if(trip.getStatus().equals(TripStatus.END.name())) {
-            throw new NoPermissionException("You cannot change the end trip.");
+            throw new NoPermissionException("Bạn không thể thay đổi chuyến đi đã kết thúc.");
         }
 
         request.setStatus(RequestJoinTripStatus.valueOf(updateRequestJoinTrip.getStatus()).name());

@@ -44,7 +44,7 @@ public abstract class NotificationMapper {
 
         Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(fromUser);
         if(optionalUsers.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",fromUser));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", fromUser));
         }
 
         var users = optionalUsers.get();

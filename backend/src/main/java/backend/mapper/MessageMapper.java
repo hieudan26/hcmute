@@ -74,7 +74,7 @@ public abstract class MessageMapper {
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
         Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(userId);
         if(optionalUsers.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", userId));
         }
         return optionalUsers.get();
     }
@@ -83,7 +83,7 @@ public abstract class MessageMapper {
     protected ChatRooms fromIdToChatRoom(Integer roomId) throws EntityNotFoundException {
         Optional<ChatRooms> optionalChatRooms = chatRoomRepository.findById(roomId);
         if(optionalChatRooms.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find room with Id: %s.",roomId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy phòng với Id: %s.", roomId));
         }
         return optionalChatRooms.get();
     }
