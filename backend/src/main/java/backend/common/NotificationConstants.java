@@ -2,6 +2,7 @@ package backend.common;
 
 public enum NotificationConstants {
     MESSAGE("message"),
+    REQUEST_JOIN_TRIP("request_join_trip"),
     NOTIFICATION("notification"),
     POST("post"),
     REACT("react"),
