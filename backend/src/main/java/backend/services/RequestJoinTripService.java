@@ -82,7 +82,7 @@ public class RequestJoinTripService {
     }
 
     public RequestJoinTrip findByTripIdAndUserId(Integer tripId, String userId) {
-        return requestJoinTripRepository.getByTrips_IdAndUser_IdAndStatus(tripId, userId, null)
+        return requestJoinTripRepository.getByTrips_IdAndUser_Id(tripId, userId)
                 .orElseThrow(() -> new NoRecordFoundException("not found request"));
     }
 
@@ -111,7 +111,7 @@ public class RequestJoinTripService {
     public BaseResponse createRequest(Integer tripId) throws NoPermissionException {
         var trip = tripService.getTripId(tripId);
         var user = userService.getUserFromContext();
-        if(requestJoinTripRepository.getByTrips_IdAndUser_IdAndStatus(tripId, user.getId(), null).isPresent()) {
+        if(requestJoinTripRepository.getByTrips_IdAndUser_Id(tripId, user.getId()).isPresent()) {
             throw new NoPermissionException("Bạn đã gửi yêu cầu tham gia rồi.");
         }
 
@@ -198,7 +198,7 @@ public class RequestJoinTripService {
     public BaseResponse getStatus(Integer tripId) throws NoPermissionException {
         var user = userService.getUserFromContext();
         var trip = tripService.getTripId(tripId);
-        var request = requestJoinTripRepository.getByTrips_IdAndUser_IdAndStatus(tripId, user.getId(), null);
+        var request = requestJoinTripRepository.getByTrips_IdAndUser_Id(tripId, user.getId());
 
         request.ifPresent(requestJoinTrip -> BaseResponse.builder().message("get status success")
                 .data(Map.of("status", requestJoinTrip.getStatus()))
