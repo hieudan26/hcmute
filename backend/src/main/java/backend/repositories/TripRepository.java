@@ -10,9 +10,13 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TripRepository extends PagingAndSortingRepository<Trips, Integer>, JpaSpecificationExecutor<Trips> {
     Page<Trips> findAll(Specification specification, Pageable pageable);
+    List<Trips> findAll();
+
     Page<Trips> findAllByOwner_Id(String id, Pageable pageable);
 
     Page<Trips> findAllByTitleContainingIgnoreCase(String key, Pageable pageable);
