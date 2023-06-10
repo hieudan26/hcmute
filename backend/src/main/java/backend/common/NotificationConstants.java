@@ -2,7 +2,10 @@ package backend.common;
 
 public enum NotificationConstants {
     MESSAGE("message"),
-    REQUEST_JOIN_TRIP("request_join_trip"),
+    RIP_REQUEST_OWNER("trip_request_owner"),
+    RIP_REQUEST_REJECTED("trip_request_rejected"),
+    RIP_REQUEST_APPROVED("trip_request_approved"),
+
     NOTIFICATION("notification"),
     POST("post"),
     REACT("react"),

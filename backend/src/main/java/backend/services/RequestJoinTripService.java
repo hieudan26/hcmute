@@ -128,8 +128,8 @@ public class RequestJoinTripService {
                 .status(RequestJoinTripStatus.PENDING.name()).build();
 
         var noti = Notifications.builder()
-                .type(NotificationConstants.REQUEST_JOIN_TRIP.getStatus())
-                .fromUser(ADMIN.getRoleName())
+                .type(NotificationConstants.RIP_REQUEST_OWNER.getStatus())
+                .fromUser(user.getId())
                 .toUser(trip.getOwner().getId())
                 .contentId(trip.getId())
                 .description("Your trip has new request to join.")
@@ -173,21 +173,35 @@ public class RequestJoinTripService {
             trip.getChatRoom().getMembers().add(newChatRoomMember);
             tripsRepository.save(trip);
             requestJoinTripRepository.delete(request);
+
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.RIP_REQUEST_APPROVED.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(updateRequestJoinTrip.getUserId())
+                    .contentId(trip.getId())
+                    .description("Your request join trip has bean "+request.getStatus().toLowerCase())
+                    .status(false)
+                    .build();
+
+            notificationService.sendSocketMessage(noti, updateRequestJoinTrip.getUserId());
+
             return BaseResponse.builder().message("update request successful.")
                     .data(Map.of("status","APPROVED"))
                     .build();
         }
 
-        var noti = Notifications.builder()
-                .type(NotificationConstants.REQUEST_JOIN_TRIP.getStatus())
-                .fromUser(ADMIN.getRoleName())
-                .toUser(updateRequestJoinTrip.getUserId())
-                .contentId(trip.getId())
-                .description("Your request join trip has bean "+request.getStatus().toLowerCase())
-                .status(false)
-                .build();
+        if(RequestJoinTripStatus.REJECTED.name().equals(request.getStatus())) {
+            var noti = Notifications.builder()
+                    .type(NotificationConstants.RIP_REQUEST_REJECTED.getStatus())
+                    .fromUser(ADMIN.getRoleName())
+                    .toUser(updateRequestJoinTrip.getUserId())
+                    .contentId(trip.getId())
+                    .description("Your request join trip has bean "+request.getStatus().toLowerCase())
+                    .status(false)
+                    .build();
 
-        notificationService.sendSocketMessage(noti, updateRequestJoinTrip.getUserId());
+            notificationService.sendSocketMessage(noti, updateRequestJoinTrip.getUserId());
+        }
 
         return BaseResponse.builder().message("update request successful.")
                 .data(requestJoinTripMapper
@@ -200,9 +214,11 @@ public class RequestJoinTripService {
         var trip = tripService.getTripId(tripId);
         var request = requestJoinTripRepository.getByTrips_IdAndUser_Id(tripId, user.getId());
 
-        request.ifPresent(requestJoinTrip -> BaseResponse.builder().message("get status success")
-                .data(Map.of("status", requestJoinTrip.getStatus()))
-                .build());
+        if(request.isPresent()) {
+            return BaseResponse.builder().message("get status success")
+                    .data(Map.of("status", request.get().getStatus()))
+                    .build() ;
+        }
 
         if(trip.getTripMembers().stream().anyMatch(item -> item.getUser().equals(user)) || trip.getOwner().equals(user)) {
             return BaseResponse.builder().message("get status success")
