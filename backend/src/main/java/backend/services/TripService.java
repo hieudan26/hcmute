@@ -94,7 +94,7 @@ public class TripService {
 
         Trips trip = tripsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Trip not found with id: " + id));
         if (!user.equals(trip.getOwner())) {
-            throw new NoPermissionException("You can't update other person's information.");
+            throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
         }
 
         tripMapper.updateTripFromUpdateTripRequest(updateTripRequest, trip);
@@ -177,7 +177,7 @@ public class TripService {
         Trips trip = tripsRepository.findById(tripId).orElseThrow(() -> new EntityNotFoundException("Trip not found with id: " + tripId));
 
         if (!user.equals(trip.getOwner())) {
-            throw new NoPermissionException("You can't update other person's information.");
+            throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
         }
 
         trip.getTripDays().removeAll(trip.getTripDays());
@@ -221,7 +221,7 @@ public class TripService {
     protected Trips getTripId(Integer tripId) throws EntityNotFoundException {
         Optional<Trips> optionalTrips = tripsRepository.findById(tripId);
         if(optionalTrips.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",tripId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", tripId));
         }
         return optionalTrips.get();
     }

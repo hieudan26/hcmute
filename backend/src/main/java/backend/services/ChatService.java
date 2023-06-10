@@ -47,7 +47,7 @@ public class ChatService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     public void sendPrivateMessage(MessagePayLoad messagePayLoad, SimpMessageHeaderAccessor headerAccessor) throws NoPermissionException {
         if(headerAccessor == null || headerAccessor.getUser() == null){
-            throw new NoPermissionException("You are not allowed to send message");
+            throw new NoPermissionException("Bạn không được phép gửi tin nhắn");
         }
 
         String userId = headerAccessor.getUser().getName();
@@ -56,7 +56,7 @@ public class ChatService {
             for(var member : chatRooms.getMembers()) {
                 if(member.getUser().getId().equals(userId)) {
                     if(!member.getStatus().equals("none")) {
-                        throw new NoPermissionException("You can't send message to user block you or blocked");
+                        throw new NoPermissionException("Bạn không thể gửi tin nhắn cho người dùng đã chặn bạn hoặc bị bạn chặn");
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class ChatService {
         Users users = userService.getUser(userId);
 
         if(!isUserInChatRoom(roomId,users)){
-            throw new NoPermissionException(String.format("User %s is not in room %d",userId,roomId));
+            throw new NoPermissionException(String.format("Người dùng %s không có trong phòng %d", userId, roomId));
         }
 
         return chatRooms;
@@ -206,7 +206,7 @@ public class ChatService {
         if(request.getFriends().size() == 1){
             var room = getChatRoomByFriend(userId,request.getFriends().get(0));
             if(room.isPresent() && room.get().getType().equals(ChatRoomType.SINGLE))
-                throw new NoPermissionException(String.format("You are in room chat"));
+                throw new NoPermissionException("Bạn đã ở trong phòng chat");
         } else {
             request.setType(ChatRoomType.GROUP.name());
         }
@@ -274,7 +274,7 @@ public class ChatService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var room = getChatRoom(roomId);
         if (!room.getOwner().getId().equals(userId) && room.getType().equals(ChatRoomType.GROUP)) {
-            throw new NoPermissionException("you are not admin");
+            throw new NoPermissionException("Bạn không phải là quản trị viên");
         }
 
         if (request.getName() != null) {
@@ -288,7 +288,7 @@ public class ChatService {
         if (request.getOwnerId() != null && !room.getType().equals(ChatRoomType.SINGLE)) {
             var newOwner = userService.getUser(request.getOwnerId());
             if(!isUserInChatRoom(roomId, newOwner)) {
-                throw new NoPermissionException("new Admin is not in this chat");
+                throw new NoPermissionException("Người quản trị mới không có trong cuộc trò chuyện này");
             }
             room.setOwner(newOwner);
         }
@@ -329,12 +329,12 @@ public class ChatService {
         var room = getChatRoom(roomId);
 
         if (!room.getOwner().getId().equals(userId)) {
-            throw new NoPermissionException("you are not admin");
+            throw new NoPermissionException("Bạn không phải là quản trị viên");
         }
         var newOwner = userService.getUser(newOwnerId);
 
         if(!isUserInChatRoom(roomId, newOwner)) {
-            throw new NoPermissionException("new Admin is not in this chat");
+            throw new NoPermissionException("Người quản trị mới không có trong cuộc trò chuyện này");
         }
         room.setOwner(newOwner);
 
@@ -348,7 +348,7 @@ public class ChatService {
         String userContextId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var room = getChatRoom(roomId);
         if (!room.getOwner().getId().equals(userContextId)) {
-            throw new NoPermissionException("you are not admin");
+            throw new NoPermissionException("Bạn không phải là quản trị viên");
         }
         var user = userService.getUser(userId);
         if (isUserInChatRoom(roomId, user)){
@@ -366,11 +366,11 @@ public class ChatService {
         var room = getChatRoom(roomId);
         var user = userService.getUser(userContextId);
         if (!isUserInChatRoom(roomId, user)){
-            throw new NoPermissionException("You is not in this chat");
+            throw new NoPermissionException("Bạn không có trong cuộc trò chuyện này");
         }
 
         if (!room.getType().equals(ChatRoomType.SINGLE)){
-            throw new NoPermissionException("You mustn't in single chat");
+            throw new NoPermissionException("Bạn không được phép trong cuộc trò chuyện riêng tư");
         }
         for(var member : room.getMembers()) {
             if(member.getUser().equals(user)) {
@@ -389,16 +389,16 @@ public class ChatService {
         var room = getChatRoom(roomId);
         var user = userService.getUser(userContextId);
         if (!isUserInChatRoom(roomId, user)){
-            throw new NoPermissionException("You is not in this chat");
+            throw new NoPermissionException("Bạn không có trong cuộc trò chuyện này");
         }
 
         if (!room.getType().equals(ChatRoomType.SINGLE)){
-            throw new NoPermissionException("You mustn't in single chat");
+            throw new NoPermissionException("Bạn không được phép trong cuộc trò chuyện riêng tư");
         }
         for(var member : room.getMembers()) {
             if(member.getUser().equals(user)) {
                 if(!member.getStatus().equals("block")) {
-                    throw new NoPermissionException("You can't unlock user block you or not blocked");
+                    throw new NoPermissionException("Bạn không thể mở khóa người dùng đã chặn bạn hoặc không bị chặn");
                 }
             }
         }
@@ -419,7 +419,7 @@ public class ChatService {
         var room = getChatRoom(roomId);
         var user = userService.getUser(userContextId);
         if (!isUserInChatRoom(roomId, user)){
-            throw new NoPermissionException("You is not in this chat");
+            throw new NoPermissionException("Bạn không có trong cuộc trò chuyện này");
         }
         String status = "none";
         for(var member : room.getMembers()) {
@@ -437,11 +437,12 @@ public class ChatService {
         String userId = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var room = getChatRoom(roomId);
         if (!room.getOwner().getId().equals(userId)) {
-            throw new NoPermissionException("you are not admin");
+           throw new NoPermissionException("Bạn không phải là quản trị viên");
+
         }
 
         if (room.getType().equals(ChatRoomType.SINGLE)) {
-            throw new NoPermissionException("Can't delete signle chat");
+            throw new NoPermissionException("Không thể xóa cuộc trò chuyện riêng tư");
         }
 
         room.setDeleted(true);
@@ -454,12 +455,12 @@ public class ChatService {
         Users users = userService.getUser(userId);
 
         if(!isUserInChatRoom(roomId,users)){
-            throw new NoPermissionException(String.format("User %s is not in room %d",userId,roomId));
+           throw new NoPermissionException(String.format("Người dùng %s không có trong phòng %d", userId, roomId));
         }
         ChatRooms chatRooms = getChatRoom(roomId);
 
         if( chatRooms.getType().equals(ChatRoomType.SINGLE)){
-            throw new NoPermissionException(String.format("You cannot leave pair chat"));
+            throw new NoPermissionException("Bạn không thể rời khỏi cuộc trò chuyện đôi");
         }
 
         if (chatRooms.getOwner().equals(users)) {
@@ -490,7 +491,7 @@ public class ChatService {
     public ChatRooms getChatRoom(Integer roomId) throws NoPermissionException {
         Optional<ChatRooms> chatRooms = chatRoomRepository.findChatRoomsByIdAndIsDeletedIsFalse(roomId);
         if(chatRooms.isEmpty()){
-            throw new NoRecordFoundException("Not found chat room with id: "+roomId);
+            throw new NoRecordFoundException("Không tìm thấy phòng chat với id: " + roomId);
         }
         return chatRooms.get();
     }

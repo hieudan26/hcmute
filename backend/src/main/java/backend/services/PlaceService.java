@@ -116,11 +116,11 @@ public class PlaceService {
 
         if (user.isHasRole(ROLE_USER.getRoleName())) {
             if(!user.getUsername().equals(places.getOwner().getId())) {
-                throw new NoPermissionException("You can't update other person's information.");
+                throw new NoPermissionException("Bạn không thể cập nhật thông tin của người khác.");
             }
 
             if(!places.getStatus().equals(PlaceStatuses.PENDING.getStatus())) {
-                throw new NoPermissionException("You can update only pending places.");
+                throw new NoPermissionException("Bạn chỉ có thể cập nhật những địa điểm đang chờ duyệt.");
             }
             createPlaceRequest.setStatusDescription(null);
             createPlaceRequest.setStatus(null);
@@ -171,7 +171,7 @@ public class PlaceService {
         Places places = getPlaceByUrl(url);
 
         if (!places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
-            throw new InvalidRequestException("Url is not a country");
+            throw new InvalidRequestException("URL không phải là một quốc gia");
         }
         return BaseResponse.builder().message("Find country successful.")
                 .data(placeMapper.fromPlaceToPlaceResponse(places))
@@ -182,13 +182,13 @@ public class PlaceService {
         Places places = getPlaceByUrl(countryUrl);
 
         if (!places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
-            throw new InvalidRequestException("Url is not a country");
+            throw new InvalidRequestException("URL không phải là một quốc gia");
         }
 
         Places province = getPlaceWithParent(places,provinceUrl);
 
         if (!province.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
-            throw new InvalidRequestException("Url is not a province");
+            throw new InvalidRequestException("URL không phải là một tỉnh/thành phố");
         }
 
 
@@ -201,7 +201,7 @@ public class PlaceService {
         Places places = getPlaceByUrl(url);
 
         if (!places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
-            throw new InvalidRequestException("Url is not a country");
+            throw new InvalidRequestException("URL không phải là một quốc gia");
         }
 
         PagingResponse pagingResponse = new PagingResponse(
@@ -217,7 +217,7 @@ public class PlaceService {
         Places places = getPlaceByUrl(url);
 
         if (!places.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
-            throw new InvalidRequestException("Url is not a provinces");
+            throw new InvalidRequestException("URL không phải là một tỉnh/thành phố");
         }
         PagingResponse pagingResponse ;
         if(type == null){
@@ -239,13 +239,13 @@ public class PlaceService {
         Places places = getPlaceByUrl(countryUrl);
 
         if (!places.getPlaceCategories().getName().equals(AreaConstant.COUNTRY.getTypeName())){
-            throw new InvalidRequestException("Url is not a country");
+            throw new InvalidRequestException("URL không phải là một quốc gia");
         }
 
         Places province = getPlaceWithParent(places,provinceUrl);
 
         if (!province.getPlaceCategories().getName().equals(AreaConstant.PROVINCE.getTypeName())){
-            throw new InvalidRequestException("Url is not a province");
+            throw new InvalidRequestException("URL không phải là một tỉnh/thành phố");
         }
 
 
@@ -257,7 +257,7 @@ public class PlaceService {
     public Places getPlace(Integer id){
         Optional<Places> places = placeRepository.findById(id);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với Id: %s.", id));
         return places.get();
     }
 
@@ -270,34 +270,34 @@ public class PlaceService {
     public PlaceCategories getPlaceCategory(Integer id){
         Optional<PlaceCategories> places = placeCategoryRepository.findById(id);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't place categories place with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy danh mục địa điểm với Id: %s.", id));
         return places.get();
     }
 
     public Places getPlaceByUrl(String url){
         Optional<Places> places = placeRepository.findByUrl(url);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with url: %s.",url));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với url: %s.", url));
         return places.get();
     }
     public Places getPlaceWithArea(Places place, String placeUrl){
         Optional<Places> places = placeRepository.findPlaceByUrl(place.getAreas().getId(), placeUrl);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",placeUrl,place.getName()));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với url: %s trong đối tượng cha %s", placeUrl, place.getName()));
         return places.get();
     }
 
     public Places getPlaceWithParent(Places place, String placeUrl){
         Optional<Places> places = placeRepository.findProvinceByUrl(place.getAreas().getId(), placeUrl);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with url: %s in parent %s",placeUrl,place.getName()));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với url: %s trong đối tượng cha %s", placeUrl, place.getName()));
         return places.get();
     }
 
     public Places getPlaceByArea(Integer id, String type){
         Optional<Places> places = placeRepository.findPlaceWithArea(id, type);
         if(places.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find place with id %s", id.toString()));
+            throw new NoRecordFoundException(String.format("Không tìm thấy địa điểm với Id %s", id.toString()));
         return places.get();
     }
     public String buildUrl(Places places){

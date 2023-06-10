@@ -120,14 +120,14 @@ public class AreaService{
     public Areas getCountry(Integer id){
         Optional<Areas> country = areaRepository.queryAreaByTypeAndId(AreaConstant.COUNTRY.getTypeName(),id);
         if(country.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find country with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy quốc gia với Id: %s.", id));
         return country.get();
     }
 
     public Areas getProvince(Integer id){
         Optional<Areas> province = areaRepository.queryAreaByTypeAndId(AreaConstant.PROVINCE.getTypeName(),id);
         if(province.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find province with Id: %s.",id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy tỉnh/thành phố với Id: %s.", id));
         return province.get();
     }
 

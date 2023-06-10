@@ -83,7 +83,7 @@ public abstract class PlaceMapper {
     protected PlaceCategories mapPlaceCategory(Integer id) throws EntityNotFoundException {
         Optional<PlaceCategories> optionalPlaceCategories = placeCategoryRepository.findById(id);
         if (optionalPlaceCategories.isEmpty()) {
-            throw new NoRecordFoundException(String.format("Can't find category with Id: %s.", id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy danh mục với Id: %s.", id));
         }
         return optionalPlaceCategories.get();
     }
@@ -92,7 +92,7 @@ public abstract class PlaceMapper {
     protected Areas mapArea(Integer id) throws EntityNotFoundException {
         Optional<Areas> optionalAreas = areaRepository.findById(id);
         if (optionalAreas.isEmpty()) {
-            throw new NoRecordFoundException(String.format("Can't find area with Id: %s.", id));
+            throw new NoRecordFoundException(String.format("Không tìm thấy khu vực với Id: %s.", id));
         }
         return optionalAreas.get();
     }
@@ -106,7 +106,7 @@ public abstract class PlaceMapper {
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
         Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(userId);
         if(optionalUsers.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", userId));
         }
         return optionalUsers.get();
     }

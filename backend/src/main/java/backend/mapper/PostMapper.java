@@ -67,7 +67,7 @@ public abstract class PostMapper {
     protected Users fromStringToUsers(String userId) throws EntityNotFoundException {
         Optional<Users> optionalUsers = userRepository.findByIdAndIsDisableIsFalse(userId);
         if(optionalUsers.isEmpty()){
-            throw new NoRecordFoundException(String.format("Can't find user with Id: %s.",userId));
+            throw new NoRecordFoundException(String.format("Không tìm thấy người dùng với Id: %s.", userId));
         }
         return optionalUsers.get();
     }

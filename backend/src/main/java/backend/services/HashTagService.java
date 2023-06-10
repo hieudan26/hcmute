@@ -61,7 +61,7 @@ public class HashTagService {
     public Set<HashTags> createNewHashTag(List<String> name, Places place){
         List<String> existed = name.stream().filter(item->isExistedInOtherPlace(item, place.getId())).toList();
         if(!existed.isEmpty()){
-            throw new InvalidRequestException(String.join(" and ", existed) + " is exsited.");
+            throw new InvalidRequestException(String.join(" và ", existed) + " đã tồn tại.");
         }
         return name.stream().map(item -> HashTags.builder()
                 .name(item)
@@ -82,7 +82,7 @@ public class HashTagService {
     public HashTags getHashTag(String name){
         Optional<HashTags> hashTags = hashtagRepository.findHashTagsByName(name);
         if(hashTags.isEmpty())
-            throw new NoRecordFoundException(String.format("Can't find hashTag with name: %s.",name));
+            throw new NoRecordFoundException(String.format("Không tìm thấy hashTag với tên: %s.", name));
         return hashTags.get();
     }
     public BaseResponse findTag(PagingRequest pagingRequest, String hashTag){
