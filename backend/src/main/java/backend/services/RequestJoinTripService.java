@@ -148,7 +148,7 @@ public class RequestJoinTripService {
         var request = findByTripIdAndUserId(tripId, updateRequestJoinTrip.getUserId());
         var user = userService.getUserFromContext();
         var trip = tripService.getTripId(tripId);
-
+        var userRequest= userService.getUser(updateRequestJoinTrip.getUserId());
         if(!trip.getOwner().equals(user)) {
             throw new NoPermissionException("Bạn không có quyền thực hiện điều này.");
         }
@@ -163,11 +163,12 @@ public class RequestJoinTripService {
             var newMember = TripMembers.builder()
                     .role("member")
                     .trip(trip)
-                    .user(user)
+                    .user(userRequest)
                     .build();
+
             trip.getTripMembers().add(newMember);
             var newChatRoomMember = ChatRoomMember.builder().chatRoom(trip.getChatRoom())
-                            .user(user)
+                            .user(userRequest)
                             .status("none").build();
 
             trip.getChatRoom().getMembers().add(newChatRoomMember);
