@@ -221,6 +221,7 @@ public class ChatService {
                 .time(time)
                 .name(getName(request))
                 .type(ChatRoomType.valueOf(request.getType()))
+                .members(Set.of())
                 .owner(userService.getUser(userId))
                 .build();
 
@@ -232,6 +233,7 @@ public class ChatService {
                         .build())
                 .collect(Collectors.toSet());
 
+
         members.add(ChatRoomMember.builder()
                 .user(userService.getUser(userId))
                         .chatRoom(chatRooms)
@@ -241,7 +243,6 @@ public class ChatService {
         chatRooms.setMembers(members);
 
         return chatRoomRepository.save(chatRooms);
-
     }
 
 
