@@ -1,5 +1,11 @@
 import { AxiosResponse } from 'axios';
 
+export enum STATUS_MEMBER_TRIP {
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+}
+
 export enum STATUS_POST {
   ACTIVE = 'ACTIVE',
   OBSERVE = 'OBSERVE',

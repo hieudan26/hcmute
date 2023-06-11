@@ -1,20 +1,19 @@
+import { StarIcon } from '@chakra-ui/icons';
 import {
+  Avatar,
+  Box,
   Drawer,
   DrawerBody,
-  DrawerFooter,
+  DrawerCloseButton,
+  DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Box,
   Flex,
-  Avatar,
   Heading,
 } from '@chakra-ui/react';
+import { useRef } from 'react';
 import { useTripReviews } from '../../../../../hooks/queries/trip';
 import { ITripReviewResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
-import { StarIcon } from '@chakra-ui/icons';
-import { useRef } from 'react';
 
 export interface IDrawerReviewTripProps {
   isOpen: boolean;

@@ -54,6 +54,19 @@ export const responseToUpdatePlaceFee = (params: ITripPlaceFeesResponseModel): I
   return result;
 };
 
+export interface ITripRequestJoinResponse {
+  id: number;
+  user: IUserFirstLoginRequest;
+  tripId: number;
+  status: string;
+  date: string;
+}
+
+export interface IUpdateTripRequestJoinStatus {
+  status: string;
+  userId: string;
+}
+
 export interface IReviewTripRequestModel {
   content: string;
   rate: number;

@@ -7,7 +7,6 @@ import {
   Flex,
   Icon,
   IconButton,
-  Input,
   Stack,
   Tab,
   TabList,
@@ -18,17 +17,18 @@ import {
   useColorMode,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { IoHome, IoMoon, IoNotifications, IoSearchSharp, IoSunny } from 'react-icons/io5';
+import { useState } from 'react';
+import { IoHome } from 'react-icons/io5';
+import { RiArrowGoBackFill } from 'react-icons/ri';
 import { FriendStatus } from '../../../../constants/global.constant';
 import { useChats } from '../../../../hooks/queries/chat';
 import { useFriends } from '../../../../hooks/queries/friend';
 import { IFriendResponse, IUserFirstLoginRequest } from '../../../../models/user/user.model';
+import CreateChatModal from '../Modals/CreateChatModal/index.component';
 import SingleChat from '../SingleChat/index.component';
 import SingleFriend from '../SingleFriend/index.component';
-import { useTranslation } from 'next-i18next';
-import CreateChatModal from '../Modals/CreateChatModal/index.component';
-import { useState } from 'react';
 
 export interface ISidebarProps {
   user: IUserFirstLoginRequest | null;
@@ -97,21 +97,29 @@ export default function Sidebar(props: ISidebarProps) {
             }}
           />
           <Stack maxWidth={!fullWidth ? '30vw' : 'full'} direction='row' align='center'>
-            <IconButton aria-label='Notification' icon={<Icon as={IoNotifications} />} isRound />
+            {/* <IconButton aria-label='Notification' icon={<Icon as={IoNotifications} />} isRound /> */}
+            <IconButton
+              aria-label='Back'
+              icon={<Icon as={RiArrowGoBackFill} />}
+              onClick={() => {
+                router.back();
+              }}
+              // isRound
+            />
             <IconButton
               aria-label='Home'
               icon={<Icon as={IoHome} />}
               onClick={() => {
                 router.push('/');
               }}
-              isRound
+              // isRound
             />
-            <IconButton
+            {/* <IconButton
               aria-label='Toggle Dark Mode'
               icon={colorMode === 'light' ? <Icon as={IoMoon} /> : <Icon as={IoSunny} />}
               onClick={toggleColorMode}
               isRound
-            />
+            /> */}
           </Stack>
         </Flex>
         <Stack direction='row' align='center' p='10px'>
@@ -119,12 +127,12 @@ export default function Sidebar(props: ISidebarProps) {
             Tạo phòng trò chuyện
           </Button>
         </Stack>
-        <Stack direction='row' align='center' p='10px'>
+        {/* <Stack direction='row' align='center' p='10px'>
           <Flex w='full'>
             <Input w='full' placeholder={t('input_search')} />
             <IconButton aria-label='search' icon={<Icon as={IoSearchSharp} />} />
           </Flex>
-        </Stack>
+        </Stack> */}
       </Flex>
       <Stack w='full' p='10px' direction='column' overflow='scroll'>
         <Tabs isFitted colorScheme='pink' height='100vh' index={tabIndex} onChange={handleTabsChange}>
