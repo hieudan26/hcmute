@@ -14,19 +14,15 @@ import {
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { IoMdMoon, IoMdSunny } from 'react-icons/io';
-import { MdNotificationsNone, MdOutlineScreenShare } from 'react-icons/md';
 import { logout } from '../../../../../app/slices/authSlice';
 import { isConnected } from '../../../../../app/slices/socketSlice';
 import { clearUserNotAuth } from '../../../../../app/slices/userNotAuthSlice';
 import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
 import { AuthService } from '../../../../../services/auth/auth.service';
 import { SocketContext } from '../../../../contexts/Socket';
+import Notification from '../../../Notification/index.component';
 import routes from '../../Routes/Routes';
 import { SidebarResponsive } from '../../Sidebar/index.component';
-import { ItemContent } from '../ItemContent/index.component';
-import { BiDotsVerticalRounded } from 'react-icons/bi';
-import { CgScreen } from 'react-icons/cg';
-import Notification from '../../../Notification/index.component';
 
 export default function NavbarLinks(props: { secondary: boolean | undefined }) {
   const { secondary } = props;
@@ -70,9 +66,9 @@ export default function NavbarLinks(props: { secondary: boolean | undefined }) {
       <SidebarResponsive routes={routes} />
       <Notification />
 
-      <Button variant='no-hover' bg='transparent' p='0px' minW='unset' minH='unset' h='18px' w='max-content' onClick={goToSocial}>
+      {/* <Button variant='no-hover' bg='transparent' p='0px' minW='unset' minH='unset' h='18px' w='max-content' onClick={goToSocial}>
         <Icon me='10px' h='18px' w='18px' color={navbarIcon} as={MdOutlineScreenShare} />
-      </Button>
+      </Button> */}
       <Button
         variant='no-hover'
         bg='transparent'

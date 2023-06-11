@@ -1,31 +1,13 @@
-import {
-  Avatar,
-  Box,
-  Center,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
-  Flex,
-  Icon,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  useColorModeValue,
-  useDisclosure,
-} from '@chakra-ui/react';
-import SidebarContent from './SidebarContent/index.component';
-import { FiMenu } from 'react-icons/fi';
-import { FaBell } from 'react-icons/fa';
-import NavStep from '../NavStep/index.component';
+import { Box, Center, Drawer, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { useTripById } from '../../../../hooks/queries/trip';
-import { ITripDayResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
-import { useAppDispatch } from '../../../../hooks/redux';
-import { setValueStatusItinerary } from '../../../../app/slices/statusItinararySlice';
 import { setCurrentTrip } from '../../../../app/slices/currentTripSlice';
-import { useQueryClient } from '@tanstack/react-query';
+import { setValueStatusItinerary } from '../../../../app/slices/statusItinararySlice';
+import { useTripById } from '../../../../hooks/queries/trip';
+import { useAppDispatch } from '../../../../hooks/redux';
+import { ITripDayResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
+import SidebarContent from './SidebarContent/index.component';
 
 export interface ISidebarDaysProps {
   children: React.ReactNode;
@@ -65,18 +47,20 @@ export default function SidebarDays(props: ISidebarDaysProps) {
   }, [trip.data]);
 
   useEffect(() => {
-    if (trip.data) {
+    const { id } = router.query;
+    if (trip.data && id) {
       let temp = trip.data.data as ITripsResponseModel;
       setData(temp);
       dispatch(setCurrentTrip(temp));
       dispatch(setValueStatusItinerary(temp.status as 'Private' | 'Public'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trip.data]);
+  }, [trip.data, router.query]);
 
   useEffect(() => {
     const { id } = router.query;
     setIdTrip(id as string);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
 
   return (

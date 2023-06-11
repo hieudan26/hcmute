@@ -6,6 +6,7 @@
     "install-locale": "i18nexus pull -k lH0dv5EMtw59gJx4Zh7guw",
     "build-start-dev": "yarn build && yarn start-dev",
     "start-dev": "npm run open-browser && next dev",
+    "start-production": "next build && npm run open-browser && next start",
     "dev": "next dev",
     "open-browser": "start http://localhost:3000",
     "build": "next build",

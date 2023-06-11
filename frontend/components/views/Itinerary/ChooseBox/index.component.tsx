@@ -1,23 +1,17 @@
-import {
-  Box,
-  Stack,
-  Flex,
-  Icon,
-  IconButton,
-  Square,
-  Text,
-  useColorMode,
-  useDisclosure,
-  Radio,
-  RadioGroup,
-} from '@chakra-ui/react';
+import { ChevronRightIcon } from '@chakra-ui/icons';
+import { Box, Flex, Icon, Square, Text, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import { DragDropContext, Draggable, DropResult, Droppable } from 'react-beautiful-dnd';
 import { BsDashSquareDotted } from 'react-icons/bs';
 import { HiTrash } from 'react-icons/hi';
 import { IoMdMenu } from 'react-icons/io';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
-import ModalDetailChooseBox from '../Modals/ModalDetailChooseBox/index.component';
-import ModalDeleteChooseBox from '../Modals/ModalDeleteChooseBox/index.component';
+import { MdOutlineAttachMoney } from 'react-icons/md';
+import Select, { ActionMeta, MultiValue } from 'react-select';
+import { setCurrentTrip, setTripDays } from '../../../../app/slices/currentTripSlice';
+import { usePlacesProvincesByCountry_GetAll } from '../../../../hooks/queries/place';
+import { ITripUpdate, useCUDTrip } from '../../../../hooks/queries/trip';
+import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
+import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import {
   ITripDayResponseModel,
   ITripDayUpdateRequestModel,
@@ -27,20 +21,10 @@ import {
   ITripsResponseModel,
   responseToUpdateTripDay,
 } from '../../../../models/trip/trip.model';
-import Select, { ActionMeta, InputActionMeta, MultiValue, OnChangeValue } from 'react-select';
-import {
-  useFetchProvince,
-  usePlacesProvincesByCountry,
-  usePlacesProvincesByCountry_GetAll,
-} from '../../../../hooks/queries/place';
-import { IPlaceCountryResponse } from '../../../../models/place/place.model';
-import { ChevronRightIcon } from '@chakra-ui/icons';
-import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
-import { setCurrentTrip, setTripDays } from '../../../../app/slices/currentTripSlice';
-import { MdOutlineAttachMoney } from 'react-icons/md';
-import ModalTripFees from '../Modals/ModalTripFees/index.component';
-import { ITripUpdate, useCUDTrip } from '../../../../hooks/queries/trip';
 import { toggleMessage } from '../../Message/index.component';
+import ModalDeleteChooseBox from '../Modals/ModalDeleteChooseBox/index.component';
+import ModalDetailChooseBox from '../Modals/ModalDetailChooseBox/index.component';
+import ModalTripFees from '../Modals/ModalTripFees/index.component';
 
 export interface IChooseBoxProps {
   trip: ITripsResponseModel | undefined;
@@ -406,7 +390,7 @@ export default function ChooseBox(props: IChooseBoxProps) {
         onOpen={onOpenDelete}
       />
       <Flex rounded='md' shadow='md' mx='3' my='2' direction='column' p='3' h='84vh' bg='white'>
-        {tripDayChoose.id !== 0 && (
+        {trip && tripDayChoose.id !== 0 && (
           <>
             <Box fontSize='sm' borderBottom='1px' borderBottomColor='gray.400' h='20'>
               <Flex align='center' mb={isShowWarningMaxSelect ? '1' : '2'} w='full'>

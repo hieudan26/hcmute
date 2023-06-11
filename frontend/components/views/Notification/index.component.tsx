@@ -16,12 +16,12 @@ import { useRouter } from 'next/router';
 import { UIEvent, useRef, useState } from 'react';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import { CgScreen } from 'react-icons/cg';
-import { MdNotificationsNone, MdOutlineNotificationsActive } from 'react-icons/md';
+import { MdOutlineNotificationsActive } from 'react-icons/md';
+import { RoleConstants } from '../../../constants/roles.constant';
 import { useCUDNotification, useCountNotifications, useNotifications } from '../../../hooks/queries/notification';
+import { useAppSelector } from '../../../hooks/redux';
 import { INotificationResponse } from '../../../models/notification/notification.model';
 import { ItemContent } from '../Admin/Navbar/ItemContent/index.component';
-import { useAppSelector } from '../../../hooks/redux';
-import { RoleConstants } from '../../../constants/roles.constant';
 
 export interface INotificationProps {
   isUser?: boolean;
@@ -137,6 +137,15 @@ export default function Notification(props: INotificationProps) {
           break;
         case 'comment_reply':
           router.push(`/detail-post/${item.contentId}`);
+          break;
+        case 'trip_request_owner':
+          router.push(`/itinerary/edit/${item.contentId}`);
+          break;
+        case 'trip_request_rejected':
+          router.push(`/itinerary/detail/${item.contentId}`);
+          break;
+        case 'trip_request_approved':
+          router.push(`/itinerary/detail/${item.contentId}`);
           break;
         default:
           break;

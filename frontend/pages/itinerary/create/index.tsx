@@ -1,49 +1,44 @@
 /* eslint-disable react/no-children-prop */
 import {
   Box,
-  Flex,
-  Heading,
-  Center,
-  Container,
-  Text,
-  ButtonGroup,
   Button,
+  Center,
+  Checkbox,
   Divider,
+  Flex,
   FormControl,
   FormLabel,
+  Heading,
   Input,
-  Select,
-  Textarea,
-  Highlight,
-  Checkbox,
-  useColorModeValue,
   InputGroup,
   InputLeftElement,
-  FormErrorMessage,
+  Text,
+  Textarea,
+  useColorModeValue,
 } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { SingleDatepicker } from 'chakra-dayzed-datepicker';
+import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { usePlacesCountries, usePlacesCountries_Query, usePlacesProvincesByCountry } from '../../../hooks/queries/place';
-import CountriesList from '../../../components/views/Discovery/CountriesList/index.component';
-import { ChangeEvent, useEffect, useState } from 'react';
-import CountriesCarousel from '../../../components/views/Itinerary/CountriesCarousel/index.component';
-import ProvincesList from '../../../components/views/Discovery/ProvincesList/index.component';
-import { NUMBER_OF_DAYS } from '../../../constants/global.constant';
-import { IPlaceCountryResponse } from '../../../models/place/place.model';
 import { useRouter } from 'next/router';
-import { PropsConfigs } from 'chakra-dayzed-datepicker/dist/utils/commonTypes';
-import { SingleDatepicker } from 'chakra-dayzed-datepicker';
-import { addDaysToDate, formatDate, getMaxDate, getMinDate } from '../../../utils';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import useValidationSchema from '../../../hooks/validation/useValidationSchema';
-import { ITripRequestModel } from '../../../models/trip/trip.model';
+import { clearCurrentTrip } from '../../../app/slices/currentTripSlice';
+import CountriesCarousel from '../../../components/views/Itinerary/CountriesCarousel/index.component';
+import { usePlacesCountries_Query } from '../../../hooks/queries/place';
 import { useCUDTrip } from '../../../hooks/queries/trip';
+import { useAppDispatch } from '../../../hooks/redux';
+import useValidationSchema from '../../../hooks/validation/useValidationSchema';
+import { IPlaceCountryResponse } from '../../../models/place/place.model';
+import { ITripRequestModel } from '../../../models/trip/trip.model';
+import { addDaysToDate, formatDate, getMinDate } from '../../../utils';
 
 export interface IItineraryCreatePageProps {}
 
 const ItineraryCreatePage: NextPage = (props: IItineraryCreatePageProps) => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const noColorProps = useColorModeValue('black', 'white');
   const [isNew, setIsNew] = useState<boolean>(true);
   const [urlCountry, setUrlCountry] = useState<string>('afghanistan');
@@ -122,6 +117,7 @@ const ItineraryCreatePage: NextPage = (props: IItineraryCreatePageProps) => {
       shortDescription: params.description,
     };
     try {
+      dispatch(clearCurrentTrip());
       let response = await mutationCreateTrip.mutateAsync(pr);
       router.push(`/itinerary/edit/${response.data.id}`);
     } catch {

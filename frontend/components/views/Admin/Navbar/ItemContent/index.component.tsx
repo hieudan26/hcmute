@@ -1,10 +1,8 @@
-import { Icon, Flex, Text, useColorModeValue } from '@chakra-ui/react';
-import { MdUpgrade } from 'react-icons/md';
-import { INotificationResponse } from '../../../../../models/notification/notification.model';
-import { FcAdvertising } from 'react-icons/fc';
+import { Flex, Icon, Text } from '@chakra-ui/react';
 import { GoDash, GoPrimitiveDot } from 'react-icons/go';
-import { useAppSelector } from '../../../../../hooks/redux';
 import { RoleConstants } from '../../../../../constants/roles.constant';
+import { useAppSelector } from '../../../../../hooks/redux';
+import { INotificationResponse } from '../../../../../models/notification/notification.model';
 
 export interface IItemContentProps {
   data: INotificationResponse;
@@ -52,6 +50,12 @@ export function ItemContent(props: IItemContentProps) {
           return 'đã bình luận bài đăng của bạn';
         case 'comment_reply':
           return 'đã phản hồi bình luận của bạn trong một bài đăng';
+        case 'trip_request_owner':
+          return 'đã gửi yêu cầu tham gia hành trình cùng bạn. Hãy kiểm tra ngay nào';
+        case 'trip_request_rejected':
+          return 'của hành trình đã từ chối yêu cầu tham gia hành trình cùng bạn. Liên hệ với chủ hành trình để có thể trao đổi thêm';
+        case 'trip_request_approved':
+          return 'của hành trình đã chấp thuận yêu cầu tham gia hành trình cùng bạn, bạn có thể tham gia trò chuyện cùng mọi người ngay bây giờ';
         default:
           return 'không có ý kiến';
       }

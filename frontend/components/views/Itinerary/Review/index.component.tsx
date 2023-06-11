@@ -1,30 +1,17 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Center,
-  Container,
-  Flex,
-  FormControl,
-  FormLabel,
-  Grid,
-  Heading,
-  Input,
-  Text,
-  Textarea,
-  VStack,
-} from '@chakra-ui/react';
-import { useCUDTrip, useTripReviews } from '../../../../hooks/queries/trip';
-import { useEffect, useState } from 'react';
-import { ITripReviewResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
 import { StarIcon } from '@chakra-ui/icons';
+import { Avatar, Box, Button, Center, Flex, FormControl, FormLabel, Grid, Heading, Text, Textarea } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useCUDTrip, useTripReviews } from '../../../../hooks/queries/trip';
+import { ITripReviewResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
+import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 
 export interface IReviewProps {
   tripData: undefined | any;
+  auth: IUserFirstLoginRequest | null;
 }
 
 export default function Review(props: IReviewProps) {
-  const { tripData } = props;
+  const { tripData, auth } = props;
   const [trip, setTrip] = useState<undefined | ITripsResponseModel>(undefined);
   const [rating, setRating] = useState<number>(0);
   const [content, setContent] = useState<string>('');
@@ -81,7 +68,7 @@ export default function Review(props: IReviewProps) {
         Cảm nhận về hành trình
       </Heading>
       <Flex px='28' align='flex-start' gap={6} w='full' mb='10'>
-        <Box position='sticky' top={32} left={0} zIndex={4}>
+        <Box hidden={!auth} position='sticky' top={32} left={0} zIndex={4}>
           <Box bg='white' shadow='md' w='full' borderWidth='1px' borderRadius='lg' overflow='hidden' mt='2' p='6' fontSize='sm'>
             <Text mb='1'>Để lại cảm nhận của bạn về chuyến đi này 😘😘</Text>
             <Box my='1'>

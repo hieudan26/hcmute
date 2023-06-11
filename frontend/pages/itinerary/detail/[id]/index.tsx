@@ -1,40 +1,34 @@
 import {
-  List,
-  ListItem,
-  ListIcon,
-  OrderedList,
-  UnorderedList,
+  Avatar,
+  AvatarGroup,
   Box,
-  Text,
-  Heading,
+  Button,
   Center,
   Container,
   Divider,
   Flex,
-  Avatar,
-  Button,
-  AvatarGroup,
-  VStack,
   Grid,
+  Heading,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
-  Skeleton,
+  Text,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useEffect, useRef, useState } from 'react';
-import { MdCheckCircle } from 'react-icons/md';
-import { useTripById, useTripMembers, useTrips } from '../../../../hooks/queries/trip';
 import { useRouter } from 'next/router';
-import { ITripMemberResponseModel, ITripsResponseModel } from '../../../../models/trip/trip.model';
-import { useQueryClient } from '@tanstack/react-query';
-import DayListDetail from '../../../../components/views/Itinerary/DayListDetail/index.component';
-import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
-import MainContentDetail from '../../../../components/views/Itinerary/MainContentDetail/index.component';
-import { useAppSelector } from '../../../../hooks/redux';
+import { useEffect, useState } from 'react';
 import Card from '../../../../components/views/Itinerary/Card/index.component';
-import { ArrayTenTemp } from '../../../experiences';
+import DayListDetail from '../../../../components/views/Itinerary/DayListDetail/index.component';
+import MainContentDetail from '../../../../components/views/Itinerary/MainContentDetail/index.component';
 import Review from '../../../../components/views/Itinerary/Review/index.component';
+import { useTripById, useTripMembers, useTrips } from '../../../../hooks/queries/trip';
+import { useAppSelector } from '../../../../hooks/redux';
+import { ITripsResponseModel } from '../../../../models/trip/trip.model';
+import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
+import tripService from '../../../../services/trip/trip.service';
+import { ArrayTenTemp } from '../../../experiences';
 
 export interface IItineraryDetailProps {}
 
@@ -45,6 +39,8 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
   const [totalMembers, setTotalMembers] = useState<number>(0);
   const [totalMembersGet, setTotalMembersGet] = useState<number>(0);
   const [charKey, setCharKey] = useState<string>('');
+  const [statusUser, setStatusUser] = useState<string>('NONE'); // NONE - MEMBER - REJECT - PENDING
+  const [isLoadingRequestJoin, setIsLoadingRequestJoin] = useState<boolean>(false);
   const trip = useTripById(idTrip, undefined, idTrip !== '');
   const auth = useAppSelector((state) => state.auth.value);
   const members = useTripMembers(
@@ -68,6 +64,18 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
     type: undefined,
   });
 
+  const fetchStatusRequest = async () => {
+    const resp = await tripService.getRequestStatus((trip.data.data as ITripsResponseModel).id);
+    setStatusUser(resp.data.status);
+  };
+
+  useEffect(() => {
+    if (trip.data && auth) {
+      fetchStatusRequest();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trip.data]);
+
   useEffect(() => {
     if (trip.data) {
       setCharKey((trip.data.data as ITripsResponseModel).title[0]);
@@ -83,15 +91,6 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
     }
   }, [members]);
 
-  // useEffect(() => {
-  //   if (idTrip !== '') {
-  //     queryClient.invalidateQueries(['trip_by_id']);
-  //     queryClient.invalidateQueries(['trip_members']);
-  //     queryClient.invalidateQueries(['trips']);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [idTrip]);
-
   useEffect(() => {
     const { id } = router.query;
     setIdTrip(id as string);
@@ -101,6 +100,44 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
+
+  const sendRequestJoinTrip = async () => {
+    if (trip.data && auth) {
+      if (statusUser === 'PENDING') {
+        try {
+          setIsLoadingRequestJoin(true);
+          await tripService.cancelRequestStatus((trip.data.data as ITripsResponseModel).id);
+        } catch (err: any) {
+          console.log(err);
+        } finally {
+          await fetchStatusRequest();
+          setIsLoadingRequestJoin(false);
+        }
+      } else if (statusUser === 'NONE') {
+        try {
+          setIsLoadingRequestJoin(true);
+          await tripService.createRequestJoinTrip((trip.data.data as ITripsResponseModel).id);
+        } catch (err: any) {
+          console.log(err);
+        } finally {
+          await fetchStatusRequest();
+          setIsLoadingRequestJoin(false);
+        }
+      }
+    }
+  };
+
+  const renderContentButton = () => {
+    if (statusUser === 'NONE') {
+      return 'Gửi yêu cầu tham gia';
+    } else if (statusUser === 'MEMBER') {
+      return 'Bạn đã là thành viên';
+    } else if (statusUser === 'REJECTED') {
+      return 'Bạn đã bị từ chối yêu cầu tham gia';
+    } else if (statusUser === 'PENDING') {
+      return 'Hủy yêu cầu tham gia';
+    }
+  };
 
   return (
     <>
@@ -146,9 +183,9 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
                     ? `${(trip.data.data as ITripsResponseModel).ownerInfo.firstName} ${
                         (trip.data.data as ITripsResponseModel).ownerInfo.lastName
                       }`
-                    : 'No information'
+                    : 'Không có thông tin'
                 }
-                src={trip.data ? `${(trip.data.data as ITripsResponseModel).ownerInfo.avatar}` : 'No information'}
+                src={trip.data ? `${(trip.data.data as ITripsResponseModel).ownerInfo.avatar}` : 'Không có thông tin'}
               />
               <Text>
                 {trip.data &&
@@ -158,34 +195,56 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
               </Text>
             </Flex>
             <AvatarGroup size='md' spacing='-2'>
-              {members.data?.pages[0].data.content.map((item: IUserFirstLoginRequest, index: number) => (
-                <Avatar
-                  cursor='default'
-                  title={`${item.firstName} ${item.lastName}`}
-                  key={item.id}
-                  name={`${item.firstName} ${item.lastName}`}
-                  src={item.avatar}
-                />
-              ))}
+              {members.data?.pages[0].data.content.map(
+                (item: IUserFirstLoginRequest, index: number) =>
+                  auth &&
+                  auth.id !== item.id && (
+                    <Avatar
+                      cursor='default'
+                      title={`${item.firstName} ${item.lastName}`}
+                      key={item.id}
+                      name={`${item.firstName} ${item.lastName}`}
+                      src={item.avatar}
+                    />
+                  )
+              )}
               {totalMembers - totalMembersGet > 0 && (
                 <Avatar bg='gray.200' fontWeight='bold' name={`${totalMembers - totalMembersGet} +`}></Avatar>
               )}
             </AvatarGroup>
           </Flex>
-          {auth && trip.data && (trip.data.data as ITripsResponseModel).ownerId === auth.id && (
-            <Button
-              w='fit-content'
-              rounded='sm'
-              onClick={() => {
-                router.push(`/itinerary/edit/${idTrip}`);
-              }}
-            >
-              Chỉnh sửa
-            </Button>
+          {auth && (
+            <Flex align='center' gap='3'>
+              {trip.data &&
+                (trip.data.data as ITripsResponseModel).type === 'Plan' &&
+                (trip.data.data as ITripsResponseModel).maxMember > totalMembers &&
+                statusUser !== 'MEMBER' && (
+                  <Button
+                    disabled={statusUser === 'MEMBER' || statusUser === 'REJECTED'}
+                    isLoading={isLoadingRequestJoin}
+                    w='fit-content'
+                    rounded='sm'
+                    onClick={sendRequestJoinTrip}
+                  >
+                    {renderContentButton()}
+                  </Button>
+                )}
+              {trip.data && (trip.data.data as ITripsResponseModel).ownerId === auth.id && (
+                <Button
+                  w='fit-content'
+                  rounded='sm'
+                  onClick={() => {
+                    router.push(`/itinerary/edit/${idTrip}`);
+                  }}
+                >
+                  Chỉnh sửa
+                </Button>
+              )}
+            </Flex>
           )}
         </Flex>
         <MainContentDetail tripData={trip.data} />
-        <Review tripData={trip.data} />
+        <Review auth={auth} tripData={trip.data} />
       </Box>
       <Box mb='10'>
         <Heading textAlign='center' mb='10'>

@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { AiOutlineRollback } from 'react-icons/ai';
 import { BiCommentDetail, BiDetail } from 'react-icons/bi';
+import { CgUserList } from 'react-icons/cg';
 import { IoIosSave } from 'react-icons/io';
 import { IoImages } from 'react-icons/io5';
 import { RiUserAddFill } from 'react-icons/ri';
@@ -17,6 +18,7 @@ import {
   responseToUpdateTripDay,
 } from '../../../../models/trip/trip.model';
 import { toggleMessage } from '../../Message/index.component';
+import DrawerRequestJoin from '../Modals/DrawerRequestJoin/index.component';
 import DrawerReviewTrip from '../Modals/DrawerReviewTrip/index.component';
 import ModalCoverItinerary from '../Modals/ModalCoverItinerary/index.component';
 import ModalFindMember from '../Modals/ModalFindMember/index.component';
@@ -33,6 +35,7 @@ export default function OptionBox(props: IOptionBoxProps) {
   const { isOpen: isOpenMember, onOpen: onOpenMember, onClose: onCloseMember } = useDisclosure();
   const { isOpen: isOpenDetail, onOpen: onOpenDetail, onClose: onCloseDetail } = useDisclosure();
   const { isOpen: isOpenReview, onOpen: onOpenReview, onClose: onCloseReview } = useDisclosure();
+  const { isOpen: isOpenRequest, onOpen: onOpenRequest, onClose: onCloseRequest } = useDisclosure();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { mutationUpdateTripDays, mutationUpdateTrip } = useCUDTrip();
@@ -98,6 +101,7 @@ export default function OptionBox(props: IOptionBoxProps) {
 
   return (
     <>
+      <DrawerRequestJoin trip={trip} isOpen={isOpenRequest} onClose={onCloseRequest} onOpen={onOpenRequest} />
       <ModalFindMember trip={trip} isOpen={isOpenMember} onClose={onCloseMember} onOpen={onOpenMember} />
       <ModalCoverItinerary isOpen={isOpenCover} onClose={onCloseCover} onOpen={onOpenCover} />
       <ModalUpdateDetail trip={trip} isOpen={isOpenDetail} onClose={onCloseDetail} onOpen={onOpenDetail} />
@@ -122,14 +126,24 @@ export default function OptionBox(props: IOptionBoxProps) {
             onClick={onOpenDetail}
           />
           <IconButton fontSize='md' title='Thêm ảnh nền' aria-label='Cover Image' icon={<IoImages />} onClick={onOpenCover} />
-          <IconButton
-            disabled={currentTrip?.type === 'Adventure'}
-            fontSize='md'
-            title='Thêm bạn đồng hành'
-            aria-label='Add Member'
-            icon={<RiUserAddFill />}
-            onClick={handleAddMember}
-          />
+          {currentTrip?.type === 'Plan' && (
+            <>
+              <IconButton
+                fontSize='md'
+                title='Thêm bạn đồng hành'
+                aria-label='Add Member'
+                icon={<RiUserAddFill />}
+                onClick={handleAddMember}
+              />
+              <IconButton
+                fontSize='md'
+                title='Quản lý yêu cầu tham gia hành trình'
+                aria-label='list requests'
+                icon={<CgUserList />}
+                onClick={onOpenRequest}
+              />
+            </>
+          )}
           <IconButton fontSize='md' title='Xem đánh giá' aria-label='Review' icon={<BiCommentDetail />} onClick={onOpenReview} />
           <IconButton
             isLoading={false}

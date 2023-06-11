@@ -1,11 +1,10 @@
 import { Avatar, Box, Divider, Flex, Icon, Image, Text, useColorModeValue } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { BsCalendarDayFill, BsFillPinMapFill } from 'react-icons/bs';
 import { ITripsResponseModel } from '../../../../models/trip/trip.model';
-import { useEffect, useState } from 'react';
-import placeService from '../../../../services/place/place.service';
 import { IUserFirstLoginRequest } from '../../../../models/user/user.model';
 import userService from '../../../../services/user/user.service';
-import { useRouter } from 'next/router';
 
 export interface ICardProps {
   data: ITripsResponseModel;
@@ -18,7 +17,7 @@ export default function Card(props: ICardProps) {
   const [totalDay, setTotalDay] = useState<number>(0);
   const [totalPlaces, setTotalPlaces] = useState<number>(0);
   const [shortItinerary, setShortItinerary] = useState<string[]>([]);
-  const [user, setUser] = useState<IUserFirstLoginRequest | null>(null);
+  const [user, setUser] = useState<IUserFirstLoginRequest | undefined>(undefined);
   const [bg, setBg] = useState<string>(
     'https://owa.bestprice.vn/images/destinations/uploads/trung-tam-thanh-pho-ha-noi-603da1f235b38.jpg'
   );
@@ -27,7 +26,7 @@ export default function Card(props: ICardProps) {
 
   useEffect(() => {
     const FnFetchUser = async () => {
-      const resp = await userService.getUserById(data.ownerId);
+      const resp = await userService.getUserInformationById(data.ownerId);
       setUser(resp.data);
     };
     FnFetchUser();
@@ -77,12 +76,12 @@ export default function Card(props: ICardProps) {
 
   return (
     <Flex shadow='lg' rounded='md' bg={isItinerary ? 'gray.200' : boxBg} h='400px' w='345px' direction='column'>
-      <Flex px='20px' py='6px' w='100%'>
+      <Flex px='15px' py='6px' w='100%'>
         <Text
           title={data.title}
           cursor='default'
           fontWeight='600'
-          fontSize='xl'
+          fontSize='lg'
           noOfLines={1}
           my='auto'
           me='auto'
@@ -90,20 +89,20 @@ export default function Card(props: ICardProps) {
         >
           {data.title}
         </Text>
-        <Flex gap='3'>
-          <Flex gap='2' align='center'>
+        <Flex gap='2'>
+          <Flex gap='1' align='center'>
             <Icon as={BsFillPinMapFill} />
             <Text>{totalPlaces}</Text>
           </Flex>
           {' - '}
-          <Flex gap='2' align='center'>
+          <Flex gap='1' align='center'>
             <Icon as={BsCalendarDayFill} />
             <Text>{totalDay}</Text>
           </Flex>
         </Flex>
       </Flex>
       <Divider />
-      <Flex px='20px' w='100%' justify='space-between' align='center'>
+      <Flex px='15px' w='100%' justify='space-between' align='center'>
         <Text fontSize='2xs' fontWeight='600' py='5px' noOfLines={1}>
           {data.type.trim() === 'Adventure' ? 'Hành trình đã đi' : 'Hành trình tìm kiếm đồng đội'}
         </Text>
@@ -147,12 +146,14 @@ export default function Card(props: ICardProps) {
           {data.description}
         </Text>
       </Box>
-      <Flex w='100%' px='20px' py='8px' gap='4'>
-        <Avatar size='sm' src={user?.avatar} name={`${user?.firstName} ${user?.lastName}`} />
-        <Text my='auto' fontWeight='600' color={mainText} textAlign='center' fontSize='sm' me='auto' noOfLines={1}>
-          {`${user?.firstName} ${user?.lastName}`}
-        </Text>
-      </Flex>
+      {user && (
+        <Flex w='100%' px='20px' py='8px' gap='4'>
+          <Avatar size='sm' src={user.avatar} name={`${user.firstName} ${user.lastName}`} />
+          <Text my='auto' fontWeight='600' color={mainText} textAlign='center' fontSize='sm' me='auto' noOfLines={1}>
+            {`${user.firstName} ${user.lastName}`}
+          </Text>
+        </Flex>
+      )}
     </Flex>
   );
 }

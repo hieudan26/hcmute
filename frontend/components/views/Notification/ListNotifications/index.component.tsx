@@ -1,11 +1,11 @@
 import { Box, Button, Flex, Heading, Text, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { RoleConstants } from '../../../../constants/roles.constant';
 import { useCUDNotification, useNotifications } from '../../../../hooks/queries/notification';
+import { useAppSelector } from '../../../../hooks/redux';
 import { INotificationResponse } from '../../../../models/notification/notification.model';
 import { ItemContent } from '../../Admin/Navbar/ItemContent/index.component';
-import { RoleConstants } from '../../../../constants/roles.constant';
-import { useAppSelector } from '../../../../hooks/redux';
 
 export interface IListNotificationsProps {}
 
@@ -121,6 +121,15 @@ export default function ListNotifications(props: IListNotificationsProps) {
           router.push(`/detail-post/${item.contentId}`);
           break;
         case 'message':
+          break;
+        case 'trip_request_owner':
+          router.push(`/itinerary/edit/${item.contentId}`);
+          break;
+        case 'trip_request_rejected':
+          router.push(`/itinerary/detail/${item.contentId}`);
+          break;
+        case 'trip_request_approved':
+          router.push(`/itinerary/detail/${item.contentId}`);
           break;
         default:
           break;
