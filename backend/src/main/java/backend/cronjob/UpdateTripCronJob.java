@@ -1,6 +1,7 @@
 package backend.cronjob;
 
 import backend.common.TripStatus;
+import backend.common.TripType;
 import backend.data.entity.Trips;
 import backend.repositories.TripRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class UpdateTripCronJob {
         List<Trips> trips = tripsRepository.findAll();
         for(var trip : trips) {
             if(LocalDateTime.now().isAfter(trip.getStartTime())) {
-                trip.setStatus(TripStatus.END.name());
+                trip.setType("Adventure");
                 tripsRepository.save(trip);
                 log.info("update end status for trip with id: "+trip.getId());
             }
