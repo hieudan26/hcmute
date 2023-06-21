@@ -27,6 +27,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
+import { STATUS_PLACES } from '../../../../../../constants/global.constant';
 import { RoleConstants } from '../../../../../../constants/roles.constant';
 import {
   useFetchCategories,
@@ -124,7 +125,7 @@ const PlacePlaces: NextPage = (props: IPlacePlacesProps) => {
             {dataPlacesQuery.data &&
               dataPlacesQuery.data.pages.map((page) =>
                 page.data.content.map((item: IPlaceCountryResponse, index: number) => {
-                  if (item.url !== place) {
+                  if (item.url !== place && item.status === STATUS_PLACES.APPROVED) {
                     return (
                       <Flex key={item.id} direction='column' justifyContent='center' alignItems='center' w='3xs' mx='auto' my='4'>
                         <Box

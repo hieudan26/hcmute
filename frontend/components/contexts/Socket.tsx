@@ -1,18 +1,16 @@
 import * as StompJS from '@stomp/stompjs';
 import { Client, IMessage, StompConfig } from '@stomp/stompjs';
-import { Auth } from 'aws-amplify';
-import { createContext, useEffect, useRef, useState } from 'react';
-import SockJS from 'sockjs-client';
-import { CookieConstants } from '../../constants/store.constant';
-import cookie from 'react-cookies';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { isConnected } from '../../app/slices/socketSlice';
-import { useSocketSubscribe } from '../../hooks/socket/useSocketSubcribe';
-import { sendMessage } from '../../app/slices/singleChatsSlice';
-import { RoleConstants } from '../../constants/roles.constant';
 import { useQueryClient } from '@tanstack/react-query';
-import { ISocketResponse } from '../../models/socket.model';
+import { Auth } from 'aws-amplify';
+import { createContext, useEffect, useState } from 'react';
+import cookie from 'react-cookies';
+import SockJS from 'sockjs-client';
 import { isReceivedNewMessage } from '../../app/slices/receivedMessSlice';
+import { isConnected } from '../../app/slices/socketSlice';
+import { RoleConstants } from '../../constants/roles.constant';
+import { CookieConstants } from '../../constants/store.constant';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { ISocketResponse } from '../../models/socket.model';
 
 // export const SocketContext = createContext<{ stompClient: StompJS.CompatClient | null }>({ stompClient: null });
 export const SocketContext = createContext<{ stompClient: StompJS.Client | null }>({ stompClient: null });
@@ -57,9 +55,9 @@ const SocketProvider: React.FC<ISocketProviderProps> = (props) => {
     var stompConfig: StompConfig = {
       // brokerURL: 'wss://api.hcmute.me/v1/ws',
       webSocketFactory: () => {
-        // return new SockJS('https://api.hcmute.me/v1/ws');
+        return new SockJS('https://api.hcmute.me/v1/ws');
         // return new SockJS('https://b5e3-2405-4802-9192-9010-cd4b-9224-4667-4461.ngrok-free.app/v1/ws');
-        return new SockJS('http://localhost:8080/v1/ws');
+        // return new SockJS('http://localhost:8080/v1/ws');
       },
       connectHeaders: {
         Authorization: `Bearer ${accessToken}`,

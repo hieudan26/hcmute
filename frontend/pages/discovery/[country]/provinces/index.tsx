@@ -15,18 +15,19 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import { STATUS_PLACES } from '../../../../constants/global.constant';
+import { RoleConstants } from '../../../../constants/roles.constant';
 import { useFetchCountry, usePlacesProvincesByCountry } from '../../../../hooks/queries/place';
+import { useAppSelector } from '../../../../hooks/redux';
 import { IPaginationRequest } from '../../../../models/common/ResponseMessage.model';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { ArrayTenTemp } from '../../../experiences';
-import { useTranslation } from 'next-i18next';
-import { useAppSelector } from '../../../../hooks/redux';
-import { RoleConstants } from '../../../../constants/roles.constant';
 
 export interface ICountryProvincesProps {}
 
@@ -161,61 +162,64 @@ const CountryProvinces: NextPage = (props: ICountryProvincesProps) => {
             <SimpleGrid columns={[2, null, 3]}>
               {dataProvince.data &&
                 dataProvince.data.pages.map((page) =>
-                  page.data.content.map((item: IPlaceCountryResponse, index: number) => (
-                    <Flex
-                      title={item.name}
-                      key={item.id}
-                      direction='column'
-                      justifyContent='center'
-                      alignItems='center'
-                      w='3xs'
-                      mx='auto'
-                      my='4'
-                    >
-                      <Box
-                        bg='gray.300'
-                        h={40}
-                        w='full'
-                        rounded='lg'
-                        shadow='md'
-                        bgSize='cover'
-                        bgPos='center'
-                        style={{
-                          backgroundImage: `url(${item.image})`,
-                        }}
-                      />
-
-                      <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                        <Text
-                          noOfLines={1}
-                          px={2}
-                          my={2}
-                          textAlign='center'
-                          fontWeight='bold'
-                          textTransform='capitalize'
-                          color={colorCard}
-                          letterSpacing={1}
-                        >
-                          {item.name}
-                        </Text>
+                  page.data.content.map(
+                    (item: IPlaceCountryResponse, index: number) =>
+                      item.status === STATUS_PLACES.APPROVED && (
                         <Flex
-                          cursor='pointer'
-                          fontSize='sm'
-                          alignItems='center'
+                          title={item.name}
+                          key={item.id}
+                          direction='column'
                           justifyContent='center'
-                          py={2}
-                          px={3}
-                          bg='gray.200'
-                          color='blackAlpha.800'
-                          onClick={() => {
-                            router.push(`/discovery/${data?.url}/${item.url}`);
-                          }}
+                          alignItems='center'
+                          w='3xs'
+                          mx='auto'
+                          my='4'
                         >
-                          <Text>{t('checkin')}</Text>
+                          <Box
+                            bg='gray.300'
+                            h={40}
+                            w='full'
+                            rounded='lg'
+                            shadow='md'
+                            bgSize='cover'
+                            bgPos='center'
+                            style={{
+                              backgroundImage: `url(${item.image})`,
+                            }}
+                          />
+
+                          <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                            <Text
+                              noOfLines={1}
+                              px={2}
+                              my={2}
+                              textAlign='center'
+                              fontWeight='bold'
+                              textTransform='capitalize'
+                              color={colorCard}
+                              letterSpacing={1}
+                            >
+                              {item.name}
+                            </Text>
+                            <Flex
+                              cursor='pointer'
+                              fontSize='sm'
+                              alignItems='center'
+                              justifyContent='center'
+                              py={2}
+                              px={3}
+                              bg='gray.200'
+                              color='blackAlpha.800'
+                              onClick={() => {
+                                router.push(`/discovery/${data?.url}/${item.url}`);
+                              }}
+                            >
+                              <Text>{t('checkin')}</Text>
+                            </Flex>
+                          </Box>
                         </Flex>
-                      </Box>
-                    </Flex>
-                  ))
+                      )
+                  )
                 )}
 
               {dataProvince.isFetching &&

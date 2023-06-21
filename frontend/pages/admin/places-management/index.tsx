@@ -1,20 +1,20 @@
 import {
+  Badge,
   Box,
+  Button,
+  Divider,
+  Flex,
+  Icon,
   Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
   TableCaption,
   TableContainer,
-  Badge,
-  Button,
-  Icon,
+  Tbody,
+  Td,
+  Tfoot,
+  Th,
+  Thead,
+  Tr,
   useColorModeValue,
-  Flex,
-  Divider,
 } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
 import { GetStaticProps, NextPage } from 'next';
@@ -22,7 +22,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { RiPencilLine } from 'react-icons/ri';
-import { usePlacesCountries } from '../../../hooks/queries/place';
+import { STATUS_PLACES } from '../../../constants/global.constant';
 import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
 import { IPlaceCountryResponse } from '../../../models/place/place.model';
 import placeService from '../../../services/place/place.service';
@@ -145,38 +145,41 @@ const AdminPlacesManagementPage: NextPage = (props: IAdminPlacesManagementPagePr
               </Tr>
             </Thead>
             <Tbody>
-              {dataCountry.map((item) => (
-                <Tr
-                  key={item.id}
-                  cursor='pointer'
-                  onClick={() => {
-                    setUrlCountry(item.url);
-                  }}
-                >
-                  <Td>{item.id}</Td>
-                  <Td>{item.name}</Td>
-                  <Td>{item.category.name}</Td>
-                  <Td>
-                    {item.hashTags.map((tag) => (
-                      <Badge key={`badge-${item.id}`} fontSize='3xs' colorScheme='red'>
-                        {tag}
-                      </Badge>
-                    ))}
-                  </Td>
-                  <Td>
-                    <Button
-                      title='Detail'
-                      size='xs'
-                      fontSize='sm'
+              {dataCountry.map(
+                (item) =>
+                  item.status === STATUS_PLACES.APPROVED && (
+                    <Tr
+                      key={item.id}
+                      cursor='pointer'
                       onClick={() => {
-                        goDetail(item, 'country');
+                        setUrlCountry(item.url);
                       }}
                     >
-                      <Icon as={RiPencilLine} />
-                    </Button>
-                  </Td>
-                </Tr>
-              ))}
+                      <Td>{item.id}</Td>
+                      <Td>{item.name}</Td>
+                      <Td>{item.category.name}</Td>
+                      <Td>
+                        {item.hashTags.map((tag) => (
+                          <Badge key={`badge-${item.id}`} fontSize='3xs' colorScheme='red'>
+                            {tag}
+                          </Badge>
+                        ))}
+                      </Td>
+                      <Td>
+                        <Button
+                          title='Detail'
+                          size='xs'
+                          fontSize='sm'
+                          onClick={() => {
+                            goDetail(item, 'country');
+                          }}
+                        >
+                          <Icon as={RiPencilLine} />
+                        </Button>
+                      </Td>
+                    </Tr>
+                  )
+              )}
             </Tbody>
             <Tfoot>
               <Tr>

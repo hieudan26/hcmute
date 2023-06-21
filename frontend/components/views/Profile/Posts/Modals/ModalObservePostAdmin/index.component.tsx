@@ -3,9 +3,6 @@ import {
   Box,
   Button,
   Flex,
-  Heading,
-  Icon,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -13,15 +10,12 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Switch,
   Text,
-  Textarea,
-  useColorModeValue,
 } from '@chakra-ui/react';
-import { IPostReportResponseModel, IPostResponseModel } from '../../../../../../models/post/post.model';
 import { useEffect, useState } from 'react';
-import postService from '../../../../../../services/post/post.service';
 import { STATUS_POST } from '../../../../../../constants/global.constant';
+import { IPostReportResponseModel, IPostResponseModel } from '../../../../../../models/post/post.model';
+import postService from '../../../../../../services/post/post.service';
 
 export interface IModalObservePostAdminProps {
   isOpen: boolean;
@@ -36,12 +30,14 @@ export default function ModalObservePostAdmin(props: IModalObservePostAdminProps
   const [dataReports, setDataReports] = useState<IPostReportResponseModel[]>([]);
 
   useEffect(() => {
-    const fetchReports = async () => {
-      const response = await postService.getReportsByPost(undefined, post.id);
-      setDataReports(response.data.content);
-    };
-    fetchReports();
-  }, [post]);
+    if (isOpen) {
+      const fetchReports = async () => {
+        const response = await postService.getReportsByPost(undefined, post.id);
+        setDataReports(response.data.content);
+      };
+      fetchReports();
+    }
+  }, [post, isOpen]);
 
   return (
     <Modal motionPreset='slideInRight' isCentered isOpen={isOpen} onClose={onClose} size='xl' scrollBehavior='inside'>
