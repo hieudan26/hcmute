@@ -27,6 +27,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
+import { STATUS_PLACES } from '../../../../../constants/global.constant';
 import { RoleConstants } from '../../../../../constants/roles.constant';
 import {
   useFetchCategories,
@@ -110,62 +111,65 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
           <SimpleGrid columns={[2, null, 3]}>
             {dataPlacesQuery.data &&
               dataPlacesQuery.data.pages.map((page) =>
-                page.data.content.map((item: IPlaceCountryResponse, index: number) => (
-                  <Flex
-                    title={item.name}
-                    key={item.id}
-                    direction='column'
-                    justifyContent='center'
-                    alignItems='center'
-                    w='3xs'
-                    mx='auto'
-                    my='4'
-                  >
-                    <Box
-                      bg='gray.300'
-                      h={40}
-                      w='full'
-                      rounded='lg'
-                      shadow='md'
-                      bgSize='cover'
-                      bgPos='center'
-                      style={{
-                        backgroundImage: `url(${item.image})`,
-                      }}
-                    />
-
-                    <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
-                      <Text
-                        noOfLines={1}
-                        fontSize='sm'
-                        px={2}
-                        my={2}
-                        textAlign='center'
-                        fontWeight='bold'
-                        textTransform='capitalize'
-                        color={colorCard}
-                        letterSpacing={1}
-                      >
-                        {item.name}
-                      </Text>
+                page.data.content.map(
+                  (item: IPlaceCountryResponse, index: number) =>
+                    item.status === STATUS_PLACES.APPROVED && (
                       <Flex
-                        cursor='pointer'
-                        fontSize='sm'
-                        alignItems='center'
+                        title={item.name}
+                        key={item.id}
+                        direction='column'
                         justifyContent='center'
-                        py={2}
-                        px={3}
-                        bg='gray.200'
-                        color='blackAlpha.800'
-                        onClick={() => {
-                          router.push(`/discovery/${country}/${province}/${item.url}`);
-                        }}
+                        alignItems='center'
+                        w='3xs'
+                        mx='auto'
+                        my='4'
                       >
-                        <Text>{t('checkin')}</Text>
+                        <Box
+                          bg='gray.300'
+                          h={40}
+                          w='full'
+                          rounded='lg'
+                          shadow='md'
+                          bgSize='cover'
+                          bgPos='center'
+                          style={{
+                            backgroundImage: `url(${item.image})`,
+                          }}
+                        />
+
+                        <Box w='90%' bg={bgCard} mt={-10} shadow='lg' rounded='lg' overflow='hidden'>
+                          <Text
+                            noOfLines={1}
+                            fontSize='sm'
+                            px={2}
+                            my={2}
+                            textAlign='center'
+                            fontWeight='bold'
+                            textTransform='capitalize'
+                            color={colorCard}
+                            letterSpacing={1}
+                          >
+                            {item.name}
+                          </Text>
+                          <Flex
+                            cursor='pointer'
+                            fontSize='sm'
+                            alignItems='center'
+                            justifyContent='center'
+                            py={2}
+                            px={3}
+                            bg='gray.200'
+                            color='blackAlpha.800'
+                            onClick={() => {
+                              router.push(`/discovery/${country}/${province}/${item.url}`);
+                            }}
+                          >
+                            <Text>{t('checkin')}</Text>
+                          </Flex>
+                        </Box>
                       </Flex>
-                    </Box>
-                  </Flex>
-                ))
+                    )
+                )
               )}
 
             {dataPlacesQuery.isFetching &&

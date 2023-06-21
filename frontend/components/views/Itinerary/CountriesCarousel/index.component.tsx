@@ -2,7 +2,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { Button, Flex, Grid, GridItem, IconButton, Skeleton, Text } from '@chakra-ui/react';
 import { UseQueryResult } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { AxiosResponseStatus } from '../../../../constants/global.constant';
+import { AxiosResponseStatus, STATUS_PLACES } from '../../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../../models/place/place.model';
 import { Array25Temp, truncate } from '../../../../utils';
 
@@ -33,23 +33,26 @@ export default function CountriesCarousel(props: ICountriesCarouselProps) {
       <IconButton aria-label='Previous' icon={<ChevronLeftIcon />} onClick={handlePrev} disabled={page === 0} mr={4} />
       <Grid templateColumns='repeat(5, 1fr)' gap={6} mb='5' w='full'>
         {places_countries.data &&
-          places_countries.data.data.content.slice(page * 25, page * 25 + 25).map((item: IPlaceCountryResponse) => (
-            <GridItem w='full' key={item.id} colSpan={1}>
-              <Button
-                title={item.name}
-                w='full'
-                key={item.id}
-                textTransform='uppercase'
-                variant={currentUrlCountry === item.url ? 'solid' : 'outline'}
-                color={currentUrlCountry === item.url ? 'white' : 'gray.500'}
-                onClick={() => {
-                  onChangeUrlCountry(item);
-                }}
-              >
-                <Text>{item.name ? truncate(item.name, 15) : 'none'}</Text>
-              </Button>
-            </GridItem>
-          ))}
+          places_countries.data.data.content.slice(page * 25, page * 25 + 25).map(
+            (item: IPlaceCountryResponse) =>
+              item.status === STATUS_PLACES.APPROVED && (
+                <GridItem w='full' key={item.id} colSpan={1}>
+                  <Button
+                    title={item.name}
+                    w='full'
+                    key={item.id}
+                    textTransform='uppercase'
+                    variant={currentUrlCountry === item.url ? 'solid' : 'outline'}
+                    color={currentUrlCountry === item.url ? 'white' : 'gray.500'}
+                    onClick={() => {
+                      onChangeUrlCountry(item);
+                    }}
+                  >
+                    <Text>{item.name ? truncate(item.name, 15) : 'none'}</Text>
+                  </Button>
+                </GridItem>
+              )
+          )}
         {!places_countries.data &&
           Array25Temp.map((item, index) => (
             <Skeleton key={index}>

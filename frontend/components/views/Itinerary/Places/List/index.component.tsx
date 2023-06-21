@@ -1,14 +1,13 @@
-import { Box, Center, Flex, Grid, GridItem, Spinner, Text } from '@chakra-ui/react';
-import PlaceCard from '../Card/index.component';
-import { ITripDayResponseModel, ITripPlaceResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
-import { useGetPlaceById, usePlacesPlacesByCountryProvince } from '../../../../../hooks/queries/place';
+import { Flex, Text } from '@chakra-ui/react';
 import { useEffect, useRef, useState } from 'react';
-import InfiniteScroll from 'react-infinite-scroller';
-import { ArrayTenTemp } from '../../../../../pages/experiences';
-import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
-import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
 import { setCurrentTrip } from '../../../../../app/slices/currentTripSlice';
-import { addDaysToDate, formatDateddMMYYYYtoDate, formatTimePost } from '../../../../../utils';
+import { STATUS_PLACES } from '../../../../../constants/global.constant';
+import { usePlacesPlacesByCountryProvince } from '../../../../../hooks/queries/place';
+import { useAppDispatch, useAppSelector } from '../../../../../hooks/redux';
+import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
+import { ITripDayResponseModel, ITripPlaceResponseModel, ITripsResponseModel } from '../../../../../models/trip/trip.model';
+import { addDaysToDate, formatDateddMMYYYYtoDate } from '../../../../../utils';
+import PlaceCard from '../Card/index.component';
 
 export interface IPlacesListProps {
   trip: ITripsResponseModel | undefined;
@@ -166,7 +165,9 @@ export default function PlacesList(props: IPlacesListProps) {
           .flatMap((page) => page.data.content)
           .map((item: IPlaceCountryResponse, index: number) => {
             const isPlaceAlreadySelected = currentTripPlaces.some((place) => place.place.id === item.id);
-            return isPlaceAlreadySelected ? null : <PlaceCard place={item} key={item.id} selectPlace={selectPlace} />;
+            return isPlaceAlreadySelected
+              ? null
+              : item.status === STATUS_PLACES.APPROVED && <PlaceCard place={item} key={item.id} selectPlace={selectPlace} />;
           })
       ) : (
         <Text textAlign='center'>Không có dữ liệu</Text>

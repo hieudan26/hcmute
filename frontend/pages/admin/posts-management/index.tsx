@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Search2Icon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
+  Link as ChakraLink,
   Flex,
   Heading,
   Icon,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Link as ChakraLink,
+  Radio,
+  RadioGroup,
   Spinner,
+  Stack,
   Table,
   Tbody,
   Td,
@@ -18,27 +17,21 @@ import {
   Th,
   Thead,
   Tr,
-  Radio,
-  RadioGroup,
-  Stack,
   useColorModeValue,
-  Checkbox,
   useDisclosure,
 } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
-import { RiAddLine, RiCheckFill, RiDeleteBin5Fill, RiPencilLine, RiRefreshLine, RiSettings6Fill } from 'react-icons/ri';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
 import { useCallback, useEffect, useState } from 'react';
+import { RiPencilLine, RiRefreshLine, RiSettings6Fill } from 'react-icons/ri';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import ModalDetailPost from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/index.component';
+import ModalObservePostAdmin from '../../../components/views/Profile/Posts/Modals/ModalObservePostAdmin/index.component';
+import { STATUS_POST } from '../../../constants/global.constant';
+import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
 import { IPostResponseModel } from '../../../models/post/post.model';
 import postService from '../../../services/post/post.service';
-import { formatDate } from '../../../utils';
-import ModalDetailPost from '../../../components/views/Profile/Posts/Modals/ModalDetailPost/index.component';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { STATUS_POST } from '../../../constants/global.constant';
-import { FaBan } from 'react-icons/fa';
-import ModalObservePostAdmin from '../../../components/views/Profile/Posts/Modals/ModalObservePostAdmin/index.component';
 
 export interface IAdminPostsManagementPageProps {}
 
