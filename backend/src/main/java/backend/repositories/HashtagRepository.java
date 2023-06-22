@@ -17,10 +17,10 @@ public interface HashtagRepository extends PagingAndSortingRepository<HashTags, 
     @Query("from HashTags hastag where hastag.name = :name")
     Optional<HashTags> findHashTagsByName(String name);
 
-    @Query("from HashTags hastag where hastag.name LIKE CONCAT('%',:name,'%')")
+    @Query("from HashTags hastag where hastag.name  LIKE CONCAT('%',:name,'%') and hastag.places.status = 'approved'")
     Page<HashTags> findHashTags(Pageable pageable, String name);
     Set<HashTags> getByPlaces_Id(Integer placeId);
     Optional<HashTags> getByNameAndPlaces_IdNot(String name, Integer placeId);
-    @Query("select images from Posts post join post.images images join post.hashTags hash where post.type = ?1 and hash.name = ?2 order by images.creationDate desc")
+    @Query("select images from Posts post join post.images images join post.hashTags hash where post.type = ?1 and hash.name = ?2 and hash.places.status = 'approved' order by images.creationDate desc")
     Page<PostImages> getHashTagImage(Pageable pageable, String type, String hashtag);
 }
