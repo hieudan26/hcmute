@@ -63,24 +63,26 @@ export function ItemContent(props: IItemContentProps) {
   };
 
   return (
-    <>
-      <Flex justify='center' align='center' me='2'>
-        <Icon as={GoDash} fontSize='md' color='gray.600' />
-      </Flex>
-      <Flex flexDirection='column' mt='-1'>
-        <Text mb='1' fontWeight='bold' lineHeight='5' fontSize={{ base: 'small', md: 'small' }}>
-          {data.fullName}{' '}
-          <Text as='span' fontWeight='normal'>
-            {generateContent()}
+    <Flex justify='space-between' w='full'>
+      <Flex>
+        <Flex justify='center' align='center' me='2'>
+          <Icon as={GoDash} fontSize='md' color='gray.600' />
+        </Flex>
+        <Flex flexDirection='column' mt='-1'>
+          <Text mb='1' fontWeight='bold' lineHeight='5' fontSize={{ base: 'small', md: 'small' }}>
+            {data.fullName}{' '}
+            <Text as='span' fontWeight='normal'>
+              {generateContent()}
+            </Text>
           </Text>
-        </Text>
-        <Flex alignItems='center'>
-          <Text fontSize={{ base: 'xs', md: 'xs' }} lineHeight='100%' color={data.status === false ? '#D0637C' : 'gray.400'}>
-            {data.creationDate}
-          </Text>
+          <Flex alignItems='center'>
+            <Text fontSize={{ base: 'xs', md: 'xs' }} lineHeight='100%' color={data.status === false ? '#D0637C' : 'gray.400'}>
+              {data.creationDate}
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
       <Icon display={data.status === true ? 'none' : 'block'} as={GoPrimitiveDot} fontSize='md' color='#D0637C' ml='2' mr='1' />
-    </>
+    </Flex>
   );
 }
