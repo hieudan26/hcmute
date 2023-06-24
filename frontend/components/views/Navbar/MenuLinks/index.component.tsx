@@ -6,7 +6,6 @@ import {
   Icon,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem as MenuItm,
   MenuList,
   useBreakpointValue,
@@ -14,16 +13,17 @@ import {
   useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import { BsFillMoonFill, BsChatLeftTextFill } from 'react-icons/bs';
+import { BsChatLeftTextFill } from 'react-icons/bs';
 import { FaUserCircle, FaUserFriends } from 'react-icons/fa';
 import { GoSignOut } from 'react-icons/go';
 import { HiOutlineLink } from 'react-icons/hi';
 import { IoIosLogIn } from 'react-icons/io';
-import { MdLanguage, MdLightMode, MdOutlineNotificationsActive, MdAdminPanelSettings } from 'react-icons/md';
+import { MdAdminPanelSettings } from 'react-icons/md';
 import { RiProfileLine, RiSettings4Fill } from 'react-icons/ri';
 import { logout } from '../../../../app/slices/authSlice';
 import { isConnected } from '../../../../app/slices/socketSlice';
@@ -34,9 +34,8 @@ import { LangConstants, ThemeConstants } from '../../../../constants/settings.co
 import { useAppDispatch, useAppSelector } from '../../../../hooks/redux';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { SocketContext } from '../../../contexts/Socket';
-import MenuItem from '../MenuItem/index.component';
-import { useQueryClient } from '@tanstack/react-query';
 import Notification from '../../Notification/index.component';
+import MenuItem from '../MenuItem/index.component';
 
 export interface IMenuLinksProps {
   isOpen: boolean;
@@ -177,7 +176,7 @@ export default function MenuLinks(props: IMenuLinksProps) {
           <MenuItem to='/itinerary'>{t('navbar.navlink03')}</MenuItem>
           <MenuItem to='/discovery'>{t('navbar.navlink04')}</MenuItem>
           {role === RoleConstants.USER && <MenuItem to='/contribute'>Đóng góp</MenuItem>}
-          {role !== RoleConstants.ANONYMOUS && <Notification isUser />}
+          {role !== RoleConstants.ANONYMOUS && userInfor !== null && <Notification isUser />}
           {statusMenu ? (
             <Menu closeOnBlur={true}>
               <MenuButton ml='10px'>
