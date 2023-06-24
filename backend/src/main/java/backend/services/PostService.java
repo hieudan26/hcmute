@@ -70,7 +70,7 @@ public class PostService {
     private boolean isAdmin() {
         var isAdmin  = false;
         var isLogin = !SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(String.class);
-        if(isLogin && userService.getUserFromContext().getRole().equals(ADMIN.name())) {
+        if(isLogin && SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toSet()).contains("ROLE_ADMIN")) {
             isAdmin = true;
         }
         return isAdmin;
