@@ -1,16 +1,16 @@
 import { Box, Button, Divider, Flex, Text } from '@chakra-ui/react';
+import { KeyboardEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
+import { ActionMeta, SingleValue } from 'react-select';
+import useUploadFile from '../../../../hooks/useUploadFile';
+import { ICountryResponse } from '../../../../models/area/country.model';
+import { ICategoryResponse, IPlaceRequest } from '../../../../models/place/place.model';
+import { ISelectOption, Option, createOption } from '../../../../pages/admin/places-management/create';
+import areaService from '../../../../services/area/area.service';
+import placeService from '../../../../services/place/place.service';
+import { scrollToTop } from '../../../../utils';
 import Section1 from '../Section1/index.component';
 import Section2 from '../Section2/index.component';
 import Section3 from '../Section3/index.component';
-import { KeyboardEvent, KeyboardEventHandler, useEffect, useRef, useState } from 'react';
-import useUploadFile from '../../../../hooks/useUploadFile';
-import areaService from '../../../../services/area/area.service';
-import { ICountryResponse } from '../../../../models/area/country.model';
-import { ISelectOption, Option, createOption } from '../../../../pages/admin/places-management/create';
-import { ActionMeta, SingleValue } from 'react-select';
-import placeService from '../../../../services/place/place.service';
-import { ICategoryResponse, IPlaceRequest } from '../../../../models/place/place.model';
-import { scrollToTop } from '../../../../utils';
 
 export interface ICreateProps {}
 
@@ -177,6 +177,7 @@ export default function Create(props: ICreateProps) {
   };
 
   const onSubmit = async () => {
+    setSubmitting(true);
     const arrHashTags: string[] = [];
     valueHashTags.map((item) => {
       arrHashTags.push(item.value);
