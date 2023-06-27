@@ -250,7 +250,7 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
         <Heading textAlign='center' mb='10'>
           Danh sách các địa điểm liên quan
         </Heading>
-        {!(
+        {/* {!(
           !trips.data ||
           (trips.data && trips.data.pages.length === 0) ||
           (trips.data &&
@@ -261,7 +261,7 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
           <Flex justify='center'>
             <Text>Không có dữ liệu về danh sách các địa điểm liên quan</Text>
           </Flex>
-        )}
+        )} */}
         <Container maxW='7xl'>
           <Grid gap='6' templateColumns='repeat(3, 1fr)' mb='6'>
             {trips.data
