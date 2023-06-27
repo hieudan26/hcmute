@@ -57,7 +57,7 @@ const ItineraryDetail: NextPage = (props: IItineraryDetailProps) => {
   const trips = useTrips({
     key: charKey !== '' ? charKey : undefined,
     pageNumber: 0,
-    pageSize: 10,
+    pageSize: 6,
     sortBy: 'id',
     sortType: 'ASC',
     status: 'Public',

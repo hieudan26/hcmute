@@ -1,3 +1,4 @@
+import { SearchIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -13,16 +14,15 @@ import {
   SkeletonCircle,
   SkeletonText,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useEffect, useState } from 'react';
 import Card from '../../components/views/Itinerary/Card/index.component';
 import MoreInformation from '../../components/views/Itinerary/MoreInformation/index.component';
 import { useTrips } from '../../hooks/queries/trip';
 import { ITripsResponseModel } from '../../models/trip/trip.model';
 import { ArrayTenTemp } from '../experiences';
-import { useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
-import { SearchIcon } from '@chakra-ui/icons';
 
 export interface IItineraryProps {}
 
@@ -34,7 +34,7 @@ const Itinerary: NextPage = (props: IItineraryProps) => {
   const trips = useTrips({
     key: key === '' ? undefined : key,
     pageNumber: 0,
-    pageSize: 10,
+    pageSize: 9,
     sortBy: 'id',
     sortType: 'ASC',
     status: 'Public',

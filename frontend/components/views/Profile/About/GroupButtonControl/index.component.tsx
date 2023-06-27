@@ -1,5 +1,4 @@
 import { Box, Button, Divider, Flex } from '@chakra-ui/react';
-import * as React from 'react';
 
 export interface IGroupButtonControlProps {
   type: string;
@@ -23,7 +22,7 @@ export default function GroupButtonControl(props: IGroupButtonControlProps) {
             onCancel(type);
           }}
         >
-          Cancel
+          Hủy
         </Button>
         <Button
           isLoading={isSubmitting}
@@ -34,7 +33,7 @@ export default function GroupButtonControl(props: IGroupButtonControlProps) {
             }
           }}
         >
-          Save
+          Lưu
         </Button>
       </Flex>
     </Box>
