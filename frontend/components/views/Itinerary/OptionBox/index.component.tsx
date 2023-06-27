@@ -40,6 +40,7 @@ export default function OptionBox(props: IOptionBoxProps) {
   const dispatch = useAppDispatch();
   const { mutationUpdateTripDays, mutationUpdateTrip } = useCUDTrip();
   const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
+  const [isLoadingRefresh, setIsLoadingRefresh] = useState<boolean>(false);
 
   const goBack = () => {
     // router.push('/itinerary');
@@ -47,7 +48,9 @@ export default function OptionBox(props: IOptionBoxProps) {
   };
 
   const resetTrip = () => {
+    setIsLoadingRefresh(true);
     trip && dispatch(setCurrentTrip(trip));
+    setIsLoadingRefresh(false);
   };
 
   const save = async () => {
@@ -150,7 +153,7 @@ export default function OptionBox(props: IOptionBoxProps) {
           )}
           <IconButton fontSize='md' title='Xem đánh giá' aria-label='Review' icon={<BiCommentDetail />} onClick={onOpenReview} />
           <IconButton
-            isLoading={false}
+            isLoading={isLoadingSave}
             fontSize='md'
             title='Lưu hành trình'
             aria-label='Save'
@@ -160,7 +163,7 @@ export default function OptionBox(props: IOptionBoxProps) {
         </Flex>
         <Flex direction='column' gap='3'>
           <IconButton
-            isLoading={isLoadingSave}
+            isLoading={isLoadingRefresh}
             fontSize='md'
             title='Reset'
             aria-label='Save'
