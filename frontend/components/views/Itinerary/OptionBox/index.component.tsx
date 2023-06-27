@@ -52,39 +52,43 @@ export default function OptionBox(props: IOptionBoxProps) {
 
   const save = async () => {
     if (currentTrip) {
-      // setIsLoadingSave(true);
-      let data: ITripDayUpdateRequestModel[] = [];
+      setIsLoadingSave(true);
 
-      currentTrip.tripDays.map((x) => {
-        data.push(responseToUpdateTripDay(x));
-      });
-      console.log(data);
-      await mutationUpdateTripDays.mutateAsync({ tripId: currentTrip.id, params: data });
-      // setIsLoadingSave(false);
-      let _update: ITripRequestModel = {
-        title: currentTrip.title,
-        maxDay: currentTrip.maxDay,
-        maxMember: currentTrip.maxMember,
-        totalPrice: currentTrip.totalPrice,
-        description: currentTrip.description,
-        startTime: currentTrip.startTime,
-        startingPlace: currentTrip.startingPlace,
-        status: currentTrip.tripDays.length ? 'Public' : (currentTrip.status as 'Public' | 'Private'),
-        type: currentTrip.type as 'Plan' | 'Adventure',
-        endTime: currentTrip.endTime,
-        shortDescription: currentTrip.shortDescription,
-      };
-      let params: ITripUpdate = {
-        id: currentTrip.id,
-        params: _update,
-      };
+      try {
+        let data: ITripDayUpdateRequestModel[] = [];
 
-      await mutationUpdateTrip.mutateAsync(params);
+        currentTrip.tripDays.map((x) => {
+          data.push(responseToUpdateTripDay(x));
+        });
+        await mutationUpdateTripDays.mutateAsync({ tripId: currentTrip.id, params: data });
+        let _update: ITripRequestModel = {
+          title: currentTrip.title,
+          maxDay: currentTrip.maxDay,
+          maxMember: currentTrip.maxMember,
+          totalPrice: currentTrip.totalPrice,
+          description: currentTrip.description,
+          startTime: currentTrip.startTime,
+          startingPlace: currentTrip.startingPlace,
+          status: currentTrip.tripDays.length ? 'Public' : (currentTrip.status as 'Public' | 'Private'),
+          type: currentTrip.type as 'Plan' | 'Adventure',
+          endTime: currentTrip.endTime,
+          shortDescription: currentTrip.shortDescription,
+        };
+        let params: ITripUpdate = {
+          id: currentTrip.id,
+          params: _update,
+        };
 
-      toggleMessage({
-        type: 'success',
-        message: 'Cập nhật thành công',
-      });
+        await mutationUpdateTrip.mutateAsync(params);
+
+        toggleMessage({
+          type: 'success',
+          message: 'Cập nhật thành công',
+        });
+      } catch (ex: any) {
+      } finally {
+        setIsLoadingSave(false);
+      }
     }
   };
 
@@ -155,7 +159,14 @@ export default function OptionBox(props: IOptionBoxProps) {
           />
         </Flex>
         <Flex direction='column' gap='3'>
-          <IconButton fontSize='md' title='Reset' aria-label='Save' icon={<RepeatIcon />} onClick={resetTrip} />
+          <IconButton
+            isLoading={isLoadingSave}
+            fontSize='md'
+            title='Reset'
+            aria-label='Save'
+            icon={<RepeatIcon />}
+            onClick={resetTrip}
+          />
           <IconButton fontSize='md' title='Quay trở lại' aria-label='Back' icon={<AiOutlineRollback />} onClick={goBack} />
         </Flex>
       </Flex>
