@@ -14,17 +14,17 @@ import {
   ModalHeader,
   Text,
   useColorModeValue,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useState } from 'react';
 import { AiFillHeart } from 'react-icons/ai';
 import { BiCommentDetail } from 'react-icons/bi';
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Carousel } from 'react-responsive-carousel';
+import { STATUS_POST } from '../../../../../constants/global.constant';
 import { useCUDPost, usePostsById } from '../../../../../hooks/queries/posts';
 import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../models/post/post.model';
 import { timeSincePost, uppercaseFirstLetter } from '../../../../../utils';
@@ -34,9 +34,8 @@ import ModalContainer from '../../../Modals/ModalContainer/index.component';
 import QueryHashtagModal from '../../../Modals/QueryHashtagModal/index.component';
 import ConfirmDeletePost from '../Modals/ConfirmDeletePost/index.component';
 import ModalDetailPost from '../Modals/ModalDetailPost/index.component';
-import UpdatePost from '../Modals/UpdatePost/index.component';
 import ReportPost from '../Modals/ReportPost/index.component';
-import { STATUS_POST } from '../../../../../constants/global.constant';
+import UpdatePost from '../Modals/UpdatePost/index.component';
 
 export interface IPostRenderProps {
   post: IPostResponseModel;
@@ -65,8 +64,8 @@ export default function PostRender(props: IPostRenderProps) {
   const reactPost = async () => {
     if (currentUserId === '') {
       toggleMessage({
-        title: 'Authentication/Authorization',
-        message: 'You must login first',
+        title: 'Xác thực/Ủy quyền',
+        message: 'Bạn cần xác thực để thực hiện chức năng này',
         type: 'warning',
       });
     } else {
@@ -101,7 +100,7 @@ export default function PostRender(props: IPostRenderProps) {
 
     navigator.clipboard.writeText(linkComment);
     toggleMessage({
-      message: 'Copy link post successfully',
+      message: 'Sao chép bài đăng liên kết thành công',
       type: 'info',
     });
   };
