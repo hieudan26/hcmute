@@ -1,10 +1,10 @@
-import { Box, Button, Center, Flex, Image, Input, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Input, useColorModeValue } from '@chakra-ui/react';
+import { useTranslation } from 'next-i18next';
 import { ChangeEvent, KeyboardEvent, MutableRefObject, useEffect, useState } from 'react';
 import { LocalStorageConstants } from '../../../../../../../constants/store.constant';
 import { defaultAvatar } from '../../../../../../../utils';
 import { LocalUtils } from '../../../../../../../utils/local.utils';
 import { toggleMessage } from '../../../../../Message/index.component';
-import { useTranslation } from 'next-i18next';
 
 export interface ICommentFormProps {
   _onSumbit: (value: string) => void;
@@ -38,8 +38,9 @@ export default function CommentForm(props: ICommentFormProps) {
   const handleSubmit = () => {
     if (value !== '') {
       _onSumbit(value.trim());
+      setValue('');
     } else {
-      toggleMessage({ message: 'Please fill comment', type: 'warning', title: 'Comment issues' });
+      toggleMessage({ message: 'Bình luận đang trống', type: 'warning', title: 'Bình luận' });
     }
   };
 

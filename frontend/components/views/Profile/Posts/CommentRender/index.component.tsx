@@ -1,12 +1,25 @@
-import { Box, Flex, Image, Text, Icon, Menu, MenuButton, IconButton, MenuList, MenuItem, Input, Button } from '@chakra-ui/react';
-import { defaultAvatar, formatTimePost, timeSincePost } from '../../../../../utils';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
-import { ICommentsPostResponse } from '../../../../../models/comment/comment.model';
-import { useEffect, useState } from 'react';
-import { useCUDComment } from '../../../../../hooks/queries/comment';
-import Link from 'next/link';
-import { useColorModeValue } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Icon,
+  IconButton,
+  Image,
+  Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
+import { useCUDComment } from '../../../../../hooks/queries/comment';
+import { ICommentsPostResponse } from '../../../../../models/comment/comment.model';
+import { formatTimePost, timeSincePost } from '../../../../../utils';
 
 export interface ICommentRenderProps {
   comment: ICommentsPostResponse;
@@ -105,6 +118,7 @@ export default function CommentRender(props: ICommentRenderProps) {
                       _hover={{ bg: 'black' }}
                       onClick={() => {
                         setIsEdit(false);
+                        setValue('');
                       }}
                     >
                       {t('cancel')}

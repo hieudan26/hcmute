@@ -5,40 +5,40 @@ export default function useValidationSchema() {
   return {
     //#region create trip
     createItinerarySchema: yup.object().shape({
-      title: yup.string().required('Title is required'),
-      maxDay: yup.number().required('Max day is required'),
-      maxMember: yup.number().required('Max member is required'),
-      totalPrice: yup.number().required('Total price is required'),
+      title: yup.string().required('Không được để trống'),
+      maxDay: yup.number().required('Không được để trống'),
+      maxMember: yup.number().required('Không được để trống'),
+      totalPrice: yup.number().required('Không được để trống'),
       description: yup.string(),
     }),
     //#endregion
 
     //#region create country&province
     createProvinceSchema: yup.object().shape({
-      country: yup.number().required('Country is required'),
+      country: yup.number().required('Không được để trống'),
       vnName: yup
         .string()
-        .required('Vietnamese name is required.')
-        .min(3, 'Vietnamese name needs to be at least 3 characters long.')
-        .max(12, 'Vietnamese name must be at most 12 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên tiếng Việt cần dài ít nhất 3 ký tự')
+        .max(12, 'Tên tiếng Việt tối đa 12 ký tự'),
       enName: yup
         .string()
-        .required('English name is required.')
-        .min(3, 'English name needs to be at least 3 characters long.')
-        .max(12, 'English name must be at most 12 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên tiếng Anh cần dài ít nhất 3 ký tự')
+        .max(12, 'Tên tiếng Anh tối đa 12 ký tự'),
     }),
 
     createCountrySchema: yup.object().shape({
       vnName: yup
         .string()
-        .required('Vietnamese name is required.')
-        .min(3, 'Vietnamese name needs to be at least 3 characters long.')
-        .max(12, 'Vietnamese name must be at most 12 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên tiếng Việt cần dài ít nhất 3 ký tự')
+        .max(12, 'Tên tiếng Việt tối đa 12 ký tự'),
       enName: yup
         .string()
-        .required('English name is required.')
-        .min(3, 'English name needs to be at least 3 characters long.')
-        .max(12, 'English name must be at most 12 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên tiếng Anh cần dài ít nhất 3 ký tự')
+        .max(12, 'Tên tiếng Anh phải dài tối đa 12 ký tự'),
     }),
     //#endregion
 
@@ -46,9 +46,9 @@ export default function useValidationSchema() {
     createCategorySchema: yup.object().shape({
       name: yup
         .string()
-        .required('Category name is required.')
-        .min(3, 'Category name needs to be at least 3 characters long.')
-        .max(12, 'Category name must be at most 12 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên danh mục cần dài ít nhất 3 ký tự')
+        .max(12, 'Tên danh mục phải dài tối đa 12 ký tự'),
     }),
     //#endregion
 
@@ -56,65 +56,61 @@ export default function useValidationSchema() {
     inforAdminSchema: yup.object().shape({
       firstName: yup
         .string()
-        .required('First name is required.')
-        .min(3, 'First name needs to be at least 3 characters long.')
-        .max(8, 'First name must be at most 8 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên phải dài ít nhất 3 ký tự')
+        .max(8, 'Tên phải có nhiều nhất 8 ký tự'),
       lastName: yup
         .string()
-        .required('Last name is required.')
-        .min(3, 'Last name needs to be at least 3 characters long.')
-        .max(16, 'Last name must be at most 16 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Họ cần dài ít nhất 3 ký tự.')
+        .max(16, 'Họ phải có nhiều nhất 16 ký tự'),
       gender: yup.string(),
-      phoneNumber: yup.string().required('Phone number is required.'),
+      phoneNumber: yup.string().required('Không được để trống'),
     }),
     //#endregion
 
     //#region account-manager
     accountManagementSchema: yup.object().shape({
-      email: yup
-        .string()
-        .email('Valid characters in email addresses.')
-        .required('Please enter an email address.')
-        .matches(emailRegex),
+      email: yup.string().email('Địa chỉ mail không phù hợp').required('Không được để trống').matches(emailRegex),
       password: yup
         .string()
-        .required('Please create a password.')
-        .min(8, 'Password needs to be at least 8 characters long.')
-        .max(16, 'Password must be at most 16 charaters.')
-        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+        .required('Không được để trống')
+        .min(8, 'Mật khẩu cần dài ít nhất 8 ký tự')
+        .max(16, 'Mật khẩu phải có nhiều nhất 16 ký tự')
+        .matches(passwordRegex, 'Mật khẩu phải chứa một chữ hoa, một chữ thường, một số và một ký tự đặc biệt.'),
       confirm_password: yup
         .string()
-        .required('Please confirm your password.')
-        .oneOf([yup.ref('password')], 'Passwords do not match.'),
-      role: yup.string().required('Role is require'),
+        .required('Không được để trống')
+        .oneOf([yup.ref('password')], 'Mật khẩu không trùng khớp.'),
+      role: yup.string().required('Không được để trống'),
       firstName: yup
         .string()
-        .required('First name is required.')
-        .min(3, 'First name needs to be at least 3 characters long.')
-        .max(8, 'First name must be at most 8 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên phải dài ít nhất 3 ký tự')
+        .max(8, 'Tên phải có nhiều nhất 8 ký tự.'),
       lastName: yup
         .string()
-        .required('Last name is required.')
-        .min(3, 'Last name needs to be at least 3 characters long.')
-        .max(16, 'Last name must be at most 16 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Họ cần dài ít nhất 3 ký tự')
+        .max(16, 'Họ phải có nhiều nhất 16 ký tự'),
       gender: yup.string(),
-      phoneNumber: yup.string().required('Phone number is required.'),
+      phoneNumber: yup.string().required('Không được để trống'),
     }),
     //#endregion
 
     //#region modify account
     modifyAccountSchema: yup.object().shape({
-      current_password: yup.string().required('Password is required.'),
+      current_password: yup.string().required('Không được để trống'),
       new_password: yup
         .string()
-        .required('Please create a password.')
-        .min(8, 'Password needs to be at least 8 characters long.')
-        .max(16, 'Password must be at most 16 charaters.')
-        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+        .required('Không được để trống')
+        .min(8, 'Mật khẩu cần dài ít nhất 8 ký tự')
+        .max(16, 'Mật khẩu phải có nhiều nhất 16 ký tự')
+        .matches(passwordRegex, 'Mật khẩu phải chứa một chữ hoa, một chữ thường, một số và một ký tự trường hợp đặc biệt'),
       new_confirm_password: yup
         .string()
-        .required('Please confirm your password.')
-        .oneOf([yup.ref('new_password')], 'Passwords do not match.'),
+        .required('Không được để trống')
+        .oneOf([yup.ref('new_password')], 'Mật khẩu không trùng khớp'),
     }),
     //#endregion
 
@@ -122,18 +118,18 @@ export default function useValidationSchema() {
     firstLoginSchema: yup.object().shape({
       firstName: yup
         .string()
-        .required('First name is required.')
-        .min(3, 'First name needs to be at least 3 characters long.')
-        .max(8, 'First name must be at most 8 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Tên phải dài ít nhất 3 ký tự')
+        .max(8, 'Tên phải có nhiều nhất 8 ký tự'),
       lastName: yup
         .string()
-        .required('Last name is required.')
-        .min(3, 'Last name needs to be at least 3 characters long.')
-        .max(16, 'Last name must be at most 16 charaters.'),
+        .required('Không được để trống')
+        .min(3, 'Họ cần dài ít nhất 3 ký tự')
+        .max(16, 'Họ phải có nhiều nhất 16 ký tự'),
       gender: yup.string(),
-      phoneNumber: yup.string().required('Phone number is required.'),
-      country: yup.string().required('Country is required.'),
-      city: yup.string().required('City is required.'),
+      phoneNumber: yup.string().required('Không được để trống'),
+      country: yup.string().required('Không được để trống'),
+      city: yup.string().required('Không được để trống'),
       district: yup.string(),
       village: yup.string(),
     }),
@@ -141,51 +137,47 @@ export default function useValidationSchema() {
 
     //#region forgot-password set new schema
     forgotPasswordSetNewSchema: yup.object().shape({
-      email: yup.string().required('Email is required.').email('Valid characters in email addresses.').matches(emailRegex),
-      code: yup.string().required('Code is required.'),
+      email: yup.string().required('Không được để trống').email('Địa chỉ mail không hợp lệ').matches(emailRegex),
+      code: yup.string().required('Không được để trống'),
       password: yup
         .string()
-        .required('Please create a password.')
-        .min(8, 'Password needs to be at least 8 characters long.')
-        .max(16, 'Password must be at most 16 charaters.')
-        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+        .required('Không được để trống')
+        .min(8, 'Mật khẩu cần dài ít nhất 8 ký tự')
+        .max(16, 'Mật khẩu phải có nhiều nhất 16 ký tự')
+        .matches(passwordRegex, 'Mật khẩu phải chứa một chữ hoa, một chữ thường, một số và một ký tự đặc biệt'),
       confirm_password: yup
         .string()
-        .required('Please confirm your password.')
-        .oneOf([yup.ref('password')], 'Passwords do not match.'),
+        .required('Không được để trống')
+        .oneOf([yup.ref('password')], 'Không được để trống'),
     }),
     //#endregion
 
     //#region forgot-password schema
     forgotPasswordSchema: yup.object().shape({
-      email: yup.string().required('Email is required.').email('Valid characters in email addresses.').matches(emailRegex),
+      email: yup.string().required('Không được để trống').email('Địa chỉ mail không hợp lệ').matches(emailRegex),
     }),
     //#endregion
 
     //#region register schema
     registerSchema: yup.object().shape({
-      email: yup
-        .string()
-        .email('Valid characters in email addresses.')
-        .required('Please enter an email address.')
-        .matches(emailRegex),
+      email: yup.string().required('Không được để trống').email('Địa chỉ mail không hợp lệ').matches(emailRegex),
       password: yup
         .string()
-        .required('Please create a password.')
-        .min(8, 'Password needs to be at least 8 characters long.')
-        .max(16, 'Password must be at most 16 charaters.')
-        .matches(passwordRegex, 'Password must Contain One Uppercase, One Lowercase, One Number and one Special case Character.'),
+        .required('Không được để trống')
+        .min(8, 'Mật khẩu cần dài ít nhất 8 ký tự')
+        .max(16, 'Mật khẩu phải có nhiều nhất 16 ký tự')
+        .matches(passwordRegex, 'Mật khẩu phải chứa một chữ hoa, một chữ thường, một số và một ký tự trường hợp đặc biệt'),
       confirm_password: yup
         .string()
-        .required('Please confirm your password.')
-        .oneOf([yup.ref('password')], 'Passwords do not match.'),
+        .required('Không được để trống')
+        .oneOf([yup.ref('password')], 'Mật khẩu không khớp'),
     }),
     //#endregion
 
     //#region login schema
     loginSchema: yup.object().shape({
-      email: yup.string().required('Email is required.').email('Valid characters in email addresses.').matches(emailRegex),
-      password: yup.string().required('Password is required.'),
+      email: yup.string().required('Không được để trống').email('Địa chỉ mail không hợp lệ').matches(emailRegex),
+      password: yup.string().required('Không được để trống'),
     }),
     //#endregion
   };
