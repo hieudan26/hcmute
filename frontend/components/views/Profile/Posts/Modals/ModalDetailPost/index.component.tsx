@@ -1,9 +1,8 @@
 import {
-  Divider,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
   Box,
+  Button,
+  Center,
+  Divider,
   Flex,
   Icon,
   IconButton,
@@ -12,39 +11,36 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Text,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
-  useColorModeValue,
   ModalFooter,
-  Center,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
-  Spinner,
-  Button,
+  Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import { useEffect, useRef, useState } from 'react';
-import { AiFillHeart } from 'react-icons/ai';
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
-import { BiCommentDetail } from 'react-icons/bi';
-import { Carousel } from 'react-responsive-carousel';
-import ModalContainer from '../../../../Modals/ModalContainer/index.component';
-import { defaultAvatar, formatTimePost, timeSincePost } from '../../../../../../utils';
-import CommentRender from '../../CommentRender/index.component';
-import TreeCommentRender from '../../TreeCommentRender/index.component';
-import CommentForm from './CommentForm/index.component';
-import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../../models/post/post.model';
-import { useCommentsPost, useCUDComment } from '../../../../../../hooks/queries/comment';
-import { ICommentsPostResponse } from '../../../../../../models/comment/comment.model';
-import InfiniteScroll from 'react-infinite-scroller';
-import { useCUDPost } from '../../../../../../hooks/queries/posts';
-import { toggleMessage } from '../../../../Message/index.component';
-import UpdatePost from '../UpdatePost/index.component';
-import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
-import { useTranslation } from 'next-i18next';
 import { Prose } from '@nikolovlazar/chakra-ui-prose';
-import ImageBox from '../../../../ImageBox/index.component';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'next-i18next';
+import { useRef, useState } from 'react';
+import { AiFillHeart } from 'react-icons/ai';
+import { BiCommentDetail } from 'react-icons/bi';
+import { HiOutlineDotsHorizontal } from 'react-icons/hi';
+import { Carousel } from 'react-responsive-carousel';
+import { useCUDComment, useCommentsPost } from '../../../../../../hooks/queries/comment';
+import { useCUDPost } from '../../../../../../hooks/queries/posts';
+import { ICommentsPostResponse } from '../../../../../../models/comment/comment.model';
+import { IPostRequestModel, IPostRequestModelPostId, IPostResponseModel } from '../../../../../../models/post/post.model';
+import { formatTimePost, timeSincePost } from '../../../../../../utils';
+import ImageBox from '../../../../ImageBox/index.component';
+import { toggleMessage } from '../../../../Message/index.component';
+import TreeCommentRender from '../../TreeCommentRender/index.component';
+import ConfirmDeletePost from '../ConfirmDeletePost/index.component';
+import UpdatePost from '../UpdatePost/index.component';
+import CommentForm from './CommentForm/index.component';
 
 export interface IModalDetailPostProps {
   isOpen: boolean;
@@ -90,6 +86,9 @@ export default function ModalDetailPost(props: IModalDetailPostProps) {
         time: formatTimePost(new Date()),
         setSubmitting: setIsSubmitting,
       });
+      if (commentInputRef.current && commentInputRef.current.value) {
+        commentInputRef.current.value = '';
+      }
       if (!isSubmitting) {
         scrollToBottom();
       }
