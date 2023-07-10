@@ -301,9 +301,9 @@ const AdminPostsManagementPage: NextPage = (props: IAdminPostsManagementPageProp
                             <ChakraLink color='purple.400'>
                               <Text fontWeight='bold'>{post.fullName}</Text>
                             </ChakraLink>
-                            <Text fontWeight='normal' fontSize='sm' color='gray.500'>
+                            {/* <Text fontWeight='normal' fontSize='sm' color='gray.500'>
                               {post.userId}
-                            </Text>
+                            </Text> */}
                           </Box>
                         </Td>
                         <Td>{post.reactNumber}</Td>

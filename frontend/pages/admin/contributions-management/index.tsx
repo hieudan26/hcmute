@@ -18,13 +18,13 @@ import {
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { RiRefreshLine } from 'react-icons/ri';
 import DetailContribution from '../../../components/views/Contribute/DetailContribution/index.component';
 import ListContribution from '../../../components/views/Contribute/ListContributions/index.component';
 import { STATUS_PLACES } from '../../../constants/global.constant';
 import { IPlaceCountryResponse } from '../../../models/place/place.model';
 import { IUserFirstLoginRequest } from '../../../models/user/user.model';
 import userService from '../../../services/user/user.service';
-import { RiRefreshLine } from 'react-icons/ri';
 
 export interface IAdminContributionsManagementProps {}
 
@@ -137,11 +137,11 @@ const AdminContributionsManagementPage: NextPage = (props: IAdminContributionsMa
 
                     <Box>
                       <Heading size='sm'>{`${userData.firstName} ${userData.lastName}`}</Heading>
-                      <Text fontSize='small'>{userData.email}</Text>
+                      {/* <Text fontSize='small'>{userData.phoneNumber}</Text> */}
                     </Box>
                   </Flex>
-                  <Box>
-                    <Text mb='1'>SĐT: {userData.phoneNumber}</Text>
+                  <Box fontSize='small'>
+                    <Text mb='1'>Email: {userData.email}</Text>
                     <Text>
                       {userData.city} - {userData.country}
                     </Text>
