@@ -66,18 +66,20 @@ const ContributionDetail: NextPage = (props: IContributionDetailProps) => {
 
   return (
     <Flex w='full' justify='space-between' align='flex-start' gap={6}>
-      <DetailContribution
-        isAdmin
-        isDetail
-        place={dataPlace.data?.data}
-        pushBackListPage={pushBackListPage}
-        isResetDataAdmin={isResetData}
-        setIsResetDataAdmin={setIsResetData}
-        statusChange={statusChange}
-        setStatusChange={setStatusChange}
-        statusDescription={valueStatusDescription !== '' ? valueStatusDescription : 'Không có ý kiến'}
-        setIsDisableResetAdmin={setIsDisableReset}
-      />
+      {dataPlace.data && (
+        <DetailContribution
+          isAdmin
+          isDetail
+          place={dataPlace.data.data}
+          pushBackListPage={pushBackListPage}
+          isResetDataAdmin={isResetData}
+          setIsResetDataAdmin={setIsResetData}
+          statusChange={statusChange}
+          setStatusChange={setStatusChange}
+          statusDescription={valueStatusDescription !== '' ? valueStatusDescription : 'Không có ý kiến'}
+          setIsDisableResetAdmin={setIsDisableReset}
+        />
+      )}
       <Box position='fixed' right='8' top='7.9rem' width='auto'>
         <Box bg={boxBg} minH='fit-content' shadow='md' rounded='md' py='4' px='6' mb='4'>
           <Center pb='4' textTransform='uppercase' fontWeight='semibold'>

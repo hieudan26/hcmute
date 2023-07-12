@@ -358,10 +358,11 @@ export default function PostRender(props: IPostRenderProps) {
               cursor='pointer'
               rounded='lg'
               color='gray.500'
-              onClick={() => {
+              onClick={async () => {
                 setIdPostDetail(post.id);
                 setIsOpenDetail(true);
-                queryClient.invalidateQueries(['post_by_Id']);
+                await queryClient.invalidateQueries(['post_by_Id']);
+                await queryClient.invalidateQueries(['comments_post']);
                 if (modalRef) {
                   modalRef.current = true;
                 }
