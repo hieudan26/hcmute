@@ -37,6 +37,7 @@ import {
 } from '../../../../../hooks/queries/place';
 import { useAppSelector } from '../../../../../hooks/redux';
 import { ICategoryResponse, IPlaceCountryResponse } from '../../../../../models/place/place.model';
+import { translateCategory } from '../../../../../utils';
 import { ArrayTenTemp } from '../../../../experiences';
 
 export interface IProvincePlacesProps {}
@@ -297,7 +298,7 @@ const ProvincePlaces: NextPage = (props: IProvincePlacesProps) => {
                         textTransform='capitalize'
                         key={`tab-${item.id}-${uuidv4()}`}
                       >
-                        {item.name}
+                        {translateCategory(item.name)}
                       </Tab>
                     );
                   }

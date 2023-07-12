@@ -1,52 +1,39 @@
 import {
   Box,
-  Grid,
+  Flex,
   GridItem,
   SimpleGrid,
+  Spinner,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
   Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
   TableCaption,
   TableContainer,
-  useColorModeValue,
-  Flex,
   Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  Input,
-  Image,
-  Button,
-  IconButton,
-  Center,
-  Spinner,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Thead,
+  Tr,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import Pagination from '@choc-ui/paginator';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import CreateUpdateForm from '../../../components/views/Admin/Categories/CreateUpdateForm/index.component';
+import { toggleMessage } from '../../../components/views/Message/index.component';
+import useUploadFile from '../../../hooks/useUploadFile';
+import useValidationSchema from '../../../hooks/validation/useValidationSchema';
 import { IPageableResponse, IPaginationRequest } from '../../../models/common/ResponseMessage.model';
 import { ICategoryRequest, ICategoryRequestUpdate, ICategoryResponse } from '../../../models/place/place.model';
 import placeService from '../../../services/place/place.service';
 import { defaultAvatar } from '../../../utils';
-import { TiCancel } from 'react-icons/ti';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import useValidationSchema from '../../../hooks/validation/useValidationSchema';
-import useUploadFile from '../../../hooks/useUploadFile';
-import { toggleMessage } from '../../../components/views/Message/index.component';
-import CreateUpdateForm from '../../../components/views/Admin/Categories/CreateUpdateForm/index.component';
 
 export interface IAdminCategoriesManagementPageProps {}
 
