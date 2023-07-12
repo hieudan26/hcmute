@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://database-1.cxb9ab3tgire.ap-southeast-1.rds.amazonaws.com:3306/hcmute
-    username: lumiere
-    password: lumiere-123
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maxLifeTime : 600000
@@ -36,8 +36,8 @@ server:
 
 
 aws:
-  accessKeyId: AKIAWGH2PX7YBYU7646A
-  secretAccessKey: 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
+  accessKeyId:
+  secretAccessKey:
   region: ap-southeast-1
 
 backend:

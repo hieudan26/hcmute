@@ -38,7 +38,7 @@ public class WebSocketConfig extends WebSocketMessageBrokerConfigurationSupport 
     public void configureMessageBroker(MessageBrokerRegistry registry) {
 
         ReactorNettyTcpClient<byte[]> tcpClient = new ReactorNettyTcpClient<>(configurer -> configurer
-                .host("b-bc338530-9c97-4b54-89c4-62eff6edbc26-1.mq.ap-southeast-1.amazonaws.com")
+                .host("")
                 .port(61614)
                 .secure(SslProvider.defaultClientProvider()), new StompReactorNettyCodec());
 
