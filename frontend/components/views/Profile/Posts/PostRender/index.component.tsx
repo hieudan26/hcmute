@@ -235,6 +235,7 @@ export default function PostRender(props: IPostRenderProps) {
                       modalRef.current = true;
                     }
                   }}
+                  hidden={currentUserId !== post.userId}
                 >
                   Báo cáo bài viết
                 </MenuItem>
