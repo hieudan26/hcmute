@@ -36,8 +36,8 @@ server:
 
 
 aws:
-  accessKeyId: AKIAWGH2PX7YK7HAAAF6
-  secretAccessKey: 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
+  accessKeyId: AKIAWGH2PX7YHZKDSTUG
+  secretAccessKey: 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
   region: ap-southeast-1
 
 backend:

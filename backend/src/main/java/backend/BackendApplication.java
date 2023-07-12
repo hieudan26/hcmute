@@ -22,8 +22,7 @@ public class BackendApplication {
 		SpringApplication.run(BackendApplication.class, args);
 		Properties props = System.getProperties();
 		props.setProperty("aws.region", "ap-southeast-1");
-		props.setProperty("aws.accessKeyId", "AKIAWGH2PX7YNHVLL564");
-		props.setProperty("aws.secretAccessKey", "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");
-
+		props.setProperty("aws.accessKeyId", "AKIAWGH2PX7YHZKDSTUG");
+		props.setProperty("aws.secretAccessKey", "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");
 	}
 }
