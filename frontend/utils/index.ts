@@ -35,6 +35,22 @@ export const privateRouteContain = [
 ];
 export const authRouteContain = ['/login', '/register', '/forgot-password', '/admin/login', '/admin/forgot-password'];
 
+export function translateCategory(name: string) {
+  if (name.trim() === 'province') {
+    return 'Tỉnh';
+  } else if (name.trim() === 'country') {
+    return 'Quốc gia';
+  } else if (name.trim() === 'place') {
+    return 'Địa điểm';
+  } else if (name.trim() === 'Market') {
+    return 'Chợ';
+  }else if (name.trim() === 'Supermarket') {
+    return 'Siêu thị';
+  } else {
+    return name.trim();
+  }
+}
+
 export function addAMPM(timeString: string) {
   const [hours, minutes, seconds] = timeString.split(':');
 
