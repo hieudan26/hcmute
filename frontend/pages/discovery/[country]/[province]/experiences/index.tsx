@@ -16,7 +16,9 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useQueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, NextPage } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -32,11 +34,9 @@ import { useCUDPost, usePostsByTypeAndHashTag } from '../../../../../hooks/queri
 import { useAppSelector } from '../../../../../hooks/redux';
 import { IPlaceCountryResponse } from '../../../../../models/place/place.model';
 import { IPostRequestModel, IPostRequestModelLoading, IPostResponseModel } from '../../../../../models/post/post.model';
+import { timeRefreshDataTenSeconds } from '../../../../../utils';
 import { LocalUtils } from '../../../../../utils/local.utils';
 import { ArrayTenTemp } from '../../../../experiences';
-import { useTranslation } from 'next-i18next';
-import { useQueryClient } from '@tanstack/react-query';
-import { timeRefreshDataTenSeconds } from '../../../../../utils';
 
 export interface IProvinceExperiencesProps {}
 
@@ -221,11 +221,13 @@ const ProvinceExperiences: NextPage = (props: IProvinceExperiencesProps) => {
               </Heading>
               <Text fontSize='sm'>{t('experience.text')}</Text>
             </Box>
-            <Box>
-              <Button onClick={() => setIsCreatePost(true)} leftIcon={<SmallAddIcon />}>
-                {t('experience.button')}
-              </Button>
-            </Box>
+            {auth && auth.role === RoleConstants.USER && (
+              <Box>
+                <Button onClick={() => setIsCreatePost(true)} leftIcon={<SmallAddIcon />}>
+                  {t('experience.button')}
+                </Button>
+              </Box>
+            )}
           </Flex>
 
           <InfiniteScroll
