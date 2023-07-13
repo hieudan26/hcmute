@@ -202,11 +202,13 @@ const CountryExperiences: NextPage = (props: ICountryExperiencesProps) => {
               </Heading>
               <Text fontSize='sm'>{t('experience.text')}</Text>
             </Box>
-            <Box>
-              <Button onClick={() => setIsCreatePost(true)} leftIcon={<SmallAddIcon />}>
-                {t('experience.button')}
-              </Button>
-            </Box>
+            {auth && auth.role === RoleConstants.USER && (
+              <Box>
+                <Button onClick={() => setIsCreatePost(true)} leftIcon={<SmallAddIcon />}>
+                  {t('experience.button')}
+                </Button>
+              </Box>
+            )}
           </Flex>
 
           <InfiniteScroll
